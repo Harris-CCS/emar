@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            .label { font-weight: bold; }
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+	white-space:nowrap;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+</style>
+   
+    </head>
+    <body>
+	<img alt="PulseCheck Mobile"src="@Model.APIUrl/content/images/Logo_PulseCheck_RGB.png" height="30" width="150"/>
+	<br>
+	<br>
+        Dear @Model.FirstName @Model.LastName,<br /><br />
+        A new PulseCheck master account for the mobile app has been created for you.<br />
+		<span class="label">Your login id for PulseCheck Mobile is: </span>@Model.Email<br /><hr>
+		<span class="label">First,</span> set up your mobile password by using the link below:<br />
+        <a href="@Model.LinkUrl">Set Mobile Password</a><br /><br />
+		 <span class="label">Then, </span> download the mobile app for your iOS or Android device here:<br /><br />	 
+		 <a href="https://play.google.com/store/apps/details?id=com.harris.pulsecheck"> <img alt="Android app on Google Play" src="https://developer.android.com/images/brand/en_app_rgb_wo_45.png" width="120" height="40" /></a>&nbsp;&nbsp;    
+		 <a href="https://itunes.apple.com/us/app/pulsecheck-mobility/id1296829613?ls=1&mt=8"> <img alt="Download on the App Store" src="https://ross-ed4.picis.com/content/images/Download_on_the_App_Store_Badge.png" /></a>
+		 </span><br /><br />
+		<span class="label"> Next,</span> open the app and enter the server URL (below) on your device.<br /><br />
+		<span class="label"> Finally,</span>  authorize your device using the code below to complete the initial set up.<br /><br />
+		<span class="label">Configure Server URL:</span> @Model.APIUrl<br />
+		<span class="label">Device Authorization Code: </span>@Model.DevicePasscode
+    </body>
+</html>
