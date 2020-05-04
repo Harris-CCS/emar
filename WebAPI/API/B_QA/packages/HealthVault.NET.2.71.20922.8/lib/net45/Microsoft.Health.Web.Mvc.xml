@@ -1,0 +1,269 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.Health.Web.Mvc</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.Health.Web.Mvc.AuthenticationModule">
+            <summary>
+            Handles authentication of HealthVault users and the loading of the <see cref="T:Microsoft.Health.PersonInfo"/>
+            object before the request is passed to the application.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Health.Web.Mvc.AuthenticationModule.Init(System.Web.HttpApplication)">
+            <summary>
+            Initializes the module at application start.
+            </summary>
+            <param name="context">The application context</param>
+        </member>
+        <member name="M:Microsoft.Health.Web.Mvc.AuthenticationModule.Dispose">
+            <summary>
+            Disposes the module.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Health.Web.Mvc.Extensions">
+            <summary>
+            Useful extension methods for code readability and brevity.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Health.Web.Mvc.Extensions.PersonInfo(System.Security.Principal.IPrincipal)">
+            <summary>
+            Returns the <see cref="M:Microsoft.Health.Web.Mvc.Extensions.PersonInfo(System.Security.Principal.IPrincipal)"/> object of the current HealthVault user.
+            </summary>
+            <param name="user">The current user</param>
+            <returns>The <see cref="M:Microsoft.Health.Web.Mvc.Extensions.PersonInfo(System.Security.Principal.IPrincipal)"/> object of the current user</returns>
+        </member>
+        <member name="M:Microsoft.Health.Web.Mvc.Extensions.PersonInfoManager(System.Web.HttpContext)">
+            <summary>
+            Returns a <see cref="T:Microsoft.Health.Web.Mvc.PersonInfoManager"/> to handle PersonInfo 
+            actions for the current request.
+            </summary>
+            <param name="context">The current HttpContext</param>
+            <returns>A <see cref="T:Microsoft.Health.Web.Mvc.PersonInfoManager"/> object</returns>
+        </member>
+        <member name="M:Microsoft.Health.Web.Mvc.Extensions.PersonInfoManager(System.Web.HttpContextBase)">
+            <summary>
+            Returns a <see cref="T:Microsoft.Health.Web.Mvc.PersonInfoManager"/> to handle PersonInfo 
+            actions for the current request.
+            </summary>
+            <param name="context">The current HttpContext</param>
+            <returns>A <see cref="T:Microsoft.Health.Web.Mvc.PersonInfoManager"/> object</returns>
+        </member>
+        <member name="T:Microsoft.Health.Web.Mvc.HealthVault">
+            <summary>
+            Basic and common methods for interacting with HealthVault
+            </summary>
+        </member>
+        <member name="P:Microsoft.Health.Web.Mvc.HealthVault.Config">
+            <summary>
+            The current configuration values.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Health.Web.Mvc.HealthVault.RegisterRoutes(System.Web.Routing.RouteCollection)">
+            <summary>
+            Registers routes to HealthVault controllers.
+            </summary>
+            <param name="routes">The application's route collection</param>
+            <remarks>Call this from your global.asax if you wish to use the supplied redirect controller.</remarks>
+        </member>
+        <member name="M:Microsoft.Health.Web.Mvc.HealthVault.SignIn(System.Web.Mvc.ControllerContext)">
+            <summary>
+            Sign in to HealthVault
+            </summary>
+            <param name="context">The current controller context</param>
+            <returns>A redirect result to the HealthVault Shell sign in page</returns>
+        </member>
+        <member name="M:Microsoft.Health.Web.Mvc.HealthVault.SignIn(System.Web.Mvc.ControllerContext,System.Object)">
+            <summary>
+            Sign in to HealthVault
+            </summary>
+            <param name="context">The current controller context</param>
+            <param name="parameters">Parameters to be passed to the sign in page</param>
+            <returns>A redirect result to the HealthVault Shell sign in page</returns>
+        </member>
+        <member name="M:Microsoft.Health.Web.Mvc.HealthVault.SignOut(System.Web.Mvc.ControllerContext)">
+            <summary>
+            Sign out of HealthVault
+            </summary>
+            <param name="context">The current controller context</param>
+            <returns>A redirect result to the HealthVault Shell sign out page</returns>
+        </member>
+        <member name="M:Microsoft.Health.Web.Mvc.HealthVault.SignOut(System.Web.Mvc.ControllerContext,System.Object)">
+            <summary>
+            Sign out of HealthVault
+            </summary>
+            <param name="context">The current controller context</param>
+            <param name="parameters">Parameters to be passed to the sign out page</param>
+            <returns>A redirect result to the HealthVault Shell sign out page</returns>
+        </member>
+        <member name="T:Microsoft.Health.Web.Mvc.HealthVault.Shell">
+            <summary>
+            Utility methods for creating various urls targetting HealthVault Shell
+            </summary>
+        </member>
+        <member name="M:Microsoft.Health.Web.Mvc.HealthVault.Shell.Url(System.Web.Mvc.ControllerContext)">
+            <summary>
+            Creates a url to the Shell homepage
+            </summary>
+            <param name="context">The current controller context</param>
+            <returns>A string containing the Shell homepage url.</returns>
+        </member>
+        <member name="M:Microsoft.Health.Web.Mvc.HealthVault.Shell.Url(System.Web.Mvc.ControllerContext,System.String)">
+            <summary>
+            Creates a url to a specific Shell target
+            </summary>
+            <param name="context">The current controller context</param>
+            <param name="target">The name of the target</param>
+            <returns>A string containing the Shell url for the given target</returns>
+        </member>
+        <member name="M:Microsoft.Health.Web.Mvc.HealthVault.Shell.Url(System.Web.Mvc.ControllerContext,System.String,System.Object)">
+            <summary>
+            Creates a url to a specific Shell target
+            </summary>
+            <param name="context">The current controller context</param>
+            <param name="target">The name of the target</param>
+            <param name="parameters">Parameters to pass to the Shell page</param>
+            <returns>A string containing the Shell url for the given target</returns>
+        </member>
+        <member name="M:Microsoft.Health.Web.Mvc.HealthVault.Shell.Url(System.Web.Mvc.ControllerContext,System.String,System.Collections.Generic.IDictionary{System.String,System.Object})">
+            <summary>
+            Creates a url to a specific Shell target
+            </summary>
+            <param name="context">The current controller context</param>
+            <param name="target">The name of the target</param>
+            <param name="parameters">Parameters to pass to the Shell page</param>
+            <returns>A string containing the Shell url for the given target</returns>
+        </member>
+        <member name="T:Microsoft.Health.Web.Mvc.HealthVaultIdentity">
+            <summary>
+            An IIdentity object representing a <see cref="P:Microsoft.Health.Web.Mvc.HealthVaultIdentity.PersonInfo"/> object.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Health.Web.Mvc.HealthVaultIdentity.#ctor(Microsoft.Health.PersonInfo)">
+            <summary>
+            Creates a new <see cref="T:Microsoft.Health.Web.Mvc.HealthVaultIdentity"/> object for the given <see cref="P:Microsoft.Health.Web.Mvc.HealthVaultIdentity.PersonInfo"/>
+            </summary>
+            <param name="personInfo">The <see cref="P:Microsoft.Health.Web.Mvc.HealthVaultIdentity.PersonInfo"/> object to represent</param>
+        </member>
+        <member name="M:Microsoft.Health.Web.Mvc.HealthVaultIdentity.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Development only. This constructor is used by the Visual Studio development server.
+            </summary>
+            <param name="info">Serialization info</param>
+            <param name="context">Streaming context</param>
+        </member>
+        <member name="P:Microsoft.Health.Web.Mvc.HealthVaultIdentity.PersonInfo">
+            <summary>
+            Gets the <see cref="P:Microsoft.Health.Web.Mvc.HealthVaultIdentity.PersonInfo"/> object represented by this <see cref="T:Microsoft.Health.Web.Mvc.HealthVaultIdentity"/>
+            </summary>
+        </member>
+        <member name="P:Microsoft.Health.Web.Mvc.HealthVaultIdentity.AuthenticationType">
+            <summary>
+            Gets the type of authentication
+            </summary>
+        </member>
+        <member name="P:Microsoft.Health.Web.Mvc.HealthVaultIdentity.IsAuthenticated">
+            <summary>
+            Gets whether the user is authenticated. This is true if a <see cref="P:Microsoft.Health.Web.Mvc.HealthVaultIdentity.PersonInfo"/> exists.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Health.Web.Mvc.HealthVaultIdentity.Name">
+            <summary>
+            Gets the name of the current user, as specificed in the <see cref="P:Microsoft.Health.Web.Mvc.HealthVaultIdentity.PersonInfo"/> object.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Health.Web.Mvc.HealthVaultIdentity.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Development only. This method is used by the Visual Studio development server.
+            </summary>
+            <param name="info">Serialization info</param>
+            <param name="context">Streaming context</param>
+        </member>
+        <member name="T:Microsoft.Health.Web.Mvc.PersonInfoManager">
+            <summary>
+            Manages the authentication of users to HealtVault and the <see cref="P:Microsoft.Health.Web.Mvc.PersonInfoManager.PersonInfo"/> object.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Health.Web.Mvc.PersonInfoManager.#ctor(System.Web.HttpContextBase)">
+            <summary>
+            Constructs an instance of the <see cref="T:Microsoft.Health.Web.Mvc.PersonInfoManager"/> class using the 
+            default <see cref="T:Microsoft.Health.Web.HealthWebApplicationConfiguration"/> settings.
+            </summary>
+            <param name="context">The current context</param>
+        </member>
+        <member name="M:Microsoft.Health.Web.Mvc.PersonInfoManager.#ctor(System.Web.HttpContextBase,System.String,System.Boolean)">
+            <summary>
+            Constructs an instance of the <see cref="T:Microsoft.Health.Web.Mvc.PersonInfoManager"/> class using specific
+            settings
+            </summary>
+            <param name="context">The current context</param>
+            <param name="cookieName">The name of the cookie used to store authenticationf info</param>
+            <param name="useSession">Whether to use ASP.NET session state</param>
+        </member>
+        <member name="P:Microsoft.Health.Web.Mvc.PersonInfoManager.PersonInfo">
+            <summary>
+            The <see cref="P:Microsoft.Health.Web.Mvc.PersonInfoManager.PersonInfo"/> object representing currently authenticated HealthVault person
+            </summary>
+        </member>
+        <member name="M:Microsoft.Health.Web.Mvc.PersonInfoManager.Refresh">
+            <summary>
+            Attempts to reload the <see cref="P:Microsoft.Health.Web.Mvc.PersonInfoManager.PersonInfo"/> object from the HealthVault service.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Health.Web.Mvc.PersonInfoManager.Save(Microsoft.Health.PersonInfo)">
+            <summary>
+            Persists the <see cref="P:Microsoft.Health.Web.Mvc.PersonInfoManager.PersonInfo"/> object to cookies or session state.
+            </summary>
+            <param name="personInfo">The <see cref="P:Microsoft.Health.Web.Mvc.PersonInfoManager.PersonInfo"/> object to persist</param>
+        </member>
+        <member name="M:Microsoft.Health.Web.Mvc.PersonInfoManager.Clear">
+            <summary>
+            Clears the <see cref="P:Microsoft.Health.Web.Mvc.PersonInfoManager.PersonInfo"/> object from cookies, session state, and context.
+            </summary>
+            <remarks>This will effectively sign the user out of your website.</remarks>
+        </member>
+        <member name="T:Microsoft.Health.Web.Mvc.RedirectController">
+            <summary>
+            A simple controller that handles users coming back from HealthVault Shell
+            and redirects them.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Health.Web.Mvc.RedirectController.Index(System.String,System.String)">
+            <summary>
+            Handles the basic request to /Redirect
+            </summary>
+            <param name="target">The target of the redirect</param>
+            <param name="actionqs">A query string that was originally passed to HealthVault Shell.
+            If it is a url, it will be redirected to.</param>
+            <returns>A redirect to either the actionqs (if it is a url) or the application homepage</returns>
+        </member>
+        <member name="T:Microsoft.Health.Web.Mvc.RequireSignInAttribute">
+            <summary>
+            Indicates that this action or controller requires that the user be signed in to HealthVault.
+            An unauthorized user will be redirected to HealthVault Shell to sign in.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Health.Web.Mvc.RequireSignInAttribute.Mra">
+            <summary>
+            Gets or sets whether to sign in as MRA or SRA.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Health.Web.Mvc.RequireSignInAttribute.OnException(System.Web.Mvc.ExceptionContext)">
+            <summary>
+            Handles exceptions from HealthVault
+            </summary>
+            <param name="filterContext">The exception context</param>
+            <remarks>
+            If a user is already signed in, but their session expires, this application may not
+            realize this until the HealthVault service throws an exception. This handles those cases
+            by redirecting the user to HealthVault Shell to re-sign in.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Health.Web.Mvc.RequireSignInAttribute.HandleUnauthorizedRequest(System.Web.Mvc.AuthorizationContext)">
+            <summary>
+            Redirects unauthorized users to sign in
+            </summary>
+            <param name="filterContext">The authorization context</param>
+        </member>
+    </members>
+</doc>
