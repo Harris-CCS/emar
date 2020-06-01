@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29920.165
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PulseCheck.API", "PulseCheck.API\PulseCheck.API.csproj", "{C3725B3A-4558-4734-B407-861516504278}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -428,7 +428,7 @@ Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 35
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://ros-tfs-px01.picis.com:8080/tfs/emar
+		SccTeamFoundationServer = http://pg-source.picis.com:8080/tfs/pulsecheck
 		SccLocalPath0 = .
 		SccProjectUniqueName1 = PulseCheck.API\\PulseCheck.API.csproj
 		SccProjectTopLevelParentUniqueName1 = PulseCheck.sln
