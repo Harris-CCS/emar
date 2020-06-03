@@ -409,6 +409,9 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup>
+    <ScIntermediateAppConfig Condition="'$(ScIntermediateAppConfig)' == ''">$(IntermediateOutputPath)$(MSBuildProjectFile)-sc.App.config</ScIntermediateAppConfig>
+  </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
@@ -434,17 +437,17 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-  <Import Project="..\packages\Microsoft.VisualStudio.SlowCheetah.3.1.66\build\Microsoft.VisualStudio.SlowCheetah.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.SlowCheetah.3.1.66\build\Microsoft.VisualStudio.SlowCheetah.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.VisualStudio.SlowCheetah.3.1.66\build\Microsoft.VisualStudio.SlowCheetah.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.VisualStudio.SlowCheetah.3.1.66\build\Microsoft.VisualStudio.SlowCheetah.targets'))" />
-  </Target>
   <UsingTask TaskName="TransformXml" AssemblyFile="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Web\Microsoft.Web.Publishing.Tasks.dll" />
   <Target Name="AfterBuild">
     <MakeDir Directories="obj\$(Configuration)" Condition="!Exists('obj\$(Configuration)')" />
     <TransformXml Source="Web.Config" Transform="Web.$(Configuration).config" Destination="obj\$(Configuration)\Web.config" StackTrace="true" Condition="Exists('Web.$(Configuration).config')" />
+  </Target>
+  <Import Project="..\packages\Microsoft.VisualStudio.SlowCheetah.3.2.26\build\Microsoft.VisualStudio.SlowCheetah.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.SlowCheetah.3.2.26\build\Microsoft.VisualStudio.SlowCheetah.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.VisualStudio.SlowCheetah.3.2.26\build\Microsoft.VisualStudio.SlowCheetah.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.VisualStudio.SlowCheetah.3.2.26\build\Microsoft.VisualStudio.SlowCheetah.targets'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
