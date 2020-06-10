@@ -1,6 +1,6 @@
 ﻿create table [dbo].[users]
 (
-    [user_id]                 [int] identity(1, 1) not null
+    [id]                      [int] identity(1, 1) not null
   , [site]                    [int] not null
   , [external_identifier]     [varchar](25) null
   , [type]                    [char](1) not null
@@ -15,7 +15,7 @@
   , [salt]                    [binary](16) not null
   , [last_login_time]         [datetimeoffset](7) null
   , [failed_login_attempts]   [int] not null
-  , constraint [pk_users] primary key clustered([user_id] asc)
+  , constraint [pk_users] primary key clustered([id] asc)
 );
 go
 
@@ -45,7 +45,7 @@ exec [sys].[sp_addextendedproperty]
   , @level1type = N'TABLE'
   , @level1name = N'users'
   , @level2type = N'CONSTRAINT'
-  , @level2name = N'pk_users'
+  , @level2name = N'pk_users';
 go
 
 exec [sys].[sp_addextendedproperty]
@@ -56,7 +56,7 @@ exec [sys].[sp_addextendedproperty]
   , @level1type = N'TABLE'
   , @level1name = N'users'
   , @level2type = N'INDEX'
-  , @level2name = N'ix_users__last_name_first_name_site'
+  , @level2name = N'ix_users__last_name_first_name_site';
 go
 
 exec [sys].[sp_addextendedproperty]
@@ -67,7 +67,7 @@ exec [sys].[sp_addextendedproperty]
   , @level1type = N'TABLE'
   , @level1name = N'users'
   , @level2type = N'INDEX'
-  , @level2name = N'ix_users__login_name_site'
+  , @level2name = N'ix_users__login_name_site';
 go
 
 exec [sys].[sp_addextendedproperty]
@@ -87,7 +87,7 @@ exec [sys].[sp_addextendedproperty]
   , @level1type = N'TABLE'
   , @level1name = N'users'
   , @level2type = N'COLUMN'
-  , @level2name = N'user_id';
+  , @level2name = N'id';
 go
 
 exec [sys].[sp_addextendedproperty]
