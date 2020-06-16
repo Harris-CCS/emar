@@ -60,9 +60,21 @@
     <Folder Include="Scripts" />
     <Folder Include="Scripts\Pre-Deployment" />
     <Folder Include="Scripts\Post-Deployment" />
+    <Folder Include="Programmability" />
+    <Folder Include="Programmability\Stored Procedures" />
+    <Folder Include="Programmability\Functions" />
+    <Folder Include="Programmability\Functions\Table-values Functions" />
+    <Folder Include="Programmability\Functions\Scalar-values Functions" />
+    <Folder Include="Views" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="Tables\Users.sql" />
+    <Build Include="Tables\users.sql" />
+    <Build Include="Tables\patients.sql" />
+    <Build Include="Tables\external_ids.sql" />
+    <Build Include="Programmability\Functions\Table-values Functions\get_external_id.sql" />
+    <Build Include="Programmability\Functions\Table-values Functions\get_internal_id.sql" />
+    <Build Include="Tables\patient_indicators.sql" />
+    <Build Include="Views\SchemaDictionary.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />
@@ -72,5 +84,12 @@
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\130\SqlSchemas\master.dacpac">
+      <HintPath>$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\130\SqlSchemas\master.dacpac</HintPath>
+      <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
+      <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
+    </ArtifactReference>
   </ItemGroup>
 </Project>
