@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30104.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PulseCheck.API", "PulseCheck.API\PulseCheck.API.csproj", "{C3725B3A-4558-4734-B407-861516504278}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -98,6 +98,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PulseCheck.Database.Management.Logic.Tests", "PulseCheck.Database.Management.Logic.Tests\PulseCheck.Database.Management.Logic.Tests.csproj", "{63A0F235-C872-4954-A944-448FBBB33450}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PulseCheck.Common.Logging", "PulseCheck.Common.Logging\PulseCheck.Common.Logging.csproj", "{ADF29DD7-72FB-4141-9ED4-D7394C3E6461}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Emar.Api", "Emar.Api\Emar.Api.csproj", "{319EABF5-7112-48CF-AE13-14B970134F91}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Emar.Core", "Emar.Core\Emar.Core.csproj", "{428EF848-627D-40B5-B852-595144DA16C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Emar.Data", "Emar.Data\Emar.Data.csproj", "{7E89730A-8C9E-4984-8C7C-62DA03AC0332}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -379,6 +385,30 @@ Global
 		{ADF29DD7-72FB-4141-9ED4-D7394C3E6461}.Release|Any CPU.Build.0 = Release|Any CPU
 		{ADF29DD7-72FB-4141-9ED4-D7394C3E6461}.RougeValley|Any CPU.ActiveCfg = Release|Any CPU
 		{ADF29DD7-72FB-4141-9ED4-D7394C3E6461}.RougeValley|Any CPU.Build.0 = Release|Any CPU
+		{319EABF5-7112-48CF-AE13-14B970134F91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{319EABF5-7112-48CF-AE13-14B970134F91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{319EABF5-7112-48CF-AE13-14B970134F91}.QA|Any CPU.ActiveCfg = Debug|Any CPU
+		{319EABF5-7112-48CF-AE13-14B970134F91}.QA|Any CPU.Build.0 = Debug|Any CPU
+		{319EABF5-7112-48CF-AE13-14B970134F91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{319EABF5-7112-48CF-AE13-14B970134F91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{319EABF5-7112-48CF-AE13-14B970134F91}.RougeValley|Any CPU.ActiveCfg = Release|Any CPU
+		{319EABF5-7112-48CF-AE13-14B970134F91}.RougeValley|Any CPU.Build.0 = Release|Any CPU
+		{428EF848-627D-40B5-B852-595144DA16C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{428EF848-627D-40B5-B852-595144DA16C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{428EF848-627D-40B5-B852-595144DA16C8}.QA|Any CPU.ActiveCfg = Debug|Any CPU
+		{428EF848-627D-40B5-B852-595144DA16C8}.QA|Any CPU.Build.0 = Debug|Any CPU
+		{428EF848-627D-40B5-B852-595144DA16C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{428EF848-627D-40B5-B852-595144DA16C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{428EF848-627D-40B5-B852-595144DA16C8}.RougeValley|Any CPU.ActiveCfg = Release|Any CPU
+		{428EF848-627D-40B5-B852-595144DA16C8}.RougeValley|Any CPU.Build.0 = Release|Any CPU
+		{7E89730A-8C9E-4984-8C7C-62DA03AC0332}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E89730A-8C9E-4984-8C7C-62DA03AC0332}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E89730A-8C9E-4984-8C7C-62DA03AC0332}.QA|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E89730A-8C9E-4984-8C7C-62DA03AC0332}.QA|Any CPU.Build.0 = Debug|Any CPU
+		{7E89730A-8C9E-4984-8C7C-62DA03AC0332}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E89730A-8C9E-4984-8C7C-62DA03AC0332}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E89730A-8C9E-4984-8C7C-62DA03AC0332}.RougeValley|Any CPU.ActiveCfg = Release|Any CPU
+		{7E89730A-8C9E-4984-8C7C-62DA03AC0332}.RougeValley|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -421,14 +451,17 @@ Global
 		{81E37AD1-A094-4E31-9337-A05B8B87BF7B} = {B61CA6D1-1D58-4F0D-AF35-290D82EA1564}
 		{63A0F235-C872-4954-A944-448FBBB33450} = {B61CA6D1-1D58-4F0D-AF35-290D82EA1564}
 		{ADF29DD7-72FB-4141-9ED4-D7394C3E6461} = {229958F2-64D8-4458-839D-786127C4BA9D}
+		{319EABF5-7112-48CF-AE13-14B970134F91} = {15AE60C1-32F0-4B28-9BB9-200A68D29595}
+		{428EF848-627D-40B5-B852-595144DA16C8} = {A44BFDFB-EB80-476A-97B1-EDB6DC9C287A}
+		{7E89730A-8C9E-4984-8C7C-62DA03AC0332} = {8ED40716-7A2B-44B8-8568-43959B9F2028}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CFBED2A6-D785-4741-B262-46AC47EAC1A4}
 	EndGlobalSection
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 35
+		SccNumberOfProjects = 38
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://pg-source.picis.com:8080/tfs/pulsecheck
+		SccTeamFoundationServer = http://ros-tfs-px01.picis.com:8080/tfs/emar
 		SccLocalPath0 = .
 		SccProjectUniqueName1 = PulseCheck.API\\PulseCheck.API.csproj
 		SccProjectTopLevelParentUniqueName1 = PulseCheck.sln
@@ -566,5 +599,17 @@ Global
 		SccProjectTopLevelParentUniqueName34 = PulseCheck.sln
 		SccProjectName34 = PulseCheck.Common.Logging
 		SccLocalPath34 = PulseCheck.Common.Logging
+		SccProjectUniqueName35 = Emar.Api\\Emar.Api.csproj
+		SccProjectTopLevelParentUniqueName35 = PulseCheck.sln
+		SccProjectName35 = Emar.Api
+		SccLocalPath35 = Emar.Api
+		SccProjectUniqueName36 = Emar.Core\\Emar.Core.csproj
+		SccProjectTopLevelParentUniqueName36 = PulseCheck.sln
+		SccProjectName36 = Emar.Core
+		SccLocalPath36 = Emar.Core
+		SccProjectUniqueName37 = Emar.Data\\Emar.Data.csproj
+		SccProjectTopLevelParentUniqueName37 = PulseCheck.sln
+		SccProjectName37 = Emar.Data
+		SccLocalPath37 = Emar.Data
 	EndGlobalSection
 EndGlobal
