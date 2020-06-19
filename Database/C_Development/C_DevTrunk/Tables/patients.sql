@@ -20,10 +20,10 @@ create table [dbo].[patients]
   , [deptartment_code]               [varchar](15) null
   , [urgency]                        [varchar](50) not null
   , [urgency_color]                  [varchar](25) null
-  , [name_alert]                     [bit] null
-  , [patient_indicator]              [bit] null
-  , [obscure_patient_name]           [bit] null
-  , [withdraw_consent]               [bit] null
+  , [name_alert]                     [bit] not null
+  , [patient_indicator]              [bit] not null
+  , [obscure_patient_name]           [bit] not null
+  , [withdraw_consent]               [bit] not null
   , [vs_datetime]                    [datetimeoffset](7) null
   , [vs_user_id]                     [int] null
   , [vs_blood_pressure_indicator]    [char](1) null        ---- [ord11]
@@ -47,31 +47,28 @@ create table [dbo].[patients]
 );
 go
 
-/*********
- Defaults
-*********/
-
-
 /********
- Indexes
+ Defaults
 ********/
+/*******
+ Indexes
+*******/
+/***********
+ Foreign Key
+***********/
 
-/************
- Foriegn Key
-************/
-
+alter table [dbo].[patients]
+add constraint [fk__patients__sites] foreign key([site_id]) references [dbo].[sites]([id]);
+go
 
 /***************
  Data Dictionary
     Defaults
 ***************/
-
-
 /***************
  Data Dictionary
     Indexes
 ***************/
-
 /***************
  Data Dictionary
     Table

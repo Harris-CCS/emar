@@ -14,10 +14,9 @@
 );
 go
 
-/*********
- Defaults 
-*********/
-
+/********
+ Defaults
+********/
 /*******
  Indexes
 *******/
@@ -28,28 +27,27 @@ create nonclustered index [ix__patient_indicators__patient_id_site_id] on [dbo].
 go
 
 /***********
- Foriegn Key
+ Foreign Key
 ***********/
 
 alter table [dbo].[patient_indicators]
 add constraint [fk__patient_indicators__patients] foreign key([patient_id]) references [dbo].[patients]([id]);
 go
 
-alter table [dbo].[patient_indicators] with check check constraint [fk__patient_indicators__patients];
+alter table [dbo].[patient_indicators]
+add constraint [fk__patient_indicators__sites] foreign key([site_id]) references [dbo].[sites]([id]);
 go
 
 /***************
  Data Dictionary
     Defaults
 ***************/
-
-
 /***************
  Data Dictionary
     Indexes
 ***************/
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Primary Key Column'
   , @level0type = N'SCHEMA'
@@ -60,7 +58,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'pk__patient_indicators__id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Default Index applied during design'
   , @level0type = N'SCHEMA'
@@ -76,7 +74,7 @@ go
     Table
 ***************/
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'This table contains username, password, and other user attributes'
   , @level0type = N'SCHEMA'
@@ -90,7 +88,7 @@ go
     Columns
 ***************/
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'patient indicator auto number id'
   , @level0type = N'SCHEMA'
@@ -101,7 +99,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Hospital identifier 1...255 for multi-site servers, FKEY to ORG site table'
   , @level0type = N'SCHEMA'
@@ -112,7 +110,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'site_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Patient ID foreign key to patients table'
   , @level0type = N'SCHEMA'
@@ -123,7 +121,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'patient_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Ordinal Position for Image Display'
   , @level0type = N'SCHEMA'
@@ -134,7 +132,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'position';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Custom image code'
   , @level0type = N'SCHEMA'
@@ -145,7 +143,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'code';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Admission Request Entry. 1=True, 0=False'
   , @level0type = N'SCHEMA'
@@ -156,7 +154,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'admreq';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Triaged. 1=True, 0=False'
   , @level0type = N'SCHEMA'
@@ -167,7 +165,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'triaged';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Custom image type'
   , @level0type = N'SCHEMA'
@@ -178,7 +176,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'type';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Custom image description'
   , @level0type = N'SCHEMA'
@@ -189,7 +187,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'description';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Image File Name for display'
   , @level0type = N'SCHEMA'

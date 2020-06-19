@@ -9,13 +9,12 @@
 );
 go
 
-/*********
- Defaults 
-*********/
-
-/*********
- Indexes  
-*********/
+/********
+ Defaults
+********/
+/*******
+ Indexes
+*******/
 
 create nonclustered index [ix__external_ids] on [dbo].[external_ids]
 ([external_id] asc, [site_id] asc, [vendor] asc, [entity] asc, [internal_id] asc
@@ -23,19 +22,23 @@ create nonclustered index [ix__external_ids] on [dbo].[external_ids]
 go
 
 /***********
- Foriegn Key
+ Foreign Key
 ***********/
+
+alter table [dbo].[external_ids]
+add constraint [fk__external_ids__sites] foreign key([site_id]) references [dbo].[sites]([id]);
+go
 
 /***************
  Data Dictionary
     Defaults
 ***************/
-
 /***************
  Data Dictionary
     Indexes
 ***************/
-execute [sys].[sp_addextendedproperty] 
+
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Multi-Part Primary Key linking internal to external ids'
   , @level0type = N'SCHEMA'
@@ -46,7 +49,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'pk__external_ids';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Multi-Part Index linking external to internal ids'
   , @level0type = N'SCHEMA'
@@ -61,7 +64,8 @@ go
  Data Dictionary
     Table
 ***************/
-execute [sys].[sp_addextendedproperty] 
+
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Table used to link external vendor ID to internal database ID'
   , @level0type = N'SCHEMA'
@@ -75,7 +79,7 @@ go
     Columns
 ***************/
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Internal Database ID of Entity Record'
   , @level0type = N'SCHEMA'
@@ -86,7 +90,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'internal_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Site ID of database record'
   , @level0type = N'SCHEMA'
@@ -97,7 +101,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'site_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'External Vendor Name / Code'
   , @level0type = N'SCHEMA'
@@ -108,7 +112,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'vendor';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Database Table Name for id linking'
   , @level0type = N'SCHEMA'
@@ -119,7 +123,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'entity';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'External Vendor ID of Entity Record'
   , @level0type = N'SCHEMA'

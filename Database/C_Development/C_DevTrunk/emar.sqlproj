@@ -22,6 +22,7 @@
     <SqlServerVerification>False</SqlServerVerification>
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
     <TargetDatabaseSet>True</TargetDatabaseSet>
+    <IncludeSchemaNameInFileName>False</IncludeSchemaNameInFileName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -66,6 +67,7 @@
     <Folder Include="Programmability\Functions\Table-values Functions" />
     <Folder Include="Programmability\Functions\Scalar-values Functions" />
     <Folder Include="Views" />
+    <Folder Include="Scripts\New-Installation" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\users.sql" />
@@ -75,6 +77,9 @@
     <Build Include="Programmability\Functions\Table-values Functions\get_internal_id.sql" />
     <Build Include="Tables\patient_indicators.sql" />
     <Build Include="Views\SchemaDictionary.sql" />
+    <Build Include="Tables\site_code_shares.sql" />
+    <Build Include="Tables\global_options.sql" />
+    <Build Include="Tables\sites.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />
