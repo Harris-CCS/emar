@@ -5,8 +5,8 @@
   , [patient_id]  [bigint] not null
   , [position]    [smallint] not null
   , [code]        [varchar](10) not null
-  , [admreq]      [varchar](1) not null
-  , [triaged]     [varchar](1) not null
+  , [admreq]      [bit] not null
+  , [triaged]     [bit] not null
   , [type]        [varchar](10) not null
   , [description] [varchar](255) not null
   , [image_name]  [varchar](255) not null
@@ -32,11 +32,10 @@ go
 ***********/
 
 alter table [dbo].[patient_indicators]
-with check
 add constraint [fk__patient_indicators__patients] foreign key([patient_id]) references [dbo].[patients]([id]);
 go
 
-alter table [dbo].[patient_indicators] check constraint [fk__patient_indicators__patients];
+alter table [dbo].[patient_indicators] with check check constraint [fk__patient_indicators__patients];
 go
 
 /***************
@@ -148,7 +147,7 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'Admission Request Entry. Y=Yes, N=No'
+  , @value = N'Admission Request Entry. 1=True, 0=False'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -159,7 +158,7 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'Triaged. Y=Yes, N=No'
+  , @value = N'Triaged. 1=True, 0=False'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'

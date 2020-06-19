@@ -1,29 +1,29 @@
 create table [dbo].[patients]
 (
     [id]                             [bigint] identity(1, 1) not null
-  , [site]                           [int] null
-  , [medical_record_number]          [varchar](25) not null
-  , [account_number]                 [varchar](25) not null
+  , [site_id]                        [int] not null
+  , [medical_record_number]          [varchar](25) null
+  , [account_number]                 [varchar](25) null
   , [last_name]                      [varchar](35) not null
   , [first_name]                     [varchar](35) not null
-  , [middle_name]                    [varchar](35) not null
+  , [middle_name]                    [varchar](35) null
+  , [name_suffix]                    [varchar](25) null
   , [gender]                         [varchar](10) not null
   , [date_of_birth]                  [date] null
-  , [age]                            [tinyint] not null
-  , [age_units]                      [char](1) not null
+  , [age]                            [tinyint] null
+  , [age_units]                      [char](1) null
   , [complaint]                      [varchar](80) null
-  , [complaint_color]                [char](1) null
   , [height]                         [numeric](6, 2) null
   , [weight]                         [numeric](6, 2) null
-  , [bed_code]                       [varchar](15) not null
+  , [room_bed_code]                  [varchar](15) not null
   , [ward_code]                      [varchar](15) null
   , [deptartment_code]               [varchar](15) null
-  , [urgency]                        [varchar](15) not null
-  , [urgency_color_flag]             [char](1) null
-  , [name_alert]                     [char](1) null
-  , [patient_indicator]              [char](1) null
-  , [obscure_patient_name]           [char](1) null
-  , [withdraw_consent]               [char](1) null
+  , [urgency]                        [varchar](50) not null
+  , [urgency_color]                  [varchar](25) null
+  , [name_alert]                     [bit] null
+  , [patient_indicator]              [bit] null
+  , [obscure_patient_name]           [bit] null
+  , [withdraw_consent]               [bit] null
   , [vs_datetime]                    [datetimeoffset](7) null
   , [vs_user_id]                     [int] null
   , [vs_blood_pressure_indicator]    [char](1) null        ---- [ord11]
@@ -48,7 +48,7 @@ create table [dbo].[patients]
 go
 
 /*********
- Defaults 
+ Defaults
 *********/
 
 
@@ -77,7 +77,7 @@ go
     Table
 ***************/
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Patient information'
   , @level0type = N'SCHEMA'
@@ -91,7 +91,7 @@ go
     Columns
 ***************/
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Auto increment table ID'
   , @level0type = N'SCHEMA'
@@ -102,7 +102,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Hospital Identifier'
   , @level0type = N'SCHEMA'
@@ -110,10 +110,10 @@ execute [sys].[sp_addextendedproperty]
   , @level1type = N'TABLE'
   , @level1name = N'patients'
   , @level2type = N'COLUMN'
-  , @level2name = N'site';
+  , @level2name = N'site_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Medical file number of the patient from ADT interface'
   , @level0type = N'SCHEMA'
@@ -124,7 +124,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'medical_record_number';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Account number of the patient visit from ADT interface'
   , @level0type = N'SCHEMA'
@@ -135,7 +135,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'account_number';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Last name'
   , @level0type = N'SCHEMA'
@@ -146,7 +146,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'last_name';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'First name'
   , @level0type = N'SCHEMA'
@@ -157,7 +157,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'first_name';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Middle name'
   , @level0type = N'SCHEMA'
@@ -168,7 +168,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'middle_name';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Gender'
   , @level0type = N'SCHEMA'
@@ -179,7 +179,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'gender';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Date of birth YYYYMMDD'
   , @level0type = N'SCHEMA'
@@ -190,7 +190,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'date_of_birth';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Age calculated from date of birth, changes when date of birth changes'
   , @level0type = N'SCHEMA'
@@ -201,7 +201,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'age';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Y=years M=months D=days'
   , @level0type = N'SCHEMA'
@@ -212,7 +212,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'age_units';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Chief complaint'
   , @level0type = N'SCHEMA'
@@ -223,18 +223,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'complaint';
 go
 
-execute [sys].[sp_addextendedproperty] 
-    @name = N'MS_Description'
-  , @value = N'Complaint color'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'patients'
-  , @level2type = N'COLUMN'
-  , @level2name = N'complaint_color';
-go
-
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Patient height'
   , @level0type = N'SCHEMA'
@@ -245,7 +234,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'height';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Patient weight expressed in kilograms 999v9'
   , @level0type = N'SCHEMA'
@@ -256,7 +245,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'weight';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Bed location of patient'
   , @level0type = N'SCHEMA'
@@ -264,10 +253,10 @@ execute [sys].[sp_addextendedproperty]
   , @level1type = N'TABLE'
   , @level1name = N'patients'
   , @level2type = N'COLUMN'
-  , @level2name = N'bed_code';
+  , @level2name = N'room_bed_code';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Area location of patient'
   , @level0type = N'SCHEMA'
@@ -278,7 +267,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'ward_code';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Department location of patient'
   , @level0type = N'SCHEMA'
@@ -289,7 +278,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'deptartment_code';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Urgency, FKEY to IDX code table record type ''Z'''
   , @level0type = N'SCHEMA'
@@ -300,20 +289,20 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'urgency';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Urgency color flag'
+  , @value = N'Urgency color value'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
   , @level1name = N'patients'
   , @level2type = N'COLUMN'
-  , @level2name = N'urgency_color_flag';
+  , @level2name = N'urgency_color';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Y=Name indicator on'
+  , @value = N'Y=Name indicator on. 1=True, 0=False'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -322,9 +311,9 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'name_alert';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Patient indicator'
+  , @value = N'Patient indicator. 1=True, 0=False'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -333,9 +322,9 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'patient_indicator';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Flag to obscure the patient name on the tracking board'
+  , @value = N'Flag to obscure the patient name on the tracking board. 1=True, 0=False'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -344,9 +333,9 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'obscure_patient_name';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Y=patient has withdrawn permission to share data'
+  , @value = N'Patient has withdrawn permission to share data. 1=True, 0=False'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -355,7 +344,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'withdraw_consent';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Date and time of vital signs entry YYYYMMDDHHMM'
   , @level0type = N'SCHEMA'
@@ -366,7 +355,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'vs_datetime';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Person who entered vital signs, FKEY to DRS person table'
   , @level0type = N'SCHEMA'
@@ -377,7 +366,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'vs_user_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'blood pressure indicator'
   , @level0type = N'SCHEMA'
@@ -388,7 +377,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'vs_blood_pressure_indicator';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Systolic blood pressure'
   , @level0type = N'SCHEMA'
@@ -399,7 +388,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'vs_systolic';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Diastolic blood pressure'
   , @level0type = N'SCHEMA'
@@ -410,7 +399,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'vs_diastolic';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Pulse indicator'
   , @level0type = N'SCHEMA'
@@ -421,7 +410,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'vs_pulse_indicator';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Pulse rate'
   , @level0type = N'SCHEMA'
@@ -432,7 +421,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'vs_pulse';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'MAP level'
   , @level0type = N'SCHEMA'
@@ -443,7 +432,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'vs_map_level';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'MAP value'
   , @level0type = N'SCHEMA'
@@ -454,7 +443,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'vs_map';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Respiratory rate indicator'
   , @level0type = N'SCHEMA'
@@ -465,7 +454,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'vs_respiratory_indicator';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Respiratory rate'
   , @level0type = N'SCHEMA'
@@ -476,7 +465,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'vs_respiratory';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Temperature indicator'
   , @level0type = N'SCHEMA'
@@ -487,7 +476,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'vs_temperature_indicator';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Temperature'
   , @level0type = N'SCHEMA'
@@ -498,7 +487,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'vs_temperature';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'End-Tidal CO2 level'
   , @level0type = N'SCHEMA'
@@ -509,7 +498,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'vs_end_tidal_level';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'End-Tidal CO2 value'
   , @level0type = N'SCHEMA'
@@ -520,7 +509,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'vs_end_tidal';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Oxygen saturation indicator'
   , @level0type = N'SCHEMA'
@@ -531,7 +520,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'vs_oxygen_saturation_indicator';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Oxygen saturation'
   , @level0type = N'SCHEMA'
@@ -542,7 +531,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'vs_oxygen_saturation';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Pain scale indicator'
   , @level0type = N'SCHEMA'
@@ -553,7 +542,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'vs_pain_scale_indicator';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Pain scale'
   , @level0type = N'SCHEMA'
