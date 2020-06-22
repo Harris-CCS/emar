@@ -23,6 +23,10 @@
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
     <TargetDatabaseSet>True</TargetDatabaseSet>
     <IncludeSchemaNameInFileName>False</IncludeSchemaNameInFileName>
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -80,6 +84,10 @@
     <Build Include="Tables\site_code_shares.sql" />
     <Build Include="Tables\global_options.sql" />
     <Build Include="Tables\sites.sql" />
+    <Build Include="Tables\user_permissions.sql" />
+    <Build Include="Tables\permissions.sql" />
+    <None Include="Scripts\Post-Deployment\diagram_patients.sql" />
+    <None Include="Scripts\Post-Deployment\diagram_security.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />
