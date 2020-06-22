@@ -24,4 +24,12 @@ Global
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ACB4BA42-9779-4869-BB21-256244C4E3F5}
 	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 2
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://ros-tfs-px01.picis.com:8080/tfs/emar
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = emar.sqlproj
+		SccLocalPath1 = .
+	EndGlobalSection
 EndGlobal
