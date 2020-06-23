@@ -167,6 +167,17 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
+  , @value = N'Name Suffix'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'patients'
+  , @level2type = N'COLUMN'
+  , @level2name = N'name_suffix';
+go
+
+execute [sys].[sp_addextendedproperty]
+    @name = N'MS_Description'
   , @value = N'Gender'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'

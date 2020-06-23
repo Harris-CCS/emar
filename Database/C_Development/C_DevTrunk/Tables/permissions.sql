@@ -1,9 +1,9 @@
-create table [dbo].[sites]
+create table [dbo].[permissions]
 (
-    [id]        [int] identity(1, 1) not null
-  , [name]      [varchar](40) not null
-  , [is_active] [bit] not null
-  , constraint [pk__sites__id] primary key clustered([id] asc)
+    [id]          [int] not null
+  , [name]        [varchar](40) not null
+  , [description] [varchar](255) not null
+  , constraint [pk__permissions__id] primary key clustered([id] asc)
 );
 go
 
@@ -34,9 +34,9 @@ execute [sys].[sp_addextendedproperty]
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'sites'
+  , @level1name = N'permissions'
   , @level2type = N'CONSTRAINT'
-  , @level2name = N'pk__sites__id';
+  , @level2name = N'pk__permissions__id';
 go
 
 /***************
@@ -46,11 +46,11 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'This table contains a list of sites'
+  , @value = N'This table contains a list of permissions to be assigned to a user'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'sites';
+  , @level1name = N'permissions';
 go
 
 /***************
@@ -64,7 +64,7 @@ execute [sys].[sp_addextendedproperty]
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'sites'
+  , @level1name = N'permissions'
   , @level2type = N'COLUMN'
   , @level2name = N'id';
 go
@@ -75,18 +75,18 @@ execute [sys].[sp_addextendedproperty]
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'sites'
+  , @level1name = N'permissions'
   , @level2type = N'COLUMN'
   , @level2name = N'name';
 go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'is_active 1=true 0=false'
+  , @value = N'Description including possible valuse.'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'sites'
+  , @level1name = N'permissions'
   , @level2type = N'COLUMN'
-  , @level2name = N'is_active';
+  , @level2name = N'description';
 go
