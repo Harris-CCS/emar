@@ -1,0 +1,93 @@
+import { Order } from '../interfaces/order';
+
+export const ORDERS: Order[] = [{
+	"id": 1,
+	"patientId": 1,
+	"startTime": "2019-05-13T10:00:00",
+	"endTime": "2019-05-13T10:30:00",
+	"name": "Motrin",
+	"dose": "500mg",
+	"route": "PO",
+	"signedOn": "2019-05-13T10:12:45",
+	"signedBy": "Merrily"
+}, {
+	"id": 2,
+	"patientId": 1,
+	"startTime": "2019-05-13T14:00:00",
+	"endTime": "2019-05-13T14:30:00",
+	"name": "Motrin",
+	"dose": "500mg",
+	"route": "PO",
+	"signedOn": "2019-05-13T10:15:12",
+	"signedBy": "Romel"
+}, {
+	"id": 3,
+	"patientId": 2,
+	"startTime": "2019-05-13T17:00:00",
+	"endTime": "2019-05-13T17:30:00",
+	"name": "Asprin",
+	"dose": "100mg",
+	"route": "PO",
+	"signedOn": "2019-05-13T17:12:45",
+	"signedBy": "Pete"
+}, {
+	"id": 4,
+	"patientId": 1,
+	"startTime": "2019-05-13T10:00:00",
+	"endTime": "2019-05-13T10:30:00",
+	"name": "Motrin",
+	"dose": "500mg",
+	"route": "PO",
+	"signedOn": "2019-05-13T10:12:45",
+	"signedBy": "Peter"
+}, {
+	"id": 5,
+	"patientId": 1,
+	"startTime": "2019-05-13T14:00:00",
+	"endTime": "2019-05-13T14:20:00",
+	"name": "Morphine (PF) injection",
+	"dose": "8mg",
+	"route": "injection",
+	"signedOn": "2019-05-13T10:15:12",
+	"signedBy": "Merrily"
+}, {
+	"id": 6,
+	"patientId": 2,
+	"startTime": "2019-05-13T17:00:00",
+	"endTime": "2019-05-13T17:30:00",
+	"name": "HYDROmorphone (Dilaudid)",
+	"dose": "0.2mg",
+	"route": "injection",
+	"signedOn": "2019-05-13T17:12:45",
+	"signedBy": "Peter"
+}, {
+	"id": 7,
+	"patientId": 1,
+	"startTime": "2019-05-13T10:00:00",
+	"endTime": "2019-05-13T10:30:00",
+	"name": "Ibuprofen (Advil, Motrin) 600MG tablet",
+	"dose": "300mg",
+	"route": "PO",
+	"signedOn": "2019-05-14T11:13:45",
+	"signedBy": "Romel"
+}, {
+	"id": 8,
+	"patientId": 1,
+	"startTime": "2019-05-13T14:00:00",
+	"endTime": "2019-05-13T14:30:00",
+	"name": "Motrin",
+	"dose": "500mg",
+	"route": "PO",
+	"signedOn": "2019-05-13T10:15:12",
+	"signedBy": "Merrily"
+}, {
+	"id": 9,
+	"patientId": 2,
+	"startTime": "2019-05-13T17:00:00",
+	"endTime": "2019-05-13T17:30:00",
+	"name": "Sodium Chloride 0.9% BOLUS",
+	"dose": "20ml",
+	"route": "IV",
+	"signedOn": "2019-05-15T07:12:45",
+	"signedBy": "Romel"
+}]
