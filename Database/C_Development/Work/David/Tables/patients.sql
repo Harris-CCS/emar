@@ -21,11 +21,8 @@ create table [dbo].[patients]
   , [urgency]                        [varchar](50) not null
   , [urgency_color]                  [varchar](25) null
   , [name_alert]                     [bit] not null
-  , [patient_indicator]              [bit] not null
-  , [obscure_patient_name]           [bit] not null
   , [withdraw_consent]               [bit] not null
   , [vs_datetime]                    [datetimeoffset](7) null
-  , [vs_user_id]                     [int] null
   , [vs_blood_pressure_indicator]    [char](1) null        ---- [ord11]
   , [vs_systolic]                    [char](14) null       ---- [vssys]
   , [vs_diastolic]                   [char](14) null       ---- [vsdia]
@@ -321,28 +318,6 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Patient indicator. 1=True, 0=False'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'patients'
-  , @level2type = N'COLUMN'
-  , @level2name = N'patient_indicator';
-go
-
-execute [sys].[sp_addextendedproperty]
-    @name = N'MS_Description'
-  , @value = N'Flag to obscure the patient name on the tracking board. 1=True, 0=False'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'patients'
-  , @level2type = N'COLUMN'
-  , @level2name = N'obscure_patient_name';
-go
-
-execute [sys].[sp_addextendedproperty]
-    @name = N'MS_Description'
   , @value = N'Patient has withdrawn permission to share data. 1=True, 0=False'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
@@ -361,17 +336,6 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'patients'
   , @level2type = N'COLUMN'
   , @level2name = N'vs_datetime';
-go
-
-execute [sys].[sp_addextendedproperty]
-    @name = N'MS_Description'
-  , @value = N'Person who entered vital signs, FKEY to DRS person table'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'patients'
-  , @level2type = N'COLUMN'
-  , @level2name = N'vs_user_id';
 go
 
 execute [sys].[sp_addextendedproperty]

@@ -3,7 +3,7 @@ create table [dbo].[site_code_shares]
     [id]              [int] identity(1, 1) not null
   , [site_id]         [int] not null
   , [share_site_id]   [int] not null
-  , [share_site_name] [varchar](40) not null
+  , [share_code_name] [varchar](40) not null
   , constraint [pk__site_code_shares__id] primary key clustered([id] asc)
 );
 go
@@ -103,11 +103,11 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Name of the code share'
+  , @value = N'Free Text Name of the code share code name'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
   , @level1name = N'site_code_shares'
   , @level2type = N'COLUMN'
-  , @level2name = N'share_site_name';
+  , @level2name = N'share_code_name';
 go
