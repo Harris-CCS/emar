@@ -21,7 +21,7 @@ go
 
 create nonclustered index [user_permissions__user_id_site_id] on [user_permissions]
 ([user_id] asc, [site_id] asc
-) 
+)
     include([permission_value]);
 go
 
@@ -50,7 +50,7 @@ go
     Indexes
 ***************/
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Primary Key Constraint'
   , @level0type = N'SCHEMA'
@@ -61,7 +61,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'pk__user_permissions__id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Default index created during design.'
   , @level0type = N'SCHEMA'
@@ -77,7 +77,7 @@ go
     Table
 ***************/
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'This table contains a list of user_permissions to be assigned to a user'
   , @level0type = N'SCHEMA'
@@ -91,7 +91,7 @@ go
     Columns
 ***************/
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Identifier auto number'
   , @level0type = N'SCHEMA'
@@ -102,7 +102,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Site ID reference to sites table'
   , @level0type = N'SCHEMA'
@@ -113,7 +113,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'site_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'User ID reference to users table'
   , @level0type = N'SCHEMA'
@@ -124,7 +124,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'user_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Permission ID reference to permissions table'
   , @level0type = N'SCHEMA'
@@ -135,7 +135,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'permission_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Permission Value R=Read W=Write X=No Access'
   , @level0type = N'SCHEMA'

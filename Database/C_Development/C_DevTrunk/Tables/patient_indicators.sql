@@ -5,8 +5,6 @@
   , [patient_id]  [bigint] not null
   , [position]    [smallint] not null
   , [code]        [varchar](10) not null
-  , [admreq]      [bit] not null
-  , [triaged]     [bit] not null
   , [type]        [varchar](10) not null
   , [description] [varchar](255) not null
   , [image_name]  [varchar](255) not null
@@ -17,6 +15,21 @@ go
 /********
  Defaults
 ********/
+/*****************
+ Unique constraint
+*****************/
+
+execute [sys].[sp_addextendedproperty]
+    @name = N'MS_Description'
+  , @value = N'Primary Key Column'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'patient_indicators'
+  , @level2type = N'CONSTRAINT'
+  , @level2name = N'pk__patient_indicators__id';
+go
+
 /*******
  Indexes
 *******/
@@ -49,17 +62,6 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Primary Key Column'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'patient_indicators'
-  , @level2type = N'CONSTRAINT'
-  , @level2name = N'pk__patient_indicators__id';
-go
-
-execute [sys].[sp_addextendedproperty]
-    @name = N'MS_Description'
   , @value = N'Default Index applied during design'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
@@ -76,7 +78,7 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'This table contains username, password, and other user attributes'
+  , @value = N'This table contains indicators (icons) for informational display on the page header'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -141,28 +143,6 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'patient_indicators'
   , @level2type = N'COLUMN'
   , @level2name = N'code';
-go
-
-execute [sys].[sp_addextendedproperty]
-    @name = N'MS_Description'
-  , @value = N'Admission Request Entry. 1=True, 0=False'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'patient_indicators'
-  , @level2type = N'COLUMN'
-  , @level2name = N'admreq';
-go
-
-execute [sys].[sp_addextendedproperty]
-    @name = N'MS_Description'
-  , @value = N'Triaged. 1=True, 0=False'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'patient_indicators'
-  , @level2type = N'COLUMN'
-  , @level2name = N'triaged';
 go
 
 execute [sys].[sp_addextendedproperty]

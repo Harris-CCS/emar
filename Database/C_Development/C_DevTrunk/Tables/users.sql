@@ -59,7 +59,7 @@ go
     Defaults
 ***************/
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'default ordering_only_physician to N'
   , @level0type = N'SCHEMA'
@@ -70,7 +70,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'df__users__ordering_only_physician';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'default df__users__name_display_preference to N'
   , @level0type = N'SCHEMA'
@@ -81,7 +81,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'df__users__name_display_preference';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'default df__users__failed_login_attempts to 0'
   , @level0type = N'SCHEMA'
@@ -97,7 +97,7 @@ go
     Indexes
 ***************/
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Primary Key Column'
   , @level0type = N'SCHEMA'
@@ -108,7 +108,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'pk__users__id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Default Index applied during design'
   , @level0type = N'SCHEMA'
@@ -119,7 +119,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'ix_users__last_name_first_name_site_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Default Index applied during design'
   , @level0type = N'SCHEMA'
@@ -135,7 +135,7 @@ go
     Table
 ***************/
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'This table contains username, password, and other user attributes'
   , @level0type = N'SCHEMA'
@@ -149,7 +149,7 @@ go
     Columns
 ***************/
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Person identifier auto number'
   , @level0type = N'SCHEMA'
@@ -160,7 +160,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Hospital identifier 1...255 for multi-site servers, FKEY to ORG site table'
   , @level0type = N'SCHEMA'
@@ -171,7 +171,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'site_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'D=physician, N=nurse, S=associate, A=administrator'
   , @level0type = N'SCHEMA'
@@ -182,7 +182,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'type';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'is_active 1=true 0=false'
   , @level0type = N'SCHEMA'
@@ -193,7 +193,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'is_active';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Initials frequently used for display'
   , @level0type = N'SCHEMA'
@@ -204,7 +204,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'initials_display';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'First name'
   , @level0type = N'SCHEMA'
@@ -215,7 +215,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'first_name';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Last name'
   , @level0type = N'SCHEMA'
@@ -226,7 +226,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'last_name';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Y=ordering only physician'
   , @level0type = N'SCHEMA'
@@ -237,7 +237,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'ordering_only_physician';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Name Display Preference'
   , @level0type = N'SCHEMA'
@@ -248,7 +248,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'name_display_preference';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'User logon name for authentication'
   , @level0type = N'SCHEMA'
@@ -259,7 +259,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'login_name';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Encrypted user password for authentication'
   , @level0type = N'SCHEMA'
@@ -270,7 +270,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'login_password';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Random generated string used to build a hash with the password'
   , @level0type = N'SCHEMA'
@@ -281,7 +281,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'salt';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Date the user last accessed authentication'
   , @level0type = N'SCHEMA'
@@ -292,7 +292,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'last_login_time';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Failed login attempts'
   , @level0type = N'SCHEMA'
