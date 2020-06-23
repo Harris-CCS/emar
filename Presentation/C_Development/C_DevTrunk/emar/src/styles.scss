@@ -1,0 +1,14 @@
+/* You can add global styles to this file, and also import other style files */
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    background: #EDEDED url('/assets/img/background_2.svg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    font-family: "Open Sans", "Roboto", sans-serif !important;
+    font-weight: 300 !important;
+    text-rendering: geometricPrecision;
+}

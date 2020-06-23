@@ -1,0 +1,60 @@
+header {
+    display: flex;
+    position: relative;
+    //height: 90px;
+    height: 40px;
+    padding: 25px 35px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header-user {
+    display: flex;
+}
+
+header .action {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background-size: auto 19px;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin: 0 10px;
+    cursor: pointer;
+}
+
+.notification {
+    background: url('../../../assets/icon/notifications.svg');
+}
+
+header .action.user {
+    background-image: url('../../../assets/icon/user.svg');
+    height: 29px;
+    width: auto;
+    background-size: auto 29px;
+    background-position: right bottom;
+    display: flex;
+    align-items: center;
+    padding-right: 34px;
+    margin-right: 0;
+    margin-left: 30px;
+}
+
+header .action.user .user-name {
+    font-weight: 400;
+    line-height: 14px;
+    font-size: 14px;
+    text-align: right;
+}
+
+.logo {
+    background: url('../../../assets/icon/logo.svg');
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+    width: 180px;
+    height: 50px;
+}
+
+.help {
+    background: url('../../../assets/icon/help.svg');
+}
