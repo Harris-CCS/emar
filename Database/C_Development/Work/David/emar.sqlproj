@@ -90,6 +90,7 @@
     <None Include="Scripts\Post-Deployment\diagram_patients.sql" />
     <None Include="Scripts\Post-Deployment\diagram_security.sql" />
     <Build Include="Tables\site_formularies.sql" />
+    <Build Include="Tables\site_preferred_list.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />
