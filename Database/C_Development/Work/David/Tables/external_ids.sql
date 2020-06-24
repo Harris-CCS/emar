@@ -1,10 +1,12 @@
 ﻿create table [dbo].[external_ids]
-    (
-      [internal_id] [bigint] not null
-    , [site_id]     [int] not null
-    , [vendor]      [varchar](50) not null
-    , [entity]      [varchar](50) not null
-    , [external_id] [varchar](50) not null);
+(
+    [internal_id] [bigint] not null
+  , [site_id]     [int] not null
+  , [vendor]      [varchar](50) not null
+  , [entity]      [varchar](50) not null
+  , [external_id] [varchar](50) not null
+  , constraint [pk__external_ids] primary key clustered([internal_id] asc, [site_id] asc, [vendor] asc, [entity] asc)
+);
 go
 
 /********
@@ -13,12 +15,6 @@ go
 /*******
  Indexes
 *******/
-
-create unique clustered index [ui__external_ids__external_id] on [dbo].[external_ids]
-    ([internal_id] asc, [site_id] asc, [vendor] asc, [entity] asc)
-      include
-    ([external_id]);
-go
 
 create unique nonclustered index [ui__external_ids__internal_id] on [dbo].[external_ids]
     ([external_id] asc, [site_id] asc, [vendor] asc, [entity] asc)
@@ -45,13 +41,13 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Multi-Part Unique Index linking internal to external ids'
+  , @value = N'Multi-Part Primary Key linking internal to external ids'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
   , @level1name = N'external_ids'
-  , @level2type = N'INDEX'
-  , @level2name = N'ui__external_ids__external_id';
+  , @level2type = N'CONSTRAINT'
+  , @level2name = N'pk__external_ids';
 go
 
 execute [sys].[sp_addextendedproperty]

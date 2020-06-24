@@ -72,6 +72,7 @@
     <Folder Include="Programmability\Functions\Scalar-values Functions" />
     <Folder Include="Views" />
     <Folder Include="Scripts\New-Installation" />
+    <Folder Include="Scripts\Test-Data" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\users.sql" />
