@@ -71,7 +71,6 @@
     <Folder Include="Programmability\Functions\Table-values Functions" />
     <Folder Include="Programmability\Functions\Scalar-values Functions" />
     <Folder Include="Views" />
-    <Folder Include="Scripts\New-Installation" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\users.sql" />
@@ -89,6 +88,7 @@
     <None Include="Scripts\Post-Deployment\diagram_patients.sql" />
     <None Include="Scripts\Post-Deployment\diagram_security.sql" />
     <Build Include="Tables\site_formularies.sql" />
+    <Build Include="Tables\site_preferred_list.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />
