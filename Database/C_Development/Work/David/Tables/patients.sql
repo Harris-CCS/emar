@@ -1,47 +1,46 @@
 create table [dbo].[patients]
-(
-    [id]                             [bigint] identity(1, 1) not null
-  , [site_id]                        [int] not null
-  , [medical_record_number]          [varchar](25) null
-  , [account_number]                 [varchar](25) null
-  , [last_name]                      [varchar](35) not null
-  , [first_name]                     [varchar](35) not null
-  , [middle_name]                    [varchar](35) null
-  , [name_suffix]                    [varchar](25) null
-  , [gender]                         [varchar](10) not null
-  , [date_of_birth]                  [date] null
-  , [age]                            [tinyint] null
-  , [age_units]                      [char](1) null
-  , [complaint]                      [varchar](80) null
-  , [height]                         [numeric](6, 2) null
-  , [weight]                         [numeric](6, 2) null
-  , [room_bed_code]                  [varchar](15) not null
-  , [ward_code]                      [varchar](15) null
-  , [deptartment_code]               [varchar](15) null
-  , [urgency]                        [varchar](50) not null
-  , [urgency_color]                  [varchar](25) null
-  , [name_alert]                     [bit] not null
-  , [withdraw_consent]               [bit] not null
-  , [vs_datetime]                    [datetimeoffset](7) null
-  , [vs_blood_pressure_indicator]    [char](1) null        ---- [ord11]
-  , [vs_systolic]                    [char](14) null       ---- [vssys]
-  , [vs_diastolic]                   [char](14) null       ---- [vsdia]
-  , [vs_pulse_indicator]             [char](1) null        ---- [ord12]
-  , [vs_pulse]                       [char](14) null       ---- [vspulse]
-  , [vs_map_level]                   [char](1) null        ---- [vsmaplevel]
-  , [vs_map]                         [varchar](14) null    ---- [vsmap]
-  , [vs_respiratory_indicator]       [char](1) null        ---- [ord13]
-  , [vs_respiratory]                 [char](14) null       ---- [vsresp]
-  , [vs_temperature_indicator]       [char](1) null        ---- [ord14]
-  , [vs_temperature]                 [char](14) null       ---- [vstemp]
-  , [vs_end_tidal_level]             [char](1) null        ---- [vsendtidallevel]
-  , [vs_end_tidal]                   [varchar](14) null    ---- [vsendtidal]
-  , [vs_oxygen_saturation_indicator] [char](1) null        ---- [ord23]
-  , [vs_oxygen_saturation]           [varchar](50) null    ---- [vso2]
-  , [vs_pain_scale_indicator]        [char](1) null        ---- [ord15]
-  , [vs_pain_scale]                  [char](14) null       ---- [vspain]
-  , constraint [PK__patients_id] primary key clustered([id] asc)
-);
+    (
+      [id]                             [bigint] identity(1, 1) not null
+    , [site_id]                        [int] not null
+    , [medical_record_number]          [varchar](25) null
+    , [account_number]                 [varchar](25) null
+    , [last_name]                      [varchar](35) not null
+    , [first_name]                     [varchar](35) not null
+    , [middle_name]                    [varchar](35) null
+    , [name_suffix]                    [varchar](25) null
+    , [gender]                         [varchar](10) not null
+    , [date_of_birth]                  [date] null
+    , [age]                            [tinyint] null
+    , [age_units]                      [char](1) null
+    , [complaint]                      [varchar](80) null
+    , [height_in_cm]                   [numeric](6, 2) null
+    , [weight_in_kg]                   [numeric](6, 2) null
+    , [room_bed_code]                  [varchar](15) not null
+    , [ward_code]                      [varchar](15) null
+    , [deptartment_code]               [varchar](15) null
+    , [urgency]                        [varchar](50) not null
+    , [urgency_color]                  [varchar](25) null
+    , [name_alert]                     [bit] not null
+    , [withdraw_consent]               [bit] not null
+    , [vs_datetime]                    [datetimeoffset](7) null
+    , [vs_blood_pressure_indicator]    [char](1) null        ---- [ord11]
+    , [vs_systolic]                    [char](14) null       ---- [vssys]
+    , [vs_diastolic]                   [char](14) null       ---- [vsdia]
+    , [vs_pulse_indicator]             [char](1) null        ---- [ord12]
+    , [vs_pulse]                       [char](14) null       ---- [vspulse]
+    , [vs_map_level]                   [char](1) null        ---- [vsmaplevel]
+    , [vs_map]                         [varchar](14) null    ---- [vsmap]
+    , [vs_respiratory_indicator]       [char](1) null        ---- [ord13]
+    , [vs_respiratory]                 [char](14) null       ---- [vsresp]
+    , [vs_temperature_indicator]       [char](1) null        ---- [ord14]
+    , [vs_temperature]                 [char](14) null       ---- [vstemp]
+    , [vs_end_tidal_level]             [char](1) null        ---- [vsendtidallevel]
+    , [vs_end_tidal]                   [varchar](14) null    ---- [vsendtidal]
+    , [vs_oxygen_saturation_indicator] [char](1) null        ---- [ord23]
+    , [vs_oxygen_saturation]           [varchar](50) null    ---- [vso2]
+    , [vs_pain_scale_indicator]        [char](1) null        ---- [ord15]
+    , [vs_pain_scale]                  [char](14) null       ---- [vspain]
+    , constraint [PK__patients_id] primary key clustered([id] asc));
 go
 
 /********
@@ -230,13 +229,13 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Patient height'
+  , @value = N'Patient height in centimeters'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
   , @level1name = N'patients'
   , @level2type = N'COLUMN'
-  , @level2name = N'height';
+  , @level2name = N'height_in_cm';
 go
 
 execute [sys].[sp_addextendedproperty]
@@ -247,7 +246,7 @@ execute [sys].[sp_addextendedproperty]
   , @level1type = N'TABLE'
   , @level1name = N'patients'
   , @level2type = N'COLUMN'
-  , @level2name = N'weight';
+  , @level2name = N'weight_in_kg';
 go
 
 execute [sys].[sp_addextendedproperty]
