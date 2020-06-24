@@ -1,0 +1,8 @@
+<div class="">
+    <ul>
+        <li *ngFor="let item of displayItems">
+            <input type="checkbox" id="med_{{item.id}}" />
+            <label for="med_{{item.id}}">{{item.name}} {{item.dose}} {{item.route}}</label>
+        </li>
+    </ul>
+</div>

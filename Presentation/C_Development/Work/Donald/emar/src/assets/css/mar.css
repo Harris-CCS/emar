@@ -1,0 +1,258 @@
+#marContainer {
+    position: relative;
+    overflow: hidden;
+}
+
+#marContainer .e-grid.e-default,
+#marContainer .e-grid .e-gridheader,
+#marContainer .e-grid .e-gridcontent,
+#marContainer .e-grid .e-content,
+#marContainer .e-grid .e-table,
+#marContainer .e-grid .e-headercell,
+#marContainer .e-grid .e-detailheadercell {
+    background: transparent !important;
+}
+
+#marWrapper {
+    position: absolute;
+    right: 0;
+    top: 37px;
+    bottom: 0;
+    left: 0;
+    /*border: solid #f69 1px;*/
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 300ms;
+}
+
+#marWrapper.ready {
+    opacity: 1;
+}
+
+.marRow {
+    /*border: solid #69f 1px;*/
+    position: relative;
+    border-left: solid rgba(50, 50, 50, 0.3) 1px;
+    margin-left: 100px;
+    background: rgba(50, 50, 50, 0.02);
+    height: 60px;
+}
+
+.marRow:before {
+    content: "";
+    border-top: dashed rgba(153, 153, 153, 0.22) 1px;
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 0;
+}
+
+.vr {
+    position: absolute;
+    top: -36px;
+    padding-top: 36px;
+    bottom: 0;
+    left: 0;
+    width: 1px;
+    background: rgba(50, 50, 50, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.vr.now {
+    background: transparent;
+    border-left: dashed #0A84DC 2px;
+    z-index: -1;
+}
+
+.vr.special {
+    background: rgba(50, 50, 50, 0.3);
+}
+
+.vr_highlight {
+    content: "";
+    display: block;
+    position: absolute;
+    left: -20px;
+    top: 0;
+    bottom: 0;
+    width: 40px;
+    background: rgba(0, 119, 171, 0.06) !important;
+    opacity: 0;
+    transition: all 150ms;
+    z-index: -1;
+}
+
+.vr_highlight.active {
+    opacity: 1;
+}
+
+.vr .title {
+    position: absolute;
+    font-size: 11px;
+    color: #000;
+    top: 20px;
+    left: -11px;
+    letter-spacing: 0.5px;
+    font-weight: 400;
+    background: #fff;
+    line-height: 14px;
+}
+
+.vr.special .title {
+    font-size: 14px;
+    text-transform: uppercase;
+    color: #000;
+    font-weight: bold;
+    position: absolute;
+    transform: translateX(-50%);
+    top: 20px;
+    left: 0;
+}
+
+.vr.now .title {
+    font-size: 12px;
+    color: #0A84DC;
+    font-weight: bold;
+    top: 8px;
+    left: -16px;
+}
+
+.orderSpecial {
+    position: relative;
+    display: block;
+    height: 60px;
+    width: 50px;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.orderSpecial:after {
+    content: "";
+    display: block;
+    background: #333;
+}
+
+.orderSpecial.acknowledged:after {
+    background: #0076FF;
+}
+
+.vr.special .orderSpecial:after {
+    width: 10px;
+    height: 10px;
+    transform: rotateZ(45deg);
+    position: absolute;
+    top: 50%;
+    margin-top: -6px;
+    left: -4px;
+}
+
+.vr .orderSpecial.dummy:after {
+    content: none;
+}
+
+.vr .orderSpecial .counter {
+    color: #5E5E5E;
+    font-size: 11px;
+    font-weight: bold;
+    position: absolute;
+    left: -16px;
+    top: 50%;
+    margin-top: -9px;
+}
+
+.marRow {
+    display: block;
+    position: relative;
+    height: 60px;
+    cursor: pointer;
+}
+
+.marRow .order {
+    position: absolute;
+    top: 50%;
+    width: 30px;
+    height: 30px;
+    background: transparent;
+    margin-top: -15px;
+    margin-left: -15px;
+    cursor: pointer;
+}
+
+.marRow .order:before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    background: #333;
+    border-radius: 7px;
+    margin-top: -3px;
+    margin-left: -4px;
+    left: 50%;
+}
+
+.marRow .order.acknowledged:before {
+    background: #0076FF;
+}
+
+.marRow .order.overdue:before {
+    background: #F31C38;
+}
+
+.marRow .order.overdue:after {
+    border: solid #F31C38 1px;
+    content: "";
+    position: absolute;
+    width: 21px;
+    height: 21px;
+    left: 4px;
+    top: 5px;
+    border-radius: 20px;
+}
+
+.marRow .order .counter {
+    color: #5E5E5E;
+    font-size: 11px;
+    font-weight: bold;
+    position: absolute;
+    left: 2px;
+    top: 50%;
+    margin-top: -8px;
+}
+
+.p_status {
+    color: #333;
+    display: block;
+    font-weight: 500;
+    font-size: 14px;
+    text-transform: capitalize;
+    margin:5px;
+    margin-left: 0;
+}
+
+.p_status.acknowledged {
+    color: #0076FF;
+}
+
+.p_status.overdue {
+    color: #F31C38;
+}
+
+.p_orders_list {
+    display: none;
+    font-weight: 500;
+    font-size: 12px;
+    color: #333;
+    margin: 0;
+    padding: 0 20px;
+}
+.p_orders_list li {
+    margin-bottom: 5px;;
+}
+
+.p_orders_list.active {
+    display: block;
+}
