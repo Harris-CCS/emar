@@ -1,15 +1,14 @@
 ﻿create table [dbo].[patient_indicators]
-(
-    [id]          [int] identity(1, 1) not null
-  , [site_id]     [int] not null
-  , [patient_id]  [bigint] not null
-  , [position]    [smallint] not null
-  , [code]        [varchar](10) not null
-  , [type]        [varchar](10) not null
-  , [description] [varchar](255) not null
-  , [image_name]  [varchar](255) not null
-  , constraint [pk__patient_indicators__id] primary key clustered([id] asc)
-);
+    (
+      [id]               [int] identity(1, 1) not null
+    , [site_id]          [int] not null
+    , [patient_id]       [bigint] not null
+    , [ordinal_position] [smallint] not null
+    , [code]             [varchar](10) not null
+    , [type]             [varchar](10) not null
+    , [description]      [varchar](255) not null
+    , [image_name]       [varchar](255) not null
+    , constraint [pk__patient_indicators__id] primary key clustered([id] asc));
 go
 
 /********
@@ -35,8 +34,7 @@ go
 *******/
 
 create nonclustered index [ix__patient_indicators__patient_id_site_id] on [dbo].[patient_indicators]
-([patient_id] asc, [site_id] asc
-);
+    ([patient_id] asc, [site_id] asc);
 go
 
 /***********
@@ -131,7 +129,7 @@ execute [sys].[sp_addextendedproperty]
   , @level1type = N'TABLE'
   , @level1name = N'patient_indicators'
   , @level2type = N'COLUMN'
-  , @level2name = N'position';
+  , @level2name = 'ordinal_position';
 go
 
 execute [sys].[sp_addextendedproperty]

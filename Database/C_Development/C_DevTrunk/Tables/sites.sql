@@ -1,10 +1,9 @@
 create table [dbo].[sites]
-(
-    [id]        [int] identity(1, 1) not null
-  , [name]      [varchar](40) not null
-  , [is_active] [bit] not null
-  , constraint [pk__sites__id] primary key clustered([id] asc)
-);
+    (
+      [id]        [int] identity(1, 1) not null
+    , [name]      [varchar](40) not null
+    , [is_active] [bit] not null
+    , constraint [pk__sites__id] primary key clustered([id] asc));
 go
 
 /********
@@ -13,6 +12,11 @@ go
 /*****************
  Unique constraint
 *****************/
+
+alter table [dbo].[sites]
+add constraint [uc__sites__name] unique([name]);
+go
+
 /*******
  Indexes
 *******/
@@ -37,6 +41,17 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'sites'
   , @level2type = N'CONSTRAINT'
   , @level2name = N'pk__sites__id';
+go
+
+execute [sys].[sp_addextendedproperty]
+    @name = N'MS_Description'
+  , @value = N'Constraint to enforce Site Name uniqueness'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'sites'
+  , @level2type = N'CONSTRAINT'
+  , @level2name = N'uc__sites__name';
 go
 
 /***************
