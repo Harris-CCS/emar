@@ -81,7 +81,6 @@
     <Build Include="Tables\patient_indicators.sql" />
     <Build Include="Views\SchemaDictionary.sql" />
     <Build Include="Tables\site_code_shares.sql" />
-    <Build Include="Tables\global_options.sql" />
     <Build Include="Tables\sites.sql" />
     <Build Include="Tables\user_permissions.sql" />
     <Build Include="Tables\permissions.sql" />
@@ -89,6 +88,8 @@
     <None Include="Scripts\Post-Deployment\diagram_security.sql" />
     <Build Include="Tables\site_formularies.sql" />
     <Build Include="Tables\site_preferred_list.sql" />
+    <Build Include="Tables\options.sql" />
+    <Build Include="Tables\site_options.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />
