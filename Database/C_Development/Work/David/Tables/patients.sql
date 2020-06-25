@@ -17,7 +17,7 @@ create table [dbo].[patients]
     , [weight_in_kg]                   [numeric](6, 2) null
     , [room_bed_code]                  [varchar](15) not null
     , [ward_code]                      [varchar](15) null
-    , [deptartment_code]               [varchar](15) null
+    , [department_code]                [varchar](15) null
     , [urgency]                        [varchar](50) not null
     , [urgency_color]                  [varchar](25) null
     , [name_alert]                     [bit] not null
@@ -279,7 +279,7 @@ execute [sys].[sp_addextendedproperty]
   , @level1type = N'TABLE'
   , @level1name = N'patients'
   , @level2type = N'COLUMN'
-  , @level2name = N'deptartment_code';
+  , @level2name = N'department_code';
 go
 
 execute [sys].[sp_addextendedproperty]
