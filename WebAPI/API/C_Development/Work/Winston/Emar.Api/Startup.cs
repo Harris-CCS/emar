@@ -4,6 +4,7 @@ using Emar.Core.Users.Repository;
 using Emar.Core.Users.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -13,17 +14,23 @@ namespace Emar.Api
 {
     public class Startup
     {
+        #region Constructors
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
+
+        #endregion
 
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers(setupAction => { setupAction.ReturnHttpNotAcceptable = true; })
+                //.AddXmlDataContractSerializerFormatters()
+                ;
 
             services.AddScoped<IPatientService, PatientService>();
             services.AddScoped<IPatientRepository, PatientRepository>();
@@ -31,6 +38,9 @@ namespace Emar.Api
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
 
+            services.AddEntityFrameworkSqlServer()
+                .AddDbContext<Data.EmarContext>(options =>
+                    options.UseSqlServer("Data Source = localhost\\SQL2016; Initial Catalog = EMAR; Integrated Security=true"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
