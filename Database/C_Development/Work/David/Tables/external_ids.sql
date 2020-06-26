@@ -1,12 +1,10 @@
 ﻿create table [dbo].[external_ids]
-(
-    [internal_id] [bigint] not null
-  , [site_id]     [int] not null
-  , [vendor]      [varchar](50) not null
-  , [entity]      [varchar](50) not null
-  , [external_id] [varchar](50) not null
-  , constraint [pk__external_ids] primary key clustered([internal_id] asc, [site_id] asc, [vendor] asc, [entity] asc)
-);
+    (
+      [internal_id] [bigint] not null
+    , [vendor]      [varchar](50) not null
+    , [entity]      [varchar](50) not null
+    , [external_id] [varchar](50) not null
+    , constraint [pk__external_ids] primary key clustered([internal_id] asc, [vendor] asc, [entity] asc));
 go
 
 /********
@@ -17,7 +15,7 @@ go
 *******/
 
 create unique nonclustered index [ui__external_ids__internal_id] on [dbo].[external_ids]
-    ([external_id] asc, [site_id] asc, [vendor] asc, [entity] asc)
+    ([external_id] asc, [vendor] asc, [entity] asc)
       include
     ([internal_id]);
 go
@@ -25,11 +23,6 @@ go
 /***********
  Foreign Key
 ***********/
-
-alter table [dbo].[external_ids]
-add constraint [fk__external_ids__sites] foreign key([site_id]) references [dbo].[sites]([id]);
-go
-
 /***************
  Data Dictionary
     Defaults
@@ -89,17 +82,6 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'external_ids'
   , @level2type = N'COLUMN'
   , @level2name = N'internal_id';
-go
-
-execute [sys].[sp_addextendedproperty]
-    @name = N'MS_Description'
-  , @value = N'Site ID of database record'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'external_ids'
-  , @level2type = N'COLUMN'
-  , @level2name = N'site_id';
 go
 
 execute [sys].[sp_addextendedproperty]
