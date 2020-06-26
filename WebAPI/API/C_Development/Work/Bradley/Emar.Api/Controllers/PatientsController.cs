@@ -17,11 +17,36 @@ namespace Emar.Api.Controllers
                                  throw new ArgumentNullException(nameof(patientService));
         }
 
+        [HttpGet]
+        public IActionResult GetPatients([FromQuery] bool activeOnly, [FromQuery] int siteId, [FromQuery] string deptCode)
+        {
+            var patients = _patientService.GetPatients(activeOnly, siteId);
+            if (patients == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(patients);
+        }
+
+        [HttpGet]
+        //public IActionResult GetPatient([FromQuery] int site, [FromQuery] string ibex)
+        //{
+        //    long patientId = _patientService.GetPatientIdFromPulseCheck(site, ibex);
+
+        //    return GetPatient(patientId);
+        //}
+
         [HttpGet("{patientId}")]
-        public IActionResult GetPatient(int patientId)
+        public IActionResult GetPatient(long patientId)
         {
             var patient = _patientService.GetPatient(patientId);
-            return new JsonResult(patient);
+            if (patient == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(patient);
         }
     }
 }
