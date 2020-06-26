@@ -17,7 +17,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Emar.Core\Emar.Core.csproj" />
-    <ProjectReference Include="..\PulseCheck.Data\PulseCheck.Data.csproj" />
   </ItemGroup>
 
 
