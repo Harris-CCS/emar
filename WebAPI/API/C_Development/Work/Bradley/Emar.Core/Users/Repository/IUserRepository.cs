@@ -1,7 +1,9 @@
+using Emar.Data.Entities;
+
 namespace Emar.Core.Users.Repository
 {
     public interface IUserRepository
     {
-        Emar.Data.User GetUser(in int userId);
+        User GetUser(in int userId);
     }
 }

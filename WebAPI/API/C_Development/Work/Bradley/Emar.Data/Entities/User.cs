@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Emar.Data
+﻿namespace Emar.Data.Entities
 {
     public class User
     {

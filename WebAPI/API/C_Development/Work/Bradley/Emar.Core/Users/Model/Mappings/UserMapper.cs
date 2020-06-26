@@ -1,4 +1,5 @@
 using Emar.Data;
+using Emar.Data.Entities;
 
 namespace Emar.Core.Users.Model.Mappings
 {
