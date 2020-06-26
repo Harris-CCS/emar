@@ -1,9 +1,9 @@
 create table [dbo].[site_code_shares]
     (
-      [id]              [int] identity(1, 1) not null
-    , [site_id]         [int] not null
-    , [share_site_id]   [int] not null
-    , [share_code_name] [varchar](40) not null
+      [id]             [int] identity(1, 1) not null
+    , [source_site_id] [int] not null
+    , [target_site_id] [int] not null
+    , [entity]         [varchar](40) not null
     , constraint [pk__site_code_shares__id] primary key clustered([id] asc));
 go
 
@@ -21,11 +21,11 @@ go
 ***********/
 
 alter table [dbo].[site_code_shares]
-add constraint [fk__site_code_shares__sites__site_id] foreign key([site_id]) references [dbo].[sites]([id]);
+add constraint [fk__site_code_shares__sites__site_id] foreign key([source_site_id]) references [dbo].[sites]([id]);
 go
 
 alter table [dbo].[site_code_shares]
-add constraint [fk__site_code_shares__sites__share_site_id] foreign key([share_site_id]) references [dbo].[sites]([id]);
+add constraint [fk__site_code_shares__sites__target_site_id] foreign key([target_site_id]) references [dbo].[sites]([id]);
 go
 
 /***************
@@ -86,7 +86,7 @@ execute [sys].[sp_addextendedproperty]
   , @level1type = N'TABLE'
   , @level1name = N'site_code_shares'
   , @level2type = N'COLUMN'
-  , @level2name = N'site_id';
+  , @level2name = N'source_site_id';
 go
 
 execute [sys].[sp_addextendedproperty]
@@ -97,7 +97,7 @@ execute [sys].[sp_addextendedproperty]
   , @level1type = N'TABLE'
   , @level1name = N'site_code_shares'
   , @level2type = N'COLUMN'
-  , @level2name = N'share_site_id';
+  , @level2name = N'target_site_id';
 go
 
 execute [sys].[sp_addextendedproperty]
@@ -108,5 +108,5 @@ execute [sys].[sp_addextendedproperty]
   , @level1type = N'TABLE'
   , @level1name = N'site_code_shares'
   , @level2type = N'COLUMN'
-  , @level2name = N'share_code_name';
+  , @level2name = N'entity';
 go

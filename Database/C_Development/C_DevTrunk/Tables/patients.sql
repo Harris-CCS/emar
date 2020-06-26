@@ -15,10 +15,10 @@ create table [dbo].[patients]
     , [complaint]                      [varchar](80) null
     , [height_in_cm]                   [numeric](6, 2) null
     , [weight_in_kg]                   [numeric](6, 2) null
-    , [room_bed_code]                  [varchar](15) not null
+    , [room_bed_code]                  [varchar](15) null
     , [ward_code]                      [varchar](15) null
     , [department_code]                [varchar](15) null
-    , [urgency]                        [varchar](50) not null
+    , [urgency]                        [varchar](50) null
     , [urgency_color]                  [varchar](25) null
     , [name_alert]                     [bit] not null
     , [withdraw_consent]               [bit] not null
