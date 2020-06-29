@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { Medication } from '../../../app/interfaces/medication';
 
@@ -16,9 +17,14 @@ export class SimpleOrderListComponent implements OnInit {
     this.displayItems = data;
   }
 
-  constructor() { }
+  constructor(private router: Router,
+    private route: ActivatedRoute) { }
 
   ngOnInit(): void {
   }
 
+  onAddNewMed() {
+    const patientId: number = this.route.snapshot.params['id'];
+    this.router.navigate(['/patients',patientId,'new-order']);
+  }
 }
