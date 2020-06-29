@@ -2,12 +2,12 @@
 <div class="page-content-header">
     <div class="first">
         <a href="/Patients" class="go-back"></a>
-        <div class="patient-bed_main">{{patient.bedcode}}</div>
-        <h1>{{patient.firstname}} {{patient.lastname}}</h1>
+        <div class="patient-bed_main">{{ patient.bedCode }}</div>
+        <h1>{{ patient.fullName }}</h1>
     </div>
     <div class="second">
         <div class="patient-details">
-            {{patient.age}}
+            {{ patient.age }} {{ patient.ageUnit}}
         </div>
         <div [ngClass]="{'patient-details': 1, 'male': patient.gender === 'M', 'female': patient.gender === 'F'}"></div>
     </div>

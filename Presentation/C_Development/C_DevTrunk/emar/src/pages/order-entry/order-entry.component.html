@@ -1,6 +1,3 @@
-<!-- test -->
-<header-user [user]="loginUser()"></header-user>
-
 <div class="page-content patient-details">
     <header-patient [patient]="selectedPatient()"></header-patient>
 
@@ -25,7 +22,8 @@
             </div>
             <div class="orders-current">
                 <h3>CURRENT ORDERS</h3>
-                <ul>
+                <p *ngIf="orders.length < 1">No current orders</p>
+                <ul *ngIf="orders.length > 0">
                     <li *ngFor="let ord of orders">
                         {{ord.name}} {{ord.route | uppercase}} {{ord.dose}}
                         <span class="timestamp">{{ord.signedOn | date: "HH:mm"}} on {{ord.signedOn | date: "MM/dd/yy"}} by {{ord.signedBy}}</span>
