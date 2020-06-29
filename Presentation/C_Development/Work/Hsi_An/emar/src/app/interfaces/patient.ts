@@ -1,9 +1,12 @@
 export interface Patient {
     id: number,
-    firstname: string,
-    lastname: string,
-    middlename: string,
+    firstName: string,
+    lastName: string,
+    middleName: string,
+    fullName: string,
     age: number,
+    ageUnit: string,
     gender: string,
-    bedcode: string,
+    dateOfBirth: string,
+    bedCode: string,
 }

@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 import { User } from 'src/app/interfaces/user';
 import { Patient } from 'src/app/interfaces/patient';
 import { Order } from 'src/app/interfaces/order';
 import { Medication } from 'src/app/interfaces/medication';
 
-import { USER } from '../../app/mockup/user';
-import { PATIENT } from '../../app/mockup/patient';
 import { ORDERS } from '../../app/mockup/orders';
 import { MEDICATIONS } from '../../app/mockup/medications';
 
+import { PatientService } from 'src/app/services/patient.service';
 
 @Component({
   selector: 'order-entry',
@@ -18,28 +18,25 @@ import { MEDICATIONS } from '../../app/mockup/medications';
 })
 export class OrderEntryComponent implements OnInit {
 
-  user: User;
   patient: Patient;
-  orders = ORDERS;
+  orders: Order[];
+  cart: Order[];
 
   qlSelected: boolean = true;
   dpSelected: boolean = false;
   gSelected: boolean = false;
 
-  constructor() { }
+  constructor(private route: ActivatedRoute,
+    private patientService: PatientService) { }
 
   ngOnInit(): void {
-  }
-
-  loginUser() {
-    this.user = USER
-    
-    return this.user;
+    const patientId:number = +this.route.snapshot.params['id'];
+    this.patient = this.patientService.getPatient(patientId);
+    this.cart = [];
+    this.orders = this.patientService.getPatientOrders(patientId)
   }
 
   selectedPatient() {
-    this.patient = PATIENT
-
     return this.patient;
   }
 
