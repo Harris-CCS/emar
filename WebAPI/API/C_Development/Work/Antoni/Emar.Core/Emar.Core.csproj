@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup Label="Globals">
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+    <Configurations>Debug;Release;PAGING;ORIGINAL</Configurations>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ORIGINAL|AnyCPU'">
+    <DefineConstants>TRACE;ORIGINAL</DefineConstants>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='PAGING|AnyCPU'">
+    <Optimize>false</Optimize>
+    <DefineConstants>TRACE;PAGING</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Helpers\paging\**" />
+    <Compile Remove="Orders\Repository\MockData\**" />
+    <Compile Remove="Patients\Repository\MockData\**" />
+    <Compile Remove="Patients\Repository\paging\**" />
+    <Compile Remove="Patients\Service\paging\**" />
+    <EmbeddedResource Remove="Helpers\paging\**" />
+    <EmbeddedResource Remove="Orders\Repository\MockData\**" />
+    <EmbeddedResource Remove="Patients\Repository\MockData\**" />
+    <EmbeddedResource Remove="Patients\Repository\paging\**" />
+    <EmbeddedResource Remove="Patients\Service\paging\**" />
+    <None Remove="Helpers\paging\**" />
+    <None Remove="Orders\Repository\MockData\**" />
+    <None Remove="Patients\Repository\MockData\**" />
+    <None Remove="Patients\Repository\paging\**" />
+    <None Remove="Patients\Service\paging\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.1.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Emar.Data\Emar.Data.csproj" />
+  </ItemGroup>
+
+</Project>
