@@ -1,14 +1,16 @@
+using Emar.Core.Orders.Repository;
+using Emar.Core.Orders.Service;
 using Emar.Core.Patients.Repository;
 using Emar.Core.Patients.Service;
 using Emar.Core.Users.Repository;
 using Emar.Core.Users.Service;
+using Emar.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using PatientRepository = Emar.Core.Patients.Repository.PatientRepository;
 
 namespace Emar.Api
 {
@@ -32,6 +34,9 @@ namespace Emar.Api
                 //.AddXmlDataContractSerializerFormatters()
                 ;
 
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+
             services.AddScoped<IPatientService, PatientService>();
             services.AddScoped<IPatientRepository, PatientRepository>();
 
@@ -39,8 +44,8 @@ namespace Emar.Api
             services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddEntityFrameworkSqlServer()
-                .AddDbContext<Data.EmarContext>(options =>
-                    options.UseSqlServer("Data Source = localhost\\SQL2016; Initial Catalog = EMAR; Integrated Security=true"));
+                .AddDbContext<EmarContext>(options =>
+                    options.UseSqlServer("Data Source=B6HM4Y2\\SQLEXPRESS;Initial Catalog=emar;Integrated Security=true"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
