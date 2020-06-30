@@ -5,13 +5,18 @@ namespace Emar.Data
 {
     public class EmarContext : DbContext
     {
-        private DbContextOptions _options;
+        private readonly DbContextOptions _options;
 
         public EmarContext(DbContextOptions options) : base(options)
         {
             _options = options;
         }
+        public DbSet<ExternalId> ExternalIds { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderAdministration> OrderAdministrations { get; set; }
+        public DbSet<OrderEvent> OrderEvents { get; set; }
         public DbSet<Patient> Patients { get; set; }
+        public DbSet<Site> Sites { get; set; }
         public DbSet<User> Users { get; set; }
 
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

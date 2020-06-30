@@ -5,10 +5,21 @@
     <SccProvider>SAK</SccProvider>
     <SccAuxPath>SAK</SccAuxPath>
     <SccLocalPath>SAK</SccLocalPath>
+    <Configurations>Debug;Release;PAGING;ORIGINAL</Configurations>
   </PropertyGroup>
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ORIGINAL|AnyCPU'">
+    <Optimize>false</Optimize>
+    <DefineConstants>TRACE;ORIGINAL</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='PAGING|AnyCPU'">
+    <Optimize>false</Optimize>
+    <DefineConstants>TRACE;PAGING</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
