@@ -5,8 +5,7 @@ namespace Emar.Core.Patients.Service
 {
     public interface IPatientService
     {
-        PatientDto GetPatient(long patientId);
-        IEnumerable<PatientDto> GetPatients(bool activeOnly, int siteId);
-        long GetPatientIdFromPulseCheck(in int siteId, string ibex);
+        PatientDto GetPatient(long patientId, ResourceParameters resourceParameters);
+        IEnumerable<PatientDto> GetPatients(ResourceParameters resourceParameters);
     }
 }
