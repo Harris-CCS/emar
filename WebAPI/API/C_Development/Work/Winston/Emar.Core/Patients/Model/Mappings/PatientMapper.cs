@@ -1,5 +1,4 @@
 ﻿using System;
-using Emar.Data;
 using Emar.Data.Entities;
 
 namespace Emar.Core.Patients.Model.Mappings
@@ -11,47 +10,75 @@ namespace Emar.Core.Patients.Model.Mappings
             if (pt == null)
                 return null;
 
-            PatientDto ret = new PatientDto
+            PatientDto patientDto = new PatientDto
             {
                 Id = pt.Id,
                 SiteId = pt.SiteId,
+                Active = pt.Active,
                 FirstName = pt.FirstName.Trim(),
                 MiddleName = (pt.MiddleName == null) ? pt.MiddleName : pt.MiddleName.Trim(),
                 LastName = pt.LastName.Trim(),
-                Suffix = (pt.NameSuffix == null) ? pt.NameSuffix : pt.NameSuffix.Trim(),
-                Active = true, //pt.Active,
+                NameSuffix = (pt.NameSuffix == null) ? pt.NameSuffix : pt.NameSuffix.Trim(),
                 Gender = pt.Gender,
                 DateOfBirth = pt.DateOfBirth,
-                Age  = pt.Age,
-                AgeUnits = pt.AgeUnits
+                Age = pt.Age,
+                AgeUnits = pt.AgeUnits,
+                ChiefComplaint = pt.ChiefComplaint,
+                HeightInCm = pt.HeightInCm,
+                WeightInKg = pt.WeightInKg,
+                SiteName = pt.SiteName,
+                DepartmentCode = pt.DepartmentCode,
+                WardCode = pt.WardCode,
+                RoomBedCode = pt.RoomBedCode,
+                UrgencyColor = pt.UrgencyColor,
+                NameAlert = pt.NameAlert,
+                WithdrawConsent = pt.WithdrawConsent,
+                VsDatetime = pt.VsDatetime,
+                VsBloodPressureIndicator = pt.VsBloodPressureIndicator,
+                VsSystolic = pt.VsSystolic,
+                VsDiastolic = pt.VsDiastolic,
+                VsPulseIndicator = pt.VsPulseIndicator,
+                VsPulse = pt.VsPulse,
+                VsMapLevel = pt.VsMapLevel,
+                VsMap = pt.VsMap,
+                VsRespiratoryIndicator = pt.VsRespiratoryIndicator,
+                VsRespiratory = pt.VsRespiratory,
+                VsTemperatureIndicator = pt.VsTemperatureIndicator,
+                VsTemperature = pt.VsTemperature,
+                VsEndTidalLevel = pt.VsEndTidalLevel,
+                VsEndTidal = pt.VsEndTidal,
+                VsOxygenSaturationIndicator = pt.VsOxygenSaturationIndicator,
+                VsOxygenSaturation = pt.VsOxygenSaturation,
+                VsPainScaleIndicator = pt.VsPainScaleIndicator,
+                VsPainScale = pt.VsPainScale
             };
 
             // Calculate the age if the date-of-birth is present
-            if (pt.DateOfBirth == null) return ret;
-            var dateOfBirth = (DateTime) pt.DateOfBirth;
+            if (pt.DateOfBirth == null) return patientDto;
+            var dateOfBirth = (DateTime)pt.DateOfBirth;
             var ageTimeSpan = DateTime.Now.Subtract(dateOfBirth);
             if (ageTimeSpan.TotalDays < 180)
             {
-                ret.Age = (int) Math.Truncate(ageTimeSpan.TotalDays);
-                ret.AgeUnits = "days";
+                patientDto.Age = (int)Math.Truncate(ageTimeSpan.TotalDays);
+                patientDto.AgeUnits = "days";
             }
             else if (ageTimeSpan.TotalDays < 700)
             {
-                ret.Age = (DateTime.Now.Day < dateOfBirth.Day  ? -1 : 0) +
+                patientDto.Age = (DateTime.Now.Day < dateOfBirth.Day ? -1 : 0) +
                           DateTime.Now.Month - dateOfBirth.Month +
                           (DateTime.Now.Year - dateOfBirth.Year) * 12;
-                ret.AgeUnits = "months";
+                patientDto.AgeUnits = "months";
             }
             else
             {
-                ret.Age = (DateTime.Now.Month < dateOfBirth.Month || (DateTime.Now.Month == dateOfBirth.Month) &&
+                patientDto.Age = (DateTime.Now.Month < dateOfBirth.Month || (DateTime.Now.Month == dateOfBirth.Month) &&
                               DateTime.Now.Day < dateOfBirth.Day
                                   ? -1
                                   : 0) +
                           (DateTime.Now.Year - dateOfBirth.Year);
-                ret.AgeUnits = "years";
+                patientDto.AgeUnits = "years";
             }
-            return ret;
+            return patientDto;
         }
     }
 }

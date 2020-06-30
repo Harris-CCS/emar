@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using Emar.Core.Users.Model;
 using Emar.Core.Users.Model.Mappings;
 using Emar.Core.Users.Repository;
+using Emar.Data.Entities;
 
 namespace Emar.Core.Users.Service
 {
@@ -12,10 +14,26 @@ namespace Emar.Core.Users.Service
         {
             _userRepository = userRepository;
         }
+
+        public IEnumerable<UserDto> GetUsers()
+        {
+            IEnumerable<User> entityUsers = _userRepository.GetUsers();
+            List<UserDto> userList = new List<UserDto>();
+
+            foreach (User user in entityUsers)
+            {
+                userList.Add(UserMapper.MapUser(user));
+            }
+
+            return userList;
+        }
+
         public UserDto GetUser(in int userId)
         {
-            var entityUser = _userRepository.GetUser(userId);
-            return UserMapper.MapUser(entityUser);
+            User entityUser = _userRepository.GetUser(userId);
+            UserDto userDto = UserMapper.MapUser(entityUser);
+
+            return userDto;
         }
     }
 }

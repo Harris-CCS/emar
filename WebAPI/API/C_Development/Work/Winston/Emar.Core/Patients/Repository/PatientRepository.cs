@@ -3,82 +3,64 @@ using System.Linq;
 using Emar.Data;
 using Emar.Data.Entities;
 
-
 namespace Emar.Core.Patients.Repository
 {
-    public class PatientRepository:IPatientRepository
+    public class PatientRepository : IPatientRepository
     {
         private readonly EmarContext _context;
-        //private Dictionary<int, Patient> _testingPatients;
+
+        public PatientRepository()
+        {
+
+        }
 
         public PatientRepository(EmarContext emarContext)
         {
             _context = emarContext;
-            //    if (_testingPatients == null)
-            //    {
-            //        var filename = @".\bin\Debug\netcoreapp3.1\Patients\Repository\MockData\PatientData.txt";
-            //        if (!File.Exists(filename))
-            //            throw new FileNotFoundException("Couldn't locate the Mock Patient Data file", filename);
-
-            //        _testingPatients = new Dictionary<int, Patient>();
-
-            //        //foreach (var ln in File.ReadLines(filename))
-            //        //{
-            //        //    var cvsLines = ln.Split('|');
-            //        //    var pt = new Patient
-            //        //    {
-            //        //        Id = Convert.ToInt32(cvsLines[0]),
-            //        //        SiteId = Convert.ToInt16(cvsLines[1]),
-            //        //        Active = Convert.ToBoolean(cvsLines[2].Trim() != "0"),
-
-            //        //        FirstName = cvsLines[3],
-            //        //        MiddleName = cvsLines[4],
-            //        //        LastName = cvsLines[5],
-            //        //        NameSuffix = cvsLines[6],
-            //        //        Gender = cvsLines[7],
-            //        //    };
-            //        //    _testingPatients.Add(pt.Id, pt);
-            //        //}
-
-            //        var pts = File.ReadLines(filename)
-            //            .Select(line => line.Split('|')).Select(cvsLines => new Patient
-            //            {
-            //                Id = Convert.ToInt32(cvsLines[0]),
-            //                SiteId = Convert.ToInt16(cvsLines[1]),
-            //                Active = Convert.ToBoolean(cvsLines[2].Trim() != "0"),
-
-            //                FirstName = cvsLines[3],
-            //                MiddleName = cvsLines[4],
-            //                LastName = cvsLines[5],
-            //                NameSuffix = cvsLines[6],
-            //                Gender = cvsLines[7],
-            //                //DateOfBirth = cvsLines.Length > 8 ? Convert.ToDateTime(cvsLines[8]) : (DateTime?)null,
-            //                //Age = cvsLines.Length > 9 ? Convert.ToInt32(cvsLines[9]) : (int?)null,
-            //                //AgeUnits = cvsLines.Length > 10 ? cvsLines[10] : null
-            //            });
-
-            //        foreach (var pt in pts)
-            //            _testingPatients.Add(pt.Id, pt);
-            //    }
         }
-        public Patient GetPatient(long patientId)
+
+        public IEnumerable<Patient> GetPatients(ResourceParameters resourceParameters)
         {
-            var patient = _context.Patients.Find(patientId);
-            
+            var patients = _context.Patients.AsEnumerable();
+
+            if (!resourceParameters.IncludeInactive)
+            {
+                patients = patients.Where(pt => pt.Active.Equals(true));
+            }
+
+            if (resourceParameters.Site != null)
+            {
+                patients = patients.Where(pt => pt.SiteId.Equals(resourceParameters.Site));
+            }
+
+            return patients;
+        }
+
+        public Patient GetPatient(long? patientId, ResourceParameters resourceParameters)
+        {
+            patientId = (long)GetPatientId(patientId, resourceParameters);
+
+            Patient patient = _context.Patients.Find(patientId);
+
             return patient;
         }
 
-        public IEnumerable<Patient> GetPatients(bool activeOnly, int siteId)
+        public long? GetPatientId(long? patientId, ResourceParameters resourceParameters)
         {
-            var patients = _context.Patients.ToList();
+            if ((resourceParameters != null) &&
+                (resourceParameters.Site != null) &&
+                (resourceParameters.Ibex != null))
+            {
+                patientId = _context.ExternalIds
+                                .Where(@x_id =>
+                                        @x_id.External_Id.Equals(resourceParameters.Site + "|" + resourceParameters.Ibex) &&
+                                        @x_id.Entity.ToLower().Equals(@"patients") &&
+                                        @x_id.Vendor.ToLower().Equals(@"pulsecheck"))
+                                .FirstOrDefault()
+                                .InternalId;
+            }
 
-            return patients;
-            //if (activeOnly)
-            //    return from pt in _testingPatients
-            //        where pt.Value.Active
-            //        select pt.Value;
-
-            //return _testingPatients.Values;
+            return patientId;
         }
 
     }
