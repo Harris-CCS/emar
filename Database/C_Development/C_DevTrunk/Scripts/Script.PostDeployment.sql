@@ -19,5 +19,7 @@ declare
 
 declare @outputs table([Id] int not null);
 
-:r ..\Scripts\Post-Deployment\diagram_patients.sql
-:r ..\Scripts\Post-Deployment\diagram_security.sql
+--- deploying these diagrams in having an issue at the moment.
+--- it worked several times, but now causes ssms to crash. so removing for the moment.
+---:r ..\Scripts\Post-Deployment\diagram_patients.sql
+---:r ..\Scripts\Post-Deployment\diagram_security.sql
