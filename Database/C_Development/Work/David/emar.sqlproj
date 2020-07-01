@@ -92,6 +92,7 @@
     <Build Include="Tables\site_preferred_list.sql" />
     <Build Include="Tables\options.sql" />
     <Build Include="Tables\site_options.sql" />
+    <Build Include="Tables\patient_allergies.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />
