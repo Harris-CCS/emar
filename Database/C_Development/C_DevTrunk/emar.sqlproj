@@ -86,12 +86,13 @@
     <Build Include="Tables\permissions.sql" />
     <None Include="Scripts\Post-Deployment\diagram_patients.sql" />
     <None Include="Scripts\Post-Deployment\diagram_security.sql" />
-    <Build Include="Tables\site_formularies.sql" />
     <Build Include="Tables\site_preferred_list.sql" />
     <Build Include="Tables\options.sql" />
     <Build Include="Tables\site_options.sql" />
     <Build Include="Tables\patient_allergies.sql" />
     <Build Include="Tables\patient_home_medications.sql" />
+    <Build Include="Tables\site_formulary.sql" />
+    <Build Include="Tables\site_formulary_match.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />
