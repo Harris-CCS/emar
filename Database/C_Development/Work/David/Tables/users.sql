@@ -150,7 +150,7 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Person identifier auto number'
+  , @value = N'Auto increment table ID'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -161,7 +161,7 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Hospital identifier 1...255 for multi-site servers, FKEY to ORG site table'
+  , @value = N'Hospital identifier foriegn key to site table'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'

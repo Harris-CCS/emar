@@ -1,18 +1,16 @@
-create table [dbo].[site_formularies]
+create table [dbo].[site_formulary]
 (
     [id]                  bigint identity(1, 1) not null
   , [site_id]             int not null
-  , [drug_id]             [varchar](10) not null
-  , [formulation_drug_id] [varchar](32) null
   , [ndc]                 [varchar](32) null
+  , [drug_id]             [varchar](32) not null
   , [brand_name]          [varchar](255) not null
-  , [site_drug_code]      [varchar](32) null
+  , [hospital_drug_code]  [varchar](32) null
   , [service_code]        [varchar](32) null
-  , [active_ingredient]   [varchar](255) null
   , [is_inpatient]        [bit] not null
   , [is_outpatient]       [bit] not null
   , [is_pyxis]            [bit] not null
-  , constraint [pk__formlary__id] primary key clustered([id] asc)
+  , constraint [pk__site_formulary__id] primary key clustered([id] asc)
 );
 go
 
@@ -29,9 +27,9 @@ execute [sys].[sp_addextendedproperty]
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_formularies'
+  , @level1name = N'site_formulary'
   , @level2type = N'CONSTRAINT'
-  , @level2name = N'pk__formlary__id';
+  , @level2name = N'pk__site_formulary__id';
 go
 
 /*******
@@ -41,8 +39,8 @@ go
  Foreign Key
 ***********/
 
-alter table [dbo].[site_formularies]
-add constraint [fk__site_formularies__sites] foreign key([site_id]) references [dbo].[sites]([id]);
+alter table [dbo].[site_formulary]
+add constraint [fk__site_formulary__sites] foreign key([site_id]) references [dbo].[sites]([id]);
 go
 
 /***************
@@ -64,7 +62,7 @@ execute [sys].[sp_addextendedproperty]
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_formularies';
+  , @level1name = N'site_formulary';
 go
 
 /***************
@@ -74,132 +72,116 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Identifier auto number'
+  , @value = N'Auto increment table ID'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_formularies'
+  , @level1name = N'site_formulary'
   , @level2type = N'COLUMN'
   , @level2name = N'id';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Hospital identifier 1...255 for multi-site servers, FKEY to ORG site table'
+  , @value = N'Hospital identifier foriegn key to site table'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_formularies'
+  , @level1name = N'site_formulary'
   , @level2type = N'COLUMN'
   , @level2name = N'site_id';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Drug ID number'
+  , @value = N'Drug NDC (National Drug Code)'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_formularies'
-  , @level2type = N'COLUMN'
-  , @level2name = N'drug_id';
-go
-
-exec [sys].[sp_addextendedproperty]
-    @name = N'MS_Description'
-  , @value = N'Formulation Drug ID number'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'site_formularies'
-  , @level2type = N'COLUMN'
-  , @level2name = N'formulation_drug_id';
-go
-
-exec [sys].[sp_addextendedproperty]
-    @name = N'MS_Description'
-  , @value = N'National Drug Code'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'site_formularies'
+  , @level1name = N'site_formulary'
   , @level2type = N'COLUMN'
   , @level2name = N'ndc';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
+    @name = N'MS_Description'
+  , @value = N'External Vendor Drug Database Identifier
+    FDB: MEDID (MED Medication ID (Stable ID))
+    Multum: dnum
+These 3 columns will be carried as a set ndc,drug_id,brand_name
+while drug_id and brand_name are vendor specific concepts and can be derived from ndc number
+this will aid in display and lookup performance.
+'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'site_formulary'
+  , @level2type = N'COLUMN'
+  , @level2name = N'drug_id';
+go
+
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Brand name'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_formularies'
+  , @level1name = N'site_formulary'
   , @level2type = N'COLUMN'
   , @level2name = N'brand_name';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Site specific code for drug'
+  , @value = N'Hospital specific code for drug'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_formularies'
+  , @level1name = N'site_formulary'
   , @level2type = N'COLUMN'
-  , @level2name = N'site_drug_code';
+  , @level2name = N'hospital_drug_code';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Site billing code for Procedure, supplies, and other reportable services '
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_formularies'
+  , @level1name = N'site_formulary'
   , @level2type = N'COLUMN'
   , @level2name = N'service_code';
 go
 
-exec [sys].[sp_addextendedproperty]
-    @name = N'MS_Description'
-  , @value = N'Active ingredient(s)'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'site_formularies'
-  , @level2type = N'COLUMN'
-  , @level2name = N'active_ingredient';
-go
-
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Flag indicating that formulary item is on In-patient formulary. 1=True 0=False'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_formularies'
+  , @level1name = N'site_formulary'
   , @level2type = N'COLUMN'
   , @level2name = N'is_inpatient';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Flag indicating that formulary item is on Out-patient formulary. 1=True 0=False'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_formularies'
+  , @level1name = N'site_formulary'
   , @level2type = N'COLUMN'
   , @level2name = N'is_outpatient';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Flag indicating that formulary item is on the medication dispensing machine. 1=True 0=False'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_formularies'
+  , @level1name = N'site_formulary'
   , @level2type = N'COLUMN'
   , @level2name = N'is_pyxis';
 go

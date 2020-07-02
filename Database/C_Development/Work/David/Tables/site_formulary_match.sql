@@ -1,16 +1,15 @@
-﻿create table [dbo].[site_preferred_list]
-    (
-      [id]           [int] identity(1, 1) not null
-    , [site_id]      [int] not null
-    , [is_active]    [bit] not null
-    , [ndc]          [varchar](32) null
-    , [drug_id]      [varchar](32) not null
-    , [brand_name]   [varchar](255) not null
-    , [route]        [varchar](20) null
-    , [dose]         [varchar](40) null
-    , [unit]         [varchar](40) null
-    , [frequency_id] [int] null
-    , constraint [pk__site_preferred_list__id] primary key clustered([id] asc));
+create table [dbo].[site_formulary_match]
+(
+    [id]                  bigint identity(1, 1) not null
+  , [site_id]             int not null
+  , [ndc]                 [varchar](32) null
+  , [drug_id]             [varchar](32) not null
+  , [brand_name]          [varchar](255) not null
+  , [inpatient_match]        [tinyint] not null
+  , [outpatient_match]       [tinyint] not null
+  , [pyxis_match]            [tinyint] not null
+  , constraint [pk__site_formulary_match__id] primary key clustered([id] asc)
+);
 go
 
 /********
@@ -22,13 +21,13 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Primary Key Column'
+  , @value = N'Primary Key Constraint'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_preferred_list'
+  , @level1name = N'site_formulary_match'
   , @level2type = N'CONSTRAINT'
-  , @level2name = N'pk__site_preferred_list__id';
+  , @level2name = N'pk__site_formulary_match__id';
 go
 
 /*******
@@ -38,8 +37,8 @@ go
  Foreign Key
 ***********/
 
-alter table [dbo].[site_preferred_list]
-add constraint [fk__site_preferred_list__sites] foreign key([site_id]) references [dbo].[sites]([id]);
+alter table [dbo].[site_formulary_match]
+add constraint [fk__site_formulary_match__sites] foreign key([site_id]) references [dbo].[sites]([id]);
 go
 
 /***************
@@ -57,11 +56,11 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'This table contains medications preferred list for the department preferred list tab'
+  , @value = N'This table stores information regarding the hospital drug formulary as indexed by a National Drug Code'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_preferred_list';
+  , @level1name = N'site_formulary_match';
 go
 
 /***************
@@ -75,7 +74,7 @@ execute [sys].[sp_addextendedproperty]
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_preferred_list'
+  , @level1name = N'site_formulary_match'
   , @level2type = N'COLUMN'
   , @level2name = N'id';
 go
@@ -86,20 +85,9 @@ execute [sys].[sp_addextendedproperty]
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_preferred_list'
+  , @level1name = N'site_formulary_match'
   , @level2type = N'COLUMN'
   , @level2name = N'site_id';
-go
-
-execute [sys].[sp_addextendedproperty]
-    @name = N'MS_Description'
-  , @value = N'is_active 1=true 0=false'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'site_preferred_list'
-  , @level2type = N'COLUMN'
-  , @level2name = N'is_active';
 go
 
 execute [sys].[sp_addextendedproperty]
@@ -108,7 +96,7 @@ execute [sys].[sp_addextendedproperty]
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_preferred_list'
+  , @level1name = N'site_formulary_match'
   , @level2type = N'COLUMN'
   , @level2name = N'ndc';
 go
@@ -125,7 +113,7 @@ this will aid in display and lookup performance.
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_preferred_list'
+  , @level1name = N'site_formulary_match'
   , @level2type = N'COLUMN'
   , @level2name = N'drug_id';
 go
@@ -136,51 +124,58 @@ execute [sys].[sp_addextendedproperty]
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_preferred_list'
+  , @level1name = N'site_formulary_match'
   , @level2type = N'COLUMN'
   , @level2name = N'brand_name';
 go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Storage for route with medication'
+  , @value = N'Flag indicating matching criteria
+    0 = Non match ,
+    1 = Partial match,
+    2 = Equivalent match,
+    3 = Exact match,
+    4 = Exact ndc match
+  '
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_preferred_list'
+  , @level1name = N'site_formulary_match'
   , @level2type = N'COLUMN'
-  , @level2name = N'route';
+  , @level2name = N'inpatient_match';
 go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Storage for dose with medication'
+  , @value = N'Flag indicating matching criteria
+    0 = Non match ,
+    1 = Partial match,
+    2 = Equivalent match,
+    3 = Exact match,
+    4 = Exact ndc match
+  '
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_preferred_list'
+  , @level1name = N'site_formulary_match'
   , @level2type = N'COLUMN'
-  , @level2name = N'dose';
+  , @level2name = N'outpatient_match';
 go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Storage for unit with medication'
+  , @value = N'Flag indicating matching criteria
+    0 = Non match ,
+    1 = Partial match,
+    2 = Equivalent match,
+    3 = Exact match,
+    4 = Exact ndc match
+  '
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_preferred_list'
+  , @level1name = N'site_formulary_match'
   , @level2type = N'COLUMN'
-  , @level2name = N'unit';
-go
-
-execute [sys].[sp_addextendedproperty]
-    @name = N'MS_Description'
-  , @value = N'Foreign Key to Frequencies table'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'site_preferred_list'
-  , @level2type = N'COLUMN'
-  , @level2name = N'frequency_id';
+  , @level2name = N'pyxis_match';
 go

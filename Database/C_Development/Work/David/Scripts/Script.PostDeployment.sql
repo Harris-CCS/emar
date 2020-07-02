@@ -9,6 +9,8 @@ Post-Deployment Script Template
                SELECT * FROM [$(TableName)]
 --------------------------------------------------------------------------------------
 *************************************************************************************/
+-- Table rename to site_formulary
+drop table if exists dbo.site_formularies;
 
 --- variables global to all diagram_ published scripts
 declare
