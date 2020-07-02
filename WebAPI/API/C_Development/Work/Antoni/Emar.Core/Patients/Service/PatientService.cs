@@ -16,6 +16,7 @@ namespace Emar.Core.Patients.Service
             _patientRepository = patientRepository;
         }
 
+#if ORIGINAL
         public IEnumerable<PatientDto> GetPatients(ResourceParameters resourceParameters)
         {
             var entityPatients = _patientRepository.GetPatients(resourceParameters);
@@ -28,6 +29,21 @@ namespace Emar.Core.Patients.Service
 
             return patientList;
         }
+#endif
+#if PAGING || SORTING || EXPANDO
+        public PagedList<PatientDto> GetPatients(ResourceParameters resourceParameters)
+        {
+            var entityPatients = _patientRepository.GetPatients(resourceParameters);
+            var patientList = new List<PatientDto>();
+
+            foreach (Patient patient in entityPatients)
+            {
+                patientList.Add(PatientMapper.MapPatient(patient));
+            }
+
+            return new PagedList<PatientDto>(patientList, entityPatients.TotalCount, entityPatients.CurrentPage, entityPatients.PageSize);
+        }
+#endif
 
         public PatientDto GetPatient(long patientId, ResourceParameters resourceParameters)
         {
