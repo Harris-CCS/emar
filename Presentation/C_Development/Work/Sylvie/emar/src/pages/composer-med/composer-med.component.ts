@@ -6,11 +6,11 @@ import { Patient } from 'src/app/interfaces/patient';
 import { PatientService } from 'src/app/services/patient.service';
 
 @Component({
-  selector: 'med-composer',
-  templateUrl: './med-composer.component.html',
-  styleUrls: ['./med-composer.component.scss']
+  selector: 'composer-med',
+  templateUrl: './composer-med.component.html',
+  styleUrls: ['./composer-med.component.scss','../../assets/css/site.css']
 })
-export class MedComposerComponent implements OnInit {
+export class ComposerMedComponent implements OnInit {
   patient: Patient;
 
   constructor(private route: ActivatedRoute,
