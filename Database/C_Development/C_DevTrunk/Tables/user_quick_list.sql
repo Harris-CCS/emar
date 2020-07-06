@@ -1,7 +1,8 @@
-﻿create table [dbo].[site_preferred_list]
+create table [dbo].[user_quick_list]
     (
       [id]           [int] identity(1, 1) not null
     , [site_id]      [int] not null
+    , [user_id]      [int] not null
     , [is_active]    [bit] not null
     , [ndc]          [varchar](32) null
     , [drug_id]      [varchar](32) not null
@@ -10,7 +11,7 @@
     , [dose]         [varchar](40) null
     , [unit]         [varchar](40) null
     , [frequency_id] [int] null
-    , constraint [pk__site_preferred_list__id] primary key clustered([id] asc));
+    , constraint [pk__user_quick_list__id] primary key clustered([id] asc));
 go
 
 /********
@@ -26,8 +27,12 @@ go
  Foreign Key
 ***********/
 
-alter table [dbo].[site_preferred_list]
-add constraint [fk__site_preferred_list__sites] foreign key([site_id]) references [dbo].[sites]([id]);
+alter table [dbo].[user_quick_list]
+add constraint [fk__user_quick_list__user] foreign key([site_id]) references [dbo].[users]([id]);
+go
+
+alter table [dbo].[user_quick_list]
+add constraint [fk__user_quick_list__sites] foreign key([site_id]) references [dbo].[sites]([id]);
 go
 
 /***************
@@ -45,9 +50,9 @@ execute [sys].[sp_addextendedproperty]
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_preferred_list'
+  , @level1name = N'user_quick_list'
   , @level2type = N'CONSTRAINT'
-  , @level2name = N'pk__site_preferred_list__id';
+  , @level2name = N'pk__user_quick_list__id';
 go
 
 /***************
@@ -61,7 +66,7 @@ execute [sys].[sp_addextendedproperty]
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_preferred_list';
+  , @level1name = N'user_quick_list';
 go
 
 /***************
@@ -75,7 +80,7 @@ execute [sys].[sp_addextendedproperty]
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_preferred_list'
+  , @level1name = N'user_quick_list'
   , @level2type = N'COLUMN'
   , @level2name = N'id';
 go
@@ -86,9 +91,20 @@ execute [sys].[sp_addextendedproperty]
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_preferred_list'
+  , @level1name = N'user_quick_list'
   , @level2type = N'COLUMN'
   , @level2name = N'site_id';
+go
+
+execute [sys].[sp_addextendedproperty]
+    @name = N'MS_Description'
+  , @value = N'Person identifier, FKEY to users table'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'user_quick_list'
+  , @level2type = N'COLUMN'
+  , @level2name = N'user_id';
 go
 
 execute [sys].[sp_addextendedproperty]
@@ -97,7 +113,7 @@ execute [sys].[sp_addextendedproperty]
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_preferred_list'
+  , @level1name = N'user_quick_list'
   , @level2type = N'COLUMN'
   , @level2name = N'is_active';
 go
@@ -108,7 +124,7 @@ execute [sys].[sp_addextendedproperty]
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_preferred_list'
+  , @level1name = N'user_quick_list'
   , @level2type = N'COLUMN'
   , @level2name = N'ndc';
 go
@@ -125,7 +141,7 @@ this will aid in display and lookup performance.
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_preferred_list'
+  , @level1name = N'user_quick_list'
   , @level2type = N'COLUMN'
   , @level2name = N'drug_id';
 go
@@ -136,7 +152,7 @@ execute [sys].[sp_addextendedproperty]
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_preferred_list'
+  , @level1name = N'user_quick_list'
   , @level2type = N'COLUMN'
   , @level2name = N'brand_name';
 go
@@ -147,7 +163,7 @@ execute [sys].[sp_addextendedproperty]
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_preferred_list'
+  , @level1name = N'user_quick_list'
   , @level2type = N'COLUMN'
   , @level2name = N'route';
 go
@@ -158,7 +174,7 @@ execute [sys].[sp_addextendedproperty]
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_preferred_list'
+  , @level1name = N'user_quick_list'
   , @level2type = N'COLUMN'
   , @level2name = N'dose';
 go
@@ -169,7 +185,7 @@ execute [sys].[sp_addextendedproperty]
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_preferred_list'
+  , @level1name = N'user_quick_list'
   , @level2type = N'COLUMN'
   , @level2name = N'unit';
 go
@@ -180,7 +196,7 @@ execute [sys].[sp_addextendedproperty]
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'site_preferred_list'
+  , @level1name = N'user_quick_list'
   , @level2type = N'COLUMN'
   , @level2name = N'frequency_id';
 go

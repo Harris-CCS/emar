@@ -40,7 +40,7 @@ create table [dbo].[patients]
     , [vs_oxygen_saturation]           [varchar](50) null    ---- [vso2]
     , [vs_pain_scale_indicator]        [char](1) null        ---- [ord15]
     , [vs_pain_scale]                  [char](14) null       ---- [vspain]
-    , constraint [PK__patients_id] primary key clustered([id] asc));
+    , constraint [pk__patients__id] primary key clustered([id] asc));
 go
 
 /********
@@ -65,6 +65,18 @@ go
  Data Dictionary
     Indexes
 ***************/
+
+execute [sys].[sp_addextendedproperty]
+    @name = N'MS_Description'
+  , @value = N'Primary Key Constraint'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'patients'
+  , @level2type = N'CONSTRAINT'
+  , @level2name = N'pk__patients__id';
+go
+
 /***************
  Data Dictionary
     Table
