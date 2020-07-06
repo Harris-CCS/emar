@@ -1,71 +1,73 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Emar.Core;
 using Emar.Core.Patients.Model;
-using Emar.Core.Patients.Service;
 using Emar.Data;
 using Emar.Data.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Emar.Core.Patients.Repository
 {
     public class PatientRepository : IPatientRepository
     {
         private readonly EmarContext _context;
-#if PAGING || SORTING || EXPANDO
         private readonly IPropertyMappingService _propertyMappingService;
-#endif
 
         public PatientRepository()
         {
 
         }
 
-#if ORIGINAL
-        public PatientRepository(EmarContext emarContext)
-        {
-            _context = emarContext ?? throw new ArgumentNullException(nameof(emarContext));
-        }
-#endif
-#if PAGING || SORTING || EXPANDO
         public PatientRepository(EmarContext emarContext, IPropertyMappingService propertyMappingService)
         {
             _context = emarContext ?? throw new ArgumentNullException(nameof(emarContext));
             _propertyMappingService = propertyMappingService ?? throw new ArgumentNullException(nameof(propertyMappingService));
         }
-#endif
 
-#if ORIGINAL
-        public IEnumerable<Patient> GetPatients(ResourceParameters resourceParameters)
+        public PagedList<Patient> GetPatients(ResourceParameters resourceParameters, bool includeOrders)
         {
-            var patients = _context.Patients.AsEnumerable();
+            IEnumerable<Patient> patients;
+
+            if ((includeOrders) ||
+                (resourceParameters.IncludeOrders))
+            {
+                patients = GetPatientsWithOrders();
+            }
+            else
+            {
+                patients = GetPatientsWithoutOrders();
+            }
 
             if (!resourceParameters.IncludeInactive)
             {
-                patients = patients.Where(pt => pt.Active.Equals(true));
+                patients = patients
+                    .Where(pt => pt.Active == true);
             }
 
             if (resourceParameters.Site != null)
             {
-                patients = patients.Where(pt => pt.SiteId.Equals(resourceParameters.Site));
+                patients = patients
+                    .Where(pt => pt.SiteId == resourceParameters.Site);
             }
 
-            return patients;
-        }
-#endif
-#if PAGING || SORTING || EXPANDO
-        public PagedList<Patient> GetPatients(ResourceParameters resourceParameters)
-        {
-            var patients = _context.Patients.AsEnumerable();
-
-            if (!resourceParameters.IncludeInactive)
+            if (resourceParameters.DepartmentCode != null)
             {
-                patients = patients.Where(pt => pt.Active.Equals(true));
+                patients = patients
+                    .Where(pt => pt.DepartmentCode == resourceParameters.DepartmentCode);
             }
 
-            if (resourceParameters.Site != null)
+            if (resourceParameters.WardCodes != null)
             {
-                patients = patients.Where(pt => pt.SiteId.Equals(resourceParameters.Site));
+                var wardCodes = resourceParameters.WardCodes.Split(",");
+
+                patients = patients
+                    .Where(pt => wardCodes.Contains(pt.WardCode));
+            }
+
+            if (resourceParameters.RoomBedCode != null)
+            {
+                patients = patients
+                    .Where(pt => pt.RoomBedCode == resourceParameters.RoomBedCode);
             }
 
             if (resourceParameters.OrderBy != null)
@@ -73,18 +75,47 @@ namespace Emar.Core.Patients.Repository
                 //get property mapping dictionary
                 var propertyMappingDictionary = _propertyMappingService.GetPropertyMapping<PatientDto, Patient>();
 
-                patients = patients.AsQueryable().ApplySort(resourceParameters.OrderBy, propertyMappingDictionary);
+                patients = patients
+                    .AsQueryable().ApplySort(resourceParameters.OrderBy, propertyMappingDictionary);
             }
+
 
             return PagedList<Patient>.Create(patients.AsQueryable(), resourceParameters.PageNumber, resourceParameters.PageSize);
         }
-#endif
 
-        public Patient GetPatient(long? patientId, ResourceParameters resourceParameters)
+        IEnumerable<Patient> GetPatientsWithOrders()
+        {
+            return _context.Patients
+                    .Include(patient => patient.Orders)
+                        .ThenInclude(order => order.Events)
+                    .Include(patient => patient.Orders)
+                        .ThenInclude(order => order.Administrations)
+                            .ThenInclude(administration => administration.Events)
+                    .AsEnumerable();
+        }
+
+        IEnumerable<Patient> GetPatientsWithoutOrders()
+        {
+            return _context.Patients
+                    .AsEnumerable();
+        }
+
+        public Patient GetPatient(long? patientId, ResourceParameters resourceParameters, bool includeOrders)
         {
             patientId = (long)GetPatientId(patientId, resourceParameters);
 
-            Patient patient = _context.Patients.Find(patientId);
+            var patient = _context.Patients.Find(patientId);
+
+            if (resourceParameters.IncludeOrders || includeOrders)
+            {
+                patient = _context.Patients
+                    .Include(patient => patient.Orders)
+                        .ThenInclude(order => order.Events)
+                    .Include(patient => patient.Orders)
+                        .ThenInclude(order => order.Administrations)
+                            .ThenInclude(administration => administration.Events)
+                    .FirstOrDefault(patient => patient.Id == patientId);
+            }
 
             return patient;
         }
@@ -106,6 +137,5 @@ namespace Emar.Core.Patients.Repository
 
             return patientId;
         }
-
     }
 }

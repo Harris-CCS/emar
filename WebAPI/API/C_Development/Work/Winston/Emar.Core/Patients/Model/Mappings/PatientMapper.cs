@@ -50,7 +50,8 @@ namespace Emar.Core.Patients.Model.Mappings
                 VsOxygenSaturationIndicator = pt.VsOxygenSaturationIndicator,
                 VsOxygenSaturation = pt.VsOxygenSaturation,
                 VsPainScaleIndicator = pt.VsPainScaleIndicator,
-                VsPainScale = pt.VsPainScale
+                VsPainScale = pt.VsPainScale,
+                Orders = pt.Orders
             };
 
             // Calculate the age if the date-of-birth is present

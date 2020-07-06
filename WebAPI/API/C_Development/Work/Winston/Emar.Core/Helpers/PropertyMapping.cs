@@ -1,8 +1,7 @@
-﻿#if PAGING || SORTING || EXPANDO
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace Emar.Core.Patients.Service
+namespace Emar.Core
 {
     public class PropertyMapping<TSource, TDestination> : IPropertyMapping
     {
@@ -14,4 +13,3 @@ namespace Emar.Core.Patients.Service
         }
     }
 }
-#endif

@@ -1,97 +1,97 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Emar.Core.Orders.Model;
 using Emar.Data;
 using Emar.Data.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Emar.Core.Orders.Repository
 {
     public class OrderRepository : IOrderRepository
     {
         private readonly EmarContext _context;
+        private readonly IPropertyMappingService _propertyMappingService;
 
         public OrderRepository()
         {
 
         }
 
-        public OrderRepository(EmarContext emarContext)
+        public OrderRepository(EmarContext emarContext, IPropertyMappingService propertyMappingService)
         {
-            _context = emarContext;
+            _context = emarContext ?? throw new ArgumentNullException(nameof(emarContext));
+            _propertyMappingService = propertyMappingService ?? throw new ArgumentNullException(nameof(propertyMappingService));
         }
 
-        public IEnumerable<Order> GetOrders(long? patientId, ResourceParameters resourceParameters)
+        public PagedList<Order> GetOrders(long? patientId, ResourceParameters resourceParameters)
         {
-            var orders = _context.Orders.ToList();
+            patientId ??= resourceParameters.PatientId;
 
-            foreach (var order in orders)
+            var orders = _context.Orders
+                .Include(order => order.Events)
+                .Include(order => order.Administrations)
+                    .ThenInclude(administration => administration.Events)
+                .AsEnumerable();
+
+            if (patientId != null)
             {
-                order.Events = GetEvents(order.Id).ToList();
-
-                if (resourceParameters.IncludeAdministrations)
-                {
-                    order.Administrations = GetAdministrations(order.Id).ToList();
-                }
+                orders = orders
+                    .Where(order => order.PatientId == patientId);
             }
 
-            return orders.AsEnumerable();
+            if (resourceParameters.OrderBy != null)
+            {
+                //get property mapping dictionary
+                var propertyMappingDictionary = _propertyMappingService.GetPropertyMapping<OrderDto, Order>();
+
+                orders = orders.AsQueryable().ApplySort(resourceParameters.OrderBy, propertyMappingDictionary);
+            }
+
+            return PagedList<Order>.Create(orders.AsQueryable(), resourceParameters.PageNumber, resourceParameters.PageSize);
         }
 
         public Order GetOrder(long orderId, ResourceParameters resourceParameters)
         {
-            var order = _context.Orders.Find(orderId);
-
-            if (order != null)
-            {
-                order.Events = GetEvents(orderId).ToList();
-
-                if (resourceParameters.IncludeAdministrations)
-                {
-                    order.Administrations = GetAdministrations(orderId).ToList();
-                }
-            }
-
-            return order;
+            return _context.Orders
+                    .Include(order => order.Events)
+                    .Include(order => order.Administrations)
+                        .ThenInclude(administration => administration.Events)
+                    .FirstOrDefault(order => order.Id == orderId);
         }
 
         public IEnumerable<OrderAdministration> GetAdministrations(long orderId)
         {
-            var administrations = _context.OrderAdministrations.AsQueryable().Where(administration => administration.OrderId.Equals(orderId)).ToList();
-
-            foreach (var administration in administrations)
-            {
-                administration.Events = GetAdministrationEvents(administration.Id).ToList();
-            }
-
-            return administrations.AsEnumerable();
+            return _context.OrderAdministrations
+                .Where(administration => administration.OrderId == orderId)
+                .Include(administration => administration.Events)
+                .AsEnumerable();
         }
 
         public OrderAdministration GetAdministration(long administrationId)
         {
-            var administration = _context.OrderAdministrations.Find(administrationId);
-            administration.Events = GetAdministrationEvents(administrationId).ToList();
-
-            return administration;
+            return _context.OrderAdministrations
+                    .Include(administration => administration.Events)
+                    .FirstOrDefault(administration => administration.Id == administrationId);
         }
 
         public IEnumerable<OrderEvent> GetEvents(long orderId)
         {
-            var events = _context.OrderEvents.AsQueryable().Where(@event => @event.OrderId.Equals(orderId)).ToList();
-
-            return events.AsEnumerable();
+            return _context.OrderEvents
+                .Where(@event => @event.OrderId == orderId)
+                .AsEnumerable();
         }
 
         public OrderEvent GetEvent(long eventId)
         {
-            var @event = _context.OrderEvents.Find(eventId);
-
-            return @event;
+            return _context.OrderEvents.Find(eventId);
         }
 
         public IEnumerable<OrderEvent> GetAdministrationEvents(long administrationId)
         {
-            var events = _context.OrderEvents.AsQueryable().Where(@event => @event.AdministrationId.Equals(administrationId)).ToList();
-
-            return events.AsEnumerable();
+            return _context.OrderEvents
+                .Where(@event => @event.AdministrationId == administrationId)
+                .AsEnumerable();
         }
     }
 }

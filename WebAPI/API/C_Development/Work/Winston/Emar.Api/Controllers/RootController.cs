@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Emar.Core;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Emar.Api.Controllers
 {
-    [Route("api")]
     [ApiController]
+    [Route("api")]
     public class RootController : ControllerBase
     {
         [HttpGet("About")]
@@ -23,19 +20,24 @@ namespace Emar.Api.Controllers
             return "Version 0.0.1";
         }
 
-        [HttpGet(Name ="GetRoot")]
+        [HttpGet(Name = "GetRoot")]
         public IActionResult GetRoot()
         {
             List<HateOasLinkDto> links = new List<HateOasLinkDto>();
 
             links.Add(
-                new HateOasLinkDto(Url.Link(nameof(GetRoot), new {  }),
+                new HateOasLinkDto(Url.Link(nameof(GetRoot), new { }),
                 "self",
                 "GET"));
 
             links.Add(
                 new HateOasLinkDto(Url.Link(nameof(PatientsController.GetPatients), new { }),
                 "patients",
+                "GET"));
+
+            links.Add(
+                new HateOasLinkDto(Url.Link(nameof(OrdersController.GetOrders), new { }),
+                "orders",
                 "GET"));
 
             //links.Add(

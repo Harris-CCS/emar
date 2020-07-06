@@ -5,35 +5,15 @@
     <SccProvider>SAK</SccProvider>
     <SccAuxPath>SAK</SccAuxPath>
     <SccLocalPath>SAK</SccLocalPath>
-    <Configurations>Debug;Release;PAGING;ORIGINAL;eMAR-EXPANDO;eMAR-HATEOAS</Configurations>
+    <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ORIGINAL|AnyCPU'">
-    <Optimize>false</Optimize>
-    <DefineConstants>TRACE;ORIGINAL</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='PAGING|AnyCPU'">
-    <Optimize>false</Optimize>
-    <DefineConstants>TRACE;PAGING</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='eMAR-EXPANDO|AnyCPU'">
-    <Optimize>false</Optimize>
-    <DefineConstants>TRACE;EXPANDO</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='eMAR-HATEOAS|AnyCPU'">
-    <Optimize>false</Optimize>
-    <DefineConstants>TRACE;HATEOAS</DefineConstants>
-  </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>TRACE;EXPANDO</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

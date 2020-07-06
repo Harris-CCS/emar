@@ -1,4 +1,4 @@
-﻿namespace Emar.Core.Patients.Service
+﻿namespace Emar.Core
 {
     public class IPropertyMapping
     {

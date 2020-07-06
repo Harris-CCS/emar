@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Emar.Api.Controllers
 {
-    [Route("api/users")]
     [ApiController]
+    [Route("api/users")]
     public class UsersController : ControllerBase
     {
         private IUserService _userService;

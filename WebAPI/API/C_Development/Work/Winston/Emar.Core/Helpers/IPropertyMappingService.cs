@@ -1,7 +1,6 @@
-﻿#if PAGING || SORTING || EXPANDO
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace Emar.Core.Patients.Service
+namespace Emar.Core
 {
     public interface IPropertyMappingService
     {
@@ -9,4 +8,3 @@ namespace Emar.Core.Patients.Service
         bool ValidMappingExistsFor<TSource, TDestination>(string fields);
     }
 }
-#endif

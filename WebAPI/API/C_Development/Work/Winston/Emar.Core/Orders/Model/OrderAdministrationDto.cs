@@ -4,7 +4,7 @@ using Emar.Data.Entities;
 
 namespace Emar.Core.Orders.Model
 {
-    public class OrderAdministrationDto : HateOasLinkDto
+    public class OrderAdministrationDto 
     {
         /// <summary>
         /// Unique order administration identifier

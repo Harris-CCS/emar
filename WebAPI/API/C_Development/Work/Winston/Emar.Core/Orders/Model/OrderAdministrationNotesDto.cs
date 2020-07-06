@@ -2,7 +2,7 @@
 
 namespace Emar.Core.Orders.Model
 {
-    public class OrderAdministrationNotesDto : HateOasLinkDto
+    public class OrderAdministrationNotesDto 
     {
         /// <summary>
         /// Unique order administration note identifier

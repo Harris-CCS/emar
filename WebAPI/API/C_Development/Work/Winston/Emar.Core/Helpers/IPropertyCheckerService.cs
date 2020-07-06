@@ -1,9 +1,7 @@
-﻿#if EXPANDO
-namespace Emar.Core.Patients.Service
+﻿namespace Emar.Core
 {
     public interface IPropertyCheckerService
     {
         bool TypeHasProperties<T>(string fields);
     }
 }
-#endif
