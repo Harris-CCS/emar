@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-#if PAGING || SORTING
+#if PAGING || SORTING || EXPANDO
 using System.Text.Json;
 #endif
 using Emar.Core;
@@ -12,6 +12,7 @@ using Emar.Core.Patients.Service;
 using Emar.Data;
 using Emar.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 
 namespace Emar.Api.Controllers
 {
@@ -21,17 +22,45 @@ namespace Emar.Api.Controllers
     {
         private readonly IPatientService _patientService;
         private readonly EmarContext _context;
+#if PAGING || SORTING || EXPANDO
+        private readonly IPropertyMappingService _propertyMappingService;
+        private readonly IPropertyCheckerService _propertyCheckerService;
+#endif
         private Errors error = Errors.NoErrors;
 
+#if ORIGINAL
         public PatientsController(EmarContext emarContext, IPatientService patientService)
         {
             _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
             _context = emarContext;
-
         }
+#endif
+#if PAGING || SORTING
+        public PatientsController(EmarContext emarContext,
+                                  IPatientService patientService,
+                                  IPropertyMappingService propertyMappingService)
+        {
+            _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
+            _context = emarContext;
+            _propertyMappingService = propertyMappingService ?? throw new ArgumentNullException(nameof(propertyMappingService));
+        }
+#endif
+#if EXPANDO
+        public PatientsController(EmarContext emarContext,
+                                  IPatientService patientService,
+                                  IPropertyMappingService propertyMappingService,
+                                  IPropertyCheckerService propertyCheckerService)
+        {
+            _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
+            _context = emarContext;
+            _propertyMappingService = propertyMappingService ?? throw new ArgumentNullException(nameof(propertyMappingService));
+            _propertyCheckerService = propertyCheckerService ?? throw new ArgumentNullException(nameof(propertyCheckerService));
+        }
+#endif
 
 #if ORIGINAL
         [HttpGet(Name = nameof(GetPatients))]
+        [HttpHead]
         [Produces(typeof(IEnumerable<PatientDto>))]
         public IActionResult GetPatients([FromQuery] ResourceParameters resourceParameters)
         {
@@ -42,34 +71,61 @@ namespace Emar.Api.Controllers
             return Ok(patients);
         }
 #endif
-#if PAGING || SORTING
+#if PAGING || SORTING || EXPANDO
+        [HttpGet(Name = nameof(GetPatients))]
+        [HttpHead]
+        [Produces(typeof(IEnumerable<PatientDto>))]
         public IActionResult GetPatients([FromQuery] ResourceParameters resourceParameters)
         {
-            var patients = _patientService.GetPatients(resourceParameters);
+            if (!_propertyMappingService.ValidMappingExistsFor<PatientDto, Patient>(resourceParameters.OrderBy))
+            {
+                return BadRequest();
+            }
+
+            if (!_propertyCheckerService.TypeHasProperties<PatientDto>(resourceParameters.Fields))
+            {
+                return BadRequest();
+            }
+
+            PagedList<PatientDto> patients = _patientService.GetPatients(resourceParameters);
 
             if (patients == null) { return NotFound($"No patients found"); }
-
-#region Paging
-            var previousPageLink = patients.HasPrevious ? CreatePatientsResourceUri(resourceParameters, ResourceUriType.PreviousPage) : null;
-            var nextPageLink = patients.HasNext ? CreatePatientsResourceUri(resourceParameters, ResourceUriType.NextPage) : null;
 
             var paginationMetadata = new
             {
                 totalCount = patients.TotalCount,
                 pageSize = patients.PageSize,
                 currentPage = patients.CurrentPage,
-                totalPages = patients.TotalPages,
-                previousPageLink,
-                nextPageLink
+                totalPages = patients.TotalPages
             };
 
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
-#endregion
 
-            return Ok(patients);
+            var links = CreateHateOasLinksForPatients(resourceParameters, patients.HasNext, patients.HasPrevious);
+            var shapedPatients = ((IEnumerable<PatientDto>)patients).ShapeData(resourceParameters.Fields);
+
+            var shapedPatientsWithLinks = shapedPatients.Select(patient =>
+              {
+                  var patientAsDictionary = patient as IDictionary<string, object>;
+                  var patientLinks = CreateHateOasLinksForPatient((long)patientAsDictionary["Id"], resourceParameters);
+
+                  patientAsDictionary.Add("links", patientLinks);
+
+                  return patientAsDictionary;
+              });
+
+            var linkedPatientResource = new
+            {
+                value = shapedPatientsWithLinks,
+                links
+            };
+
+            return Ok(linkedPatientResource);
         }
 #endif
 
+
+#if ORIGINAL
         [HttpGet("{patientId}", Name = nameof(GetPatient))]
         [Produces(typeof(PatientDto))]
         public IActionResult GetPatient(long? patientId, [FromQuery] ResourceParameters resourceParameters)
@@ -82,21 +138,60 @@ namespace Emar.Api.Controllers
 
             return Ok(patient);
         }
+#endif
+#if PAGING || SORTING || EXPANDO
+        [HttpGet("{patientId}", Name = nameof(GetPatient))]
+        //[Produces(typeof(PatientDto))]
+        [Produces("application/json",
+            MediaTypes.PcEmarMediaType)]
+        public IActionResult GetPatient(long? patientId, [FromQuery] ResourceParameters resourceParameters, [FromHeader(Name = "Accept")] string mediaType)
+        {
+            if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
+            {
+                return BadRequest();
+            }
 
+            if (!_propertyCheckerService.TypeHasProperties<PatientDto>(resourceParameters.Fields))
+            {
+                return BadRequest();
+            }
+
+            var patient = CheckPatient(patientId, resourceParameters);
+
+            if (error.Equals(Errors.BadRequest))
+            {
+                return BadRequest();
+            }
+
+            if (error.Equals(Errors.PatientNotFound) || (patient == null)) { return NotFound($"Patient with id {patientId} was not found"); }
+
+            if (parsedMediaType.MediaType.Equals(MediaTypes.PcEmarMediaType))
+            {
+                var links = CreateHateOasLinksForPatient(patientId, resourceParameters);
+                var linkedResourceToReturn = patient.ShapeData(resourceParameters.Fields) as IDictionary<string, object>;
+
+                linkedResourceToReturn.Add("links", links);
+
+                return Ok(linkedResourceToReturn);
+            }
+
+            return Ok(patient.ShapeData(resourceParameters.Fields));
+        }
+#endif
         [HttpGet("{patientId}/orders", Name = nameof(GetPatientOrders))]
         [Produces(typeof(IEnumerable<OrderDto>))]
         public IActionResult GetPatientOrders(long? patientId, [FromQuery] ResourceParameters resourceParameters)
         {
             patientId ??= resourceParameters.PatientId ?? null;
 
-            var patient = CheckPatient(patientId, null);
+            PatientDto patient = CheckPatient(patientId, null);
 
             if (error.Equals(Errors.BadRequest)) { return BadRequest(); }
 
             if (error.Equals(Errors.PatientNotFound) || (patient == null)) { return NotFound($"Patient with id {patientId} was not found"); }
 
-            var orderRepository = new OrderRepository(_context);
-            var orders = orderRepository.GetOrders(patientId, resourceParameters);
+            OrderRepository orderRepository = new OrderRepository(_context);
+            IEnumerable<Order> orders = orderRepository.GetOrders(patientId, resourceParameters);
 
             if (resourceParameters.IncludePatient.Equals(true) &&
                 (orders != null))
@@ -116,14 +211,14 @@ namespace Emar.Api.Controllers
         {
             patientId ??= resourceParameters.PatientId ?? null;
 
-            var patient = CheckPatient(patientId, null);
+            PatientDto patient = CheckPatient(patientId, null);
 
             if (error.Equals(Errors.BadRequest)) { return BadRequest(); }
 
             if (error.Equals(Errors.PatientNotFound) || (patient == null)) { return NotFound($"Patient with id {patientId} was not found"); }
 
-            var orderRepository = new OrderRepository(_context);
-            var order = orderRepository.GetOrder(orderId, resourceParameters);
+            OrderRepository orderRepository = new OrderRepository(_context);
+            Order order = orderRepository.GetOrder(orderId, resourceParameters);
 
             if (resourceParameters.IncludePatient.Equals(true) &&
                 (order != null))
@@ -155,62 +250,82 @@ namespace Emar.Api.Controllers
             return patient;
         }
 
-#if PAGING || SORTING
-       private string CreatePatientsResourceUri(ResourceParameters resourceParameters, ResourceUriType type)
+        private string CreatePatientsResourceUri(ResourceParameters resourceParameters, ResourceUriType type)
         {
-            return type switch
+            switch (type)
             {
-                ResourceUriType.PreviousPage => Url.Link(
-                    nameof(GetPatients),
-                    new
+                case ResourceUriType.PreviousPage:
                     {
-                        PageNumber = resourceParameters.PageNumber - 1,
-                        resourceParameters.PageSize,
-                                                             
-                        resourceParameters.DepartmentCode,
-                        resourceParameters.Ibex,
-                        resourceParameters.IncludeAdministrations,
-                        resourceParameters.IncludeAdministrationsEvents,
-                        resourceParameters.IncludeInactive,
-                        resourceParameters.IncludePatient,
-                        resourceParameters.PatientId,
-                        resourceParameters.Site
-                    }),
-                ResourceUriType.NextPage => Url.Link(
-                    nameof(GetPatients),
-                    new
+                        resourceParameters.PageNumber = resourceParameters.PageNumber - 1;
+                        return Url.Link(nameof(GetPatients), resourceParameters);
+                    }
+                case ResourceUriType.NextPage:
                     {
-                        PageNumber = resourceParameters.PageNumber + 1,
-                        resourceParameters.PageSize,
-
-                        resourceParameters.DepartmentCode,
-                        resourceParameters.Ibex,
-                        resourceParameters.IncludeAdministrations,
-                        resourceParameters.IncludeAdministrationsEvents,
-                        resourceParameters.IncludeInactive,
-                        resourceParameters.IncludePatient,
-                        resourceParameters.PatientId,
-                        resourceParameters.Site
-                    }),
-                _ => Url.Link(
-                    nameof(GetPatients),
-                    new
+                        resourceParameters.PageNumber = resourceParameters.PageNumber + 1;
+                        return Url.Link(nameof(GetPatients), resourceParameters);
+                    }
+                case ResourceUriType.Current:
+                default:
                     {
-                        resourceParameters.PageNumber,
-                        resourceParameters.PageSize,
-
-                        resourceParameters.DepartmentCode,
-                        resourceParameters.Ibex,
-                        resourceParameters.IncludeAdministrations,
-                        resourceParameters.IncludeAdministrationsEvents,
-                        resourceParameters.IncludeInactive,
-                        resourceParameters.IncludePatient,
-                        resourceParameters.PatientId,
-                        resourceParameters.Site
-                    }),
-            };
+                        return Url.Link(nameof(GetPatients), resourceParameters);
+                    }
+            }
         }
-#endif
+
+        public IEnumerable<HateOasLinkDto> CreateHateOasLinksForPatient(long? patientId, [FromQuery] ResourceParameters resourceParameters)
+        {
+            List<HateOasLinkDto> links = new List<HateOasLinkDto>();
+
+            if (String.IsNullOrWhiteSpace(resourceParameters.Fields))
+            {
+                links.Add(
+                    new HateOasLinkDto(Url.Link(nameof(GetPatient), new { patientId }),
+                    "self",
+                    "GET"));
+            }
+            else
+            {
+                links.Add(
+                    new HateOasLinkDto(Url.Link(nameof(GetPatient), new { patientId, resourceParameters.Fields }),
+                    "self",
+                    "GET"));
+            }
+
+            //links.Add(
+            //    new HateOasLinkDto(Url.Link(nameof(CreatePatientOrder), new { patientId }),
+            //    "create_patient_order",
+            //    "POST"));
+
+            return links;
+        }
+
+        public IEnumerable<HateOasLinkDto> CreateHateOasLinksForPatients([FromQuery] ResourceParameters resourceParameters, bool hasNext, bool hasPrevious)
+        {
+            List<HateOasLinkDto> links = new List<HateOasLinkDto>();
+
+            links.Add(
+                new HateOasLinkDto(CreatePatientsResourceUri(resourceParameters, ResourceUriType.Current),
+                "self",
+                "GET"));
+
+            if (hasNext)
+            {
+                links.Add(
+                    new HateOasLinkDto(CreatePatientsResourceUri(resourceParameters, ResourceUriType.NextPage),
+                    "nextPage",
+                    "GET"));
+            }
+
+            if (hasPrevious)
+            {
+                links.Add(
+                    new HateOasLinkDto(CreatePatientsResourceUri(resourceParameters, ResourceUriType.PreviousPage),
+                    "previousPage",
+                    "GET"));
+            }
+
+            return links;
+        }
 
         public enum Errors
         {
