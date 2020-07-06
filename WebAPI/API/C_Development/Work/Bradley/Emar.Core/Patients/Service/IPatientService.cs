@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using Emar.Core.Patients.Model;
+﻿using Emar.Core.Patients.Model;
 
 namespace Emar.Core.Patients.Service
 {
     public interface IPatientService
     {
-        PatientDto GetPatient(long patientId);
-        IEnumerable<PatientDto> GetPatients(bool activeOnly, int siteId);
-        long GetPatientIdFromPulseCheck(in int siteId, string ibex);
+        PagedList<PatientDto> GetPatients(ResourceParameters resourceParameters, bool includeOrders);
+        PatientDto GetPatient(long patientId, ResourceParameters resourceParameters, bool includeOrders);
     }
 }
