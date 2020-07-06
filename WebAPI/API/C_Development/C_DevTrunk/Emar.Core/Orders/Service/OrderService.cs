@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Emar.Core.Orders.Model;
 using Emar.Core.Orders.Model.Mappings;
 using Emar.Core.Orders.Repository;
@@ -14,33 +15,46 @@ namespace Emar.Core.Orders.Service
             _orderRepository = orderRepository;
         }
 
-        public IEnumerable<OrderDto> GetOrders(long? patientId, ResourceParameters resourceParameters)
+        public PagedList<OrderDto> GetOrders(long? patientId, ResourceParameters resourceParameters)
         {
-            var entityOrders = _orderRepository.GetOrders(patientId, resourceParameters);
+            var orders = _orderRepository.GetOrders(patientId, resourceParameters);
+
+            if ((orders == null) ||
+                (!orders.Any()))
+            {
+                return null;
+            }
+
             var ordersList = new List<OrderDto>();
 
-            foreach (var order in entityOrders)
+            foreach (var order in orders)
             {
                 ordersList.Add(OrderMapper.MapOrder(order));
             }
 
-            return ordersList;
+            return new PagedList<OrderDto>(ordersList, orders.TotalCount, orders.CurrentPage, orders.PageSize);
         }
 
         public OrderDto GetOrder(long orderId, ResourceParameters resourceParameters)
         {
-            var entityOrder = _orderRepository.GetOrder(orderId, resourceParameters);
-            var orderDto = OrderMapper.MapOrder(entityOrder);
+            var order = _orderRepository.GetOrder(orderId, resourceParameters);
+
+            if (order == null)
+            {
+                return null;
+            }
+
+            var orderDto = OrderMapper.MapOrder(order);
 
             return orderDto;
         }
 
         public IEnumerable<OrderAdministrationDto> GetAdministrations(long orderId)
         {
-            var entityAdministrations = _orderRepository.GetAdministrations(orderId);
+            var administrations = _orderRepository.GetAdministrations(orderId);
             var administrationsList = new List<OrderAdministrationDto>();
 
-            foreach (var administration in entityAdministrations)
+            foreach (var administration in administrations)
             {
                 administrationsList.Add(OrderMapper.MapOrderAdministration(administration));
             }
@@ -50,18 +64,18 @@ namespace Emar.Core.Orders.Service
 
         public OrderAdministrationDto GetAdministration(long administrationId)
         {
-            var entityAdministration = _orderRepository.GetAdministration(administrationId);
-            var administrationDto = OrderMapper.MapOrderAdministration(entityAdministration);
+            var administration = _orderRepository.GetAdministration(administrationId);
+            var administrationDto = OrderMapper.MapOrderAdministration(administration);
 
             return administrationDto;
         }
 
         public IEnumerable<OrderEventDto> GetEvents(long orderId)
         {
-            var entityEvents = _orderRepository.GetEvents(orderId);
+            var events = _orderRepository.GetEvents(orderId);
             var eventsList = new List<OrderEventDto>();
 
-            foreach (var @event in entityEvents)
+            foreach (var @event in events)
             {
                 eventsList.Add(OrderMapper.MapOrderEvent(@event));
             }
@@ -71,18 +85,18 @@ namespace Emar.Core.Orders.Service
 
         public OrderEventDto GetEvent(long eventId)
         {
-            var entityEvent = _orderRepository.GetEvent(eventId);
-            var eventDto = OrderMapper.MapOrderEvent(entityEvent);
+            var @event = _orderRepository.GetEvent(eventId);
+            var eventDto = OrderMapper.MapOrderEvent(@event);
 
             return eventDto;
         }
 
         public IEnumerable<OrderEventDto> GetAdministrationEvents(long administrationId)
         {
-            var entityEvents = _orderRepository.GetAdministrationEvents(administrationId);
+            var events = _orderRepository.GetAdministrationEvents(administrationId);
             var eventsList = new List<OrderEventDto>();
 
-            foreach (var @event in entityEvents)
+            foreach (var @event in events)
             {
                 eventsList.Add(OrderMapper.MapOrderEvent(@event));
             }

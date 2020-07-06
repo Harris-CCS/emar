@@ -5,7 +5,7 @@ using Emar.Data.Entities;
 
 namespace Emar.Core.Orders.Model
 {
-    public class OrderDto : HateOasLinkDto
+    public class OrderDto 
     {
         /// <summary>
         /// Unique order identifier
@@ -80,7 +80,10 @@ namespace Emar.Core.Orders.Model
 
             set
             {
-                OrderStatusCode = (OrderStatuses)Enum.Parse(typeof(OrderStatuses), value);
+                if (Enum.TryParse(typeof(OrderStatuses), value, out object code))
+                {
+                    OrderStatusCode = (OrderStatuses)code;
+                }
             }
         }
 

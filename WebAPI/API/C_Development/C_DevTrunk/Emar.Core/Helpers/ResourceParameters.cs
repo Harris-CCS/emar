@@ -1,19 +1,19 @@
-﻿using System.IO;
-
-namespace Emar.Core
+﻿namespace Emar.Core
 {
     public class ResourceParameters
     {
         public short? Site { get; set; }        // PulseCheck exclusive
         public string Ibex { get; set; }        // PulseCheck exclusive
         public string DepartmentCode { get; set; }
+        public string WardCodes { get; set; }
+        public string RoomBedCode { get; set; }
         public long? PatientId { get; set; }
         public bool IncludeInactive { get; set; } = false;
+        public bool IncludeOrders { get; set; } = true;
         public bool IncludePatient { get; set; } = true;
         public bool IncludeAdministrations { get; set; } = true;
         public bool IncludeAdministrationsEvents { get; set; } = true;
 
-#if PAGING || SORTING || EXPANDO
         #region Paging
         const int maxPageSize = 20;
         private int _pageSize = 10;
@@ -26,12 +26,11 @@ namespace Emar.Core
         #endregion
 
         #region Sorting
-        public string OrderBy { get; set; } = "FullName";
+        public string OrderBy { get; set; } = "Id";
         #endregion
 
         #region ExpandO (data shaping)
         public string Fields { get; set; }
         #endregion
-#endif
     }
 }

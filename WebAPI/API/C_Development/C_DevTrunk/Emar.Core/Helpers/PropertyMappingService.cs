@@ -1,18 +1,15 @@
-﻿#if PAGING || SORTING || EXPANDO
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
+using Emar.Core.Orders.Model;
 using Emar.Core.Patients.Model;
 using Emar.Data.Entities;
-using Microsoft.EntityFrameworkCore.Query;
 
-namespace Emar.Core.Patients.Service
+namespace Emar.Core
 {
     public class PropertyMappingService : IPropertyMappingService
     {
-        private Dictionary<string, PropertyMappingValue> _propertyMapping =
+        private Dictionary<string, PropertyMappingValue> _propertyMappingPatient =
             new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
             {
                 {"Id", new PropertyMappingValue(new List<string>() {"Id" } )},
@@ -23,11 +20,24 @@ namespace Emar.Core.Patients.Service
                 {"RoomBedCode", new PropertyMappingValue(new List<string>() { "RoomBedCode" } )}
             };
 
+        private Dictionary<string, PropertyMappingValue> _propertyMappingOrder =
+            new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
+            {
+                {"Id", new PropertyMappingValue(new List<string>() {"Id" } )},
+                {"Priority", new PropertyMappingValue(new List<string>() { "Priority" } )},
+                {"OrderStatus", new PropertyMappingValue(new List<string>() { "OrderStatus" }, true )},
+                {"Begin", new PropertyMappingValue(new List<string>() { "BeginDateTime" } )},
+                {"BeginDate", new PropertyMappingValue(new List<string>() { "BeginDateTime" } )},
+                {"BeginTime", new PropertyMappingValue(new List<string>() { "BeginDateTime" } )}
+                //{"OrderingProvider", new PropertyMappingValue(new List<string>() { "OrderingProvider" } )}
+            };
+
         private IList<IPropertyMapping> _propertyMappings = new List<IPropertyMapping>();
 
         public PropertyMappingService()
         {
-            _propertyMappings.Add(new PropertyMapping<PatientDto, Patient>(_propertyMapping));
+            _propertyMappings.Add(new PropertyMapping<PatientDto, Patient>(_propertyMappingPatient));
+            _propertyMappings.Add(new PropertyMapping<OrderDto, Order>(_propertyMappingOrder));
         }
 
         public bool ValidMappingExistsFor<TSource, TDestination>(string fields)
@@ -76,4 +86,3 @@ namespace Emar.Core.Patients.Service
         }
     }
 }
-#endif

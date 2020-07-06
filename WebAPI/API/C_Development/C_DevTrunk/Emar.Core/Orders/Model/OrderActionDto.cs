@@ -1,6 +1,6 @@
 ﻿namespace Emar.Core.Orders.Model
 {
-    //public class OrderActionDto : HateOasLinkDto
+    //public class OrderActionDto 
     //{
     //    public string Code { get; set; }
     //    [NotMapped]

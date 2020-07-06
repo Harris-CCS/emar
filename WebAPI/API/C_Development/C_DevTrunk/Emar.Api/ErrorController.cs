@@ -6,10 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Emar.Api
 {
+    [ApiController]
     [Route("api/[controller]")]
     public class ErrorController : Controller
     {
-        [Route("")]
+        [HttpGet]
         [AllowAnonymous]
         public IActionResult Get()
         {

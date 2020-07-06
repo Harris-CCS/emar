@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Globalization;
 using System.Linq;
-#if PAGING || SORTING || EXPANDO
 using System.Linq.Dynamic.Core;
 using System.Reflection;
-#endif
-using Emar.Core.Patients.Service;
 
 namespace Emar.Core
 {
@@ -40,7 +37,6 @@ namespace Emar.Core
         }
     }
 
-#if PAGING || SORTING || EXPANDO
     public static class IQueryableExtensions
     {
         public static IQueryable<T> ApplySort<T>(this IQueryable<T> source, string orderBy, Dictionary<string, PropertyMappingValue> mappingDictionary)
@@ -117,9 +113,7 @@ namespace Emar.Core
             return source.OrderBy(orderByString);
         }
     }
-#endif
 
-#if EXPANDO
     public static class IEnumerableExtensions
     {
         public static IEnumerable<ExpandoObject> ShapeData<TSource>(this IEnumerable<TSource> source, string fields)
@@ -258,8 +252,8 @@ namespace Emar.Core
                 var propertyInfo = typeof(TSource)
                     .GetProperty(
                         propertyName,
-                        BindingFlags.IgnoreCase | 
-                        BindingFlags.Public | 
+                        BindingFlags.IgnoreCase |
+                        BindingFlags.Public |
                         BindingFlags.Instance);
 
                 if (propertyInfo == null)
@@ -279,5 +273,4 @@ namespace Emar.Core
             return dataShapedObject;
         }
     }
-#endif
 }

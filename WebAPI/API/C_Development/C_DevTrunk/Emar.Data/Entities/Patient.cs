@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -50,18 +51,15 @@ namespace Emar.Data.Entities
         [Column("complaint", TypeName = "varchar(80)")]
         public string ChiefComplaint { get; set; }
 
-        //[Column("height_in_cm", TypeName = "numeric")]
         [Column("height", TypeName = "numeric")]
         public decimal? HeightInCm { get; set; }
 
-        //[Column("weight_in_kg", TypeName = "numeric")]
         [Column("weight", TypeName = "numeric")]
         public decimal? WeightInKg { get; set; }
 
         [NotMapped]
         public string SiteName { get; set; }
 
-        //[Column("department_code", TypeName = "varchar(15)")]
         [Column("deptartment_code", TypeName = "varchar(15)")]
         public string DepartmentCode { get; set; }
 
@@ -136,5 +134,8 @@ namespace Emar.Data.Entities
 
         [Column("vs_pain_scale", TypeName = "char(14)")]
         public string VsPainScale { get; set; }
+
+        [NotMapped]
+        public IEnumerable<Order>? Orders { get; set; }
     }
 }

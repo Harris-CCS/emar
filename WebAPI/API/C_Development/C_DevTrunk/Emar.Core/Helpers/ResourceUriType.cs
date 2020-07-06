@@ -1,5 +1,4 @@
-﻿#if PAGING || SORTING || EXPANDO
-namespace Emar.Core
+﻿namespace Emar.Core
 {
     public enum ResourceUriType
     {
@@ -8,4 +7,3 @@ namespace Emar.Core
         Current
     }
 }
-#endif

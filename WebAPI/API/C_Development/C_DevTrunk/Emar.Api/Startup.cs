@@ -1,4 +1,5 @@
 using System.Linq;
+using Emar.Core;
 using Emar.Core.Orders.Repository;
 using Emar.Core.Orders.Service;
 using Emar.Core.Patients.Repository;
@@ -16,14 +17,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore;
 using Newtonsoft.Json.Serialization;
 
 namespace Emar.Api
 {
     public class Startup
     {
-        private string _connectionString = @"Data Source=ros-57c-dx01.picis.com;Initial Catalog=emar;Integrated Security=true";
+        private string EmarOpenAPISpecification = "eMAROpenAPISpecification";
+        private string EmarOpenAPITitle = "eMAR API";
 
         #region Constructors
         public Startup(IConfiguration configuration)
@@ -37,14 +38,31 @@ namespace Emar.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpCacheHeaders((expirationModelOptions) =>
+            {
+                expirationModelOptions.MaxAge = 60;
+                expirationModelOptions.CacheLocation = Marvin.Cache.Headers.CacheLocation.Private;
+            },
+            (validationModelOptions) =>
+            {
+                validationModelOptions.MustRevalidate = true;
+            });
+
+            services.AddResponseCaching();
+
             services.AddControllers(setupAction =>
             {
                 setupAction.ReturnHttpNotAcceptable = true;
+                setupAction.CacheProfiles.Add("240SecondsCacheProfile",
+                    new CacheProfile()
+                    {
+                        Duration = 240
+                    });
             })
                 .AddNewtonsoftJson(setupAction =>
                 {
                     setupAction.SerializerSettings.ContractResolver =
-                    new CamelCasePropertyNamesContractResolver();
+                        new CamelCasePropertyNamesContractResolver();
                 })
                 //.AddXmlDataContractSerializerFormatters()
                 .ConfigureApiBehaviorOptions(setupAction =>
@@ -88,20 +106,27 @@ namespace Emar.Api
                     };
                 });
 
-#if PAGING || SORTING || EXPANDO
             services.Configure<MvcOptions>(config =>
             {
                 var newtonsoftJsonOutputFormatter = config.OutputFormatters.OfType<NewtonsoftJsonOutputFormatter>()?.FirstOrDefault();
 
                 if (newtonsoftJsonOutputFormatter != null)
                 {
-                    newtonsoftJsonOutputFormatter.SupportedMediaTypes.Add(Controllers.MediaTypes.PcEmarMediaType);
+                    newtonsoftJsonOutputFormatter.SupportedMediaTypes.Add(Controllers.MediaTypes.PcEmar);
+
+                    // remove text/json as it isn't the approved media type
+                    // for working with JSON at API level
+                    if (newtonsoftJsonOutputFormatter.SupportedMediaTypes.Contains("text/json"))
+                    {
+                        newtonsoftJsonOutputFormatter.SupportedMediaTypes.Remove("text/json");
+                    }
                 }
             });
 
+            services.AddDbContext<EmarContext>(options => options.UseSqlServer(ConfigurationExtensions.GetConnectionString(Configuration, "SqlConnection")));
+
             services.AddTransient<IPropertyMappingService, PropertyMappingService>();
             services.AddTransient<IPropertyCheckerService, PropertyCheckerService>();
-#endif
 
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IOrderRepository, OrderRepository>();
@@ -112,37 +137,50 @@ namespace Emar.Api
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
 
-            services.AddEntityFrameworkSqlServer()
-            .AddDbContext<EmarContext>(options =>
-                options.UseSqlServer(_connectionString));
+            services.AddSwaggerGen(setupAction =>
+            {
+                setupAction.SwaggerDoc(EmarOpenAPISpecification, new Microsoft.OpenApi.Models.OpenApiInfo()
+                {
+                    Title = EmarOpenAPITitle ,
+                    Version = "1"
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            //////if (env.IsDevelopment())
-            //////{
-            //////    _connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=emar;Integrated Security=true";
-            //////    app.UseDeveloperExceptionPage();
-            //////}
-            //////else
-            //////{
-            //////    app.UseExceptionHandler(appBuilder =>
-            //////    {
-            //////        appBuilder.Run(async context =>
-            //////        {
-            //////            context.Response.StatusCode = 500;
-            //////            await context.Response.WriteAsync("An unexpected fault happened. Try again later.");
-            //////        });
-            //////    });
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler(appBuilder =>
+                {
+                    appBuilder.Run(async context =>
+                    {
+                        context.Response.StatusCode = 500;
+                        await context.Response.WriteAsync("An unexpected fault happened. Try again later.");
+                    });
+                });
 
-            //////}
+            }
 
-            app.UseDeveloperExceptionPage();
+            // app.UseResponseCaching();
+
+            app.UseHttpCacheHeaders();
 
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(setupAction=>
+            {
+                setupAction.SwaggerEndpoint(@"/swagger/" + EmarOpenAPISpecification + @"/swagger.json", EmarOpenAPITitle);
+            });
 
             app.UseEndpoints(endpoints =>
             {

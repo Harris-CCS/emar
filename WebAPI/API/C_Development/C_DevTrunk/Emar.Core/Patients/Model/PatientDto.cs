@@ -4,7 +4,7 @@ using Emar.Data.Entities;
 
 namespace Emar.Core.Patients.Model
 {
-    public class PatientDto : HateOasLinkDto
+    public class PatientDto
     {
         public long Id { get; set; }
         public bool Active { get; set; }
