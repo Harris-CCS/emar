@@ -20,18 +20,6 @@ go
 /*****************
  Unique constraint
 *****************/
-
-execute [sys].[sp_addextendedproperty]
-    @name = N'MS_Description'
-  , @value = N'Primary Key Constraint'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'site_formulary'
-  , @level2type = N'CONSTRAINT'
-  , @level2name = N'pk__site_formulary__id';
-go
-
 /*******
  Indexes
 *******/
@@ -51,6 +39,18 @@ go
  Data Dictionary
     Indexes
 ***************/
+
+execute [sys].[sp_addextendedproperty]
+    @name = N'MS_Description'
+  , @value = N'Primary Key Constraint'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'site_formulary'
+  , @level2type = N'CONSTRAINT'
+  , @level2name = N'pk__site_formulary__id';
+go
+
 /***************
  Data Dictionary
     Table

@@ -11,6 +11,8 @@ Post-Deployment Script Template
 *************************************************************************************/
 -- Table rename to site_formulary
 drop table if exists dbo.site_formularies;
+-- Table rename to site_options
+drop table if exists dbo.global_options
 
 --- variables global to all diagram_ published scripts
 declare
