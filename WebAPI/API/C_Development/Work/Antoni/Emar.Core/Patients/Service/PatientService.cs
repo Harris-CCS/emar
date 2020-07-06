@@ -16,39 +16,36 @@ namespace Emar.Core.Patients.Service
             _patientRepository = patientRepository;
         }
 
-#if ORIGINAL
-        public IEnumerable<PatientDto> GetPatients(ResourceParameters resourceParameters)
+        public PagedList<PatientDto> GetPatients(ResourceParameters resourceParameters, bool includeOrders)
         {
-            var entityPatients = _patientRepository.GetPatients(resourceParameters);
+            var patients = _patientRepository.GetPatients(resourceParameters, includeOrders);
+
+            if ((patients == null) ||
+                (!patients.Any()))
+            {
+                return null;
+            }
+
             var patientList = new List<PatientDto>();
 
-            foreach (Patient patient in entityPatients)
+            foreach (Patient patient in patients)
             {
                 patientList.Add(PatientMapper.MapPatient(patient));
             }
 
-            return patientList;
+            return new PagedList<PatientDto>(patientList, patients.TotalCount, patients.CurrentPage, patients.PageSize);
         }
-#endif
-#if PAGING || SORTING || EXPANDO
-        public PagedList<PatientDto> GetPatients(ResourceParameters resourceParameters)
-        {
-            var entityPatients = _patientRepository.GetPatients(resourceParameters);
-            var patientList = new List<PatientDto>();
 
-            foreach (Patient patient in entityPatients)
+        public PatientDto GetPatient(long patientId, ResourceParameters resourceParameters, bool includeOrders)
+        {
+            Patient patient = _patientRepository.GetPatient(patientId, resourceParameters, includeOrders);
+
+            if (patient == null)
             {
-                patientList.Add(PatientMapper.MapPatient(patient));
+                return null;
             }
 
-            return new PagedList<PatientDto>(patientList, entityPatients.TotalCount, entityPatients.CurrentPage, entityPatients.PageSize);
-        }
-#endif
-
-        public PatientDto GetPatient(long patientId, ResourceParameters resourceParameters)
-        {
-            Patient entityPatient = _patientRepository.GetPatient(patientId, resourceParameters);
-            PatientDto patientDto = PatientMapper.MapPatient(entityPatient);
+            PatientDto patientDto = PatientMapper.MapPatient(patient);
 
             return patientDto;
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Emar.Data.Entities;
 using static Emar.Core.Orders.Model.OrderDto;
 
@@ -34,7 +35,7 @@ namespace Emar.Core.Orders.Model.Mappings
                 Dose = order.Dose,
                 OrderingProviderId = order.OrderingProviderId,
                 OrderAdministrations = order.Administrations,
-                OrderEvents = order.Events
+                OrderEvents = order.Events.Where(@event => @event.AdministrationId == null)
             };
 
             return _orderDto;

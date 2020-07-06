@@ -1,7 +1,6 @@
-﻿#if EXPANDO
-using System.Reflection;
+﻿using System.Reflection;
 
-namespace Emar.Core.Patients.Service
+namespace Emar.Core
 {
     public class PropertyCheckerService : IPropertyCheckerService
     {
@@ -28,8 +27,8 @@ namespace Emar.Core.Patients.Service
                 var propertyInfo = typeof(T)
                     .GetProperty(
                         propertyName,
-                        BindingFlags.IgnoreCase | 
-                        BindingFlags.Public | 
+                        BindingFlags.IgnoreCase |
+                        BindingFlags.Public |
                         BindingFlags.Instance);
 
                 // it can't be found, return false
@@ -44,4 +43,3 @@ namespace Emar.Core.Patients.Service
         }
     }
 }
-#endif
