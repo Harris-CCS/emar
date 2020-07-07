@@ -3,6 +3,9 @@ import { Component } from '@angular/core';
 import { User } from './interfaces/user';
 
 import { USER } from 'src/app/mockup/user';
+import { Observable, TimeoutError } from 'rxjs';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { filter, map, mergeMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -11,7 +14,27 @@ import { USER } from 'src/app/mockup/user';
 })
 export class AppComponent {
   title: string = 'emar';
+  pageTitle$: Observable<string>;
   user: User;
+
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute
+  ) {
+    // https://stackoverflow.com/questions/49632152/angular-2-how-to-access-active-route-outside-router-outlet
+    this.pageTitle$ = this.router.events.pipe(
+      filter(e => e instanceof NavigationEnd),
+      map(() => activatedRoute),
+      map(route => {
+        while (route.firstChild) {
+          route = route.firstChild;
+        }
+        return route;
+      }),
+      mergeMap(route => route.data),
+      map(data => data.hasOwnProperty('title') ? data.title : ''),
+    )
+  }
 
   loginUser() {
     this.user = USER

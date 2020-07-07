@@ -1,4 +1,5 @@
-<header-user [user]="loginUser()"></header-user>
+<header-user [user]="loginUser()" [title]="pageTitle$|async"></header-user>
+
 <div class="page-content page-content-wrapper">
     <router-outlet></router-outlet>
 </div>
