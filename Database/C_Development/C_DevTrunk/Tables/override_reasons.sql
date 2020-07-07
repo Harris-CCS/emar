@@ -51,7 +51,7 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'This table contains a list of override_reasons'
+  , @value = N'This table contains a list of override reasons'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -76,7 +76,7 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Hospital identifier foreign key to site table'
+  , @value = N'Hospital identifier foreign key to sites table'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
