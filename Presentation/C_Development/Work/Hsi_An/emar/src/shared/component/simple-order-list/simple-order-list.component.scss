@@ -31,15 +31,34 @@ ul li {
     margin-bottom: 4px;
 }
 
-ul li label {
+ul li button {
     font-weight: 300;
     font-size: 12px;
     letter-spacing: 0.5px;
     display: block;
 }
 
-ul li:hover {
-    color: #6da0b1;
+ul li button:hover {
+    color: #0077AB;
+    //color: #6da0b1;
     //color: #090909;
     //text-decoration: underline;
+}
+
+button {
+    background: none;
+    border: none;
+    text-align: left;
+    outline-color: white;
+
+    .main {
+        font-weight: 300;
+        font-size: 14px;
+        letter-spacing: 0.5px;
+        //display: block;
+    }
+
+    .addition {
+        opacity: 0.8;
+    }
 }

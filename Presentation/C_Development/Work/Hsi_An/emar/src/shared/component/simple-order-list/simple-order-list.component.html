@@ -1,12 +1,13 @@
 <div class="">
     <ul>
         <li *ngFor="let item of displayItems">
-            <input type="checkbox" id="med_{{item.id}}" />
-            <label for="med_{{item.id}}">
-                <a (click)="onAddNewMed()">
-                    {{ item.name }} {{ item.dose }} {{ item.route }}
-                </a>
-            </label>
+            <input type="checkbox" id="med_{{item.id}}" (click)="orderOnClick1(item)"/>
+            <!--<label for="med_{{item.id}}">{{item.name}} {{item.dose}} {{item.route}}</label>-->
+            <button type="button" (click)="orderOnClick2(item)">
+                <span class="main">{{item.name}}</span>
+                <br>
+                <span class="addition">{{item.dose}} {{item.route}}</span>
+            </button>
         </li>
     </ul>
 </div>

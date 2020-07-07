@@ -1,13 +1,42 @@
-<div class="page-content patient-details">
-    <header-patient [patient]="selectedPatient()"></header-patient>
-
-    <div class="page-content-wrapper">
-        <div class="orders">
-            <!-- <form-med></form-med> -->
-        </div>
-        <div class="lists">
-            <!-- <scheduler-med></scheduler-med> -->
+<div class="dialog-createOrder">
+    <div class="form">
+        <form id="createOrderForm">
+            <div class="form-group">
+                <div class="partialDiv">
+                    <div class="dialog-title">
+                        <span>New Order: </span>
+                            {{getMed().name}}
+                    </div>
+                    <div class="form-part">
+                        <div class="form-column">
+                            <span class="subheader">
+                                <span>Product</span>
+                            </span>
+                            <span class="item">
+                                {{getMed().name}}
+                            </span>
+                        </div>
+                        <div class="form-column">
+                            <span class="subheader">
+                                <span>Frequency</span>
+                            </span>
+                            <span class="item">
+                                
+                            </span>
+                        </div>
+                    </div> 
+                </div>
+            </div>
+        </form>
+        <div class="dialog-footer">
+            <button class="secondary-button button-raised" title="Add to Quick List">&#10025;</button>
+            <button class="secondary-button button-raised" title="Continue">Continue</button>
+            <button 
+                class="primary-button button-raised" 
+                title={{getActionText()}}
+                (click)="processCartOrder()">
+                {{getActionText()}}
+            </button>
         </div>
     </div>
-
 </div>
