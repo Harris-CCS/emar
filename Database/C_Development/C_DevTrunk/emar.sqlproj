@@ -94,6 +94,9 @@
     <Build Include="Tables\site_formulary.sql" />
     <Build Include="Tables\site_formulary_match.sql" />
     <Build Include="Tables\user_quick_list.sql" />
+    <Build Include="Tables\medication_routes.sql" />
+    <Build Include="Tables\patient_cart_details.sql" />
+    <Build Include="Tables\patient_carts.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />
