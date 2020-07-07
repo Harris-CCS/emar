@@ -4,14 +4,14 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { SharedComponentsModule } from '../shared/shared.components.module';
 import { OrderEntryModule } from '../pages/order-entry/order-entry.module';
-import { ComposerMedComponent } from '../pages/composer-med/composer-med.component';
+//import { MedComposerComponent } from '../pages/med-composer/med-composer.component';
 import { AppRoutingModule } from './app-routing.module';
 import { PatientsDashboardComponent } from '../pages/patients-dashboard/patients-dashboard.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ComposerMedComponent,
+    //MedComposerComponent,
     PatientsDashboardComponent,
   ],
   imports: [

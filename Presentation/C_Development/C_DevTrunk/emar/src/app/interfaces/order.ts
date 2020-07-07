@@ -7,5 +7,7 @@ export interface Order {
     dose: string,
     route: string,
     signedOn: string,
-    signedBy: string
+    signedBy: string,
+    allergies?: any,
+    drugs?: any 
 }

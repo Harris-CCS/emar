@@ -1,0 +1,11 @@
+<ul>
+    <li *ngFor="let item of displayCartItems">
+        <span id="cart_{{item.id}}"></span>
+        <span [ngClass]="{'unresolved allergy-dot': item.allergies?.length, 'placeholder-dot': item.allergies?.length === 0, 'allergy-loader': !item.allergies}"></span>
+        <span [ngClass]="{'unresolved drug-dot' : item.drugs?.length, 'placeholder-dot': item.drugs?.length === 0, 'drug-loader': !item.drugs}"></span>
+        <label for="cart_{{item.id}}" (click)="editCartItem(item)">{{item.name}} {{item.dose}} {{item.route}}</label>
+        <button class="button delete" (click)="removeCartItem(item)"></button>
+    </li>
+</ul>
+<span class="no-data" *ngIf="!displayCartItems.length">No New Orders</span>
+<button *ngIf="displayCartItems.length" class="button button-raised">Sign</button>
