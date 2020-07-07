@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import { MEDICATIONS } from 'src/app/mockup/medications';
+import { MedOrderService } from '../../../../services/med-order.service';
+import { ModalService } from '../../../../services/modal.service';
 
 @Component({
   selector: 'quick-list',
@@ -14,10 +15,24 @@ export class QuickListComponent implements OnInit {
   }
   
   quickListOrders() {
-    return MEDICATIONS.slice(100, 117);
+    return this.medOrderService.getQuickListOrders();
   }
 
-  constructor() {}
+  //addToCart = (...args) => console.log(`addToCart from quick list:`, ...args);
+  addToCart = (med) => {
+    this.medOrderService.postCartOrder(med, this.quickList());
+    console.log(`addToCart from quick list: ${med.id}  name: ${med.name}`);
+  }
+
+  editOrder = (med) => {
+    this.modalService.open('medComposer', {action: 'add', med});
+    console.log(`editOrder from quick list: ${med.name}`);
+  }
+
+  constructor(
+    private medOrderService: MedOrderService,
+    private modalService: ModalService,
+  ) {}
 
   ngOnInit(): void {
   }

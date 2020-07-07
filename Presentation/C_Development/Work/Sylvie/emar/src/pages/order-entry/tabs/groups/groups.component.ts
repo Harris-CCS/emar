@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import { MEDICATIONS } from 'src/app/mockup/medications';
+import { MedOrderService } from '../../../../services/med-order.service';
+import { ModalService } from '../../../../services/modal.service';
 
 @Component({
   selector: 'groups',
@@ -9,7 +10,10 @@ import { MEDICATIONS } from 'src/app/mockup/medications';
 })
 export class GroupsComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private medOrderService: MedOrderService,
+    private modalService: ModalService,
+  ) { }
 
   ngOnInit(): void {
   }
@@ -19,6 +23,16 @@ export class GroupsComponent implements OnInit {
   }
 
   groupsOrders() {
-    return MEDICATIONS.slice(10, 12);
+    return this.medOrderService.getGroupsOrders();
+  }
+
+  addToCart = (med) => {
+    this.medOrderService.postCartOrder(med, this.groups());
+    console.log(`addToCart from Group list: ${med.id}  name: ${med.name}`);
+  }
+
+  editOrder = (med) => {
+    this.modalService.open('medComposer', {action: 'add', med});
+    console.log(`editOrder from Group list: ${med.name}`);
   }
 }

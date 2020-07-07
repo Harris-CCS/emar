@@ -98,6 +98,7 @@ section.header {
     flex-direction: column;
 }
 
+/*
 .button {
     display: inline-block;
     height: 40px;
@@ -145,6 +146,7 @@ section.header {
     border: none;
     cursor: pointer;
 }
+*/
 
 .login-form .button {
     margin: 30px auto;
@@ -283,7 +285,6 @@ h3 {
     opacity: 0.8;
 }
 
-
 .page-content-wrapper .lists {
     font-size: 16px;
     color: #353535;
@@ -413,6 +414,7 @@ h3 {
     padding: 0 !important;
 }
 
+/*
 .dialog-createOrder .form {
     flex-grow: 1;
     justify-content: space-between;
@@ -434,11 +436,11 @@ h3 {
 
 .dialog-title {
     font-size: 20px;
-    /*border-bottom: solid 1px rgba(53, 53, 53, 0.26);*/
+    //border-bottom: solid 1px rgba(53, 53, 53, 0.26);
     padding: 20px;
     padding-bottom: 20px;
 }
-
+*/
 .e-dialog .e-dlg-header-content {
     border-bottom: none;
     padding: 18px;
@@ -505,6 +507,7 @@ h3 {
     width: 300px;
 }
 
+/*
 .dialog-title span {
     opacity: 0.6;
 }
@@ -601,7 +604,7 @@ h3 {
     border-right: solid 1px #c7c7c7;
     width: 300px;
 }
-
+*/
 .wrapper {
     display: inline-block;
 }
@@ -644,7 +647,7 @@ h3 {
     float: right;
 }
 
-#cartPartial ol {
+#cartPartial ul {
     margin-top: 20px;
 }
 
