@@ -22,11 +22,11 @@ go
 ********/
 
 alter table [dbo].[users]
-add constraint [df__users__ordering_only_physician] default('N') for [ordering_only_physician];
+add constraint [df__users__ordering_only_physician] default((0)) for [ordering_only_physician];
 go
 
 alter table [dbo].[users]
-add constraint [df__users__name_display_preference] default('N') for [name_display_preference];
+add constraint [df__users__name_display_preference] default((0)) for [name_display_preference];
 go
 
 alter table [dbo].[users]
@@ -227,7 +227,7 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Y=ordering only physician 1=true 0=false'
+  , @value = N'ordering only physician: 0 (default – not ordering only ), 1 (ordering only)'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -238,7 +238,7 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Name Display Preference 1=true 0=false'
+  , @value = N'Name Display Preference: 0 (default – full name), 1 (initials only)'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'

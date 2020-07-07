@@ -1,15 +1,15 @@
 ﻿create table [dbo].[site_preferred_list]
     (
-      [id]           [int] identity(1, 1) not null
-    , [site_id]      [int] not null
-    , [is_active]    [bit] not null
-    , [ndc]          [varchar](32) null
-    , [drug_id]      [varchar](32) not null
-    , [brand_name]   [varchar](255) not null
-    , [route]        [varchar](20) null
-    , [dose]         [varchar](40) null
-    , [unit]         [varchar](40) null
-    , [frequency_id] [int] null
+      [id]                  [int] identity(1, 1) not null
+    , [site_id]             [int] not null
+    , [is_active]           [bit] not null
+    , [ndc]                 [varchar](32) null
+    , [drug_id]             [varchar](32) not null
+    , [brand_name]          [varchar](255) not null
+    , [medication_route_id] [int] null
+    , [dose]                [varchar](40) null
+    , [unit]                [varchar](40) null
+    , [frequency_id]        [int] null
     , constraint [pk__site_preferred_list__id] primary key clustered([id] asc));
 go
 
@@ -28,6 +28,10 @@ go
 
 alter table [dbo].[site_preferred_list]
 add constraint [fk__site_preferred_list__sites] foreign key([site_id]) references [dbo].[sites]([id]);
+go
+
+alter table [dbo].[site_preferred_list]
+add constraint [fk__site_preferred_list__medication_routes] foreign key([medication_route_id]) references [dbo].[medication_routes]([id]);
 go
 
 /***************
@@ -149,7 +153,7 @@ execute [sys].[sp_addextendedproperty]
   , @level1type = N'TABLE'
   , @level1name = N'site_preferred_list'
   , @level2type = N'COLUMN'
-  , @level2name = N'route';
+  , @level2name = N'medication_route_id';
 go
 
 execute [sys].[sp_addextendedproperty]
