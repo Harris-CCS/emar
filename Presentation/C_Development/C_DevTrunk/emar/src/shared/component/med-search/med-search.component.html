@@ -1,0 +1,26 @@
+<!--<fieldset class="form-inline">-->
+    <div class="form-group">
+      <label for="typeahead-http">{{label}}</label>
+      <input
+        id="typeahead-http"
+        type="text"
+        class="form-control"
+        
+        [(ngModel)]="model"
+        [ngbTypeahead]="search"
+        placeholder="Medication search"
+        (selectItem)="onSelect($event, input)"
+        [inputFormatter]="inputFormat" 
+        [resultFormatter]="resultFormat" 
+        
+        #input />
+      <!--<small *ngIf="searching" class="form-text text-muted">searching...</small>
+      <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>-->
+    </div>
+  <!--</fieldset>-->
+
+
+<!--
+    [class.is-invalid]="searchFailed"
+    #instance="ngbTypeahead"
+-->
