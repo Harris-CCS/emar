@@ -8,12 +8,14 @@ import { User } from '../../../app/interfaces/user';
   styleUrls: ['./header-user.component.scss']
 })
 export class HeaderUserComponent implements OnInit {
-
   @Input() user: User;
+  @Input() title: string;
 
-  constructor() { }
+ constructor() {}
+ ngOnInit() {}
 
-  ngOnInit(): void {
+  onLogout() {
+    this.user = null;
   }
 
 }

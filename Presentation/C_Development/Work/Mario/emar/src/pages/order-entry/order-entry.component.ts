@@ -7,9 +7,14 @@ import { Order } from 'src/app/interfaces/order';
 import { Medication } from 'src/app/interfaces/medication';
 
 import { ORDERS } from '../../app/mockup/orders';
+import { USER } from '../../app/mockup/user';
+import { PATIENT } from '../../app/mockup/patient';
 import { MEDICATIONS } from '../../app/mockup/medications';
 
-import { PatientService } from 'src/app/services/patient.service';
+//import { ORDERS } from '../../app/mockup/orders';
+import { MedOrderService } from '../../services/med-order.service';
+import { PatientService } from 'src/services/patient.service';
+
 
 @Component({
   selector: 'order-entry',
@@ -20,21 +25,30 @@ export class OrderEntryComponent implements OnInit {
 
   patient: Patient;
   orders: Order[];
-  cart: Order[];
+  //currentOrders = ORDERS;
+  currentOrders: Order[];
+  cartOrders: Order[];
 
   qlSelected: boolean = true;
   dpSelected: boolean = false;
   gSelected: boolean = false;
 
   constructor(private route: ActivatedRoute,
-    private patientService: PatientService) { }
+      private patientService: PatientService,
+      private medOrderService: MedOrderService) { }
 
   ngOnInit(): void {
     const patientId:number = +this.route.snapshot.params['id'];
     this.patient = this.patientService.getPatient(patientId);
-    this.cart = [];
     this.orders = this.patientService.getPatientOrders(patientId)
+    this.currentListOrders();
   }
+
+  //currentUser() {
+  //  this.user = USER
+  //  
+  //  return this.user;
+  //}
 
   selectedPatient() {
     return this.patient;
@@ -60,5 +74,14 @@ export class OrderEntryComponent implements OnInit {
       this.gSelected = false;
     
     }
+  }
+
+  currentListOrders() {
+    return this.currentOrders = this.medOrderService.getCurrentOrders();
+  }
+
+  cartListOrders() {
+    //return ORDERS.slice(2, 5);
+    return this.cartOrders = this.medOrderService.getCartOrders();
   }
 }

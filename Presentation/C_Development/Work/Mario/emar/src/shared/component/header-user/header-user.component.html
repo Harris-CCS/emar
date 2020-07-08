@@ -1,12 +1,17 @@
 <header>
     <div class="logo">
     </div>
-
+    <h2>{{ title }}</h2>
     <div class="header-user">
         <a class="action notification" onclick="openInvision()" title="Notifications"></a>
         <a class="action help" title="Help"></a>
-        <a class="action user" onclick="logout()" title="Logout">
-            <span class="user-name"> {{ user.firstName }} <br/>{{ user.lastName }} </span>
+        <a class="action user" (click)="onLogout()" title="Logout">
+            <span class="user-name" *ngIf="!user.displayInitials">
+              {{ user.firstName }} <br/>{{ user.lastName }}
+            </span>
+            <span class="user-name" *ngIf="user.displayInitials">
+              {{ user.initials }}
+            </span>
         </a>
     </div>
 </header>

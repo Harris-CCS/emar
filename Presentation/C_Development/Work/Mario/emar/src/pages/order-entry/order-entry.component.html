@@ -7,26 +7,20 @@
                 <h3>NEW ORDERS</h3>
                 <span class="no-data" style="display:none">No New Orders</span>
                 <div class="order-selector">
-                    <!--syncfusion combobox
-                    <ejs-combobox id="ddlMedications" dataSource="@Model.MedicationList" allowFiltering="true"
-                                  change="onMedicationSelectionChanged">
-                        <e-combobox-fields text="FullDescription" value="Id"></e-combobox-fields>
-                    </ejs-combobox>  -->
-                    <select>
-                        <option value=""></option>
-                        <option value="1">syncfusion combobox</option>
-                    </select>
+                    <med-search></med-search>
                 </div>
-                <div id="cartPartial"></div>
-                <button id="signCart" class="button button-raised" style="display:none">Sign</button>
+                <div id="orders-cart">
+                    <order-cart-list 
+                        [items] = "cartListOrders()"
+                    ></order-cart-list>
+                </div>
             </div>
             <div class="orders-current">
                 <h3>CURRENT ORDERS</h3>
-                <p *ngIf="orders.length < 1">No current orders</p>
-                <ul *ngIf="orders.length > 0">
-                    <li *ngFor="let ord of orders">
-                        {{ord.name}} {{ord.route | uppercase}} {{ord.dose}}
-                        <span class="timestamp">{{ord.signedOn | date: "HH:mm"}} on {{ord.signedOn | date: "MM/dd/yy"}} by {{ord.signedBy}}</span>
+                <ul>
+                    <li *ngFor="let ord of currentOrders">
+                        {{ord.name}} {{ord.route | uppercase}} {{ord.dose}}  <span [ngClass]="{'allergy-dot': ord.allergies?.length}"></span><span [ngClass]="{'drug-dot' : ord.drugs?.length}"></span>
+                        <span class="timestamp">{{ord.signedOn | date: "HH:mm"}} on {{ord.signedOn | date: "MM/dd/yy"}} , Ordering physician: {{ord.signedBy}}</span>
                     </li>
                 </ul>
             </div>
@@ -52,3 +46,11 @@
         </div>
     </div>
 </div>
+
+<!--
+<app-modal [title]="modalTitle">
+    <order-form></order-form>
+</app-modal>
+-->
+
+<composer-med-modal></composer-med-modal>
