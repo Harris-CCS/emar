@@ -3,9 +3,10 @@ header {
     position: relative;
     //height: 90px;
     height: 40px;
-    padding: 25px 35px;
+    padding: 20px 35px;
     align-items: center;
     justify-content: space-between;
+    height: auto;
 }
 
 .header-user {
@@ -57,4 +58,8 @@ header .action.user .user-name {
 
 .help {
     background: url('../../../assets/icon/help.svg');
+}
+
+.dropdown-toggle::after {
+    display:none;
 }
