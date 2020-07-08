@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using System.Text.Json;
 using Emar.Core;
@@ -20,18 +19,15 @@ namespace Emar.Api.Controllers
     [HttpCacheValidation(MustRevalidate = true)]
     public class PatientsController : ControllerBase
     {
-        private readonly EmarContext _context;
         private readonly IPatientService _patientService;
         private readonly IPropertyMappingService _propertyMappingService;
         private readonly IPropertyCheckerService _propertyCheckerService;
         private Errors error = Errors.NoErrors;
 
-        public PatientsController(EmarContext emarContext,
-                                  IPatientService patientService,
+        public PatientsController(IPatientService patientService,
                                   IPropertyMappingService propertyMappingService,
                                   IPropertyCheckerService propertyCheckerService)
         {
-            _context = emarContext;
             _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
             _propertyMappingService = propertyMappingService ?? throw new ArgumentNullException(nameof(propertyMappingService));
             _propertyCheckerService = propertyCheckerService ?? throw new ArgumentNullException(nameof(propertyCheckerService));
@@ -47,9 +43,22 @@ namespace Emar.Api.Controllers
                 return BadRequest();
             }
 
+            if (resourceParameters.AskingForLegacyPulseCheckPatient())
+            {
+                if (resourceParameters.Site != null)
+                {
+                    PatientDto pt =
+                        _patientService.GetPatient((short) resourceParameters.Site, resourceParameters.Ibex);
+
+                    if(pt == null) { return NotFound($"Patient with site: {resourceParameters.Site} and ibex: {resourceParameters.Ibex} was not found"); }
+
+                    return Ok(pt);
+                }
+            }
+
             if (!_propertyMappingService.ValidMappingExistsFor<PatientDto, Patient>(resourceParameters.OrderBy))
             {
-                return BadRequest();
+               return BadRequest();
             }
 
             if (!_propertyCheckerService.TypeHasProperties<PatientDto>(resourceParameters.Fields))
@@ -100,7 +109,7 @@ namespace Emar.Api.Controllers
 
         [HttpGet("{patientId}", Name = nameof(GetPatient))]
         [Produces(MediaTypes.PcEmar, MediaTypes.Json)]
-        public IActionResult GetPatient(long? patientId, [FromQuery] ResourceParameters resourceParameters, [FromHeader(Name = "Accept")] string mediaType)
+        public ActionResult<PatientDto> GetPatient(long? patientId, [FromQuery] ResourceParameters resourceParameters, [FromHeader(Name = "Accept")] string mediaType)
         {
             if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
             {
@@ -243,12 +252,12 @@ namespace Emar.Api.Controllers
 
         private IEnumerable<HateOasLinkDto> CreateHateOasLinksForPatients([FromQuery] ResourceParameters resourceParameters, bool hasNext, bool hasPrevious)
         {
-            List<HateOasLinkDto> links = new List<HateOasLinkDto>();
-
-            links.Add(
+            List<HateOasLinkDto> links = new List<HateOasLinkDto>
+            {
                 new HateOasLinkDto(CreatePatientsResourceUri(resourceParameters, ResourceUriType.Current),
-                "self",
-                "GET"));
+                    "self",
+                    "GET")
+            };
 
             if (hasNext)
             {

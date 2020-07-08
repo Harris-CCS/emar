@@ -6,5 +6,6 @@ namespace Emar.Core.Patients.Service
     {
         PagedList<PatientDto> GetPatients(ResourceParameters resourceParameters, bool includeOrders);
         PatientDto GetPatient(long patientId, ResourceParameters resourceParameters, bool includeOrders);
+        PatientDto GetPatient(short site, string ibex);
     }
 }

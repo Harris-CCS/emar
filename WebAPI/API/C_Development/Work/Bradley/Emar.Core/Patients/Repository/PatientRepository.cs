@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Emar.Core.Patients.Model;
 using Emar.Data;
@@ -102,20 +103,18 @@ namespace Emar.Core.Patients.Repository
 
         public Patient GetPatient(long? patientId, ResourceParameters resourceParameters, bool includeOrders)
         {
-            patientId = (long)GetPatientId(patientId, resourceParameters);
-
             var patient = _context.Patients.Find(patientId);
 
-            if (resourceParameters.IncludeOrders || includeOrders)
-            {
-                patient = _context.Patients
-                    .Include(patient => patient.Orders)
-                        .ThenInclude(order => order.Events)
-                    .Include(patient => patient.Orders)
-                        .ThenInclude(order => order.Administrations)
-                            .ThenInclude(administration => administration.Events)
-                    .FirstOrDefault(patient => patient.Id == patientId);
-            }
+            //if (resourceParameters.IncludeOrders || includeOrders)
+            //{
+            //    patient = _context.Patients
+            //        .Include(patient => patient.Orders)
+            //            .ThenInclude(order => order.Events)
+            //        .Include(patient => patient.Orders)
+            //            .ThenInclude(order => order.Administrations)
+            //                .ThenInclude(administration => administration.Events)
+            //        .FirstOrDefault(patient => patient.Id == patientId);
+            //}
 
             return patient;
         }
@@ -136,6 +135,17 @@ namespace Emar.Core.Patients.Repository
             }
 
             return patientId;
+        }
+
+        public long GetInternalPatientId(short site, string ibex)
+        {
+            var ptId = from e in _context.ExternalIds
+                where e.External_Id == site + "|" + ibex
+                      && e.Entity == "patients"
+                      && e.Vendor == "pulsecheck"
+                select e.InternalId;
+
+            return ptId.FirstOrDefault();
         }
     }
 }
