@@ -7,7 +7,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>4.1</ProjectVersion>
     <ProjectGuid>{682c50ce-cc91-4cf4-8147-1be00ce883fa}</ProjectGuid>
-    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql110DatabaseSchemaProvider</DSP>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql130DatabaseSchemaProvider</DSP>
     <OutputType>Database</OutputType>
     <RootPath>
     </RootPath>
@@ -71,6 +71,9 @@
     <Folder Include="Programmability\Functions\Table-values Functions" />
     <Folder Include="Programmability\Functions\Scalar-values Functions" />
     <Folder Include="Views" />
+    <Folder Include="Scripts\Data-Loader" />
+    <Folder Include="Scripts\Data-Loader\ibex_live_data" />
+    <Folder Include="Scripts\Data-Loader\sample_data" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\users.sql" />
@@ -97,6 +100,14 @@
     <Build Include="Tables\medication_routes.sql" />
     <Build Include="Tables\patient_cart_details.sql" />
     <Build Include="Tables\patient_carts.sql" />
+    <None Include="Scripts\Data-Loader\delete_emar_data.sql" />
+    <None Include="Scripts\Data-Loader\sample_data\sites.sql" />
+    <None Include="Scripts\Data-Loader\ibex_live_data\sites.sql" />
+    <None Include="Scripts\Data-Loader\ibex_live_data\patients.sql" />
+    <None Include="Scripts\Data-Loader\sample_data\patients.sql" />
+    <None Include="Scripts\Data-Loader\data_loader_ddl.sql" />
+    <None Include="Scripts\Data-Loader\ibex_live_data\users.sql" />
+    <None Include="Scripts\Data-Loader\sample_data\users.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />
@@ -113,5 +124,11 @@
       <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
       <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
     </ArtifactReference>
+  </ItemGroup>
+  <ItemGroup>
+    <SqlCmdVariable Include="load_data">
+      <DefaultValue>none</DefaultValue>
+      <Value>$(SqlCmdVar__1)</Value>
+    </SqlCmdVariable>
   </ItemGroup>
 </Project>

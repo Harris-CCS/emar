@@ -1,6 +1,6 @@
 create table [dbo].[patient_carts]
     (
-      [id]            [int] not null
+      [id]            [int] identity(1, 1) not null
     , [patient_id]    [bigint] not null
     , [cart_user_id]  [int] not null
     , [cart_datetime] [datetimeoffset](7) not null

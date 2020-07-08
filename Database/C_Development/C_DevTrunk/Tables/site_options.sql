@@ -1,6 +1,6 @@
 create table [dbo].[site_options]
     (
-      [id]           [int] not null
+      [id]           [int] identity(1, 1) not null
     , [site_id]      [int] not null
     , [option_id]    [int] not null
     , [option_value] [varchar](255) not null
