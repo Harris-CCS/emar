@@ -4,7 +4,8 @@ namespace Emar.Core.Patients.Service
 {
     public interface IPatientService
     {
-        PagedList<PatientDto> GetPatients(ResourceParameters resourceParameters, bool includeOrders);
-        PatientDto GetPatient(long patientId, ResourceParameters resourceParameters, bool includeOrders);
+        PagedList<PatientDto> GetPatients(PatientsResourceParameters resourceParameters, bool includeOrders);
+        PatientDto GetPatient(long patientId, PatientsResourceParameters resourceParameters, bool includeOrders);
+        PatientDto GetPatient(short extId1, string extId2);
     }
 }

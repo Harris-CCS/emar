@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using System.Text.Json;
 using Emar.Core;
 using Emar.Core.Patients.Model;
 using Emar.Core.Patients.Service;
-using Emar.Data;
 using Emar.Data.Entities;
 using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Mvc;
@@ -18,41 +16,135 @@ namespace Emar.Api.Controllers
     [Route("api/patients")]
     [HttpCacheExpiration(CacheLocation = CacheLocation.Public)]
     [HttpCacheValidation(MustRevalidate = true)]
+    //[Produces(MediaTypes.PcEmar, MediaTypes.Json)]
+    [Consumes(MediaTypes.PcEmar, MediaTypes.Json)]
     public class PatientsController : ControllerBase
     {
-        private readonly EmarContext _context;
         private readonly IPatientService _patientService;
         private readonly IPropertyMappingService _propertyMappingService;
         private readonly IPropertyCheckerService _propertyCheckerService;
         private Errors error = Errors.NoErrors;
 
-        public PatientsController(EmarContext emarContext,
-                                  IPatientService patientService,
+        public PatientsController(IPatientService patientService,
                                   IPropertyMappingService propertyMappingService,
                                   IPropertyCheckerService propertyCheckerService)
         {
-            _context = emarContext;
             _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
             _propertyMappingService = propertyMappingService ?? throw new ArgumentNullException(nameof(propertyMappingService));
             _propertyCheckerService = propertyCheckerService ?? throw new ArgumentNullException(nameof(propertyCheckerService));
         }
 
+        /// <summary>
+        /// Get a list of patients in the system.
+        /// </summary>
+        /// <param name="mediaType">
+        /// Media type from Accept header.
+        /// </param>
+        /// <param name="orderBy">
+        /// *Optional.* \
+        /// Comma delimited list Patient element to sort by:
+        /// * **Id**
+        /// * **FullName**
+        /// * **Age**
+        /// * **DepartmentCode**
+        /// * **WardCode**
+        /// * **RoomBedCode**
+        /// \
+        /// \
+        /// Optional **ASC** or **DESC** commands can be suffixed. \
+        /// *Default:* **Id ASC**
+        /// </param>
+        /// <param name="fields">
+        /// *Optional.* \
+        /// Comma delimited list of patient elements to be returned.  If omitted, all patient elements are returned.
+        /// </param>
+        /// <param name="siteId">
+        /// *Optional.* \
+        /// Site (facility) identifier to restrict the list of returned patients to.
+        /// </param>
+        /// <param name="departmentCode">
+        /// *Optional.* \
+        /// Department code to restrict the list of returned patients to.
+        /// </param>
+        /// <param name="wardCodes">
+        /// *Optional.* \
+        /// Comma delimited of ward (area) codes to restrict the list of returned patients to.
+        /// </param>
+        /// <param name="roomBedCode">
+        /// *Optional.* \
+        /// Room and bed code to restrict the list of returned patients to.
+        /// </param>
+        /// <param name="includeInactive">
+        /// *Optional.* \
+        /// Include the inactive patients in the list of returned patients.
+        /// </param>
+        /// <param name="includeOrders">
+        /// *Optional.* \
+        /// Include the patients orders in the list of returned patients.
+        /// </param>
+        /// <param name="extId1">
+        /// *Optional.* \
+        /// First key of the external patient Id. In PulseCheck, it is the Site id.
+        /// </param>
+        /// <param name="extId2">
+        /// *Optional.* \
+        /// Second key of the external patient Id. In PulseCheck, it is the Ibex number.
+        /// </param>
+        /// <returns>An IActionResult of IEnumerable of type PatientDto</returns>
         [HttpGet(Name = nameof(GetPatients))]
         [HttpHead]
-        [Produces(MediaTypes.PcEmar, MediaTypes.Json)]
-        public IActionResult GetPatients([FromQuery] ResourceParameters resourceParameters, [FromHeader(Name = "Accept")] string mediaType)
+        public ActionResult<IEnumerable<PatientDto>> GetPatients(
+            [FromHeader(Name = "Accept")] string mediaType,
+            [FromQuery] string orderBy,
+            [FromQuery] string fields,
+            [FromQuery] short? siteId,
+            [FromQuery] string departmentCode,
+            [FromQuery] string wardCodes,
+            [FromQuery] string roomBedCode,
+            [FromQuery] string includeInactive,
+            [FromQuery] string includeOrders,
+            [FromQuery] string extId1,
+            [FromQuery] string extId2
+            )
         {
             if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
             {
                 return BadRequest();
             }
 
-            if (!_propertyMappingService.ValidMappingExistsFor<PatientDto, Patient>(resourceParameters.OrderBy))
+            PatientsResourceParameters resourceParameters = new PatientsResourceParameters
+            {
+                OrderBy = orderBy,
+                Fields = fields,
+                SiteId = siteId,
+                DepartmentCode = departmentCode,
+                WardCodes = wardCodes,
+                RoomBedCode = roomBedCode,
+                IncludeInactive = bool.TryParse(includeInactive, out bool incInactive) ? incInactive : false,
+                IncludeOrders = bool.TryParse(includeOrders, out bool incOrders) ? incInactive : false,
+                ExtId1 = extId1,
+                ExtId2 = extId2
+            };
+
+            if (resourceParameters.AskingForLegacyPulseCheckPatient())
+            {
+                if (extId1 != null)
+                {
+                    PatientDto pt =
+                        _patientService.GetPatient((short) extId1, extId2);
+
+                    if(pt == null) { return NotFound($"Patient with site: {extId1} and ibex: {extId2} was not found"); }
+
+                    return Ok(pt);
+                }
+            }
+
+            if (!_propertyMappingService.ValidMappingExistsFor<PatientDto, Patient>(orderBy))
             {
                 return BadRequest();
             }
 
-            if (!_propertyCheckerService.TypeHasProperties<PatientDto>(resourceParameters.Fields))
+            if (!_propertyCheckerService.TypeHasProperties<PatientDto>(fields))
             {
                 return BadRequest();
             }
@@ -74,7 +166,7 @@ namespace Emar.Api.Controllers
             if (parsedMediaType.MediaType.Equals(MediaTypes.PcEmar))
             {
                 var links = CreateHateOasLinksForPatients(resourceParameters, patients.HasNext, patients.HasPrevious);
-                var shapedPatients = ((IEnumerable<PatientDto>)patients).ShapeData(resourceParameters.Fields);
+                var shapedPatients = ((IEnumerable<PatientDto>)patients).ShapeData(fields);
 
                 var shapedPatientsWithLinks = shapedPatients.Select(patient =>
                 {
@@ -95,12 +187,11 @@ namespace Emar.Api.Controllers
                 return Ok(linkedPatientResource);
             }
 
-            return Ok(((IEnumerable<PatientDto>)patients).ShapeData(resourceParameters.Fields));
+            return Ok(((IEnumerable<PatientDto>)patients).ShapeData(fields));
         }
 
         [HttpGet("{patientId}", Name = nameof(GetPatient))]
-        [Produces(MediaTypes.PcEmar, MediaTypes.Json)]
-        public IActionResult GetPatient(long? patientId, [FromQuery] ResourceParameters resourceParameters, [FromHeader(Name = "Accept")] string mediaType)
+        public ActionResult<PatientDto> GetPatient(long? patientId, [FromQuery] ResourceParameters resourceParameters, [FromHeader(Name = "Accept")] string mediaType)
         {
             if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
             {
@@ -135,15 +226,12 @@ namespace Emar.Api.Controllers
         }
 
         [HttpGet("{patientId}/orders", Name = nameof(GetPatientOrders))]
-        [Produces(MediaTypes.PcEmar, MediaTypes.Json)]
-        public IActionResult GetPatientOrders(long? patientId, [FromQuery] ResourceParameters resourceParameters, [FromHeader(Name = "Accept")] string mediaType)
+        public IActionResult GetPatientOrders(long? patientId, [FromQuery] PatientsResourceParameters resourceParameters, [FromHeader(Name = "Accept")] string mediaType)
         {
             if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
             {
                 return BadRequest();
             }
-
-            patientId ??= resourceParameters.PatientId ?? null;
 
             PatientDto patient = CheckPatient(patientId, null, true);
 
@@ -155,15 +243,12 @@ namespace Emar.Api.Controllers
         }
 
         [HttpGet("{patientId}/orders/{orderId}", Name = nameof(GetPatientOrder))]
-        [Produces(MediaTypes.PcEmar, MediaTypes.Json)]
-        public IActionResult GetPatientOrder(long? patientId, long orderId, [FromQuery] ResourceParameters resourceParameters, [FromHeader(Name = "Accept")] string mediaType)
+        public IActionResult GetPatientOrder(long? patientId, long orderId, [FromQuery] PatientsResourceParameters resourceParameters, [FromHeader(Name = "Accept")] string mediaType)
         {
             if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
             {
                 return BadRequest();
             }
-
-            patientId ??= resourceParameters.PatientId ?? null;
 
             PatientDto patient = CheckPatient(patientId, null, true);
 
@@ -174,13 +259,11 @@ namespace Emar.Api.Controllers
             return Ok(patient);
         }
 
-        private PatientDto CheckPatient(long? patientId, ResourceParameters resourceParameters, bool includeOrders)
+        private PatientDto CheckPatient(long? patientId, PatientsResourceParameters resourceParameters, bool includeOrders)
         {
-            patientId ??= resourceParameters.PatientId ?? null;
-
             if ((patientId == null) &&
-                (resourceParameters.Site == null) &&
-                (resourceParameters.Ibex == null))
+                (resourceParameters.ExtId1 == null) &&
+                (resourceParameters.ExtId2 == null))
             {
                 error = Errors.BadRequest;
             }
@@ -192,7 +275,7 @@ namespace Emar.Api.Controllers
             return patient;
         }
 
-        private string CreatePatientsResourceUri(ResourceParameters resourceParameters, ResourceUriType type)
+        private string CreatePatientsResourceUri(PatientsResourceParameters resourceParameters, ResourceUriType type)
         {
             switch (type)
             {
@@ -214,7 +297,7 @@ namespace Emar.Api.Controllers
             }
         }
 
-        private IEnumerable<HateOasLinkDto> CreateHateOasLinksForPatient(long? patientId, [FromQuery] ResourceParameters resourceParameters)
+        private IEnumerable<HateOasLinkDto> CreateHateOasLinksForPatient(long? patientId, [FromQuery] PatientsResourceParameters resourceParameters)
         {
             List<HateOasLinkDto> links = new List<HateOasLinkDto>();
 
@@ -241,7 +324,7 @@ namespace Emar.Api.Controllers
             return links;
         }
 
-        private IEnumerable<HateOasLinkDto> CreateHateOasLinksForPatients([FromQuery] ResourceParameters resourceParameters, bool hasNext, bool hasPrevious)
+        private IEnumerable<HateOasLinkDto> CreateHateOasLinksForPatients([FromQuery] PatientsResourceParameters resourceParameters, bool hasNext, bool hasPrevious)
         {
             List<HateOasLinkDto> links = new List<HateOasLinkDto>();
 

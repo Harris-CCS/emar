@@ -15,7 +15,7 @@ namespace Emar.Core.Orders.Service
             _orderRepository = orderRepository;
         }
 
-        public PagedList<OrderDto> GetOrders(long? patientId, ResourceParameters resourceParameters)
+        public PagedList<OrderDto> GetOrders(long? patientId, OrdersResourceParameters resourceParameters)
         {
             var orders = _orderRepository.GetOrders(patientId, resourceParameters);
 
@@ -35,7 +35,7 @@ namespace Emar.Core.Orders.Service
             return new PagedList<OrderDto>(ordersList, orders.TotalCount, orders.CurrentPage, orders.PageSize);
         }
 
-        public OrderDto GetOrder(long orderId, ResourceParameters resourceParameters)
+        public OrderDto GetOrder(long orderId, OrdersResourceParameters resourceParameters)
         {
             var order = _orderRepository.GetOrder(orderId, resourceParameters);
 
