@@ -1,4 +1,7 @@
+using System;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using Emar.Core;
 using Emar.Core.Orders.Repository;
 using Emar.Core.Orders.Service;
@@ -17,8 +20,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 
+//[assembly: ApiConventionType(typeof(CustomConventions))]
 namespace Emar.Api
 {
     public class Startup
@@ -52,7 +57,12 @@ namespace Emar.Api
 
             services.AddControllers(setupAction =>
             {
+                setupAction.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status400BadRequest));
+                setupAction.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status406NotAcceptable));
+                setupAction.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status500InternalServerError));
+
                 setupAction.ReturnHttpNotAcceptable = true;
+                setupAction.RespectBrowserAcceptHeader = true;
                 setupAction.CacheProfiles.Add("240SecondsCacheProfile",
                     new CacheProfile()
                     {
@@ -139,11 +149,28 @@ namespace Emar.Api
 
             services.AddSwaggerGen(setupAction =>
             {
-                setupAction.SwaggerDoc(EmarOpenAPISpecification, new Microsoft.OpenApi.Models.OpenApiInfo()
+                setupAction.SwaggerDoc(EmarOpenAPISpecification, new OpenApiInfo()
                 {
-                    Title = EmarOpenAPITitle ,
-                    Version = "1"
+                    Title = EmarOpenAPITitle,
+                    Version = "1",
+                    Description = "API for eMAR (Electronic Medicine Administration Record)"//,
+                    //Contact = new OpenApiContact()
+                    //{
+                    //    Email = "",
+                    //    Name = "",
+                    //    Url = new Uri(""),
+                    //},
+                    //License = new OpenApiLicense()
+                    //{
+                    //    Name = "",
+                    //    Url = new Uri("")
+                    //}
                 });
+
+                var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
+
+                setupAction.IncludeXmlComments(xmlCommentsFullPath);
             });
         }
 
@@ -177,9 +204,10 @@ namespace Emar.Api
 
             app.UseSwagger();
 
-            app.UseSwaggerUI(setupAction=>
+            app.UseSwaggerUI(setupAction =>
             {
                 setupAction.SwaggerEndpoint(@"/swagger/" + EmarOpenAPISpecification + @"/swagger.json", EmarOpenAPITitle);
+                setupAction.RoutePrefix = @"";
             });
 
             app.UseEndpoints(endpoints =>
