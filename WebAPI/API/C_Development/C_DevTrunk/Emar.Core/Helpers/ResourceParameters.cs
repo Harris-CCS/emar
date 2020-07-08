@@ -32,5 +32,10 @@
         #region ExpandO (data shaping)
         public string Fields { get; set; }
         #endregion
+
+        public bool AskingForLegacyPulseCheckPatient()
+        {
+            return Site != null && !string.IsNullOrWhiteSpace(Ibex);
+        }
     }
 }

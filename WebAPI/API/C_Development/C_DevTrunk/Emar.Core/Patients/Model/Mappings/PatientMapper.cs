@@ -19,6 +19,7 @@ namespace Emar.Core.Patients.Model.Mappings
                 MiddleName = (pt.MiddleName == null) ? pt.MiddleName : pt.MiddleName.Trim(),
                 LastName = pt.LastName.Trim(),
                 NameSuffix = (pt.NameSuffix == null) ? pt.NameSuffix : pt.NameSuffix.Trim(),
+                AccountNumber = pt.AccountNumber,
                 Gender = pt.Gender,
                 DateOfBirth = pt.DateOfBirth,
                 Age = pt.Age,
