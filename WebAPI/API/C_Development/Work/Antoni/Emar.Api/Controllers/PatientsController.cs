@@ -130,10 +130,9 @@ namespace Emar.Api.Controllers
             {
                 if (extId1 != null)
                 {
-                    PatientDto pt =
-                        _patientService.GetPatient((short) extId1, extId2);
+                    PatientDto pt = _patientService.GetPatient(short.Parse(extId1), extId2);
 
-                    if(pt == null) { return NotFound($"Patient with site: {extId1} and ibex: {extId2} was not found"); }
+                    if (pt == null) { return NotFound($"Patient with site: {extId1} and ibex: {extId2} was not found"); }
 
                     return Ok(pt);
                 }
@@ -191,7 +190,7 @@ namespace Emar.Api.Controllers
         }
 
         [HttpGet("{patientId}", Name = nameof(GetPatient))]
-        public ActionResult<PatientDto> GetPatient(long? patientId, [FromQuery] ResourceParameters resourceParameters, [FromHeader(Name = "Accept")] string mediaType)
+        public ActionResult<PatientDto> GetPatient(long? patientId, [FromQuery] PatientsResourceParameters resourceParameters, [FromHeader(Name = "Accept")] string mediaType)
         {
             if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
             {

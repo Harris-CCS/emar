@@ -10,7 +10,7 @@ namespace Emar.Api.Controllers
     [Route("api/[controller]")]
     //[Produces(MediaTypes.PcEmar, MediaTypes.Json)]
     [Consumes(MediaTypes.PcEmar, MediaTypes.Json)]
-    public class ErrorController : Controller
+    public class ErrorsController : Controller
     {
         [HttpGet]
         [AllowAnonymous]
