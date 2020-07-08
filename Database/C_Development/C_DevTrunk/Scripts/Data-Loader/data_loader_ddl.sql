@@ -4,17 +4,20 @@ declare
 /************************************
 - create temporary tables for loading
 ************************************/
+/*********************************
+LVL: 000 SEQ: 001 TBL: dbo.actions
+*********************************/
 /*******************************************
-LVL: 000 SEQ: 001 TBL: dbo.medication_routes
+LVL: 000 SEQ: 002 TBL: dbo.medication_routes
 *******************************************/
 /*********************************
-LVL: 000 SEQ: 002 TBL: dbo.options
+LVL: 000 SEQ: 003 TBL: dbo.options
 *********************************/
 /*************************************
-LVL: 000 SEQ: 003 TBL: dbo.permissions
+LVL: 000 SEQ: 004 TBL: dbo.permissions
 *************************************/
 /*******************************
-LVL: 000 SEQ: 004 TBL: dbo.sites
+LVL: 000 SEQ: 005 TBL: dbo.sites
 *******************************/
 
 drop table if exists [#sites];
@@ -25,8 +28,11 @@ create table [#sites]
     , [name]      [varchar](40)
     , [is_active] [bit]);
 
+/******************************************
+LVL: 001 SEQ: 001 TBL: dbo.override_reasons
+******************************************/
 /**********************************
-LVL: 001 SEQ: 001 TBL: dbo.patients
+LVL: 001 SEQ: 002 TBL: dbo.patients
 **********************************/
 
 drop table if exists [#patients];
@@ -75,22 +81,22 @@ create table [#patients]
     , [vs_pain_scale]                  [char](14) null);
 
 /******************************************
-LVL: 001 SEQ: 002 TBL: dbo.site_code_shares
+LVL: 001 SEQ: 003 TBL: dbo.site_code_shares
 ******************************************/
 /****************************************
-LVL: 001 SEQ: 003 TBL: dbo.site_formulary
+LVL: 001 SEQ: 004 TBL: dbo.site_formulary
 ****************************************/
 /**********************************************
-LVL: 001 SEQ: 004 TBL: dbo.site_formulary_match
+LVL: 001 SEQ: 005 TBL: dbo.site_formulary_match
 **********************************************/
 /**************************************
-LVL: 001 SEQ: 005 TBL: dbo.site_options
+LVL: 001 SEQ: 006 TBL: dbo.site_options
 **************************************/
 /*********************************************
-LVL: 001 SEQ: 006 TBL: dbo.site_preferred_list
+LVL: 001 SEQ: 007 TBL: dbo.site_preferred_list
 *********************************************/
 /*******************************
-LVL: 001 SEQ: 007 TBL: dbo.users
+LVL: 001 SEQ: 008 TBL: dbo.users
 *******************************/
 
 drop table if exists [#users];
@@ -124,12 +130,30 @@ LVL: 002 SEQ: 003 TBL: dbo.patient_home_medications
 /********************************************
 LVL: 002 SEQ: 004 TBL: dbo.patient_indicators
 ********************************************/
+/****************************************
+LVL: 002 SEQ: 005 TBL: dbo.patient_orders
+****************************************/
 /******************************************
-LVL: 002 SEQ: 005 TBL: dbo.user_permissions
+LVL: 002 SEQ: 006 TBL: dbo.user_permissions
 ******************************************/
 /*****************************************
-LVL: 002 SEQ: 006 TBL: dbo.user_quick_list
+LVL: 002 SEQ: 007 TBL: dbo.user_quick_list
 *****************************************/
+/***********************************************
+LVL: 003 SEQ: 001 TBL: dbo.order_administrations
+***********************************************/
 /**********************************************
-LVL: 003 SEQ: 001 TBL: dbo.patient_cart_details
+LVL: 003 SEQ: 002 TBL: dbo.patient_cart_details
 **********************************************/
+/****************************************************
+LVL: 004 SEQ: 001 TBL: dbo.order_administration_notes
+****************************************************/
+/**************************************
+LVL: 004 SEQ: 002 TBL: dbo.order_events
+**************************************/
+/*********************************************
+LVL: 005 SEQ: 001 TBL: dbo.order_event_details
+*********************************************/
+/**************************************
+LVL: 099 SEQ: 001 TBL: dbo.external_ids
+**************************************/

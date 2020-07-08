@@ -100,6 +100,13 @@
     <Build Include="Tables\medication_routes.sql" />
     <Build Include="Tables\patient_cart_details.sql" />
     <Build Include="Tables\patient_carts.sql" />
+    <Build Include="Tables\override_reasons.sql" />
+    <Build Include="Tables\patient_orders.sql" />
+    <Build Include="Tables\order_administrations.sql" />
+    <Build Include="Tables\order_administration_notes.sql" />
+    <Build Include="Tables\actions.sql" />
+    <Build Include="Tables\order_events.sql" />
+    <Build Include="Tables\order_event_details.sql" />
     <None Include="Scripts\Data-Loader\delete_emar_data.sql" />
     <None Include="Scripts\Data-Loader\sample_data\sites.sql" />
     <None Include="Scripts\Data-Loader\ibex_live_data\sites.sql" />
