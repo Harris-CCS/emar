@@ -1,6 +1,6 @@
 create table [dbo].[permissions]
 (
-    [id]          [int] not null
+    [id]          [int] identity(1, 1) not null
   , [name]        [varchar](40) not null
   , [description] [varchar](255) not null
   , constraint [pk__permissions__id] primary key clustered([id] asc)

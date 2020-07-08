@@ -1,6 +1,6 @@
 create table [dbo].[user_permissions]
 (
-    [id]               [int] not null
+    [id]               [int] identity(1, 1) not null
   , [site_id]          [int] not null
   , [user_id]          [int] not null
   , [permission_id]    [int] not null
