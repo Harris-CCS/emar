@@ -139,10 +139,10 @@ namespace Emar.Core.Patients.Repository
             return patientId;
         }
 
-        public long GetInternalPatientId(short site, string ibex)
+        public long GetInternalPatientId(short extId1, string extId2)
         {
             var ptId = from e in _context.ExternalIds
-                where e.External_Id == site + "|" + ibex
+                where e.External_Id == extId1 + "|" + extId2
                       && e.Entity == "patients"
                       && e.Vendor == "pulsecheck"
                 select e.InternalId;

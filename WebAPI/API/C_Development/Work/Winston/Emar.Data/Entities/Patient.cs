@@ -51,16 +51,16 @@ namespace Emar.Data.Entities
         [Column("complaint", TypeName = "varchar(80)")]
         public string ChiefComplaint { get; set; }
 
-        [Column("height", TypeName = "numeric")]
+        [Column("height_in_cm", TypeName = "numeric")]
         public decimal? HeightInCm { get; set; }
 
-        [Column("weight", TypeName = "numeric")]
+        [Column("weight_in_kg", TypeName = "numeric")]
         public decimal? WeightInKg { get; set; }
 
         [NotMapped]
         public string SiteName { get; set; }
 
-        [Column("deptartment_code", TypeName = "varchar(15)")]
+        [Column("department_code", TypeName = "varchar(15)")]
         public string DepartmentCode { get; set; }
 
         [Column("ward_code", TypeName = "varchar(15)")]

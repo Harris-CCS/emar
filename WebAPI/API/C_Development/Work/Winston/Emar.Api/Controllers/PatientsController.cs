@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using System.Text.Json;
 using Emar.Core;
@@ -21,18 +20,15 @@ namespace Emar.Api.Controllers
     [Consumes(MediaTypes.PcEmar, MediaTypes.Json)]
     public class PatientsController : ControllerBase
     {
-        private readonly EmarContext _context;
         private readonly IPatientService _patientService;
         private readonly IPropertyMappingService _propertyMappingService;
         private readonly IPropertyCheckerService _propertyCheckerService;
         private Errors error = Errors.NoErrors;
 
-        public PatientsController(EmarContext emarContext,
-                                  IPatientService patientService,
+        public PatientsController(IPatientService patientService,
                                   IPropertyMappingService propertyMappingService,
                                   IPropertyCheckerService propertyCheckerService)
         {
-            _context = emarContext;
             _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
             _propertyMappingService = propertyMappingService ?? throw new ArgumentNullException(nameof(propertyMappingService));
             _propertyCheckerService = propertyCheckerService ?? throw new ArgumentNullException(nameof(propertyCheckerService));
@@ -194,8 +190,7 @@ namespace Emar.Api.Controllers
         }
 
         [HttpGet("{patientId}", Name = nameof(GetPatient))]
-        [Produces(MediaTypes.PcEmar, MediaTypes.Json)]
-        public ActionResult<PatientDto> GetPatient(long? patientId, [FromQuery] ResourceParameters resourceParameters, [FromHeader(Name = "Accept")] string mediaType)
+        public ActionResult<PatientDto> GetPatient(long? patientId, [FromQuery] PatientsResourceParameters resourceParameters, [FromHeader(Name = "Accept")] string mediaType)
         {
             if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
             {
@@ -328,10 +323,11 @@ namespace Emar.Api.Controllers
             return links;
         }
 
-        private IEnumerable<HateOasLinkDto> CreateHateOasLinksForPatients([FromQuery] ResourceParameters resourceParameters, bool hasNext, bool hasPrevious)
+        private IEnumerable<HateOasLinkDto> CreateHateOasLinksForPatients([FromQuery] PatientsResourceParameters resourceParameters, bool hasNext, bool hasPrevious)
         {
-            List<HateOasLinkDto> links = new List<HateOasLinkDto>
-            {
+            List<HateOasLinkDto> links = new List<HateOasLinkDto>();
+
+            links.Add(
                 new HateOasLinkDto(CreatePatientsResourceUri(resourceParameters, ResourceUriType.Current),
                 "self",
                 "GET"));

@@ -8,6 +8,7 @@ namespace Emar.Core.Patients.Model
     {
         public long Id { get; set; }
         public bool Active { get; set; }
+        public string AccountNumber { get; set; }
         #region name
         public string FirstName { get; set; }
         public string MiddleName { get; set; }

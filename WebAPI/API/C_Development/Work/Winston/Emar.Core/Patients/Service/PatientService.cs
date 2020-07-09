@@ -61,5 +61,17 @@ namespace Emar.Core.Patients.Service
 
             return patientDto;
         }
+
+        public PatientDto GetPatient(short site, string ibex)
+        {
+            var patientId = _patientRepository.GetInternalPatientId(site, ibex);
+            if (patientId == 0)
+                return null;
+
+            Patient patient = _patientRepository.GetPatient(patientId, null, false);
+            PatientDto patientDto = PatientMapper.MapPatient(patient);
+
+            return patientDto;
+        }
     }
 }
