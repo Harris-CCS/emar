@@ -1,4 +1,6 @@
-﻿namespace Emar.Core.Orders.Model
+﻿using System.Text.RegularExpressions;
+
+namespace Emar.Core.Orders.Model
 {
     public class OrderBase
     {
@@ -8,24 +10,28 @@
         public long Id { get; set; }
 
         /// <summary>
-        /// Identifier for the source of this order (group ID, NDC, etc.)
+        /// National Drug Code value
         /// </summary>
-        public string MedicationId { get; set; }
+        public string Ndc { get; set; }
 
         /// <summary>
-        /// Indicates whether the order is PRN.
+        /// Link to the Medication Provider Database
         /// </summary>
-        public bool Prn { get; set; }
+        public string DrugId { get; set; }
 
+        private string _brandBrandName;
         /// <summary>
-        /// Indicates whether the order is Point-In-Time.
+        /// Brand name of the medication
         /// </summary>
-        public bool PointInTime { get; set; }
+        public string BrandName
+        {
+            get => _brandBrandName;
+            set => _brandBrandName = value != null ? Regex.Replace(value, "( : ){2,}", " : ") : null;
+        }
 
-        /// <summary>
-        /// Unique order frequency identifier.
-        /// </summary>
-        public int FrequencyId { get; set; }
+        public string Dose { get; set; }
+
+        public string Unit { get; set; }
 
         /// <summary>
         /// Unique medication route identifier.
@@ -38,46 +44,59 @@
         public string MedicationRoute { get; set; }
 
         /// <summary>
+        /// Unique order frequency identifier.
+        /// </summary>
+        public int FrequencyId { get; set; }
+
+        /// <summary>
+        /// Indicates whether the order is Point-In-Time.
+        /// </summary>
+        // Will be derivable from the Frequency - in the future,
+        // include a Frequency object instead of an Id and trash this property
+        public bool PointInTime { get; set; }
+
+        /// <summary>
         /// Order notes.
         /// </summary>
         public string OrderNotes { get; set; }
-
-        #region Constants
-
-        /// <summary>
-        /// Order types
-        /// </summary>
-        public enum OrderTypes
-        {
-            Stat = 1,
-            Prn = 2,
-            Continuous = 3,
-            Scheduled = 4
-        }
-
-        /// <summary>
-        /// Order priorities
-        /// </summary>
-        public enum OrderPriorities
-        {
-            Stat = 2,
-            Routine = 4
-        }
-
-        /// <summary>
-        /// Order statuses
-        /// </summary>
-        public enum OrderStatuses
-        {
-            Pending = 1,
-            Cancelled = 2,
-            OnGoing = 3,
-            OnHold = 4,
-            PendingDiscontinue = 5,
-            Discontinued = 6,
-            Completed = 7
-        }
-
-        #endregion
     }
+
+    #region Constants
+
+    /// <summary>
+    /// Order types
+    /// </summary>
+    public enum OrderTypes
+    {
+        Stat = 1,
+        Prn = 2,
+        Continuous = 3,
+        Scheduled = 4
+    }
+
+    /// <summary>
+    /// Order priorities
+    /// </summary>
+    public enum OrderPriorities
+    {
+        Stat = 2,
+        Routine = 4
+    }
+
+    /// <summary>
+    /// Order statuses
+    /// </summary>
+    public enum OrderStatuses
+    {
+        Pending = 1,
+        Cancelled = 2,
+        OnGoing = 3,
+        OnHold = 4,
+        PendingDiscontinue = 5,
+        Discontinued = 6,
+        Completed = 7
+    }
+
+    #endregion
+
 }
