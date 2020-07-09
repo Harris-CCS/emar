@@ -2,7 +2,7 @@
 
 namespace Emar.Core.Users.Model
 {
-    public class UserDto 
+    public class UserDto
     {
         public int Id { get; set; }
         public short SiteId { get; set; }

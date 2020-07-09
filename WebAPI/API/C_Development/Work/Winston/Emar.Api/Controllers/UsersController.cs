@@ -6,6 +6,8 @@ namespace Emar.Api.Controllers
 {
     [ApiController]
     [Route("api/users")]
+    //[Produces(MediaTypes.PcEmar, MediaTypes.Json)]
+    [Consumes(MediaTypes.PcEmar, MediaTypes.Json)]
     public class UsersController : ControllerBase
     {
         private IUserService _userService;

@@ -24,7 +24,7 @@ namespace Emar.Core.Orders.Repository
             _propertyMappingService = propertyMappingService ?? throw new ArgumentNullException(nameof(propertyMappingService));
         }
 
-        public PagedList<Order> GetOrders(long? patientId, ResourceParameters resourceParameters)
+        public PagedList<Order> GetOrders(long? patientId, OrdersResourceParameters resourceParameters)
         {
             patientId ??= resourceParameters.PatientId;
 
@@ -51,7 +51,7 @@ namespace Emar.Core.Orders.Repository
             return PagedList<Order>.Create(orders.AsQueryable(), resourceParameters.PageNumber, resourceParameters.PageSize);
         }
 
-        public Order GetOrder(long orderId, ResourceParameters resourceParameters)
+        public Order GetOrder(long orderId, OrdersResourceParameters resourceParameters)
         {
             return _context.Orders
                     .Include(order => order.Events)
