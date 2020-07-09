@@ -43,7 +43,7 @@ namespace Emar.Core.Orders.Repository
             if (resourceParameters.OrderBy != null)
             {
                 //get property mapping dictionary
-                var propertyMappingDictionary = _propertyMappingService.GetPropertyMapping<OrderDto, Order>();
+                var propertyMappingDictionary = _propertyMappingService.GetPropertyMapping<PatientOrderDto, Order>();
 
                 orders = orders.AsQueryable().ApplySort(resourceParameters.OrderBy, propertyMappingDictionary);
             }

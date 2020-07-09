@@ -44,7 +44,7 @@
             *Optional.* \
             Comma delimited list of order elements to be returned.  If omitted, all order elements are returned.
             </param>
-            <returns>An ActionResult of IEnumerable collection of type OrderDto</returns>
+            <returns>An ActionResult of IEnumerable collection of type PatientOrderDto</returns>
             <remarks>
             </remarks>
         </member>
@@ -62,7 +62,7 @@
             <param name="orderId">
             Unique order identifier.
             </param>
-            <returns>An ActionResult of type OrderDto</returns>
+            <returns>An ActionResult of type PatientOrderDto</returns>
             <remarks>
             </remarks>
         </member>

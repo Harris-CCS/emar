@@ -68,12 +68,12 @@ namespace Emar.Api.Controllers
         /// *Optional.* \
         /// Comma delimited list of order elements to be returned.  If omitted, all order elements are returned.
         /// </param>
-        /// <returns>An ActionResult of IEnumerable collection of type OrderDto</returns>
+        /// <returns>An ActionResult of IEnumerable collection of type PatientOrderDto</returns>
         /// <remarks>
         /// </remarks>
         [HttpGet(Name = nameof(GetOrders))]
         [HttpHead]
-        public ActionResult<IEnumerable<OrderDto>> GetOrders(
+        public ActionResult<IEnumerable<PatientOrderDto>> GetOrders(
             [FromHeader(Name = "Accept")] string mediaType,
             [FromQuery] string patientId,
             [FromQuery] string orderBy,
@@ -92,17 +92,17 @@ namespace Emar.Api.Controllers
                 Fields = fields
             };
 
-            if (!_propertyMappingService.ValidMappingExistsFor<OrderDto, Order>(orderBy))
+            if (!_propertyMappingService.ValidMappingExistsFor<PatientOrderDto, Order>(orderBy))
             {
                 return BadRequest();
             }
 
-            if (!_propertyCheckerService.TypeHasProperties<OrderDto>(fields))
+            if (!_propertyCheckerService.TypeHasProperties<PatientOrderDto>(fields))
             {
                 return BadRequest();
             }
 
-            PagedList<OrderDto> orders = _orderService.GetOrders(null, resourceParameters);
+            PagedList<PatientOrderDto> orders = _orderService.GetOrders(null, resourceParameters);
 
             if (orders == null) { return NotFound($"No orders found"); }
 
@@ -119,7 +119,7 @@ namespace Emar.Api.Controllers
             if (parsedMediaType.MediaType.Equals(MediaTypes.PcEmar))
             {
                 var links = CreateHateOasLinksForOrders(resourceParameters, orders.HasNext, orders.HasPrevious);
-                var shapedOrders = ((IEnumerable<OrderDto>)orders).ShapeData(fields);
+                var shapedOrders = ((IEnumerable<PatientOrderDto>)orders).ShapeData(fields);
 
                 var shapedOrdersWithLinks = shapedOrders.Select(order =>
                 {
@@ -140,7 +140,7 @@ namespace Emar.Api.Controllers
                 return Ok(linkedOrderResource);
             }
 
-            return Ok(((IEnumerable<OrderDto>)orders).ShapeData(fields));
+            return Ok(((IEnumerable<PatientOrderDto>)orders).ShapeData(fields));
         }
 
         /// <summary>
@@ -156,11 +156,11 @@ namespace Emar.Api.Controllers
         /// <param name="orderId">
         /// Unique order identifier.
         /// </param>
-        /// <returns>An ActionResult of type OrderDto</returns>
+        /// <returns>An ActionResult of type PatientOrderDto</returns>
         /// <remarks>
         /// </remarks>
         [HttpGet("{orderId}", Name = nameof(GetOrder))]
-        public ActionResult<OrderDto> GetOrder(
+        public ActionResult<PatientOrderDto> GetOrder(
             [FromHeader(Name = "Accept")] string mediaType,
             [FromQuery] string fields,
             long orderId
@@ -176,7 +176,7 @@ namespace Emar.Api.Controllers
                 Fields = fields,
             };
 
-            if (!_propertyCheckerService.TypeHasProperties<OrderDto>(fields))
+            if (!_propertyCheckerService.TypeHasProperties<PatientOrderDto>(fields))
             {
                 return BadRequest();
             }
