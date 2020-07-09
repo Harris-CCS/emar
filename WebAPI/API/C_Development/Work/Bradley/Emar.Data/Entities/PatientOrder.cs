@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Emar.Data.Entities
 {
     [Table("patient_orders")]
-    public class Order
+    public class PatientOrder
     {
         [Column("id", TypeName = "bigint"), Key]
         public long Id { get; set; }
@@ -17,8 +17,8 @@ namespace Emar.Data.Entities
         [Column("create_stamp", TypeName = "datetimeoffset"), Required]
         public DateTimeOffset CreatedDateTime { get; set; }
 
-        [Column("medication_id", TypeName = "varchar(50)"), Required]
-        public string MedicationId { get; set; }
+        [Column("drug_id", TypeName = "varchar(50)"), Required]
+        public string DrugId { get; set; }
 
         [NotMapped]
         public string OrderType { get; set; }

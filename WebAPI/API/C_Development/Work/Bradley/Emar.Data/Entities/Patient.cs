@@ -136,6 +136,6 @@ namespace Emar.Data.Entities
         public string VsPainScale { get; set; }
 
         [NotMapped]
-        public IEnumerable<Order>? Orders { get; set; }
+        public IEnumerable<PatientOrder>? Orders { get; set; }
     }
 }

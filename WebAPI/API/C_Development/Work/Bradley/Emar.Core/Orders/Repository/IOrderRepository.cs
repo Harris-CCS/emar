@@ -5,8 +5,8 @@ namespace Emar.Core.Orders.Repository
 {
     public interface IOrderRepository
     {
-        PagedList<Order> GetOrders(long? patientId, ResourceParameters resourceParameters);
-        Order GetOrder(long orderId, ResourceParameters resourceParameters);
+        PagedList<PatientOrder> GetOrders(long? patientId, OrdersResourceParameters resourceParameters);
+        PatientOrder GetOrder(long orderId, OrdersResourceParameters resourceParameters);
         IEnumerable<OrderAdministration> GetAdministrations(long orderId);
         OrderAdministration GetAdministration(long administrationId);
         IEnumerable<OrderEvent> GetEvents(long orderId);

@@ -18,7 +18,49 @@ namespace Emar.Core.Orders.Model
         public DateTimeOffset CreatedDateTime { get; set; }
 
         /// <summary>
-        /// Order type (STAT, PRN, Continuous/Non-Point-In-Time, Scheduled/Point-In-Time)
+        /// Date/time that the point-in-time administration was give, or
+        /// Date/time that the non-point-in-time administration started
+        /// </summary>
+        public DateTimeOffset BeginDateTime { get; set; }
+
+        /// <summary>
+        /// Date and time the order ended.  Includes the local time timezone offset from UTC.
+        /// </summary>
+        public DateTimeOffset? EndDateTime { get; set; }
+
+        /// <summary>
+        /// Indicates the order priority (STAT, Routine).
+        /// </summary>
+        public OrderPriorities Priority { get; set; }
+
+        /// <summary>
+        /// Indicates whether the order is PRN.
+        /// </summary>
+        public bool Prn { get; set; }
+
+        /// <summary>
+        /// PatientOrder status code (Pending = 1, Cancelled = 2, OnGoing = 3, OnHold = 4, PendingDiscontinue = 5, Discontinued = 6, Completed = 7)
+        /// </summary>
+        public OrderStatuses OrderStatusCode { get; set; }
+
+        /// <summary>
+        /// PatientOrder status (Pending, Cancelled, OnGoing, OnHold, PendingDiscontinue, Discontinued, Completed)
+        /// </summary>
+        public string OrderStatus
+        {
+            get => OrderStatusCode.ToString();
+
+            set
+            {
+                if (Enum.TryParse(typeof(OrderStatuses), value, out object code))
+                    OrderStatusCode = (OrderStatuses)code;
+                else
+                    OrderStatusCode = OrderStatuses.Pending;
+            }
+        }
+
+        /// <summary>
+        /// PatientOrder type (STAT, PRN, Continuous/Non-Point-In-Time, Scheduled/Point-In-Time)
         /// </summary>
         // leaving this at the Patient Level since it relies on priority, which isn't part of the remembered orders
         public string OrderType
@@ -45,65 +87,20 @@ namespace Emar.Core.Orders.Model
         }
 
         /// <summary>
-        /// Indicates the order priority (STAT, Routine).
-        /// </summary>
-        public OrderPriorities Priority { get; set; }
-
-        /// <summary>
-        /// Order status (Pending, Cancelled, OnGoing, OnHold, PendingDiscontinue, Discontinued, Completed)
-        /// </summary>
-        public string OrderStatus
-        {
-            get
-            {
-                return OrderStatusCode.ToString();
-            }
-
-            set
-            {
-                if (Enum.TryParse(typeof(OrderStatuses), value, out object code))
-                    OrderStatusCode = (OrderStatuses) code;
-                else
-                    OrderStatusCode = OrderStatuses.Pending;
-            }
-        }
-
-        /// <summary>
-        /// Order status code (Pending = 1, Cancelled = 2, OnGoing = 3, OnHold = 4, PendingDiscontinue = 5, Discontinued = 6, Completed = 7)
-        /// </summary>
-        public OrderStatuses OrderStatusCode { get; set; }
-
-        public DateTimeOffset BeginDateTime { get; set; }
-
-        /// <summary>
-        /// Date and time the order ended.  Includes the local time timezone offset from UTC.
-        /// </summary>
-        public DateTimeOffset? EndDateTime { get; set; }
-
-        private string _name;
-        public string Name
-        {
-            get { return _name; }
-            set { _name = value != null ? Regex.Replace(value, "( : ){2,}", " : ") : null; }
-        }
-
-        public string Unit { get; set; }
-
-        public string Dose { get; set; }
-
-        /// <summary>
         /// Unique identifier of the provider who ordered the order.
         /// </summary>
         public int OrderingProviderId { get; set; }
 
         /// <summary>
-        /// Order administrations.
+        /// PatientOrder administrations.
         /// </summary>
         public IEnumerable<OrderAdministration>? OrderAdministrations { get; set; }
 
         /// <summary>
-        /// Order events.
+        /// PatientOrder events.
         /// </summary>
         public IEnumerable<OrderEvent>? OrderEvents { get; set; }
+
+        public IEnumerable<string> ApplicableFilters = new List<string>();
     }
 }

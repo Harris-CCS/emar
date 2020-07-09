@@ -1,6 +1,6 @@
 ﻿namespace Emar.Core.Medications.Model
 {
-    public class MedicationRoute 
+    public class MedicationRoute
     {
         /// <summary>
         /// Unique medication route identifier.

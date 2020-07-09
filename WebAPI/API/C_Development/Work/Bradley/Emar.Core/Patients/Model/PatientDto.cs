@@ -76,6 +76,6 @@ namespace Emar.Core.Patients.Model
         #endregion
         //private List<Allergy> Allergies { get; set; }
         //private List<CurrentMedication> HomeMedications { get; set; }
-        public IEnumerable<Order>? Orders { get; set; }
+        public IEnumerable<PatientOrder>? Orders { get; set; }
     }
 }

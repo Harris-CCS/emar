@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using System.Text.Json;
 using Emar.Core;
@@ -13,16 +12,27 @@ using Microsoft.Net.Http.Headers;
 
 namespace Emar.Api.Controllers
 {
+    /// <summary>
+    /// Patient Orders Controller
+    /// </summary>
     [ApiController]
     [Route("api/orders")]
     [HttpCacheExpiration(CacheLocation = CacheLocation.Public)]
     [HttpCacheValidation(MustRevalidate = true)]
+    //[Produces(MediaTypes.PcEmar, MediaTypes.Json)]
+    [Consumes(MediaTypes.PcEmar, MediaTypes.Json)]
     public class OrdersController : ControllerBase
     {
         private readonly IOrderService _orderService;
         private readonly IPropertyMappingService _propertyMappingService;
         private readonly IPropertyCheckerService _propertyCheckerService;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="orderService"></param>
+        /// <param name="propertyMappingService"></param>
+        /// <param name="propertyCheckerService"></param>
         public OrdersController(IOrderService orderService,
                                   IPropertyMappingService propertyMappingService,
                                   IPropertyCheckerService propertyCheckerService)
@@ -32,22 +42,62 @@ namespace Emar.Api.Controllers
             _propertyCheckerService = propertyCheckerService ?? throw new ArgumentNullException(nameof(propertyCheckerService));
         }
 
+        /// <summary>
+        /// Get a list of orders in the system.
+        /// </summary>
+        /// <param name="mediaType">
+        /// Media type from Accept header.
+        /// </param>
+        /// <param name="patientId">
+        /// *Optional.* \
+        /// eMAR unique patient identifier.  If it is passed in then this API call will return all the orders for this patient.
+        /// </param>
+        /// <param name="orderBy">
+        /// *Optional.* \
+        /// Comma delimited list PatientOrder element to sort by:
+        /// * **Id**
+        /// * **Priority**
+        /// * **OrderStatus**
+        /// * **Begin** or **BeginDate** or **BeginTime**
+        /// \
+        /// \
+        /// Optional **ASC** or **DESC** commands can be suffixed. \
+        /// *Default:* **Id ASC**
+        /// </param>
+        /// <param name="fields">
+        /// *Optional.* \
+        /// Comma delimited list of order elements to be returned.  If omitted, all order elements are returned.
+        /// </param>
+        /// <returns>An ActionResult of IEnumerable collection of type OrderDto</returns>
+        /// <remarks>
+        /// </remarks>
         [HttpGet(Name = nameof(GetOrders))]
         [HttpHead]
-        [Produces(MediaTypes.PcEmar, MediaTypes.Json)]
-        public IActionResult GetOrders([FromQuery] ResourceParameters resourceParameters, [FromHeader(Name = "Accept")] string mediaType)
+        public ActionResult<IEnumerable<PatientOrderDto>> GetOrders(
+            [FromHeader(Name = "Accept")] string mediaType,
+            [FromQuery] string patientId,
+            [FromQuery] string orderBy,
+            [FromQuery] string fields
+            )
         {
             if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
             {
                 return BadRequest();
             }
 
-            if (!_propertyMappingService.ValidMappingExistsFor<PatientOrderDto, Order>(resourceParameters.OrderBy))
+            OrdersResourceParameters resourceParameters = new OrdersResourceParameters
+            {
+                PatientId = long.TryParse(patientId, out long PtId) ? PtId : -1,
+                OrderBy = orderBy,
+                Fields = fields
+            };
+
+            if (!_propertyMappingService.ValidMappingExistsFor<PatientOrderDto, PatientOrder>(orderBy))
             {
                 return BadRequest();
             }
 
-            if (!_propertyCheckerService.TypeHasProperties<PatientOrderDto>(resourceParameters.Fields))
+            if (!_propertyCheckerService.TypeHasProperties<PatientOrderDto>(fields))
             {
                 return BadRequest();
             }
@@ -69,7 +119,7 @@ namespace Emar.Api.Controllers
             if (parsedMediaType.MediaType.Equals(MediaTypes.PcEmar))
             {
                 var links = CreateHateOasLinksForOrders(resourceParameters, orders.HasNext, orders.HasPrevious);
-                var shapedOrders = ((IEnumerable<PatientOrderDto>)orders).ShapeData(resourceParameters.Fields);
+                var shapedOrders = ((IEnumerable<PatientOrderDto>)orders).ShapeData(fields);
 
                 var shapedOrdersWithLinks = shapedOrders.Select(order =>
                 {
@@ -90,19 +140,43 @@ namespace Emar.Api.Controllers
                 return Ok(linkedOrderResource);
             }
 
-            return Ok(((IEnumerable<PatientOrderDto>)orders).ShapeData(resourceParameters.Fields));
+            return Ok(((IEnumerable<PatientOrderDto>)orders).ShapeData(fields));
         }
 
+        /// <summary>
+        /// Get an order by order id.
+        /// </summary>
+        /// <param name="mediaType">
+        /// Media type from Accept header.
+        /// </param>
+        /// <param name="fields">
+        /// *Optional.* \
+        /// Comma delimited list of order elements to be returned.  If omitted, all order elements are returned.
+        /// </param>
+        /// <param name="orderId">
+        /// Unique order identifier.
+        /// </param>
+        /// <returns>An ActionResult of type OrderDto</returns>
+        /// <remarks>
+        /// </remarks>
         [HttpGet("{orderId}", Name = nameof(GetOrder))]
-        [Produces(MediaTypes.PcEmar, MediaTypes.Json)]
-        public IActionResult GetOrder(long orderId, [FromQuery] ResourceParameters resourceParameters, [FromHeader(Name = "Accept")] string mediaType)
+        public ActionResult<PatientOrderDto> GetOrder(
+            [FromHeader(Name = "Accept")] string mediaType,
+            [FromQuery] string fields,
+            long orderId
+            )
         {
             if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
             {
                 return BadRequest();
             }
 
-            if (!_propertyCheckerService.TypeHasProperties<PatientOrderDto>(resourceParameters.Fields))
+            OrdersResourceParameters resourceParameters = new OrdersResourceParameters
+            {
+                Fields = fields,
+            };
+
+            if (!_propertyCheckerService.TypeHasProperties<PatientOrderDto>(fields))
             {
                 return BadRequest();
             }
@@ -114,19 +188,33 @@ namespace Emar.Api.Controllers
             if (parsedMediaType.MediaType.Equals(MediaTypes.PcEmar))
             {
                 var links = CreateHateOasLinksForOrder(orderId, resourceParameters);
-                var linkedResourceToReturn = order.ShapeData(resourceParameters.Fields) as IDictionary<string, object>;
+                var linkedResourceToReturn = order.ShapeData(fields) as IDictionary<string, object>;
 
                 linkedResourceToReturn.Add("links", links);
 
                 return Ok(linkedResourceToReturn);
             }
 
-            return Ok(order.ShapeData(resourceParameters.Fields));
+            return Ok(order.ShapeData(fields));
         }
 
+        /// <summary>
+        /// Get the administrations of an order by order id.
+        /// </summary>
+        /// <param name="mediaType">
+        /// Media type from Accept header.
+        /// </param>
+        /// <param name="orderId">
+        /// Unique order identifier.
+        /// </param>
+        /// <returns>An ActionResult of IEnumerable collection of type OrderAdministrationDto</returns>
+        /// <remarks>
+        /// </remarks>
         [HttpGet("{orderId}/administrations", Name = nameof(GetAdministrations))]
-        [Produces(MediaTypes.PcEmar, MediaTypes.Json)]
-        public IActionResult GetAdministrations(int orderId, [FromHeader(Name = "Accept")] string mediaType)
+        public ActionResult<IEnumerable<OrderAdministrationDto>> GetAdministrations(
+            [FromHeader(Name = "Accept")] string mediaType,
+            int orderId
+            )
         {
             if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
             {
@@ -143,9 +231,27 @@ namespace Emar.Api.Controllers
             return Ok(administrations);
         }
 
+        /// <summary>
+        /// Get an administration by administration id of an order by order id.
+        /// </summary>
+        /// <param name="orderId">
+        /// Unique order identifier.
+        /// </param>
+        /// <param name="mediaType">
+        /// Media type from Accept header.
+        /// </param>
+        /// <param name="administrationId">
+        /// Unique order administration identifier.
+        /// </param>
+        /// <returns>An ActionResult of type OrderAdministrationDto</returns>
+        /// <remarks>
+        /// </remarks>
         [HttpGet("{orderId}/administrations/{administrationId}", Name = nameof(GetAdministration))]
-        [Produces(MediaTypes.PcEmar, MediaTypes.Json)]
-        public IActionResult GetAdministration(int orderId, int administrationId, [FromHeader(Name = "Accept")] string mediaType)
+        public ActionResult<OrderAdministrationDto> GetAdministration(
+            [FromHeader(Name = "Accept")] string mediaType,
+            int orderId,
+            int administrationId
+            )
         {
             if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
             {
@@ -167,9 +273,27 @@ namespace Emar.Api.Controllers
             return Ok(administration);
         }
 
+        /// <summary>
+        /// Get the events of an administration by administration id of an order by order id.
+        /// </summary>
+        /// <param name="mediaType">
+        /// Media type from Accept header.
+        /// </param>
+        /// <param name="orderId">
+        /// Unique order identifier.
+        /// </param>
+        /// <param name="administrationId">
+        /// Unique order administration identifier.
+        /// </param>
+        /// <returns>An ActionResult of IEnumerable collection of type OrderEventDto</returns>
+        /// <remarks>
+        /// </remarks>
         [HttpGet("{orderId}/administrations/{administrationId}/events", Name = nameof(GetAdministrationEvents))]
-        [Produces(MediaTypes.PcEmar, MediaTypes.Json)]
-        public IActionResult GetAdministrationEvents(int administrationId, [FromHeader(Name = "Accept")] string mediaType)
+        public ActionResult<IEnumerable<OrderEventDto>> GetAdministrationEvents(
+            [FromHeader(Name = "Accept")] string mediaType,
+            int orderId,
+            int administrationId
+            )
         {
             if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
             {
@@ -186,9 +310,23 @@ namespace Emar.Api.Controllers
             return Ok(events);
         }
 
+        /// <summary>
+        /// Get the events of an order by order id.
+        /// </summary>
+        /// <param name="mediaType">
+        /// Media type from Accept header.
+        /// </param>
+        /// <param name="orderId">
+        /// Unique order identifier.
+        /// </param>
+        /// <returns>An ActionResult of IEnumerable collection of type OrderEventDto</returns>
+        /// <remarks>
+        /// </remarks>
         [HttpGet("{orderId}/events", Name = nameof(GetEvents))]
-        [Produces(MediaTypes.PcEmar, MediaTypes.Json)]
-        public IActionResult GetEvents(int orderId, [FromQuery] ResourceParameters resourceParameters, [FromHeader(Name = "Accept")] string mediaType)
+        public ActionResult<IEnumerable<OrderEventDto>> GetEvents(
+            [FromHeader(Name = "Accept")] string mediaType,
+            int orderId
+            )
         {
             if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
             {
@@ -202,18 +340,32 @@ namespace Emar.Api.Controllers
                 return NotFound($"Patient order events for order with id {orderId} were not found");
             }
 
-            if ((resourceParameters != null) &&
-                (resourceParameters.IncludeAdministrationsEvents == false))
-            {
-                events = events.Where(@event => @event.AdministrationId != null);
-            }
+            events = events.Where(@event => @event.AdministrationId != null);
 
             return Ok(events.OrderBy(@event => @event.SystemDateTime));
         }
 
+        /// <summary>
+        /// Get the event by event id of an order by order id.
+        /// </summary>
+        /// <param name="mediaType">
+        /// Media type from Accept header.
+        /// </param>
+        /// <param name="orderId">
+        /// Unique order identifier.
+        /// </param>
+        /// <param name="eventId">
+        /// Unique order event identifier.
+        /// </param>
+        /// <returns>An ActionResult of type OrderEventDto</returns>
+        /// <remarks>
+        /// </remarks>
         [HttpGet("{orderId}/events/{eventId}", Name = nameof(GetEvent))]
-        [Produces(MediaTypes.PcEmar, MediaTypes.Json)]
-        public IActionResult GetEvent(int orderId, int eventId, [FromHeader(Name = "Accept")] string mediaType)
+        public ActionResult<OrderEventDto> GetEvent(
+            [FromHeader(Name = "Accept")] string mediaType,
+            int orderId,
+            int eventId
+            )
         {
             if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
             {
@@ -235,18 +387,18 @@ namespace Emar.Api.Controllers
             return Ok(@event);
         }
 
-        private string CreateOrdersResourceUri(ResourceParameters resourceParameters, ResourceUriType type)
+        private string CreateOrdersResourceUri(BaseResourceParameters resourceParameters, ResourceUriType type)
         {
             switch (type)
             {
                 case ResourceUriType.PreviousPage:
                     {
-                        resourceParameters.PageNumber = resourceParameters.PageNumber - 1;
+                        resourceParameters.PageNumber -= 1;
                         return Url.Link(nameof(GetOrders), resourceParameters);
                     }
                 case ResourceUriType.NextPage:
                     {
-                        resourceParameters.PageNumber = resourceParameters.PageNumber + 1;
+                        resourceParameters.PageNumber += 1;
                         return Url.Link(nameof(GetOrders), resourceParameters);
                     }
                 case ResourceUriType.Current:
@@ -257,7 +409,7 @@ namespace Emar.Api.Controllers
             }
         }
 
-        private IEnumerable<HateOasLinkDto> CreateHateOasLinksForOrder(long? orderId, [FromQuery] ResourceParameters resourceParameters)
+        private IEnumerable<HateOasLinkDto> CreateHateOasLinksForOrder(long? orderId, [FromQuery] BaseResourceParameters resourceParameters)
         {
             List<HateOasLinkDto> links = new List<HateOasLinkDto>();
 
@@ -284,7 +436,7 @@ namespace Emar.Api.Controllers
             return links;
         }
 
-        private IEnumerable<HateOasLinkDto> CreateHateOasLinksForOrders([FromQuery] ResourceParameters resourceParameters, bool hasNext, bool hasPrevious)
+        private IEnumerable<HateOasLinkDto> CreateHateOasLinksForOrders([FromQuery] BaseResourceParameters resourceParameters, bool hasNext, bool hasPrevious)
         {
             List<HateOasLinkDto> links = new List<HateOasLinkDto>();
 

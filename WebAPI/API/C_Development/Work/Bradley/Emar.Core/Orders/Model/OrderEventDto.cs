@@ -2,7 +2,7 @@
 
 namespace Emar.Core.Orders.Model
 {
-    public class OrderEventDto 
+    public class OrderEventDto
     {
         /// <summary>
         /// Unique order event identifier

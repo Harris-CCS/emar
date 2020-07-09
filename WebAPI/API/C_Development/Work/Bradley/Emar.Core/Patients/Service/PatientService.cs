@@ -16,7 +16,7 @@ namespace Emar.Core.Patients.Service
             _patientRepository = patientRepository;
         }
 
-        public PagedList<PatientDto> GetPatients(ResourceParameters resourceParameters, bool includeOrders)
+        public PagedList<PatientDto> GetPatients(PatientsResourceParameters resourceParameters, bool includeOrders)
         {
             var patients = _patientRepository.GetPatients(resourceParameters, includeOrders);
 
@@ -36,7 +36,7 @@ namespace Emar.Core.Patients.Service
             return new PagedList<PatientDto>(patientList, patients.TotalCount, patients.CurrentPage, patients.PageSize);
         }
 
-        public PatientDto GetPatient(long patientId, ResourceParameters resourceParameters, bool includeOrders)
+        public PatientDto GetPatient(long patientId, PatientsResourceParameters resourceParameters, bool includeOrders)
         {
             Patient patient = _patientRepository.GetPatient(patientId, resourceParameters, includeOrders);
 
@@ -50,9 +50,9 @@ namespace Emar.Core.Patients.Service
             return patientDto;
         }
 
-        public PatientDto GetPatient(short site, string ibex)
+        public PatientDto GetPatient(short extId1, string extId2)
         {
-            var patientId = _patientRepository.GetInternalPatientId(site, ibex);
+            var patientId = _patientRepository.GetInternalPatientId(extId1, extId2);
             if (patientId == 0)
                 return null;
 

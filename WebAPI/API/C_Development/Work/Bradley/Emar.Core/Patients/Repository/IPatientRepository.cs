@@ -4,9 +4,9 @@ namespace Emar.Core.Patients.Repository
 {
     public interface IPatientRepository
     {
-        PagedList<Patient> GetPatients(ResourceParameters resourceParameters, bool includeOrders);
-        Patient GetPatient(long? patientId, ResourceParameters resourceParameters, bool includeOrders);
-        long? GetPatientId(long? patientId, ResourceParameters resourceParameters);
-        long GetInternalPatientId(short site, string ibex);
+        PagedList<Patient> GetPatients(PatientsResourceParameters resourceParameters, bool includeOrders);
+        Patient GetPatient(long? patientId, PatientsResourceParameters resourceParameters, bool includeOrders);
+        long? GetPatientId(long? patientId, PatientsResourceParameters resourceParameters);
+        long GetInternalPatientId(short extId1, string extId2);
     }
 }
