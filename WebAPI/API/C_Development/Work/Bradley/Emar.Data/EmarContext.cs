@@ -26,6 +26,7 @@ namespace Emar.Data
             modelBuilder.Entity<Order>().HasMany(order => order.Events).WithOne().HasForeignKey(@event => @event.OrderId);
             modelBuilder.Entity<Order>().HasMany(order => order.Administrations).WithOne().HasForeignKey(administration => administration.OrderId);
             modelBuilder.Entity<OrderAdministration>().HasMany(administration => administration.Events).WithOne().HasForeignKey(@event => @event.AdministrationId);
+            //modelBuilder.Entity<Order>().HasOne(order => order.MedicationRouteId).WithOne().HasForeignKey<(mr => mr.)
         }
     }
 }

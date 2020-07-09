@@ -15,7 +15,7 @@ namespace Emar.Core.Orders.Service
             _orderRepository = orderRepository;
         }
 
-        public PagedList<OrderDto> GetOrders(long? patientId, ResourceParameters resourceParameters)
+        public PagedList<PatientOrderDto> GetOrders(long? patientId, ResourceParameters resourceParameters)
         {
             var orders = _orderRepository.GetOrders(patientId, resourceParameters);
 
@@ -25,17 +25,17 @@ namespace Emar.Core.Orders.Service
                 return null;
             }
 
-            var ordersList = new List<OrderDto>();
+            var ordersList = new List<PatientOrderDto>();
 
             foreach (var order in orders)
             {
                 ordersList.Add(OrderMapper.MapOrder(order));
             }
 
-            return new PagedList<OrderDto>(ordersList, orders.TotalCount, orders.CurrentPage, orders.PageSize);
+            return new PagedList<PatientOrderDto>(ordersList, orders.TotalCount, orders.CurrentPage, orders.PageSize);
         }
 
-        public OrderDto GetOrder(long orderId, ResourceParameters resourceParameters)
+        public PatientOrderDto GetOrder(long orderId, ResourceParameters resourceParameters)
         {
             var order = _orderRepository.GetOrder(orderId, resourceParameters);
 

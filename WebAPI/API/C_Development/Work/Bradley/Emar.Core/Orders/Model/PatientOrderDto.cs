@@ -5,13 +5,8 @@ using Emar.Data.Entities;
 
 namespace Emar.Core.Orders.Model
 {
-    public class OrderDto 
+    public class PatientOrderDto : OrderBase
     {
-        /// <summary>
-        /// Unique order identifier
-        /// </summary>
-        public long Id { get; set; }
-
         /// <summary>
         /// Unique patient identifier
         /// </summary>
@@ -23,13 +18,9 @@ namespace Emar.Core.Orders.Model
         public DateTimeOffset CreatedDateTime { get; set; }
 
         /// <summary>
-        /// Identifier for the source of this order (group ID, NDC, etc.)
-        /// </summary>
-        public string MedicationId { get; set; }
-
-        /// <summary>
         /// Order type (STAT, PRN, Continuous/Non-Point-In-Time, Scheduled/Point-In-Time)
         /// </summary>
+        // leaving this at the Patient Level since it relies on priority, which isn't part of the remembered orders
         public string OrderType
         {
             get
@@ -59,16 +50,6 @@ namespace Emar.Core.Orders.Model
         public OrderPriorities Priority { get; set; }
 
         /// <summary>
-        /// Indicates whether the order is PRN.
-        /// </summary>
-        public bool Prn { get; set; }
-
-        /// <summary>
-        /// Indicates whether the order is Point-In-Time.
-        /// </summary>
-        public bool PointInTime { get; set; }
-
-        /// <summary>
         /// Order status (Pending, Cancelled, OnGoing, OnHold, PendingDiscontinue, Discontinued, Completed)
         /// </summary>
         public string OrderStatus
@@ -81,9 +62,9 @@ namespace Emar.Core.Orders.Model
             set
             {
                 if (Enum.TryParse(typeof(OrderStatuses), value, out object code))
-                {
-                    OrderStatusCode = (OrderStatuses)code;
-                }
+                    OrderStatusCode = (OrderStatuses) code;
+                else
+                    OrderStatusCode = OrderStatuses.Pending;
             }
         }
 
@@ -98,21 +79,6 @@ namespace Emar.Core.Orders.Model
         /// Date and time the order ended.  Includes the local time timezone offset from UTC.
         /// </summary>
         public DateTimeOffset? EndDateTime { get; set; }
-
-        /// <summary>
-        /// Unique order frequency identifier.
-        /// </summary>
-        public int FrequencyId { get; set; }
-
-        /// <summary>
-        /// Unique medication route identifier.
-        /// </summary>
-        public int MedicationRouteId { get; set; }
-
-        /// <summary>
-        /// Order notes.
-        /// </summary>
-        public string OrderNotes { get; set; }
 
         private string _name;
         public string Name
@@ -139,41 +105,5 @@ namespace Emar.Core.Orders.Model
         /// Order events.
         /// </summary>
         public IEnumerable<OrderEvent>? OrderEvents { get; set; }
-
-        #region Constants
-        /// <summary>
-        /// Order types
-        /// </summary>
-        public enum OrderTypes
-        {
-            Stat = 1,
-            Prn = 2,
-            Continuous = 3,
-            Scheduled = 4
-        }
-
-        /// <summary>
-        /// Order priorities
-        /// </summary>
-        public enum OrderPriorities
-        {
-            Stat = 2,
-            Routine = 4
-        }
-
-        /// <summary>
-        /// Order statuses
-        /// </summary>
-        public enum OrderStatuses
-        {
-            Pending = 1,
-            Cancelled = 2,
-            OnGoing = 3,
-            OnHold = 4,
-            PendingDiscontinue = 5,
-            Discontinued = 6,
-            Completed = 7
-        }
-        #endregion
     }
 }

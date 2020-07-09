@@ -37,7 +37,7 @@ namespace Emar.Core
         public PropertyMappingService()
         {
             _propertyMappings.Add(new PropertyMapping<PatientDto, Patient>(_propertyMappingPatient));
-            _propertyMappings.Add(new PropertyMapping<OrderDto, Order>(_propertyMappingOrder));
+            _propertyMappings.Add(new PropertyMapping<PatientOrderDto, Order>(_propertyMappingOrder));
         }
 
         public bool ValidMappingExistsFor<TSource, TDestination>(string fields)

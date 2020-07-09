@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Linq;
 using Emar.Data.Entities;
-using static Emar.Core.Orders.Model.OrderDto;
+using static Emar.Core.Orders.Model.PatientOrderDto;
 
 namespace Emar.Core.Orders.Model.Mappings
 {
     public static class OrderMapper
     {
-        public static OrderDto MapOrder(Order order)
+        public static PatientOrderDto MapOrder(Order order)
         {
             if (order == null)
             {
                 return null;
             }
 
-            OrderDto _orderDto = new OrderDto
+            PatientOrderDto patientOrderDto = new PatientOrderDto
             {
                 Id = order.Id,
                 PatientId = order.PatientId,
@@ -24,7 +24,7 @@ namespace Emar.Core.Orders.Model.Mappings
                 Prn = order.Prn,
                 PointInTime = order.PointInTime,
                 OrderStatus = order.OrderStatus,
-                OrderStatusCode = (OrderStatuses)Enum.Parse(typeof(OrderStatuses), order.OrderStatusCode),
+                OrderStatusCode = (OrderBase.OrderStatuses)Enum.Parse(typeof(OrderBase.OrderStatuses), order.OrderStatusCode),
                 BeginDateTime = order.BeginDateTime,
                 EndDateTime = order.EndDateTime,
                 FrequencyId = order.FrequencyId,
@@ -38,7 +38,7 @@ namespace Emar.Core.Orders.Model.Mappings
                 OrderEvents = order.Events.Where(@event => @event.AdministrationId == null)
             };
 
-            return _orderDto;
+            return patientOrderDto;
         }
 
         public static OrderAdministrationDto MapOrderAdministration(OrderAdministration administration)

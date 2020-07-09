@@ -42,17 +42,17 @@ namespace Emar.Api.Controllers
                 return BadRequest();
             }
 
-            if (!_propertyMappingService.ValidMappingExistsFor<OrderDto, Order>(resourceParameters.OrderBy))
+            if (!_propertyMappingService.ValidMappingExistsFor<PatientOrderDto, Order>(resourceParameters.OrderBy))
             {
                 return BadRequest();
             }
 
-            if (!_propertyCheckerService.TypeHasProperties<OrderDto>(resourceParameters.Fields))
+            if (!_propertyCheckerService.TypeHasProperties<PatientOrderDto>(resourceParameters.Fields))
             {
                 return BadRequest();
             }
 
-            PagedList<OrderDto> orders = _orderService.GetOrders(null, resourceParameters);
+            PagedList<PatientOrderDto> orders = _orderService.GetOrders(null, resourceParameters);
 
             if (orders == null) { return NotFound($"No orders found"); }
 
@@ -69,7 +69,7 @@ namespace Emar.Api.Controllers
             if (parsedMediaType.MediaType.Equals(MediaTypes.PcEmar))
             {
                 var links = CreateHateOasLinksForOrders(resourceParameters, orders.HasNext, orders.HasPrevious);
-                var shapedOrders = ((IEnumerable<OrderDto>)orders).ShapeData(resourceParameters.Fields);
+                var shapedOrders = ((IEnumerable<PatientOrderDto>)orders).ShapeData(resourceParameters.Fields);
 
                 var shapedOrdersWithLinks = shapedOrders.Select(order =>
                 {
@@ -90,7 +90,7 @@ namespace Emar.Api.Controllers
                 return Ok(linkedOrderResource);
             }
 
-            return Ok(((IEnumerable<OrderDto>)orders).ShapeData(resourceParameters.Fields));
+            return Ok(((IEnumerable<PatientOrderDto>)orders).ShapeData(resourceParameters.Fields));
         }
 
         [HttpGet("{orderId}", Name = nameof(GetOrder))]
@@ -102,7 +102,7 @@ namespace Emar.Api.Controllers
                 return BadRequest();
             }
 
-            if (!_propertyCheckerService.TypeHasProperties<OrderDto>(resourceParameters.Fields))
+            if (!_propertyCheckerService.TypeHasProperties<PatientOrderDto>(resourceParameters.Fields))
             {
                 return BadRequest();
             }
