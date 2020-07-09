@@ -933,11 +933,9 @@ insert into #patients values('20190116212045','40','','ZF1','Zoo','Flamingo','',
 insert into #patients values('20190116213017','40','','ZG1','Zoo','Giraffe','','','',null,'0','','','0.00','0.00','','WAIT','SAC','','','0','0',null,'','','','','','','','','','','','','','','','','');
 insert into #patients values('20180414120456','39','','','Ztestemsj','Ztestoffloadj','','','M','1974-06-05','43','Y','Vertigo','0.00','87.00','','HOLDING','ED','Y',null,'0','0',null,'0','120','80','0','78','0','','0','17','2','36.5','0','',null,'99','0','');
 
-update [source] set    
-    [site_id] = isnull([internal_site].[id], -1)
-from   [#patients] as [source]
-       outer apply [dbo].[get_internal_id]
-    ('pulsecheck', 'sites', [source].[site_id]) as [internal_site];
+update [source] set
+      [source_id]=[source].[site_id]+'|'+[source].[source_id]
+from   [#patients] as [source];
 
 alter table [#patients]
 add [id]        [bigint] identity(1, 1)
@@ -954,7 +952,7 @@ from   [dbo].[patients];
 
 set @max_id = isnull(@max_id, 0);
 
-update [source] set    
+update [source] set
     [target_id] = [source].[id] + @max_id
 from   [#patients] as [source];
 
@@ -1007,7 +1005,7 @@ insert into [dbo].[patients]
    , [vs_pain_scale]
     )
 select [source].[target_id]
-     , [source].[site_id]
+     , isnull([internal_site].[id], -1) [site_id]
      , [source].[medical_record_number]
      , [source].[account_number]
      , [source].[last_name]
@@ -1046,7 +1044,11 @@ select [source].[target_id]
      , [source].[vs_oxygen_saturation]
      , [source].[vs_pain_scale_indicator]
      , [source].[vs_pain_scale]
-from   [#patients] as [source];
+from   [#patients] as [source]
+       outer apply [dbo].[get_internal_id]
+    ('pulsecheck', 'sites', [source].[site_id]) as [internal_site]
+order by [source].[last_name]
+       , [source].[first_name];
 
 set identity_insert [dbo].[patients] off;
 
