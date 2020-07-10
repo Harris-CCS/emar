@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
 using Emar.Data.Entities;
 
@@ -10,11 +12,13 @@ namespace Emar.Core.Orders.Model
         /// <summary>
         /// Unique patient identifier
         /// </summary>
+        [Column("patient_id", TypeName = "bigint"), Required]
         public long PatientId { get; set; }
 
         /// <summary>
         /// Date and time the order was created.  Includes the local time timezone offset from UTC.
         /// </summary>
+        [Column("create_stamp", TypeName = "datetimeoffset"), Required]
         public DateTimeOffset CreatedDateTime { get; set; }
 
         /// <summary>
@@ -31,11 +35,13 @@ namespace Emar.Core.Orders.Model
         /// <summary>
         /// Indicates the order priority (STAT, Routine).
         /// </summary>
+        [Column("priority", TypeName = "tinyint"), Required]
         public OrderPriorities Priority { get; set; }
 
         /// <summary>
         /// Indicates whether the order is PRN.
         /// </summary>
+        [Column("prn", TypeName = "bit"), Required]
         public bool Prn { get; set; }
 
         /// <summary>
@@ -89,16 +95,19 @@ namespace Emar.Core.Orders.Model
         /// <summary>
         /// Unique identifier of the provider who ordered the order.
         /// </summary>
+        [NotMapped]
         public int OrderingProviderId { get; set; }
 
         /// <summary>
         /// PatientOrder administrations.
         /// </summary>
+        [NotMapped]
         public IEnumerable<OrderAdministration>? OrderAdministrations { get; set; }
 
         /// <summary>
         /// PatientOrder events.
         /// </summary>
+        [NotMapped]
         public IEnumerable<OrderEvent>? OrderEvents { get; set; }
 
         public IEnumerable<string> ApplicableFilters = new List<string>();

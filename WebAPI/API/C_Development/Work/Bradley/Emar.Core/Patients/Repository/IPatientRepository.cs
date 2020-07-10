@@ -8,5 +8,6 @@ namespace Emar.Core.Patients.Repository
         Patient GetPatient(long? patientId, PatientsResourceParameters resourceParameters, bool includeOrders);
         long? GetPatientId(long? patientId, PatientsResourceParameters resourceParameters);
         long GetInternalPatientId(short extId1, string extId2);
+        Patient GetPatientByAccountNumber(string accountNumber);
     }
 }

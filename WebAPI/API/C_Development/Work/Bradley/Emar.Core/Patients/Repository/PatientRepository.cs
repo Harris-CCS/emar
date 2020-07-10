@@ -149,5 +149,11 @@ namespace Emar.Core.Patients.Repository
 
             return ptId.FirstOrDefault();
         }
+
+        public Patient GetPatientByAccountNumber(string accountNumber)
+        {
+            var query = _context.Patients.Where(p => p.AccountNumber == accountNumber);
+            return query.FirstOrDefault();
+        }
     }
 }
