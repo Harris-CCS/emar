@@ -1,6 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Dynamic.Core;
+using Emar.Core.Users.Model;
 using Emar.Data;
 using Emar.Data.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Emar.Core.Users.Repository
 {
@@ -20,14 +24,14 @@ namespace Emar.Core.Users.Repository
 
         public IEnumerable<User> GetUsers()
         {
-            IEnumerable<User> users = _context.Users;
+            var users = _context.Users;
 
             return users;
         }
 
         public User GetUser(int userId)
         {
-            User user = _context.Users.Find(userId);
+            var user = _context.Users.Find(userId);
 
             return user;
         }

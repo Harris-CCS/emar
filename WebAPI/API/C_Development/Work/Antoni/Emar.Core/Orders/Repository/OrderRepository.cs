@@ -24,7 +24,7 @@ namespace Emar.Core.Orders.Repository
             _propertyMappingService = propertyMappingService ?? throw new ArgumentNullException(nameof(propertyMappingService));
         }
 
-        public PagedList<Order> GetOrders(long? patientId, OrdersResourceParameters resourceParameters)
+        public PagedList<PatientOrder> GetOrders(long? patientId, OrdersResourceParameters resourceParameters)
         {
             patientId ??= resourceParameters.PatientId;
 
@@ -43,15 +43,15 @@ namespace Emar.Core.Orders.Repository
             if (resourceParameters.OrderBy != null)
             {
                 //get property mapping dictionary
-                var propertyMappingDictionary = _propertyMappingService.GetPropertyMapping<OrderDto, Order>();
+                var propertyMappingDictionary = _propertyMappingService.GetPropertyMapping<PatientOrderDto, PatientOrder>();
 
                 orders = orders.AsQueryable().ApplySort(resourceParameters.OrderBy, propertyMappingDictionary);
             }
 
-            return PagedList<Order>.Create(orders.AsQueryable(), resourceParameters.PageNumber, resourceParameters.PageSize);
+            return PagedList<PatientOrder>.Create(orders.AsQueryable(), resourceParameters.PageNumber, resourceParameters.PageSize);
         }
 
-        public Order GetOrder(long orderId, OrdersResourceParameters resourceParameters)
+        public PatientOrder GetOrder(long orderId, OrdersResourceParameters resourceParameters)
         {
             return _context.Orders
                     .Include(order => order.Events)
@@ -63,9 +63,9 @@ namespace Emar.Core.Orders.Repository
         public IEnumerable<OrderAdministration> GetAdministrations(long orderId)
         {
             return _context.OrderAdministrations
-                .Where(administration => administration.OrderId == orderId)
-                .Include(administration => administration.Events)
-                .AsEnumerable();
+                    .Where(administration => administration.OrderId == orderId)
+                    .Include(administration => administration.Events)
+                    .AsEnumerable();
         }
 
         public OrderAdministration GetAdministration(long administrationId)
@@ -78,8 +78,8 @@ namespace Emar.Core.Orders.Repository
         public IEnumerable<OrderEvent> GetEvents(long orderId)
         {
             return _context.OrderEvents
-                .Where(@event => @event.OrderId == orderId)
-                .AsEnumerable();
+                    .Where(@event => @event.OrderId == orderId)
+                    .AsEnumerable();
         }
 
         public OrderEvent GetEvent(long eventId)
@@ -90,8 +90,8 @@ namespace Emar.Core.Orders.Repository
         public IEnumerable<OrderEvent> GetAdministrationEvents(long administrationId)
         {
             return _context.OrderEvents
-                .Where(@event => @event.AdministrationId == administrationId)
-                .AsEnumerable();
+                    .Where(@event => @event.AdministrationId == administrationId)
+                    .AsEnumerable();
         }
     }
 }

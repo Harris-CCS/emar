@@ -82,7 +82,7 @@ namespace Emar.Core.Orders.Model
         public bool MissedDose { get; set; }
 
         /// <summary>
-        /// Order administration events.
+        /// Patient order administration events.
         /// </summary>
         public IEnumerable<OrderEvent>? AdministrationEvents { get; set; }
     }

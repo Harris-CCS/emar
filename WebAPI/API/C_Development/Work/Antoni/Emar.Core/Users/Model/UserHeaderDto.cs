@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using Emar.Data.Entities;
 
 namespace Emar.Core.Users.Model
 {
-    public class UserDto
+    public class UserHeaderDto
     {
         public int Id { get; set; }
-        public short SiteId { get; set; }
         public string Type { get; set; }
         public bool Active { get; set; }
         public string InitialsDisplay { get; set; }
@@ -33,11 +34,6 @@ namespace Emar.Core.Users.Model
         }
         public bool OrderingOnlyPhysician { get; set; }
         public bool NameDisplayPreference { get; set; }
-        public string LoginName { get; set; }
-        public string LoginPassword { get; set; }
-        public byte[] Salt { get; set; }
-        public DateTimeOffset LastLoginTime { get; set; }
-        public int FailedLoginAttempts { get; set; }
 
         public Site Site { get; set; }
     }

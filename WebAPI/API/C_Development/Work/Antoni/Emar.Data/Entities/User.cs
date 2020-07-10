@@ -13,11 +13,14 @@ namespace Emar.Data.Entities
         [Column("site_id", TypeName = "int"), Required]
         public short SiteId { get; set; }
 
-        [Column("is_active", TypeName = "char(1)"), Required]
+        [Column("type", TypeName = "char(1)"), Required]
+        public string Type { get; set; }
+
+        [Column("is_active", TypeName = "bit"), Required]
         public bool Active { get; set; }
 
         [Column("initials_display", TypeName = "varchar(4)"), Required]
-        public bool InitialsDisplay { get; set; }
+        public string InitialsDisplay { get; set; }
 
         [Column("first_name", TypeName = "varchar(20)"), Required]
         public string FirstName { get; set; }
@@ -40,10 +43,13 @@ namespace Emar.Data.Entities
         [Column("salt", TypeName = "binary(16)"), Required]
         public byte[] Salt { get; set; }
 
-        [Column("last_login_time", TypeName = "datetimeoffset"), Required]
+        [Column("last_login_time", TypeName = "datetimeoffset")]
         public DateTimeOffset LastLoginTime { get; set; }
 
         [Column("failed_login_attempts", TypeName = "int"), Required]
         public int FailedLoginAttempts { get; set; }
+
+        [NotMapped]
+        public virtual Site Site { get; set; }
     }
 }

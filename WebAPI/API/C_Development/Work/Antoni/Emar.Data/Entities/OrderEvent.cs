@@ -4,26 +4,29 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Emar.Data.Entities
 {
-    [Table("patient_order_events")]
+    [Table("order_events")]
     public class OrderEvent
     {
-        [Column("id", TypeName = "bigint"), Key]
+        //[Column("id", TypeName = "bigint"), Key]
+        [Column("id", TypeName = "int"), Key]
         public long Id { get; set; }
 
-        [Column("patient_order_id", TypeName = "bigint"), Required]
+        //[Column("patient_order_id", TypeName = "bigint"), Required]
+        [Column("patient_order_id", TypeName = "int"), Required]
         public long OrderId { get; set; }
 
-        [Column("patient_order_administration_id", TypeName = "bigint")]
+        //[Column("order_administration_id", TypeName = "bigint")]
+        [Column("order_administration_id", TypeName = "int")]
         public long? AdministrationId { get; set; }
 
-        [Column("event_time", TypeName = "datetimeoffset"), Required]
+        [Column("event_datetime", TypeName = "datetimeoffset"), Required]
         public DateTimeOffset EventDateTime { get; set; }
 
-        [Column("system_time", TypeName = "datetimeoffset"), Required]
-        public DateTimeOffset SystemDateTime { get; set; }
+        [Column("add_user_id", TypeName = "int"), Required]
+        public int AddUserId { get; set; }
 
-        [Column("user_id", TypeName = "int"), Required]
-        public int UserId { get; set; }
+        [Column("add_datetime", TypeName = "datetimeoffset"), Required]
+        public DateTimeOffset AddDatetime { get; set; }
 
         [Column("action_id", TypeName = "int"), Required]
         public int ActionId { get; set; }
