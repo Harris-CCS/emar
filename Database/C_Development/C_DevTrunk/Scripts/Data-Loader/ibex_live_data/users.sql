@@ -48,11 +48,9 @@ select [source].[num]
      , 0 as    [failed_login_attempts]
 from   [ibex].[dbo].[drs] as [source];
 
-update [source] set    
-    [site_id] = isnull([internal_site].[id], -1)
-from   [#users] as [source]
-       outer apply [dbo].[get_internal_id]
-    ('pulsecheck', 'sites', [source].[site_id]) as [internal_site];
+update [source] set
+      [source_id]=[source].[site_id]+'|'+[source].[source_id]
+from   [#users] as [source];
 
 alter table [#users]
 add [id]        [bigint] identity(1, 1)
@@ -69,7 +67,7 @@ from   [dbo].[users];
 
 set @max_id = isnull(@max_id, 0);
 
-update [source] set    
+update [source] set
     [target_id] = [source].[id] + @max_id
 from   [#users] as [source];
 
@@ -96,7 +94,7 @@ insert into [dbo].[users]
    , [failed_login_attempts]
     )
 select [source].[target_id]
-     , [source].[site_id]
+     , isnull([internal_site].[id], -1) [site_id]
      , [source].[type]
      , [source].[is_active]
      , [source].[initials_display]
@@ -110,6 +108,8 @@ select [source].[target_id]
      , [source].[last_login_time]
      , [source].[failed_login_attempts]
 from   [#users] as [source]
+       outer apply [dbo].[get_internal_id]
+    ('pulsecheck', 'sites', [source].[site_id]) as [internal_site]
 order by [source].[last_name]
        , [source].[first_name];
 
