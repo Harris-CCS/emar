@@ -16,8 +16,11 @@ LVL: 000 SEQ: 003 TBL: dbo.options
 /*************************************
 LVL: 000 SEQ: 004 TBL: dbo.permissions
 *************************************/
+/***************************************
+LVL: 000 SEQ: 005 TBL: dbo.prompt_groups
+***************************************/
 /*******************************
-LVL: 000 SEQ: 005 TBL: dbo.sites
+LVL: 000 SEQ: 006 TBL: dbo.sites
 *******************************/
 
 drop table if exists [#sites];
@@ -28,11 +31,17 @@ create table [#sites]
     , [name]      [varchar](40)
     , [is_active] [bit]);
 
+/***********************************
+LVL: 000 SEQ: 007 TBL: dbo.templates
+***********************************/
+/************************************************
+LVL: 001 SEQ: 001 TBL: dbo.action_route_templates
+************************************************/
 /******************************************
-LVL: 001 SEQ: 001 TBL: dbo.override_reasons
+LVL: 001 SEQ: 002 TBL: dbo.override_reasons
 ******************************************/
 /**********************************
-LVL: 001 SEQ: 002 TBL: dbo.patients
+LVL: 001 SEQ: 003 TBL: dbo.patients
 **********************************/
 
 drop table if exists [#patients];
@@ -80,23 +89,29 @@ create table [#patients]
     , [vs_pain_scale_indicator]        [char](1) null
     , [vs_pain_scale]                  [char](14) null);
 
+/*********************************
+LVL: 001 SEQ: 004 TBL: dbo.prompts
+*********************************/
 /******************************************
-LVL: 001 SEQ: 003 TBL: dbo.site_code_shares
+LVL: 001 SEQ: 005 TBL: dbo.site_code_shares
 ******************************************/
 /****************************************
-LVL: 001 SEQ: 004 TBL: dbo.site_formulary
+LVL: 001 SEQ: 006 TBL: dbo.site_formulary
 ****************************************/
 /**********************************************
-LVL: 001 SEQ: 005 TBL: dbo.site_formulary_match
+LVL: 001 SEQ: 007 TBL: dbo.site_formulary_match
 **********************************************/
 /**************************************
-LVL: 001 SEQ: 006 TBL: dbo.site_options
+LVL: 001 SEQ: 008 TBL: dbo.site_options
 **************************************/
 /*********************************************
-LVL: 001 SEQ: 007 TBL: dbo.site_preferred_list
+LVL: 001 SEQ: 009 TBL: dbo.site_preferred_list
 *********************************************/
+/************************************************
+LVL: 001 SEQ: 010 TBL: dbo.template_prompt_groups
+************************************************/
 /*******************************
-LVL: 001 SEQ: 008 TBL: dbo.users
+LVL: 001 SEQ: 011 TBL: dbo.users
 *******************************/
 
 drop table if exists [#users];
@@ -133,11 +148,14 @@ LVL: 002 SEQ: 004 TBL: dbo.patient_indicators
 /****************************************
 LVL: 002 SEQ: 005 TBL: dbo.patient_orders
 ****************************************/
+/****************************************
+LVL: 002 SEQ: 006 TBL: dbo.prompt_choices
+****************************************/
 /******************************************
-LVL: 002 SEQ: 006 TBL: dbo.user_permissions
+LVL: 002 SEQ: 007 TBL: dbo.user_permissions
 ******************************************/
 /*****************************************
-LVL: 002 SEQ: 007 TBL: dbo.user_quick_list
+LVL: 002 SEQ: 008 TBL: dbo.user_quick_list
 *****************************************/
 /***********************************************
 LVL: 003 SEQ: 001 TBL: dbo.order_administrations

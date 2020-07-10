@@ -107,6 +107,12 @@
     <Build Include="Tables\actions.sql" />
     <Build Include="Tables\order_events.sql" />
     <Build Include="Tables\order_event_details.sql" />
+    <Build Include="Tables\action_route_templates.sql" />
+    <Build Include="Tables\templates.sql" />
+    <Build Include="Tables\prompt_choices.sql" />
+    <Build Include="Tables\prompt_groups.sql" />
+    <Build Include="Tables\prompts.sql" />
+    <Build Include="Tables\template_prompt_groups.sql" />
     <None Include="Scripts\Data-Loader\delete_emar_data.sql" />
     <None Include="Scripts\Data-Loader\sample_data\sites.sql" />
     <None Include="Scripts\Data-Loader\ibex_live_data\sites.sql" />
