@@ -8,21 +8,18 @@ import { HeaderPatientComponent } from './component/header-patient/header-patien
 import { SimpleOrderListComponent } from './component/simple-order-list/simple-order-list.component';
 import { ModalComponent } from './component/modal/modal.component';
 import { MedSearchComponent } from './component/med-search/med-search.component';
-
+import { Age } from '../shared/pipes/age';
 
 @NgModule({
   declarations: [
-    HeaderUserComponent, 
-    HeaderPatientComponent, 
-    SimpleOrderListComponent, 
-    ModalComponent, 
+    HeaderUserComponent,
+    HeaderPatientComponent,
+    SimpleOrderListComponent,
+    ModalComponent,
     MedSearchComponent,
+    Age,
   ],
-  imports: [
-    CommonModule,
-    NgbModule,
-    FormsModule,
-  ],
+  imports: [CommonModule, NgbModule, FormsModule],
   exports: [
     HeaderUserComponent,
     HeaderPatientComponent,
@@ -30,8 +27,6 @@ import { MedSearchComponent } from './component/med-search/med-search.component'
     ModalComponent,
     MedSearchComponent,
   ],
-  bootstrap: [
-    MedSearchComponent,
-  ]
+  bootstrap: [MedSearchComponent],
 })
-export class SharedComponentsModule { }
+export class SharedComponentsModule {}

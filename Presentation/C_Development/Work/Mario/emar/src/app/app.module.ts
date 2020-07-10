@@ -18,9 +18,9 @@ import { PatientsDashboardComponent } from '../pages/patients-dashboard/patients
     BrowserModule,
     SharedComponentsModule,
     OrderEntryModule,
-    AppRoutingModule
+    AppRoutingModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

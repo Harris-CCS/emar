@@ -1,14 +1,55 @@
-
-<div class="page-content-header">
-    <div class="first">
-        <a href="/Patients" class="go-back"></a>
-        <div class="patient-bed_main">{{ patient.bedCode }}</div>
-        <h1>{{ patient.fullName }}</h1>
+<div class="page-content-wrapper" *ngIf="patient">
+    <div class="nav-header">
+        <a href="/patients/1/orders" class="go-back"></a>
     </div>
-    <div class="second">
-        <div class="patient-details">
-            {{ patient.age }} {{ patient.ageUnit}}
+    <div class="patient-container">
+        <div class="patient-data-container">
+            <div class="patient-data-location">
+                <span class="patient-location" [ngStyle]="{
+                'borderColor': getPatientUrgencyColor()
+            }" [innerText]=" getPatientLocation()"></span>
+
+            </div>
+            <div>
+                <div class="patient-data-basic">
+                    <span class="patient-name" [innerText]="getPatientFullName()"></span>
+                </div>
+
+                <div class="complaint">
+                    <span *ngIf="patient.complaint">Complaint: {{patient.complaint}}</span>
+                </div>
+
+            </div>
+            <div class="patient-indicators">
+                <div class="standard-indicators">
+                    <img src="../../../assets/img/alert2[1].gif" *ngIf="patient.nameAlert" alt="Name Alert">
+                    <img src="../../../assets/img/privacy[1].gif" *ngIf="patient.withdrawConsent"
+                        alt="Consent Withdrawn">
+                </div>
+                <div class="custom-indicators">
+                    <span> CI </span>
+                </div>
+            </div>
+            <div class="patient-ids">
+                <span *ngIf="patient.enterprisePatientId">{{patient.enterprisePatientId}}
+                    <span *ngIf="patient.medicalRecordNumber">/ {{patient.medicalRecordNumber}}
+                        <span *ngIf="patient.accountNumber"> / {{patient.accountNumber}}</span></span></span>
+                <!-- <img *ngIf="checkForData('vitals')" [src]="getVitalSignIconPath()"> -->
+                <span>VS ALG MEDS</span>
+            </div>
+            <div class="patient-data-demographics">
+
+                <span *ngIf="patient.age && patient.ageUnits">
+                    {{patient.age | Age: patient.age:patient.ageUnits}}
+                    <span *ngIf="patient.dateOfBirth">({{patient.dateOfBirth | date: 'MM/dd/yyyy' }})</span>
+                    <span [class]="getPatientGenderIconStyle()" *ngIf="patient.gender"></span>
+                </span>
+
+                <span *ngIf="patient.heightInCm">HT/WT: {{patient.heightInCm}} cm
+                    <span *ngIf="patient.weightInKg"> / {{patient.weightInKg}} kg</span></span>
+
+            </div>
+
         </div>
-        <div [ngClass]="{'patient-details': 1, 'male': patient.gender === 'M', 'female': patient.gender === 'F'}"></div>
     </div>
 </div>
