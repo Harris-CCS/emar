@@ -24,11 +24,11 @@ go
 alter table [dbo].[order_event_details]
 add constraint [fk__order_event_details__order_events] foreign key([order_event_id]) references [dbo].[order_events]([id]);
 go
-/*
+
 alter table [dbo].[order_event_details]
 add constraint [fk__order_event_details__prompts] foreign key([prompt_id]) references [dbo].[prompts]([id]);
 go
-*/
+
 /***************
  Data Dictionary
     Defaults
