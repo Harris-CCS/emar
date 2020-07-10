@@ -30,7 +30,7 @@
             </param>
             <param name="orderBy">
             *Optional.* \
-            Comma delimited list Order element to sort by:
+            Comma delimited list PatientOrder element to sort by:
             * **Id**
             * **Priority**
             * **OrderStatus**

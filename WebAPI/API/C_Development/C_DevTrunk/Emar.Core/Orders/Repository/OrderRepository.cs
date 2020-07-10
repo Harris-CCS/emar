@@ -63,9 +63,9 @@ namespace Emar.Core.Orders.Repository
         public IEnumerable<OrderAdministration> GetAdministrations(long orderId)
         {
             return _context.OrderAdministrations
-                .Where(administration => administration.OrderId == orderId)
-                .Include(administration => administration.Events)
-                .AsEnumerable();
+                    .Where(administration => administration.OrderId == orderId)
+                    .Include(administration => administration.Events)
+                    .AsEnumerable();
         }
 
         public OrderAdministration GetAdministration(long administrationId)
@@ -78,8 +78,8 @@ namespace Emar.Core.Orders.Repository
         public IEnumerable<OrderEvent> GetEvents(long orderId)
         {
             return _context.OrderEvents
-                .Where(@event => @event.OrderId == orderId)
-                .AsEnumerable();
+                    .Where(@event => @event.OrderId == orderId)
+                    .AsEnumerable();
         }
 
         public OrderEvent GetEvent(long eventId)
@@ -90,8 +90,8 @@ namespace Emar.Core.Orders.Repository
         public IEnumerable<OrderEvent> GetAdministrationEvents(long administrationId)
         {
             return _context.OrderEvents
-                .Where(@event => @event.AdministrationId == administrationId)
-                .AsEnumerable();
+                    .Where(@event => @event.AdministrationId == administrationId)
+                    .AsEnumerable();
         }
     }
 }

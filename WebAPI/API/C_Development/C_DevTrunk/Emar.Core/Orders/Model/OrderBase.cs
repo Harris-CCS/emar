@@ -19,14 +19,14 @@ namespace Emar.Core.Orders.Model
         /// </summary>
         public string DrugId { get; set; }
 
-        private string _brandBrandName;
+        private string _brandName;
         /// <summary>
         /// Brand name of the medication
         /// </summary>
         public string BrandName
         {
-            get => _brandBrandName;
-            set => _brandBrandName = value != null ? Regex.Replace(value, "( : ){2,}", " : ") : null;
+            get => _brandName;
+            set => _brandName = value != null ? Regex.Replace(value, "( : ){2,}", " : ") : null;
         }
 
         public string Dose { get; set; }

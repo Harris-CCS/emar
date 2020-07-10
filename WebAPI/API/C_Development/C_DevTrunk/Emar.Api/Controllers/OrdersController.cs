@@ -54,7 +54,7 @@ namespace Emar.Api.Controllers
         /// </param>
         /// <param name="orderBy">
         /// *Optional.* \
-        /// Comma delimited list PatientOrder element to sort by:
+        /// Comma delimited list Patient Order element to sort by:
         /// * **Id**
         /// * **Priority**
         /// * **OrderStatus**

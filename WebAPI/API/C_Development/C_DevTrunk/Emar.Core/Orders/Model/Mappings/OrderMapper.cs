@@ -17,7 +17,7 @@ namespace Emar.Core.Orders.Model.Mappings
             {
                 Id = patientOrder.Id,
                 PatientId = patientOrder.PatientId,
-                CreatedDateTime = patientOrder.CreatedDateTime,
+                CreatedDateTime = patientOrder.AddDatetime,
                 DrugId = patientOrder.DrugId,
                 ////Priority = (OrderPriorities)Enum.Parse(typeof(OrderPriorities), patientOrder.Priority),
                 Prn = patientOrder.Prn,
@@ -29,10 +29,10 @@ namespace Emar.Core.Orders.Model.Mappings
                 FrequencyId = patientOrder.FrequencyId,
                 MedicationRouteId = patientOrder.MedicationRouteId,
                 OrderNotes = patientOrder.OrderNotes,
-                BrandName = patientOrder.Name,
+                BrandName = patientOrder.BrandName,
                 Unit = patientOrder.Unit,
                 Dose = patientOrder.Dose,
-                OrderingProviderId = patientOrder.OrderingProviderId,
+                OrderingProviderId = patientOrder.AddUserId,
                 OrderAdministrations = patientOrder.Administrations,
                 OrderEvents = (patientOrder.Events ?? Array.Empty<OrderEvent>()).Where(@event => @event.AdministrationId == null)
             };
@@ -51,16 +51,16 @@ namespace Emar.Core.Orders.Model.Mappings
             {
                 Id = administration.Id,
                 OrderId = administration.OrderId,
-                ScheduledAdministrationTime = administration.ScheduledAdministrationTime,
-                ActualAdministrationTime = administration.ActualAdministrationTime,
-                SystemAdministrationTime = administration.SystemAdministrationTime,
-                AdministrationUserId = administration.AdministrationUserId,
-                ScheduledStopTime = administration.ScheduledStopTime,
-                ActualStopTime = administration.ActualStopTime,
-                SystemStopTime = administration.SystemStopTime,
+                ScheduledAdministrationTime = administration.AdministrationScheduledDatetime,
+                ActualAdministrationTime = administration.AdministrationInputDatetime,
+                SystemAdministrationTime = administration.AdministrationDatetime,
+                AdministrationUserId = administration.AdministeringUserId,
+                ScheduledStopTime = administration.StopScheduledDatetime,
+                ActualStopTime = administration.StopInputDatetime,
+                SystemStopTime = administration.StopDatetime,
                 StopUserId = administration.StopUserId,
                 AcknowledgeUserId = administration.AcknowledgeUserId,
-                AcknowledgeTime = administration.AcknowledgeTime,
+                AcknowledgeTime = administration.AcknowledgeDatetime,
                 //////Continuous = administration.Continuous,
                 OnHold = administration.OnHold,
                 MissedDose = administration.MissedDose,
@@ -83,8 +83,8 @@ namespace Emar.Core.Orders.Model.Mappings
                 OrderId = @event.OrderId,
                 AdministrationId = @event.AdministrationId,
                 EventDateTime = @event.EventDateTime,
-                SystemDateTime = @event.SystemDateTime,
-                UserId = @event.UserId,
+                SystemDateTime = @event.AddDatetime,
+                UserId = @event.AddUserId,
                 ActionId = @event.ActionId
             };
 

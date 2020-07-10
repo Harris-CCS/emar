@@ -1,4 +1,5 @@
-﻿using Emar.Data.Entities;
+﻿using System.Runtime.Serialization;
+using Emar.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Emar.Data
@@ -26,6 +27,9 @@ namespace Emar.Data
             modelBuilder.Entity<PatientOrder>().HasMany(order => order.Events).WithOne().HasForeignKey(@event => @event.OrderId);
             modelBuilder.Entity<PatientOrder>().HasMany(order => order.Administrations).WithOne().HasForeignKey(administration => administration.OrderId);
             modelBuilder.Entity<OrderAdministration>().HasMany(administration => administration.Events).WithOne().HasForeignKey(@event => @event.AdministrationId);
+            //modelBuilder.Entity<User>().HasOne<Site>(user => user.Site).WithMany(site => site.Users).HasForeignKey(user => user.SiteId).IsRequired();
+            modelBuilder.Entity<Site>().HasMany<User>(site => site.Users).WithOne(user => user.Site).HasForeignKey(user => user.SiteId).IsRequired();
+
             //modelBuilder.Entity<PatientOrder>().HasOne(order => order.MedicationRouteId).WithOne().HasForeignKey<(mr => mr.)
         }
     }

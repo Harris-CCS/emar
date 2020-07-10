@@ -15,6 +15,7 @@ namespace Emar.Core.Users.Model.Mappings
             {
                 Id = user.Id,
                 SiteId = user.SiteId,
+                Type = user.Type,
                 Active = user.Active,
                 InitialsDisplay = user.InitialsDisplay,
                 FirstName = user.FirstName,
@@ -25,10 +26,34 @@ namespace Emar.Core.Users.Model.Mappings
                 LoginPassword = user.LoginPassword,
                 Salt = user.Salt,
                 LastLoginTime = user.LastLoginTime,
-                FailedLoginAttempts = user.FailedLoginAttempts
+                FailedLoginAttempts = user.FailedLoginAttempts,
+                Site = user.Site
             };
 
             return _userDto;
+        }
+
+        public static UserHeaderDto MapUserHeader(User user)
+        {
+            if (user == null)
+            {
+                return null;
+            }
+
+            UserHeaderDto _userHeaderDto = new UserHeaderDto
+            {
+                Id = user.Id,
+                Type = user.Type,
+                Active = user.Active,
+                InitialsDisplay = user.InitialsDisplay,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                OrderingOnlyPhysician = user.OrderingOnlyPhysician,
+                NameDisplayPreference = user.NameDisplayPreference,
+                Site = user.Site
+            };
+
+            return _userHeaderDto;
         }
     }
 }

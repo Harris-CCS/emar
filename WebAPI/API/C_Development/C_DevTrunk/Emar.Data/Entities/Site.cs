@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Emar.Data.Entities
@@ -14,5 +15,8 @@ namespace Emar.Data.Entities
 
         [Column("is_active", TypeName = "bit"), Required]
         public bool Active { get; set; }
+
+        [NotMapped]
+        public IEnumerable<User>? Users { get; set; }
     }
 }
