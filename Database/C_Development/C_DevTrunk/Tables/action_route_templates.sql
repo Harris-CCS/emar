@@ -58,7 +58,7 @@ go
     Table
 ***************/
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'This table contains: action route template'
   , @level0type = N'SCHEMA'
@@ -72,7 +72,7 @@ go
     Columns
 ***************/
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Auto increment table ID'
   , @level0type = N'SCHEMA'
@@ -83,7 +83,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'id';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'action_id'
   , @level0type = N'SCHEMA'
@@ -94,7 +94,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'action_id';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'route_specific'
   , @level0type = N'SCHEMA'
@@ -105,7 +105,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'route_specific';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'medication_route_id'
   , @level0type = N'SCHEMA'
@@ -116,7 +116,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'medication_route_id';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'template_id'
   , @level0type = N'SCHEMA'

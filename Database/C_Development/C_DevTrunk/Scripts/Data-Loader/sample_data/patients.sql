@@ -381,7 +381,7 @@ insert into #patients values('20170922165049','5','78931635','6544679','Houston'
 insert into #patients values('20171121093026','39','m112117C','a112117C','Howard','Fred','','','M','1990-11-15','27','Y','Sore Throat','0.00','80.60','','TRGEMS','ED','G',null,'0','0',null,'0','120','80','0','78','0','','0','16','2','38','0','',null,'99','0','1');
 insert into #patients values('20150430123926','11','','acctxOjrY659xm','Hund','Jamey','','','O','2015-03-23','5','W','alAK25Uf3g6XkK9','0.00','0.00','','HOLDING','ED','','','0','0',null,'','','','','',null,null,'','','','',null,null,'','','','');
 insert into #patients values('20170922144515','5','78931541','65441226','Indications','Rx','','','F',null,'0','','Hypertension','0.00','0.00','','SHIRE','ED','','0','0','0',null,'0','120','80','0','64','0','','0','16','0','98.6','0','','0','100','0','1');
-insert into #patients values('20151021152013','1','MR6009811','ACCT6009811','Infobutton','Lillian','A','MD','F','1919-06-18','96','Y','Ataxia-double vision-nausea','198.00','50.00','','ICUW','ICU','R','0','0','0',null,'0','120','80','0','64','0','','0','16','0','98.6','0','','0','100','0','1');
+insert into #patients values('20151021152013','1','MR6009811','ACCT6009811','  Infobutton  ','  Lillian  ','  A  ','  MD  ','F','1919-06-18','96','Y','Ataxia-double vision-nausea','198.00','50.00','','ICUW','ICU','R','0','0','0',null,'0','120','80','0','64','0','','0','16','0','98.6','0','','0','100','0','1');
 insert into #patients values('20191002083310','1','8012264','AN20191002a','Insurance','Ima','','M.D.','M','1951-08-09','68','Y','SYNCOPE','0.00','0.00','','HOLD','ED','','','0','1',null,'','','','','','','','','','','','','','','','','');
 insert into #patients values('20180830102237','40','','','Interaction','Pop','Up','','M','1998-04-06','20','Y','','0.00','0.00','','WAIT','SAC','','','0','0',null,'','','','','','','','','','','','','','','','','');
 insert into #patients values('20140121082303','11','','','Interactions','Test','','','',null,'0','','','0.00','0.00','','HOLDING','ED','','','0','0',null,'','','','','',null,null,'','','','',null,null,'','','','');
@@ -933,8 +933,8 @@ insert into #patients values('20190116212045','40','','ZF1','Zoo','Flamingo','',
 insert into #patients values('20190116213017','40','','ZG1','Zoo','Giraffe','','','',null,'0','','','0.00','0.00','','WAIT','SAC','','','0','0',null,'','','','','','','','','','','','','','','','','');
 insert into #patients values('20180414120456','39','','','Ztestemsj','Ztestoffloadj','','','M','1974-06-05','43','Y','Vertigo','0.00','87.00','','HOLDING','ED','Y',null,'0','0',null,'0','120','80','0','78','0','','0','17','2','36.5','0','',null,'99','0','');
 
-update [source] set
-      [source_id]=[source].[site_id]+'|'+[source].[source_id]
+update [source] set    
+    [source_id] = [source].[site_id] + '|' + [source].[source_id]
 from   [#patients] as [source];
 
 alter table [#patients]
@@ -952,7 +952,7 @@ from   [dbo].[patients];
 
 set @max_id = isnull(@max_id, 0);
 
-update [source] set
+update [source] set    
     [target_id] = [source].[id] + @max_id
 from   [#patients] as [source];
 
@@ -1005,7 +1005,7 @@ insert into [dbo].[patients]
    , [vs_pain_scale]
     )
 select [source].[target_id]
-     , isnull([internal_site].[id], -1) [site_id]
+     , isnull([internal_site].[id], -1) as [site_id]
      , [source].[medical_record_number]
      , [source].[account_number]
      , [source].[last_name]
@@ -1068,9 +1068,9 @@ select [source].[target_id]
      , [source].[source_id]
 from   [#patients] as [source];
 
-/********************
+/****************
  end table
-********************/
+****************/
 
 commit transaction;
 

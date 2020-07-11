@@ -1,8 +1,8 @@
 create table [dbo].[order_events]
     (
-      [id]                      [int] identity(1, 1) not null
-    , [patient_order_id]        [int] not null
-    , [order_administration_id] [int] null
+      [id]                      [bigint] identity(1, 1) not null
+    , [patient_order_id]        [bigint] not null
+    , [order_administration_id] [bigint] null
     , [event_datetime]          [datetimeoffset](7) not null
     , [add_user_id]             [int] not null
     , [add_datetime]            [datetimeoffset](7) not null
@@ -44,7 +44,7 @@ go
     Indexes
 ***************/
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Primary Key Column'
   , @level0type = N'SCHEMA'
@@ -60,7 +60,7 @@ go
     Table
 ***************/
 
-exec [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'This table contains: order events'
   , @level0type = N'SCHEMA'
@@ -74,7 +74,7 @@ go
     Columns
 ***************/
 
-exec [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Auto increment table ID'
   , @level0type = N'SCHEMA'
@@ -85,7 +85,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'id';
 go
 
-exec [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'patient_order_id'
   , @level0type = N'SCHEMA'
@@ -96,7 +96,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'patient_order_id';
 go
 
-exec [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'order_administration_id'
   , @level0type = N'SCHEMA'
@@ -107,7 +107,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'order_administration_id';
 go
 
-exec [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'event_datetime'
   , @level0type = N'SCHEMA'
@@ -118,7 +118,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'event_datetime';
 go
 
-exec [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'add_user_id'
   , @level0type = N'SCHEMA'
@@ -129,7 +129,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'add_user_id';
 go
 
-exec [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'add_datetime'
   , @level0type = N'SCHEMA'
@@ -140,7 +140,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'add_datetime';
 go
 
-exec [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'action_id'
   , @level0type = N'SCHEMA'

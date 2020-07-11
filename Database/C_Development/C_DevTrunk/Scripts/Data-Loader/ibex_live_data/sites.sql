@@ -1,4 +1,5 @@
 begin transaction;
+
 /*********************************
  load temporary tables for staging
 *********************************/
@@ -7,6 +8,7 @@ insert into [#sites]
     ([source_id]
    , [name]
    , [is_active]
+   , [time_zone_name]
     )
 select [source].[site]
      , [source].[name]
@@ -15,6 +17,7 @@ select [source].[site]
                then 1
                 else 0
        end
+     , 'Central Standard Time'
 from   [ibex].[dbo].[org] as [source];
 
 alter table [#sites]
@@ -46,10 +49,12 @@ insert into [dbo].[sites]
     ([id]
    , [name]
    , [is_active]
+   , [time_zone_name]
     )
 select [source].[target_id]
      , [source].[name]
      , [source].[is_active]
+     , [source].[time_zone_name]
 from   [#sites] as [source]
 order by [name];
 
@@ -57,8 +62,10 @@ insert into [dbo].[sites]
     ([id]
    , [name]
    , [is_active]
+   , [time_zone_name]
     )
-values('-1','Dummy Site for Relational Integrity','0');
+values
+    ('-1', 'Dummy Site for Relational Integrity', '0', 'Central Standard Time');
 
 set identity_insert [dbo].[sites] off;
 
@@ -78,9 +85,9 @@ select [source].[target_id]
      , [source].[source_id]
 from   [#sites] as [source];
 
-/******************
+/**********
  end table
-******************/
+**********/
 
 commit transaction;
 

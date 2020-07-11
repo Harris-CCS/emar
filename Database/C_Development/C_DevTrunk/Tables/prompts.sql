@@ -61,7 +61,7 @@ go
     Table
 ***************/
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'This table contains: prompts'
   , @level0type = N'SCHEMA'
@@ -75,7 +75,7 @@ go
     Columns
 ***************/
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Auto increment table ID'
   , @level0type = N'SCHEMA'
@@ -86,7 +86,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'id';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'prompt_group_id'
   , @level0type = N'SCHEMA'
@@ -97,7 +97,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'prompt_group_id';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'sequence'
   , @level0type = N'SCHEMA'
@@ -108,7 +108,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'sequence';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'prompt'
   , @level0type = N'SCHEMA'
@@ -119,7 +119,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'prompt';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'is_active'
   , @level0type = N'SCHEMA'
@@ -130,7 +130,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'is_active';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'default prompts__is_active to 1'
   , @level0type = N'SCHEMA'
@@ -141,7 +141,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'df__prompts__is_active';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'prompt_type'
   , @level0type = N'SCHEMA'
@@ -152,7 +152,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'prompt_type';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'prompt_default'
   , @level0type = N'SCHEMA'
@@ -163,7 +163,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'prompt_default';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'required'
   , @level0type = N'SCHEMA'
@@ -174,7 +174,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'required';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'default prompts__required to 0'
   , @level0type = N'SCHEMA'
