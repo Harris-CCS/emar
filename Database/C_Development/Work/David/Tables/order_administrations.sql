@@ -1,7 +1,7 @@
 create table [dbo].[order_administrations]
     (
-      [id]                                [int] identity(1, 1) not null
-    , [pateint_order_id]                  [int] not null
+      [id]                                [bigint] identity(1, 1) not null
+    , [patient_order_id]                  [bigint] not null
     , [point_in_time]                     [bit] not null
     , [on_hold]                           [bit] not null
     , [missed_dose]                       [bit] not null
@@ -29,11 +29,13 @@ go
 ***********/
 
 alter table [dbo].[order_administrations]
-add constraint [fk__order_administrations__patient_orders] foreign key([pateint_order_id]) references [dbo].[patient_orders]([id]);
+add constraint [fk__order_administrations__patient_orders] foreign key([patient_order_id]) references [dbo].[patient_orders]([id]);
 go
+
 alter table [dbo].[order_administrations]
 add constraint [fk__order_administrations__patient_orders__administering_user_id] foreign key([administering_user_id]) references [dbo].[users]([id]);
 go
+
 alter table [dbo].[order_administrations]
 add constraint [fk__order_administrations__patient_orders__acknowledge_user_id] foreign key([acknowledge_user_id]) references [dbo].[users]([id]);
 go
@@ -63,7 +65,7 @@ go
     Table
 ***************/
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'This table contains: order administrations'
   , @level0type = N'SCHEMA'
@@ -71,11 +73,13 @@ exec [sys].[sp_addextendedproperty]
   , @level1type = N'TABLE'
   , @level1name = N'order_administrations';
 go
+
 /***************
  Data Dictionary
     Columns
 ***************/
-exec [sys].[sp_addextendedproperty]
+
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Auto increment table ID'
   , @level0type = N'SCHEMA'
@@ -86,18 +90,18 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'id';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'pateint_order_id'
+  , @value = N'patient_order_id'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
   , @level1name = N'order_administrations'
   , @level2type = N'COLUMN'
-  , @level2name = N'pateint_order_id';
+  , @level2name = N'patient_order_id';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'point_in_time'
   , @level0type = N'SCHEMA'
@@ -108,7 +112,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'point_in_time';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'on_hold'
   , @level0type = N'SCHEMA'
@@ -119,7 +123,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'on_hold';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'missed_dose'
   , @level0type = N'SCHEMA'
@@ -130,7 +134,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'missed_dose';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'administration_scheduled_datetime'
   , @level0type = N'SCHEMA'
@@ -141,7 +145,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'administration_scheduled_datetime';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'administration_input_datetime'
   , @level0type = N'SCHEMA'
@@ -152,7 +156,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'administration_input_datetime';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'administering_user_id'
   , @level0type = N'SCHEMA'
@@ -163,7 +167,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'administering_user_id';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'administration_datetime'
   , @level0type = N'SCHEMA'
@@ -174,7 +178,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'administration_datetime';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'stop_scheduled_datetime'
   , @level0type = N'SCHEMA'
@@ -185,7 +189,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'stop_scheduled_datetime';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'stop_input_datetime'
   , @level0type = N'SCHEMA'
@@ -196,7 +200,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'stop_input_datetime';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'stop_user_id'
   , @level0type = N'SCHEMA'
@@ -207,7 +211,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'stop_user_id';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'stop_datetime'
   , @level0type = N'SCHEMA'
@@ -218,7 +222,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'stop_datetime';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'acknowledge_user_id'
   , @level0type = N'SCHEMA'
@@ -229,7 +233,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'acknowledge_user_id';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'acknowledge_datetime'
   , @level0type = N'SCHEMA'
@@ -239,4 +243,3 @@ exec [sys].[sp_addextendedproperty]
   , @level2type = N'COLUMN'
   , @level2name = N'acknowledge_datetime';
 go
-

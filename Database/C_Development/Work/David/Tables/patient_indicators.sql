@@ -1,6 +1,6 @@
 ﻿create table [dbo].[patient_indicators]
     (
-      [id]               [int] identity(1, 1) not null
+      [id]               [bigint] identity(1, 1) not null
     , [patient_id]       [bigint] not null
     , [ordinal_position] [smallint] not null
     , [code]             [varchar](10) not null

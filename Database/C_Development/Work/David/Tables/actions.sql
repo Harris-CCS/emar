@@ -29,7 +29,7 @@ go
     Indexes
 ***************/
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Primary Key Column'
   , @level0type = N'SCHEMA'
@@ -45,7 +45,7 @@ go
     Table
 ***************/
 
-exec [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'This table contains: actions'
   , @level0type = N'SCHEMA'
@@ -59,7 +59,7 @@ go
     Columns
 ***************/
 
-exec [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Auto increment table ID'
   , @level0type = N'SCHEMA'
@@ -70,7 +70,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'id';
 go
 
-exec [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'title'
   , @level0type = N'SCHEMA'
@@ -81,7 +81,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'title';
 go
 
-exec [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'description'
   , @level0type = N'SCHEMA'
@@ -92,7 +92,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'description';
 go
 
-exec [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'site_id'
   , @level0type = N'SCHEMA'
@@ -103,7 +103,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'site_id';
 go
 
-exec [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'is_active'
   , @level0type = N'SCHEMA'

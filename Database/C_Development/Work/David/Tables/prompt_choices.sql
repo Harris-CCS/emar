@@ -48,7 +48,7 @@ go
     Table
 ***************/
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'This table contains: prompt choices'
   , @level0type = N'SCHEMA'
@@ -62,7 +62,7 @@ go
     Columns
 ***************/
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Auto increment table ID'
   , @level0type = N'SCHEMA'
@@ -73,7 +73,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'id';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'prompt_id'
   , @level0type = N'SCHEMA'
@@ -84,7 +84,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'prompt_id';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'sequence'
   , @level0type = N'SCHEMA'
@@ -95,7 +95,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'sequence';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'choice_text'
   , @level0type = N'SCHEMA'

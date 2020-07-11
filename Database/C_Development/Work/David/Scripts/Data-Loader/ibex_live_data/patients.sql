@@ -104,8 +104,8 @@ select [source].[ibex]
      , [source].[vspain]
 from   [ibex].[dbo].[pat] as [source];
 
-update [source] set
-      [source_id]=[source].[site_id]+'|'+[source].[source_id]
+update [source] set    
+    [source_id] = [source].[site_id] + '|' + [source].[source_id]
 from   [#patients] as [source];
 
 alter table [#patients]
@@ -123,7 +123,7 @@ from   [dbo].[patients];
 
 set @max_id = isnull(@max_id, 0);
 
-update [source] set
+update [source] set    
     [target_id] = [source].[id] + @max_id
 from   [#patients] as [source];
 
@@ -176,7 +176,7 @@ insert into [dbo].[patients]
    , [vs_pain_scale]
     )
 select [source].[target_id]
-     , isnull([internal_site].[id], -1) [site_id]
+     , isnull([internal_site].[id], -1) as [site_id]
      , [source].[medical_record_number]
      , [source].[account_number]
      , [source].[last_name]
@@ -239,9 +239,9 @@ select [source].[target_id]
      , [source].[source_id]
 from   [#patients] as [source];
 
-/********************
+/****************
  end table
-********************/
+****************/
 
 commit transaction;
 

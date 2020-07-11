@@ -10623,10 +10623,6 @@ insert into #users values('4923','1','D','0','GIWK','Nand M.D.','Zz/Ram','1','0'
 insert into #users values('4852','1','D','0','JHJM','Rita','Zz/Reichard','1','0','ordonly-JHJM','',0X00,null,'0');
 insert into #users values('4990','1','D','0','4I8B','Robin','Zz/Schor','1','0','ordonly-4I8B','',0X00,null,'0');
 
-update [source] set
-      [source_id]=[source].[site_id]+'|'+[source].[source_id]
-from   [#users] as [source];
-
 alter table [#users]
 add [id]        [bigint] identity(1, 1)
   , [target_id] [bigint];
@@ -10642,7 +10638,7 @@ from   [dbo].[users];
 
 set @max_id = isnull(@max_id, 0);
 
-update [source] set
+update [source] set    
     [target_id] = [source].[id] + @max_id
 from   [#users] as [source];
 
@@ -10669,7 +10665,7 @@ insert into [dbo].[users]
    , [failed_login_attempts]
     )
 select [source].[target_id]
-     , isnull([internal_site].[id], -1) [site_id]
+     , isnull([internal_site].[id], -1) as [site_id]
      , [source].[type]
      , [source].[is_active]
      , [source].[initials_display]

@@ -9,3 +9,7 @@
                SELECT * FROM [$(TableName)]					
 --------------------------------------------------------------------------------------
 */
+if '$(load_data)' in('sample','live')
+begin
+   :r ..\Scripts\Data-Loader\delete_emar_data.sql
+end

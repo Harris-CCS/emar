@@ -1,7 +1,7 @@
 create table [dbo].[order_event_details]
     (
-      [id]             [int] identity(1, 1) not null
-    , [order_event_id] [int] not null
+      [id]             [bigint] identity(1, 1) not null
+    , [order_event_id] [bigint] not null
     , [prompt_id]      [int] not null
     , [prompt_text]    [varchar](200) not null
     , [entered_text]   [varchar](max) null
@@ -38,7 +38,7 @@ go
     Indexes
 ***************/
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Primary Key Column'
   , @level0type = N'SCHEMA'
@@ -54,7 +54,7 @@ go
     Table
 ***************/
 
-exec [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'This table contains: order event details'
   , @level0type = N'SCHEMA'
@@ -68,7 +68,7 @@ go
     Columns
 ***************/
 
-exec [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Auto increment table ID'
   , @level0type = N'SCHEMA'
@@ -79,7 +79,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'id';
 go
 
-exec [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'order_event_id'
   , @level0type = N'SCHEMA'
@@ -90,7 +90,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'order_event_id';
 go
 
-exec [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'prompt_id'
   , @level0type = N'SCHEMA'
@@ -101,7 +101,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'prompt_id';
 go
 
-exec [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'prompt_text'
   , @level0type = N'SCHEMA'
@@ -112,7 +112,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'prompt_text';
 go
 
-exec [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'entered_text'
   , @level0type = N'SCHEMA'

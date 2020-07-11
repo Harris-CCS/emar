@@ -53,7 +53,7 @@ go
     Table
 ***************/
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'This table contains: template prompt groups'
   , @level0type = N'SCHEMA'
@@ -67,7 +67,7 @@ go
     Columns
 ***************/
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Auto increment table ID'
   , @level0type = N'SCHEMA'
@@ -78,7 +78,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'id';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'template_id'
   , @level0type = N'SCHEMA'
@@ -89,7 +89,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'template_id';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'sequence'
   , @level0type = N'SCHEMA'
@@ -100,7 +100,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'sequence';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'prompt_group_id'
   , @level0type = N'SCHEMA'
@@ -111,7 +111,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'prompt_group_id';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'required'
   , @level0type = N'SCHEMA'

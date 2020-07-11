@@ -1,8 +1,9 @@
 create table [dbo].[sites]
     (
-      [id]        [int] identity(1, 1) not null
-    , [name]      [varchar](40) not null
-    , [is_active] [bit] not null
+      [id]             [int] identity(1, 1) not null
+    , [name]           [varchar](40) not null
+    , [is_active]      [bit] not null
+    , [time_zone_name] [sysname] not null
     , constraint [pk__sites__id] primary key clustered([id] asc));
 go
 
@@ -32,7 +33,7 @@ go
     Indexes
 ***************/
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Primary Key Constraint'
   , @level0type = N'SCHEMA'
@@ -43,7 +44,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'pk__sites__id';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Constraint to enforce Site Name uniqueness'
   , @level0type = N'SCHEMA'
@@ -59,7 +60,7 @@ go
     Table
 ***************/
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'This table contains a list of sites'
   , @level0type = N'SCHEMA'
@@ -73,7 +74,7 @@ go
     Columns
 ***************/
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Auto increment table ID'
   , @level0type = N'SCHEMA'
@@ -84,7 +85,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'id';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Site Name'
   , @level0type = N'SCHEMA'
@@ -95,7 +96,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'name';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'is_active 1=true 0=false'
   , @level0type = N'SCHEMA'
@@ -104,4 +105,15 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'sites'
   , @level2type = N'COLUMN'
   , @level2name = N'is_active';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'Time Zone Name (sys.time_zone_info (Transact-SQL))'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'sites'
+  , @level2type = N'COLUMN'
+  , @level2name = N'time_zone_name';
 go

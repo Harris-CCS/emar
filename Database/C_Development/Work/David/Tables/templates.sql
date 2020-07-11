@@ -53,7 +53,7 @@ alter table [dbo].[templates]
 add constraint [df__templates__is_active] default((1)) for [is_active];
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Auto increment table ID'
   , @level0type = N'SCHEMA'
@@ -64,7 +64,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'id';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'name'
   , @level0type = N'SCHEMA'
@@ -75,7 +75,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'name';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'is_active'
   , @level0type = N'SCHEMA'
@@ -86,7 +86,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'is_active';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'default templates__is_active to 1'
   , @level0type = N'SCHEMA'
@@ -97,7 +97,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'df__templates__is_active';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'title'
   , @level0type = N'SCHEMA'
@@ -108,7 +108,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'title';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'site_id'
   , @level0type = N'SCHEMA'
@@ -119,7 +119,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'site_id';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'This table contains: templates'
   , @level0type = N'SCHEMA'

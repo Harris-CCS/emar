@@ -9,10 +9,11 @@ Post-Deployment Script Template
                SELECT * FROM [$(TableName)]
 --------------------------------------------------------------------------------------
 *************************************************************************************/
+-- Table Renamed dbo.site_preferred_list dbo.department_preferred_list
+drop table if exists dbo.site_preferred_list;
 
 if '$(load_data)' in('sample','live')
 begin
-   :r ..\Scripts\Data-Loader\delete_emar_data.sql
    :r ..\Scripts\Data-Loader\data_loader_ddl.sql
 end
 
@@ -25,14 +26,14 @@ LVL: 000 SEQ: 005 TBL: dbo.prompt_groups
 LVL: 000 SEQ: 006 TBL: dbo.sites
 LVL: 000 SEQ: 007 TBL: dbo.templates
 LVL: 001 SEQ: 001 TBL: dbo.action_route_templates
-LVL: 001 SEQ: 002 TBL: dbo.override_reasons
-LVL: 001 SEQ: 003 TBL: dbo.patients
-LVL: 001 SEQ: 004 TBL: dbo.prompts
-LVL: 001 SEQ: 005 TBL: dbo.site_code_shares
-LVL: 001 SEQ: 006 TBL: dbo.site_formulary
-LVL: 001 SEQ: 007 TBL: dbo.site_formulary_match
-LVL: 001 SEQ: 008 TBL: dbo.site_options
-LVL: 001 SEQ: 009 TBL: dbo.site_preferred_list
+LVL: 001 SEQ: 002 TBL: dbo.department_preferred_list
+LVL: 001 SEQ: 003 TBL: dbo.override_reasons
+LVL: 001 SEQ: 004 TBL: dbo.patients
+LVL: 001 SEQ: 005 TBL: dbo.prompts
+LVL: 001 SEQ: 006 TBL: dbo.site_code_shares
+LVL: 001 SEQ: 007 TBL: dbo.site_formulary
+LVL: 001 SEQ: 008 TBL: dbo.site_formulary_match
+LVL: 001 SEQ: 009 TBL: dbo.site_options
 LVL: 001 SEQ: 010 TBL: dbo.template_prompt_groups
 LVL: 001 SEQ: 011 TBL: dbo.users
 LVL: 002 SEQ: 001 TBL: dbo.patient_allergies

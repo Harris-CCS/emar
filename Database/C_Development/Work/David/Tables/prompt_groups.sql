@@ -43,7 +43,7 @@ go
     Table
 ***************/
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'This table contains: prompt groups'
   , @level0type = N'SCHEMA'
@@ -57,7 +57,7 @@ go
     Columns
 ***************/
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Auto increment table ID'
   , @level0type = N'SCHEMA'
@@ -68,7 +68,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'id';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'group_name'
   , @level0type = N'SCHEMA'
@@ -79,7 +79,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'group_name';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'title'
   , @level0type = N'SCHEMA'
@@ -90,7 +90,7 @@ exec [sys].[sp_addextendedproperty]
   , @level2name = N'title';
 go
 
-exec [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'site_id'
   , @level0type = N'SCHEMA'

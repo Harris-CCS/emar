@@ -3,14 +3,14 @@ create table [dbo].[user_quick_list]
       [id]                  [int] identity(1, 1) not null
     , [site_id]             [int] not null
     , [user_id]             [int] not null
-    , [is_active]           [bit] not null
     , [ndc]                 [varchar](32) null
     , [drug_id]             [varchar](32) not null
-    , [brand_name]          [varchar](255) not null
+    , [brand_name]          [nvarchar](255) not null
+    , [dose]                [decimal](11, 2) null
+    , [dose_unit]           [varchar](20) null
     , [medication_route_id] [int] null
-    , [dose]                [varchar](40) null
-    , [unit]                [varchar](40) null
     , [frequency_id]        [int] null
+    , [order_notes]         [nvarchar](max) null
     , constraint [pk__user_quick_list__id] primary key clustered([id] asc));
 go
 
@@ -113,17 +113,6 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'is_active 1=true 0=false'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'user_quick_list'
-  , @level2type = N'COLUMN'
-  , @level2name = N'is_active';
-go
-
-execute [sys].[sp_addextendedproperty]
-    @name = N'MS_Description'
   , @value = N'Drug NDC (National Drug Code)'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
@@ -174,7 +163,7 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Storage for dose with medication'
+  , @value = N'Medication Dose: numeric portion of dose/dose_unit pair'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -185,13 +174,13 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Unit the drug is to be dispensed, for example capsule (cap) '
+  , @value = N'Medication Unit: unit portion of dose/dose_unit pair'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
   , @level1name = N'user_quick_list'
   , @level2type = N'COLUMN'
-  , @level2name = N'unit';
+  , @level2name = N'dose_unit';
 go
 
 execute [sys].[sp_addextendedproperty]
@@ -203,4 +192,15 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'user_quick_list'
   , @level2type = N'COLUMN'
   , @level2name = N'frequency_id';
+go
+
+execute [sys].[sp_addextendedproperty]
+    @name = N'MS_Description'
+  , @value = N'order_notes'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'user_quick_list'
+  , @level2type = N'COLUMN'
+  , @level2name = N'order_notes';
 go
