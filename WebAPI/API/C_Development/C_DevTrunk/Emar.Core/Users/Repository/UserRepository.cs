@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
-using Emar.Core.Users.Model;
 using Emar.Data;
 using Emar.Data.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -31,7 +30,10 @@ namespace Emar.Core.Users.Repository
 
         public User GetUser(int userId)
         {
-            var user = _context.Users.Find(userId);
+            var user = _context.Users
+                    .Where(u => u.Id == userId)
+                    .Include(u => u.Site)
+                    .FirstOrDefault(u => u.Site.Id == u.SiteId);
 
             return user;
         }

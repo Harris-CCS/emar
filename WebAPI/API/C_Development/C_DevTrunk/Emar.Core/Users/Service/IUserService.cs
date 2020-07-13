@@ -5,7 +5,5 @@ namespace Emar.Core.Users.Service
     public interface IUserService
     {
         UserDto GetUser(int userId);
-
-        UserHeaderDto GetUserHeader(int userId);
     }
 }

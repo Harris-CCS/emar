@@ -7,16 +7,13 @@ namespace Emar.Data.Entities
     [Table("order_events")]
     public class OrderEvent
     {
-        //[Column("id", TypeName = "bigint"), Key]
-        [Column("id", TypeName = "int"), Key]
+        [Column("id", TypeName = "bigint"), Key]
         public long Id { get; set; }
 
-        //[Column("patient_order_id", TypeName = "bigint"), Required]
-        [Column("patient_order_id", TypeName = "int"), Required]
+        [Column("patient_order_id", TypeName = "bigint"), Required]
         public long OrderId { get; set; }
 
-        //[Column("order_administration_id", TypeName = "bigint")]
-        [Column("order_administration_id", TypeName = "int")]
+        [Column("order_administration_id", TypeName = "bigint")]
         public long? AdministrationId { get; set; }
 
         [Column("event_datetime", TypeName = "datetimeoffset"), Required]

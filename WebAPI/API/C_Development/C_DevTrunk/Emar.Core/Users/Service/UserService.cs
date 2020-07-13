@@ -3,7 +3,6 @@ using System.Linq;
 using Emar.Core.Users.Model;
 using Emar.Core.Users.Model.Mappings;
 using Emar.Core.Users.Repository;
-using Emar.Data.Entities;
 
 namespace Emar.Core.Users.Service
 {
@@ -37,20 +36,6 @@ namespace Emar.Core.Users.Service
             var userDto = UserMapper.MapUser(user);
 
             return userDto;
-        }
-
-        public UserHeaderDto GetUserHeader(int userId)
-        {
-            var user = _userRepository.GetUser(userId);
-
-            if (user == null)
-            {
-                return null;
-            }
-
-            var userHeaderDto = UserMapper.MapUserHeader(user);
-
-            return userHeaderDto;
         }
     }
 }

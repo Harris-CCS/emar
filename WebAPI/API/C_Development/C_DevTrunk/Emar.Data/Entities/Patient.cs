@@ -14,9 +14,11 @@ namespace Emar.Data.Entities
         [Column("site_id", TypeName = "int"), Required]
         public short SiteId { get; set; }
 
-        //[Column("is_active", TypeName = "char(1)")]
-        [NotMapped]
-        public bool Active { get; set; } = true;
+        [Column("medical_record_number", TypeName = "varchar(25)")]
+        public string MedicalRecordNumber { get; set; }
+
+        [Column("account_number", TypeName = "varchar(25)")]
+        public string AccountNumber { get; set; }
 
         [Column("first_name", TypeName = "varchar(35)"), Required]
         public string FirstName { get; set; }
@@ -42,12 +44,6 @@ namespace Emar.Data.Entities
         [Column("age_units", TypeName = "char(1)")]
         public string AgeUnits { get; set; }
 
-        [Column("medical_record_number", TypeName = "varchar(25)")]
-        public string MedicalRecordNumber { get; set; }
-
-        [Column("account_number", TypeName = "varchar(25)")]
-        public string AccountNumber { get; set; }
-
         [Column("complaint", TypeName = "varchar(80)")]
         public string ChiefComplaint { get; set; }
 
@@ -56,9 +52,6 @@ namespace Emar.Data.Entities
 
         [Column("weight_in_kg", TypeName = "numeric")]
         public decimal? WeightInKg { get; set; }
-
-        [NotMapped]
-        public string SiteName { get; set; }
 
         [Column("department_code", TypeName = "varchar(15)")]
         public string DepartmentCode { get; set; }
@@ -75,7 +68,7 @@ namespace Emar.Data.Entities
         [Column("urgency_color", TypeName = "varchar(25)")]
         public string UrgencyColor { get; set; }
 
-        [Column("name_alert", TypeName = "bit")]
+        [Column("name_alert", TypeName = "bit"), Required]
         public bool? NameAlert { get; set; }
 
         [Column("withdraw_consent", TypeName = "bit"), Required]
@@ -102,7 +95,7 @@ namespace Emar.Data.Entities
         [Column("vs_map_level", TypeName = "char(1)")]
         public string VsMapLevel { get; set; }
 
-        [Column("vs_map", TypeName = "char(14)")]
+        [Column("vs_map", TypeName = "varchar(14)")]
         public string VsMap { get; set; }
 
         [Column("vs_respiratory_indicator", TypeName = "char(1)")]
@@ -120,7 +113,7 @@ namespace Emar.Data.Entities
         [Column("vs_end_tidal_level", TypeName = "char(1)")]
         public string VsEndTidalLevel { get; set; }
 
-        [Column("vs_end_tidal", TypeName = "char(14)")]
+        [Column("vs_end_tidal", TypeName = "varchar(14)")]
         public string VsEndTidal { get; set; }
 
         [Column("vs_oxygen_saturation_indicator", TypeName = "char(1)")]
@@ -135,7 +128,17 @@ namespace Emar.Data.Entities
         [Column("vs_pain_scale", TypeName = "char(14)")]
         public string VsPainScale { get; set; }
 
+        //[Column("is_active", TypeName = "char(1)")]
+        [NotMapped]
+        public bool Active { get; set; } = true;
+
         [NotMapped]
         public IEnumerable<PatientOrder>? Orders { get; set; }
+
+        [NotMapped]
+        public Site Site { get; set; }
+
+        [NotMapped]
+        public string SiteName { get; set; }
     }
 }

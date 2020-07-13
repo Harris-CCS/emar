@@ -27,7 +27,6 @@ namespace Emar.Core.Patients.Model.Mappings
                 ChiefComplaint = pt.ChiefComplaint,
                 HeightInCm = pt.HeightInCm,
                 WeightInKg = pt.WeightInKg,
-                SiteName = pt.SiteName,
                 DepartmentCode = pt.DepartmentCode,
                 WardCode = pt.WardCode,
                 RoomBedCode = pt.RoomBedCode,
@@ -52,7 +51,8 @@ namespace Emar.Core.Patients.Model.Mappings
                 VsOxygenSaturation = pt.VsOxygenSaturation,
                 VsPainScaleIndicator = pt.VsPainScaleIndicator,
                 VsPainScale = pt.VsPainScale,
-                Orders = pt.Orders
+                Orders = pt.Orders,
+                Site = pt.Site
             };
 
             // Calculate the age if the date-of-birth is present
