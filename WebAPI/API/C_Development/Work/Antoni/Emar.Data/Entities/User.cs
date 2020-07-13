@@ -32,7 +32,7 @@ namespace Emar.Data.Entities
         public bool OrderingOnlyPhysician { get; set; }
 
         [Column("name_display_preference", TypeName = "bit")]
-        public bool NameDisplayPreference { get; set; }
+        public bool NameDisplayInitials { get; set; }
 
         [Column("login_name", TypeName = "varchar(255)"), Required]
         public string LoginName { get; set; }
@@ -50,6 +50,9 @@ namespace Emar.Data.Entities
         public int FailedLoginAttempts { get; set; }
 
         [NotMapped]
-        public virtual Site Site { get; set; }
+        public Site Site { get; set; }
+
+        [NotMapped]
+        public string SiteName { get; set; }
     }
 }

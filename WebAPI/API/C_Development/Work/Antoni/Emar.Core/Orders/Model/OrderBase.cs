@@ -29,9 +29,9 @@ namespace Emar.Core.Orders.Model
             set => _brandName = value != null ? Regex.Replace(value, "( : ){2,}", " : ") : null;
         }
 
-        public string Dose { get; set; }
+        public decimal? Dose { get; set; }
 
-        public string Unit { get; set; }
+        public string DoseUnit { get; set; }
 
         /// <summary>
         /// Unique medication route identifier.

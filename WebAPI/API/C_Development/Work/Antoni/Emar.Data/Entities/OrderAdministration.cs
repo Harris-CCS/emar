@@ -8,13 +8,10 @@ namespace Emar.Data.Entities
     [Table("order_administrations")]
     public class OrderAdministration
     {
-        //[Column("id", TypeName = "bigint"), Key]
-        [Column("id", TypeName = "int"), Key]
+        [Column("id", TypeName = "bigint"), Key]
         public long Id { get; set; }
 
-        //[Column("pateint_order_id", TypeName = "bigint"), Required]
-        //[Column("patient_order_id", TypeName = "int"), Required]
-        [Column("pateint_order_id", TypeName = "int"), Required]
+        [Column("patient_order_id", TypeName = "bigint"), Required]
         public long OrderId { get; set; }
 
         [Column("point_in_time", TypeName = "bit"), Required]

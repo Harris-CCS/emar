@@ -8,8 +8,7 @@ namespace Emar.Data.Entities
     [Table("patient_orders")]
     public class PatientOrder
     {
-        //[Column("id", TypeName = "bigint"), Key]
-        [Column("id", TypeName = "int"), Key]
+        [Column("id", TypeName = "bigint"), Key]
         public long Id { get; set; }
 
         [Column("patient_id", TypeName = "bigint"), Required]
@@ -30,17 +29,17 @@ namespace Emar.Data.Entities
         [Column("brand_name", TypeName = "varchar(255)"), Required]
         public string BrandName { get; set; }
 
-        [Column("dose", TypeName = "varchar(40)")]
-        public string Dose { get; set; }
+        [Column("dose", TypeName = "decimal(11,2)")]
+        public decimal? Dose { get; set; }
+
+        [Column("dose_unit", TypeName = "varchar(20)")]
+        public string DoseUnit { get; set; }
 
         [Column("medication_route_id", TypeName = "int")]
         public int MedicationRouteId { get; set; }
 
         [Column("priority", TypeName = "tinyint"), Required]
         public short Priority { get; set; }
-
-        [Column("unit", TypeName = "varchar(40)")]
-        public string Unit { get; set; }
 
         [Column("frequency_id", TypeName = "int")]
         public int FrequencyId { get; set; }
@@ -54,17 +53,17 @@ namespace Emar.Data.Entities
         [Column("order_status", TypeName = "varchar(10)"), Required]
         public string OrderStatus { get; set; }
 
-        [NotMapped]
-        public string OrderStatusCode { get; set; } = "Pending";
-
         [Column("begin_datetime", TypeName = "datetimeoffset"), Required]
         public DateTimeOffset BeginDateTime { get; set; }
 
         [Column("end_datetime", TypeName = "datetimeoffset")]
         public DateTimeOffset? EndDateTime { get; set; }
 
-        [Column("order_notes", TypeName = "varchar(MAX)")]
+        [Column("order_notes", TypeName = "nvarchar(MAX)")]
         public string OrderNotes { get; set; }
+
+        [NotMapped]
+        public string OrderStatusCode { get; set; } = "Pending";
 
         [NotMapped]
         public string OrderType { get; set; }

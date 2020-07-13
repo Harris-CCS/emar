@@ -3,6 +3,10 @@
     public class PatientsResourceParameters : BaseResourceParameters
     {
         /// <summary>
+        /// When the account number is supplied, the retrieve the patient with that account number
+        /// </summary>
+        public string AccountNumber { get; set; }
+        /// <summary>
         /// First key of the external patient Id. In PulseCheck, it is the Site id.
         /// </summary>
         public string ExtId1 { get; set; }
@@ -38,6 +42,11 @@
         public bool AskingForLegacyPulseCheckPatient()
         {
             return ExtId1 != null && !string.IsNullOrWhiteSpace(ExtId2);
+        }
+
+        public bool AskingForPatientByAccountNumber()
+        {
+            return !string.IsNullOrWhiteSpace(AccountNumber);
         }
     }
 }

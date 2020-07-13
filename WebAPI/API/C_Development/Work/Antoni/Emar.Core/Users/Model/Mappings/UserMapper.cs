@@ -21,7 +21,7 @@ namespace Emar.Core.Users.Model.Mappings
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 OrderingOnlyPhysician = user.OrderingOnlyPhysician,
-                NameDisplayPreference = user.NameDisplayPreference,
+                NameDisplayInitials = user.NameDisplayInitials,
                 LoginName = user.LoginName,
                 LoginPassword = user.LoginPassword,
                 Salt = user.Salt,
@@ -31,29 +31,6 @@ namespace Emar.Core.Users.Model.Mappings
             };
 
             return _userDto;
-        }
-
-        public static UserHeaderDto MapUserHeader(User user)
-        {
-            if (user == null)
-            {
-                return null;
-            }
-
-            UserHeaderDto _userHeaderDto = new UserHeaderDto
-            {
-                Id = user.Id,
-                Type = user.Type,
-                Active = user.Active,
-                InitialsDisplay = user.InitialsDisplay,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                OrderingOnlyPhysician = user.OrderingOnlyPhysician,
-                NameDisplayPreference = user.NameDisplayPreference,
-                Site = user.Site
-            };
-
-            return _userHeaderDto;
         }
     }
 }

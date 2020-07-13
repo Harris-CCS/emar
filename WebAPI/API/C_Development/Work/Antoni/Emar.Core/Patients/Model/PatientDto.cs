@@ -46,7 +46,6 @@ namespace Emar.Core.Patients.Model
         public decimal? WeightInKg { get; set; }
         #region geography - room, ward, department
         public short SiteId { get; set; }
-        public string SiteName { get; set; }
         public string DepartmentCode { get; set; }
         public string WardCode { get; set; }
         public string RoomBedCode { get; set; }
@@ -74,8 +73,19 @@ namespace Emar.Core.Patients.Model
         public string VsPainScaleIndicator { get; set; }
         public string VsPainScale { get; set; }
         #endregion
+
         //private List<Allergy> Allergies { get; set; }
         //private List<CurrentMedication> HomeMedications { get; set; }
         public IEnumerable<PatientOrder>? Orders { get; set; }
+
+        public Site Site { get; set; }
+        public string SiteName
+        {
+            get
+            {
+                return Site?.Name;
+            }
+        }
+
     }
 }

@@ -12,10 +12,23 @@ namespace Emar.Core.Users.Model
         public string InitialsDisplay { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string FullName
+        public bool OrderingOnlyPhysician { get; set; }
+        public bool NameDisplayInitials { get; set; }
+        public string LoginName { get; set; }
+        public string LoginPassword { get; set; }
+        public byte[] Salt { get; set; }
+        public DateTimeOffset LastLoginTime { get; set; }
+        public int FailedLoginAttempts { get; set; }
+
+        public string Name
         {
             get
             {
+                if (NameDisplayInitials)
+                {
+                    return InitialsDisplay;
+                }
+
                 var firstName = (FirstName ?? "").Trim();
 
                 if (firstName.Length == 1)
@@ -31,14 +44,14 @@ namespace Emar.Core.Users.Model
                 return ret;
             }
         }
-        public bool OrderingOnlyPhysician { get; set; }
-        public bool NameDisplayPreference { get; set; }
-        public string LoginName { get; set; }
-        public string LoginPassword { get; set; }
-        public byte[] Salt { get; set; }
-        public DateTimeOffset LastLoginTime { get; set; }
-        public int FailedLoginAttempts { get; set; }
 
         public Site Site { get; set; }
+        public string SiteName
+        {
+            get
+            {
+                return Site.Name;
+            }
+        }
     }
 }

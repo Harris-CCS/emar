@@ -34,7 +34,8 @@ namespace Emar.Core.Orders.Repository
                     .ThenInclude(administration => administration.Events)
                 .AsEnumerable();
 
-            if (patientId != null)
+            if ((patientId != null) &&
+                (patientId != -1))
             {
                 orders = orders
                     .Where(order => order.PatientId == patientId);

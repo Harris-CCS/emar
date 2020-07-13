@@ -50,29 +50,14 @@ namespace Emar.Api.Controllers
 
             if (user == null) { return NotFound($"User with id {userId} was not found"); }
 
-            return Ok(user.ShapeData(fields));
-        }
-
-        [HttpGet("{userId}/Header", Name = nameof(GetUserHeader))]
-        public ActionResult<UserHeaderDto> GetUserHeader(
-            [FromHeader(Name = "Accept")] string mediaType,
-            [FromQuery] string fields,
-            int userId
-            )
-        {
-            if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
+            if (String.IsNullOrEmpty(fields))
             {
-                return BadRequest();
+                fields =
+                    nameof(user.Id) + "," +
+                    nameof(user.Name) + "," +
+                    nameof(user.SiteId) + "," +
+                    nameof(user.SiteName);
             }
-
-            if (!_propertyCheckerService.TypeHasProperties<UserHeaderDto>(fields))
-            {
-                return BadRequest();
-            }
-
-            var user = _userService.GetUserHeader(userId);
-
-            if (user == null) { return NotFound($"User with id {userId} was not found"); }
 
             return Ok(user.ShapeData(fields));
         }

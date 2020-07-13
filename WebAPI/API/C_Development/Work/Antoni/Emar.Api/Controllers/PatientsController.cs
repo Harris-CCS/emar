@@ -98,6 +98,7 @@ namespace Emar.Api.Controllers
             [FromQuery] string orderBy,
             [FromQuery] string fields,
             [FromQuery] short? siteId,
+            [FromQuery] string accountNumber,
             [FromQuery] string departmentCode,
             [FromQuery] string wardCodes,
             [FromQuery] string roomBedCode,
@@ -117,6 +118,7 @@ namespace Emar.Api.Controllers
                 OrderBy = orderBy,
                 Fields = fields,
                 SiteId = siteId,
+                AccountNumber = accountNumber,
                 DepartmentCode = departmentCode,
                 WardCodes = wardCodes,
                 RoomBedCode = roomBedCode,
@@ -136,6 +138,15 @@ namespace Emar.Api.Controllers
 
                     return Ok(pt);
                 }
+            }
+
+            if (resourceParameters.AskingForPatientByAccountNumber())
+            {
+                var pt = _patientService.GetPatient(accountNumber);
+
+                if (pt == null) return NotFound($"Patient with Account Number: {accountNumber} was not found");
+
+                return Ok(pt);
             }
 
             if (!_propertyMappingService.ValidMappingExistsFor<PatientDto, Patient>(orderBy))
