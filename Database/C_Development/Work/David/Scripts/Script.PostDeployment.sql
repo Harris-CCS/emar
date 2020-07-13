@@ -73,7 +73,8 @@ declare
   , @continue_update [bit];
 
 declare @outputs table([Id] int not null);
-
+--- https://docs.microsoft.com/en-us/sql/ssms/visual-db-tools/set-up-database-diagram-designer-visual-database-tools?view=sql-server-ver15
+--- https://feedback.azure.com/forums/908035-sql-server/suggestions/37992649-ssms-18-1-crashes-when-opening-a-database-diagram
 --- deploying these diagrams in having an issue at the moment.
 --- it worked several times, but now causes ssms to crash. so removing for the moment.
 ---:r ..\Scripts\Post-Deployment\diagram_patients.sql
