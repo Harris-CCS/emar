@@ -12,7 +12,15 @@ export class HeaderPatientComponent implements OnInit {
   patientFullName: string;
   patientLocation: string;
   patientUrgencyColor: string;
-  patientAgeText: string;
+  currentVitalsArray: {
+    label: string;
+    value: string;
+    indicator: string;
+    className: string;
+  }[];
+  vsOverallIndicatorClass: string = 'indicator-normal';
+  showAllAllergies: boolean = false;
+  showAllMeds: boolean = false;
 
   constructor() {}
 
@@ -51,19 +59,12 @@ export class HeaderPatientComponent implements OnInit {
     }
   }
 
-  getPatientAgeSexDisplay(): string {
-    return (this.patientAgeText = `${
-      this.patient.age ? `${this.patient.age} ` : ''
-    }${this.patient.ageUnits ? `${this.patient.ageUnits} ` : ''}`);
-  }
-
   getPatientGenderIconStyle(): string {
-    let iconFolderPath: string = 'gender';
     switch (this.patient.gender) {
       case 'F':
-        return `${iconFolderPath} gender-female`;
+        return `gender gender-female`;
       case 'M':
-        return `${iconFolderPath} gender-male`;
+        return `gender gender-male`;
       case 'O':
         return '';
       case 'U':
@@ -73,15 +74,141 @@ export class HeaderPatientComponent implements OnInit {
     }
   }
 
+  getCustomIndicatorImage(indicator: any): string {
+    return `../../../assets/img/${indicator.imageName}`;
+  }
+
   checkForData(category: string): boolean {
-    if (category === 'vitals') {
-      return true;
-    } else if (category === 'allergies') {
-      return false;
-    } else if (category === 'homeMeds') {
-      return false;
+    switch (category) {
+      case 'vitals': {
+        this.maybeBuildCurrentVitalsArray();
+        if (!this.currentVitalsArray || !this.currentVitalsArray.length) {
+          return false;
+        } else {
+          return true;
+        }
+      }
+      case 'allergies': {
+        if (!this.patient.allergies || !this.patient.allergies.length) {
+          return false;
+        } else {
+          return true;
+        }
+      }
+      case 'homeMeds': {
+        if (!this.patient.homeMeds || !this.patient.homeMeds.length) {
+          return false;
+        } else {
+          return true;
+        }
+      }
+      default: {
+        return false;
+      }
     }
   }
 
-  getVitalSignIconPath() {}
+  onExpandButtonClick(type: string): void {
+    if (type === 'allergies') {
+      this.showAllAllergies = !this.showAllAllergies;
+    }
+    if (type === 'meds') {
+      this.showAllMeds = !this.showAllMeds;
+    }
+  }
+
+  getVitalSignIconPath() {
+    if (this.vsOverallIndicatorClass === 'indicator-high') {
+      return `../../../assets/icon/vitals_high.svg`;
+    } else {
+      return `../../../assets/icon/vitals_mid.svg`;
+    }
+  }
+
+  maybeBuildCurrentVitalsArray() {
+    if (!this.currentVitalsArray || !this.currentVitalsArray.length) {
+      this.currentVitalsArray = [];
+      if (this.patient.vsSystolic && this.patient.vsDiastolic) {
+        this.logVitalSign(
+          'Blood Pressure: ',
+          `${this.patient.vsSystolic}/${this.patient.vsDiastolic}`,
+          this.patient.vsBloodPressureIndicator
+        );
+      }
+      if (this.patient.vsPulse) {
+        this.logVitalSign(
+          'Mean Arterial Pressure (MAP)',
+          this.patient.vsMap,
+          this.patient.vsMapLevel
+        );
+      }
+      if (this.patient.vsPulse) {
+        this.logVitalSign(
+          'Pulse: ',
+          this.patient.vsPulse,
+          this.patient.vsPulseIndicator
+        );
+      }
+      if (this.patient.vsRespiratory) {
+        this.logVitalSign(
+          'Respiratory: ',
+          this.patient.vsRespiratory,
+          this.patient.vsRespiratoryIndicator
+        );
+      }
+      if (this.patient.vsTemperature) {
+        this.logVitalSign(
+          'Temperature: ',
+          this.patient.vsTemperature,
+          this.patient.vsTemperatureIndicator
+        );
+      }
+      if (this.patient.vsEndTidal) {
+        this.logVitalSign(
+          'End Tidal: ',
+          this.patient.vsEndTidal,
+          this.patient.vsEndTidalLevel
+        );
+      }
+      if (this.patient.vsOxygenSaturation) {
+        this.logVitalSign(
+          'Oxygen Saturation: ',
+          this.patient.vsOxygenSaturation,
+          this.patient.vsOxygenSaturationIndicator
+        );
+      }
+      if (this.patient.vsPainScale) {
+        this.logVitalSign(
+          'Pain Scale: ',
+          this.patient.vsPainScale,
+          this.patient.vsPainScaleIndicator
+        );
+      }
+    }
+  }
+
+  logVitalSign(label: string, value: string, indicator: string): void {
+    const className = this.getIndicatorClassName(indicator);
+    const vsObject = {
+      label,
+      value,
+      indicator,
+      className,
+    };
+    this.currentVitalsArray.push(vsObject);
+  }
+
+  getIndicatorClassName(indicator: any): string {
+    if (indicator === '0') {
+      if (this.vsOverallIndicatorClass === 'indicator-normal') {
+        this.vsOverallIndicatorClass = 'indicator-low';
+      }
+      return 'indicator-low';
+    } else if (indicator === '2') {
+      this.vsOverallIndicatorClass = 'indicator-high';
+      return 'indicator-high';
+    } else {
+      return 'indicator-normal';
+    }
+  }
 }

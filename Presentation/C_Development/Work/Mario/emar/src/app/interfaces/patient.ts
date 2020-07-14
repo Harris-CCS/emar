@@ -40,7 +40,9 @@ export interface Patient {
   vsOxygenSaturation: string;
   vsPainScaleIndicator: string;
   vsPainScale: string;
-  customIndicators: Array<IIndicators>;
+  customIndicators?: Array<IIndicators>;
+  allergies?: Array<IAllergies>;
+  homeMeds?: Array<IHomeMeds>;
 }
 
 interface IIndicators {
@@ -49,4 +51,24 @@ interface IIndicators {
   type: string;
   description: string;
   imageName: string;
+}
+
+interface IAllergies {
+  name: string;
+  isActive: number;
+  comment: string;
+  reaction: string;
+  severity: string;
+  source?: string;
+}
+
+interface IHomeMeds {
+  name: string;
+  isActive: number;
+  dose: string;
+  unit: string;
+  route: string;
+  schedule?: string;
+  lastTaken?: string;
+  comment?: string;
 }

@@ -55,7 +55,7 @@ export const PATIENT: Patient = {
       code: 'STOP',
       type: 'STOP',
       description: 'Need to Register: Stop',
-      imageName: 'stop3.gif',
+      imageName: 'stop3.jpg',
     },
   ],
 };

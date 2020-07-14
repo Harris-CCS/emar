@@ -8,7 +8,8 @@ import { HeaderPatientComponent } from './component/header-patient/header-patien
 import { SimpleOrderListComponent } from './component/simple-order-list/simple-order-list.component';
 import { ModalComponent } from './component/modal/modal.component';
 import { MedSearchComponent } from './component/med-search/med-search.component';
-import { Age } from '../shared/pipes/age';
+import { PipesModule } from './pipes/pipes.module';
+import { SimpleTableComponent } from './component/simple-table/simple-table.component';
 
 @NgModule({
   declarations: [
@@ -17,9 +18,9 @@ import { Age } from '../shared/pipes/age';
     SimpleOrderListComponent,
     ModalComponent,
     MedSearchComponent,
-    Age,
+    SimpleTableComponent,
   ],
-  imports: [CommonModule, NgbModule, FormsModule],
+  imports: [CommonModule, NgbModule, FormsModule, PipesModule],
   exports: [
     HeaderUserComponent,
     HeaderPatientComponent,
