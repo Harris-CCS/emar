@@ -9,7 +9,6 @@ import { SimpleOrderListComponent } from './component/simple-order-list/simple-o
 import { ModalComponent } from './component/modal/modal.component';
 import { MedSearchComponent } from './component/med-search/med-search.component';
 import { PipesModule } from './pipes/pipes.module';
-import { SimpleTableComponent } from './component/simple-table/simple-table.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +17,6 @@ import { SimpleTableComponent } from './component/simple-table/simple-table.comp
     SimpleOrderListComponent,
     ModalComponent,
     MedSearchComponent,
-    SimpleTableComponent,
   ],
   imports: [CommonModule, NgbModule, FormsModule, PipesModule],
   exports: [
