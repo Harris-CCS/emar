@@ -1,6 +1,7 @@
 ﻿using System;
 using Emar.Core;
 using Emar.Core.Users.Model;
+using Emar.Core.Users.Repository;
 using Emar.Core.Users.Service;
 using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Mvc;
@@ -17,16 +18,50 @@ namespace Emar.Api.Controllers
     public class UsersController : ControllerBase
     {
         private IUserService _userService;
+        private IUserRepository _userRepository;
         private readonly IPropertyMappingService _propertyMappingService;
         private readonly IPropertyCheckerService _propertyCheckerService;
 
         public UsersController(IUserService userService,
-                                  IPropertyMappingService propertyMappingService,
-                                  IPropertyCheckerService propertyCheckerService)
+                                IUserRepository userRepository,
+                                IPropertyMappingService propertyMappingService,
+                                IPropertyCheckerService propertyCheckerService)
         {
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             _propertyMappingService = propertyMappingService ?? throw new ArgumentNullException(nameof(propertyMappingService));
             _propertyCheckerService = propertyCheckerService ?? throw new ArgumentNullException(nameof(propertyCheckerService));
+        }
+
+        [HttpGet(Name = nameof(GetUsers))]
+        [HttpHead]
+        public ActionResult<UserDto> GetUsers(
+            [FromHeader(Name = "Accept")] string mediaType,
+            [FromQuery] string fields,
+            [FromQuery] string extId
+            )
+        {
+            if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
+            {
+                return BadRequest();
+            }
+
+            if (!_propertyCheckerService.TypeHasProperties<UserDto>(fields))
+            {
+                return BadRequest();
+            }
+
+            if (extId != null)
+            {
+                if (!int.TryParse(extId, out int xId))
+                {
+                    return BadRequest($"'{extId}' is not a valid external id.");
+                }
+
+                return GetUser(mediaType, fields, (int)_userRepository.GetInternalUserId(xId));
+            }
+
+            return null;
         }
 
         [HttpGet("{userId}", Name = nameof(GetUser))]
