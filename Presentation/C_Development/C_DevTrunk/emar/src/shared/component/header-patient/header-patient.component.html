@@ -1,14 +1,194 @@
-
-<div class="page-content-header">
-    <div class="first">
-        <a href="/Patients" class="go-back"></a>
-        <div class="patient-bed_main">{{ patient.bedCode }}</div>
-        <h1>{{ patient.fullName }}</h1>
+<div class="page-content-wrapper" *ngIf="patient">
+    <div class="nav-header">
+        <a href="/patients/1/orders" class="go-back"></a>
     </div>
-    <div class="second">
-        <div class="patient-details">
-            {{ patient.age }} {{ patient.ageUnit}}
+    <div class="patient-container">
+        <div class="patient-data-container">
+            <div class="patient-data-location">
+                <span class="patient-location" [ngStyle]="{
+                'borderColor': getPatientUrgencyColor()
+            }" [innerText]=" getPatientLocation()"></span>
+
+            </div>
+            <div class="patient-data-basic">
+                <div>
+                    <span class="patient-name" [innerText]="getPatientFullName()"></span>
+                </div>
+
+                <div>
+                    <span *ngIf="patient.complaint"><em>Complaint: </em>{{patient.complaint}}</span>
+                </div>
+                <div class="action-icons">
+                    <ul class="horizontal-icon-list">
+                        <li>
+                            <img *ngIf="checkForData('vitals')" [src]="getVitalSignIconPath()"
+                                class={{vsOverallIndicatorClass}} alt="Vital Signs" [ngbPopover]="lastVitalSignsTaken"
+                                placement="bottom" triggers="click" [autoClose]="'outside'" container="body">
+                        </li>
+                        <li>
+                            <button type="button" *ngIf="checkForData('allergies')" class="action-button"
+                                placement="bottom" triggers="click " [autoClose]="'outside'" [ngbPopover]="allergies"
+                                container="body">A</button>
+                        </li>
+                        <li>
+                            <button type="button" *ngIf="checkForData('homeMeds')" class="action-button"
+                                placement="bottom" triggers="click" [autoClose]="'outside'" [ngbPopover]="homeMeds"
+                                container="body">M</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="patient-indicators">
+                <div class="standard-indicators" *ngIf="patient.nameAlert || patient.withdrawConsent">
+                    <ul class="horizontal-icon-list">
+                        <li>
+                            <img src="../../../assets/img/alert2[1].gif" *ngIf="patient.nameAlert" alt="Name Alert"
+                                placement="bottom" ngbTooltip="Name Conflict Alert">
+                        </li>
+                        <li>
+                            <img src="../../../assets/img/privacy[1].gif" *ngIf="patient.withdrawConsent"
+                                alt="Consent Withdrawn" placement="bottom" ngbTooltip="Withdrawn Consent">
+                        </li>
+                    </ul>
+                </div>
+                <div class="custom-indicators" *ngIf="patient.customIndicators">
+                    <ul class="horizontal-icon-list">
+                        <li *ngFor="let indicator of patient.customIndicators">
+                            <img [src]="getCustomIndicatorImage(indicator)" alt="{{indicator.description}}"
+                                placement="bottom" ngbTooltip="{{indicator.description}}">
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class='patient-image'>
+                <img src='../../../assets/img/mock_patient_image.jpg' alt="Sample Patient Image">
+            </div>
+            <div class="patient-demo-ids">
+                <div class="patient-data-demographics">
+                    <div class="demographics-header">
+                        <span *ngIf="patient.age && patient.ageUnits">
+                            {{patient.age | Age: patient.age:patient.ageUnits}}
+                            <span *ngIf="patient.dateOfBirth">({{patient.dateOfBirth | date: 'MM/dd/yyyy' }})</span>
+                            <span [class]="getPatientGenderIconStyle()" *ngIf="patient.gender"></span>
+                        </span>
+                    </div>
+                    <div>
+                        <span *ngIf="patient.heightInCm"><em>HT/WT: </em>{{patient.heightInCm}} cm
+                            <span *ngIf="patient.weightInKg"> / {{patient.weightInKg}} kg</span></span>
+                    </div>
+                </div>
+                <div class="patient-ids">
+                    <span *ngIf=" patient.medicalRecordNumber">{{patient.medicalRecordNumber}}
+                        <span *ngIf="patient.accountNumber"> / {{patient.accountNumber}}</span>
+                    </span>
+                    <span *ngIf="patient.enterprisePatientId"> / {{patient.enterprisePatientId}}</span>
+                </div>
+            </div>
         </div>
-        <div [ngClass]="{'patient-details': 1, 'male': patient.gender === 'M', 'female': patient.gender === 'F'}"></div>
     </div>
 </div>
+
+<ng-template #lastVitalSignsTaken>
+    <!-- <simple-table [tableStructure]="tableStructureCurrentVitals"></simple-table> -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th [colSpan]="2">Current Vital Signs</th>
+            </tr>
+        </thead>
+        <tbody *ngFor="let vs of currentVitalsArray">
+            <tr>
+                <td>
+                    {{vs.label}}
+                </td>
+                <td class={{vs.className}}>
+                    {{vs.value}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</ng-template>
+
+<ng-template #allergies>
+    <table *ngIf="this.patient.allergies" class='table'>
+        <thead>
+            <tr>
+                <th [colSpan]="5">Current Allergies</th>
+            </tr>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Reaction</th>
+                <th scope="col">Severity</th>
+                <th scope="col">Source</th>
+                <th scope="col">Comment</th>
+            </tr>
+        </thead>
+        <tbody *ngFor="let alg of this.patient.allergies; let i = index">
+            <tr *ngIf="showAllAllergies || i <=2">
+                <td>
+                    {{alg.name}}
+                </td>
+                <td>
+                    {{alg.reaction}}
+                </td>
+                <td>
+                    {{alg.severity}}
+                </td>
+                <td>
+                    {{alg.source}}
+                </td>
+                <td>
+                    {{alg.comment}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <button type="button" class='btn-expand' *ngIf="!showAllAllergies" (click)="onExpandButtonClick('allergies')">See
+        more..</button>
+    <button type="button" class='btn-expand' *ngIf="showAllAllergies" (click)="onExpandButtonClick('allergies')">See
+        less...</button>
+</ng-template>
+
+<ng-template #homeMeds>
+    <table *ngIf="this.patient.homeMeds" class="table">
+        <thead>
+            <tr>
+                <th [colSpan]="6">Home Medications</th>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <th>Dose</th>
+                <th>Route</th>
+                <th>Schedule</th>
+                <th>Last Taken</th>
+                <th>Comment</th>
+            </tr>
+        </thead>
+        <tbody *ngFor="let med of this.patient.homeMeds; let i = index">
+            <tr *ngIf="showAllMeds || i <=2">
+                <td>
+                    {{med.name}}
+                </td>
+                <td>
+                    {{med.dose}}
+                </td>
+                <td>
+                    {{med.route}}
+                </td>
+                <td>
+                    {{med.schedule}}
+                </td>
+                <td>
+                    {{med.lastTaken | date: 'medium' }}
+                </td>
+                <td>
+                    {{med.comment}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <button type="button" class='btn-expand' *ngIf="!showAllMeds" (click)="onExpandButtonClick('meds')">See
+        more..</button>
+    <button type="button" class='btn-expand' *ngIf="showAllMeds" (click)="onExpandButtonClick('meds')">See
+        less...</button>
+</ng-template>

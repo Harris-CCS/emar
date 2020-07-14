@@ -1,60 +1,137 @@
-/*
-page-content-header {
-    display: flex;
-    padding: 20px;
-    align-items: center;
-    justify-content: space-between;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  min-height: 30px;
+  cursor: pointer;
 }
 
-.page-content.patient-details {
-    display: flex;
-    flex-direction: column;
-}
+.page-content-wrapper {
+  display: flex;
 
-.first {
-    display: flex;
-    align-items: center;
-}
-
-.second {
-    display: flex;
-    align-items: center;
-    float: right;
-}
-
-.patient-bed_main {
+  .row {
     display: inline-block;
-    height: 26px;
-    line-height: 23px;
-    font-weight: bold;
-    font-size: 20px;
-    color: #000;
-    border-radius: 4px;
-    padding: 0 5px;
-    border: solid #EA1930 2px;
-    margin: 0 10px;
+    border: solid 2px red;
+    border-radius: 10px;
+
+    // flex: 1 0 200px;
+    // flex: 1;
+
+    .nav-header {
+      padding: 5px 0 0 5px;
+      margin: 5px 0 0 5px;
+
+      &.go-back {
+        width: 18px;
+        height: 18px;
+        display: inline-block;
+        background: url("../../../assets/icon/back.svg");
+        background-repeat: no-repeat;
+        background-size: 100% auto;
+        // margin: auto;
+      }
+    }
+
+    .patient-general {
+      padding: 5px;
+      margin: 5px;
+      flex: 1;
+    }
+
+    .patient-details {
+      padding: 5px;
+      margin: 5px;
+      flex: 1;
+    }
+
+    .basic-data {
+      display: inline-block;
+
+      .patient-location {
+        display: inline-block;
+        //font-weight: bold;
+        // font-size: 1.1rem;
+        color: #000;
+        border-radius: 4px;
+        border: solid 2px;
+        padding: 0 5px;
+        margin-right: 10px;
+        text-align: center;
+
+        &.R {
+          border-color: #f32836;
+        }
+
+        &.pink {
+          border-color: #ffc6ff;
+        }
+
+        &.G {
+          border-color: #8ecc69;
+        }
+
+        &.orange {
+          border-color: #f79f55;
+        }
+
+        &.Y {
+          border-color: #fdd95b;
+        }
+
+        &.B {
+          border-color: #121de7;
+        }
+      }
+    }
+  }
 }
 
-.male {
-    display: inline-block;
-    width: 40px;
-    height: 40px;
-    background: url('../../../assets/icon/male.svg') no-repeat center center;
-}
+//   .patient-name {
+//     font-size: 1.3rem;
+//   }
+// }
 
-.female {
-    display: inline-block;
-    width: 40px;
-    height: 40px;
-    background: url('../../../assets/icon/female.svg') no-repeat center center;
-}
+// .patient-bed_main {
+//   display: inline-block;
+//   height: 26px;
+//   line-height: 20px;
+//   font-weight: bold;
+//   font-size: 20px;
+//   color: #000;
+//   border-radius: 4px;
+//   padding: 0 5px;
+//   border: solid #ea1930 2px;
+//   margin: 0 10px;
+//   text-align: center;
+//   justify-content: center;
+// }
 
-.go-back {
-    width: 18px;
-    height: 18px;
-    background: url('../../../assets/icon/back.svg');
-    background-repeat: no-repeat;
-    background-size: 100% auto;
-    margin: 10px;
-}
-*/
+// .item {
+//   background: #f4f4f4;
+//   border: #ccc solid 2px;
+//   margin: 5px;
+//   padding: 5px;
+//   text-align: center;
+//   align-content: center;
+//   border-radius: 10px;
+//   flex: 1 0 200px;
+// }
+
+// .second {
+//   display: inline-block;
+//   border: solid 10px purple;
+// }
+
+// .male {
+//   display: inline-block;
+//   width: 40px;
+//   height: 40px;
+//   background: url("../../../assets/icon/male.svg") no-repeat center center;
+// }
+
+// .female {
+//   display: inline-block;
+//   width: 40px;
+//   height: 40px;
+//   background: url("../../../assets/icon/female.svg") no-repeat center center;
+// }
