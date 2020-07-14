@@ -30,12 +30,24 @@ namespace Emar.Core.Users.Repository
 
         public User GetUser(int userId)
         {
-            var user = _context.Users
-                    .Where(u => u.Id == userId)
-                    .Include(u => u.Site)
-                    .FirstOrDefault(u => u.Site.Id == u.SiteId);
+            User user = _context.Users
+                        .Where(u => u.Id == userId)
+                        .Include(u => u.Site)
+                        .FirstOrDefault(u => u.Site.Id == u.SiteId);
 
             return user;
+        }
+
+        public long? GetInternalUserId(int extId)
+        {
+            long userId = _context.ExternalIds
+                            .Where(@x_id =>
+                                    @x_id.External_Id.Equals(extId.ToString()) &&
+                                    @x_id.Entity.ToLower().Equals(@"users") &&
+                                    @x_id.Vendor.ToLower().Equals(@"pulsecheck"))
+                            .FirstOrDefault()
+                            .InternalId;
+            return userId;
         }
     }
 }
