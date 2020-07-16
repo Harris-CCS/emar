@@ -6,7 +6,7 @@ set nocount on;
 
 drop table if exists [#table_order];
 
-declare 
+declare
     @load_level    int
   , @load_sequence int
   , @schema_name   sysname
@@ -28,7 +28,7 @@ insert into [#table_order] values(0,5,'dbo','prompt_groups')
 insert into [#table_order] values(0,6,'dbo','sites')
 insert into [#table_order] values(0,7,'dbo','templates')
 insert into [#table_order] values(1,1,'dbo','action_route_templates')
-insert into [#table_order] values(1,2,'dbo','department_preferred_list')
+insert into [#table_order] values(1,2,'dbo','department_preferred_list_items')
 insert into [#table_order] values(1,3,'dbo','override_reasons')
 insert into [#table_order] values(1,4,'dbo','patients')
 insert into [#table_order] values(1,5,'dbo','prompts')
@@ -45,7 +45,7 @@ insert into [#table_order] values(2,4,'dbo','patient_indicators')
 insert into [#table_order] values(2,5,'dbo','patient_orders')
 insert into [#table_order] values(2,6,'dbo','prompt_choices')
 insert into [#table_order] values(2,7,'dbo','user_permissions')
-insert into [#table_order] values(2,8,'dbo','user_quick_list')
+insert into [#table_order] values(2,8,'dbo','user_quick_list_items')
 insert into [#table_order] values(3,1,'dbo','order_administrations')
 insert into [#table_order] values(3,2,'dbo','patient_cart_details')
 insert into [#table_order] values(4,1,'dbo','order_administration_notes')
@@ -64,7 +64,7 @@ for select [tbl].[load_level]
 
 open csr;
 
-fetch next from csr into 
+fetch next from csr into
     @load_level
   , @load_sequence
   , @schema_name
@@ -90,7 +90,7 @@ while @@FETCH_STATUS = 0
                 execute [sp_executeSQL] @sql_cmd;
             end;
 
-        fetch next from csr into 
+        fetch next from csr into
             @load_level
           , @load_sequence
           , @schema_name

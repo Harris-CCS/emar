@@ -1,8 +1,8 @@
 create table [dbo].[medication_routes]
     (
       [id]      [int] identity(1, 1) not null
-    , [name]    [varchar](50) not null
     , [site_id] [int] not null
+    , [name]    [varchar](50) not null
     , constraint [pk__medication_routes__id] primary key clustered([id] asc));
 go
 
@@ -70,17 +70,6 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'name'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'medication_routes'
-  , @level2type = N'COLUMN'
-  , @level2name = N'name';
-go
-
-execute [sys].[sp_addextendedproperty]
-    @name = N'MS_Description'
   , @value = N'site_id'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
@@ -88,4 +77,15 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'medication_routes'
   , @level2type = N'COLUMN'
   , @level2name = N'site_id';
+go
+
+    execute [sys].[sp_addextendedproperty]
+    @name = N'MS_Description'
+  , @value = N'name'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'medication_routes'
+  , @level2type = N'COLUMN'
+  , @level2name = N'name';
 go
