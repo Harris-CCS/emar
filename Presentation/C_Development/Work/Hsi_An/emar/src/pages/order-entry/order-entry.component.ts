@@ -39,9 +39,12 @@ export class OrderEntryComponent implements OnInit {
 
   ngOnInit(): void {
     const patientId:number = +this.route.snapshot.params['id'];
-    this.patient = this.patientService.getPatient(patientId);
-    this.orders = this.patientService.getPatientOrders(patientId)
+    //this.patient = this.patientService.getPatient(patientId);
+    this.orders = this.patientService.getPatientOrders(patientId);
     this.currentListOrders();
+
+    this.patientService.getPatient(patientId)
+      .subscribe(patient => this.patient = patient);
   }
 
   //currentUser() {
