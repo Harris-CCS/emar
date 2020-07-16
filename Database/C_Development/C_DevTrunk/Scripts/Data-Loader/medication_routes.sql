@@ -1,0 +1,90 @@
+drop table if exists [#medication_routes];
+
+create table [#medication_routes]
+    (
+      [site_id] [varchar](25) not null
+    , [name]    [varchar](50) not null);
+
+if '$(load_data)' = 'live'
+   and exists
+(
+    select null
+    from   [master].[sys].[databases]
+    where  [name] = 'ibex'
+)
+    begin
+        insert into [#medication_routes]
+            ([site_id]
+           , [name]
+            )
+        execute ('execute dbo.export_ibex_medication_routes');
+    end;
+
+if '$(load_data)' = 'sample'
+    begin
+
+        bulk insert [#medication_routes] from '$(current_path)Scripts\Data-Loader\sample_data\medication_routes.bcp' with(fieldterminator = '|~', rowterminator = '\n');
+    end;
+
+if
+(
+    select count(*)
+    from   [#medication_routes]
+) > 0
+    begin
+
+        begin transaction;
+
+/****************************************
+        load temporary tables for staging
+****************************************/
+
+        alter table [#medication_routes]
+        add [id]        [bigint] identity(1, 1)
+          , [target_id] [bigint];
+
+/********************************
+        get max id for seed value
+********************************/
+
+        set @max_id = null;
+
+        select @max_id = max([id])
+        from   [dbo].[medication_routes];
+
+        set @max_id = isnull(@max_id, 0);
+
+        update [source] set    
+            [target_id] = [source].[id] + @max_id
+        from   [#medication_routes] as [source];
+
+/*************************************
+        begin loading permanent tables
+*************************************/
+
+        set identity_insert [dbo].[medication_routes] on;
+
+        insert into [dbo].[medication_routes]
+            ([id]
+           , [site_id]
+           , [name]
+            )
+        select [source].[target_id]
+             , [source].[site_id]
+             , [source].[name]
+        from   [#medication_routes] as [source]
+        order by [name];
+
+        set identity_insert [dbo].[medication_routes] off;
+
+/***************************************
+        loading [external_ids] reference
+***************************************/
+/****************
+        end table
+****************/
+
+        commit transaction;
+    end;
+
+drop table if exists [#medication_routes];

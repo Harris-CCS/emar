@@ -11,13 +11,15 @@ Post-Deployment Script Template
 *************************************************************************************/
 -- Table Renamed dbo.site_preferred_list dbo.department_preferred_list
 drop table if exists dbo.site_preferred_list;
+-- Table Renamed dbo.department_preferred_list dbo.department_preferred_list_items
+drop table if exists dbo.department_preferred_list;
+-- Table Renamed dbo.user_quick_list dbo.user_quick_list_items
+drop table if exists dbo.user_quick_list;
 
-if '$(load_data)' in('sample','live')
-begin
-   :r ..\Scripts\Data-Loader\data_loader_ddl.sql
-end
+declare
+    @max_id bigint;
 
-/* Insert table order 
+/* Insert table order
 LVL: 000 SEQ: 001 TBL: dbo.actions
 LVL: 000 SEQ: 002 TBL: dbo.medication_routes
 LVL: 000 SEQ: 003 TBL: dbo.options
@@ -50,20 +52,12 @@ LVL: 004 SEQ: 001 TBL: dbo.order_administration_notes
 LVL: 004 SEQ: 002 TBL: dbo.order_events
 LVL: 005 SEQ: 001 TBL: dbo.order_event_details
 */
-if '$(load_data)' = 'sample'
-begin
-   :r ..\Scripts\Data-Loader\sample_data\sites.sql
-   :r ..\Scripts\Data-Loader\sample_data\patients.sql
-   :r ..\Scripts\Data-Loader\sample_data\users.sql
-end
+:r ..\Scripts\Data-Loader\medication_routes.sql
+:r ..\Scripts\Data-Loader\sites.sql
+:r ..\Scripts\Data-Loader\patients.sql
+:r ..\Scripts\Data-Loader\users.sql
+:r ..\Scripts\Data-Loader\user_quick_list_items.sql
 
-if '$(load_data)' = 'live'
-and exists(select null from master.sys.databases where name = 'ibex')
-begin
-   :r ..\Scripts\Data-Loader\ibex_live_data\sites.sql
-   :r ..\Scripts\Data-Loader\ibex_live_data\patients.sql
-   :r ..\Scripts\Data-Loader\ibex_live_data\users.sql
-end
 
 --- variables global to all diagram_ published scripts
 declare
@@ -73,7 +67,8 @@ declare
   , @continue_update [bit];
 
 declare @outputs table([Id] int not null);
-
+--- https://docs.microsoft.com/en-us/sql/ssms/visual-db-tools/set-up-database-diagram-designer-visual-database-tools?view=sql-server-ver15
+--- https://feedback.azure.com/forums/908035-sql-server/suggestions/37992649-ssms-18-1-crashes-when-opening-a-database-diagram
 --- deploying these diagrams in having an issue at the moment.
 --- it worked several times, but now causes ssms to crash. so removing for the moment.
 ---:r ..\Scripts\Post-Deployment\diagram_patients.sql
