@@ -1,15 +1,14 @@
 create table [dbo].[site_formulary_match]
-(
-    [id]                  bigint identity(1, 1) not null
-  , [site_id]             int not null
-  , [ndc]                 [varchar](32) null
-  , [drug_id]             [varchar](32) not null
-  , [brand_name]          [varchar](255) not null
-  , [inpatient_match]        [tinyint] not null
-  , [outpatient_match]       [tinyint] not null
-  , [pyxis_match]            [tinyint] not null
-  , constraint [pk__site_formulary_match__id] primary key clustered([id] asc)
-);
+    (
+      [id]               bigint identity(1, 1) not null
+    , [site_id]          int not null
+    , [ndc]              [varchar](32) null
+    , [drug_id]          [varchar](32) not null
+    , [brand_name]       [nvarchar](255) not null
+    , [inpatient_match]  [tinyint] not null
+    , [outpatient_match] [tinyint] not null
+    , [pyxis_match]      [tinyint] not null
+    , constraint [pk__site_formulary_match__id] primary key clustered([id] asc));
 go
 
 /********
@@ -38,7 +37,7 @@ go
     Indexes
 ***************/
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Primary Key Constraint'
   , @level0type = N'SCHEMA'
@@ -54,7 +53,7 @@ go
     Table
 ***************/
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'This table stores information regarding the hospital drug formulary as indexed by a National Drug Code'
   , @level0type = N'SCHEMA'
@@ -68,7 +67,7 @@ go
     Columns
 ***************/
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Auto increment table ID'
   , @level0type = N'SCHEMA'
@@ -79,7 +78,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'id';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Hospital identifier foriegn key to site table'
   , @level0type = N'SCHEMA'
@@ -90,7 +89,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'site_id';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Drug NDC (National Drug Code)'
   , @level0type = N'SCHEMA'
@@ -101,7 +100,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'ndc';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'External Vendor Drug Database Identifier
     FDB: MEDID (MED Medication ID (Stable ID))
@@ -118,7 +117,7 @@ this will aid in display and lookup performance.
   , @level2name = N'drug_id';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Brand name'
   , @level0type = N'SCHEMA'
@@ -129,7 +128,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'brand_name';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Flag indicating matching criteria
     0 = Non match ,
@@ -146,7 +145,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'inpatient_match';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Flag indicating matching criteria
     0 = Non match ,
@@ -163,7 +162,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'outpatient_match';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Flag indicating matching criteria
     0 = Non match ,

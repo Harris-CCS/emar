@@ -1,7 +1,7 @@
 create table [dbo].[sites]
     (
       [id]             [int] identity(1, 1) not null
-    , [name]           [varchar](40) not null
+    , [name]           [nvarchar](40) not null
     , [is_active]      [bit] not null
     , [time_zone_name] [sysname] not null
     , constraint [pk__sites__id] primary key clustered([id] asc));

@@ -158,7 +158,7 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'administering_user_id'
+  , @value = N'Person Idendifier that administered this record (Foreign Key to users table)'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -202,7 +202,7 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'stop_user_id'
+  , @value = N'Person Idendifier that cancelled this record (Foreign Key to users table)'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -224,7 +224,7 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'acknowledge_user_id'
+  , @value = N'Person Idendifier that acknowledged this record (Foreign Key to users table)'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'

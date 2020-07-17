@@ -1,0 +1,146 @@
+1|~ Route Type Injection LL                
+1|~(100 mL) IV INFUSION                    
+1|~(1000 mL) IV INFUSION                   
+1|~(125 mL) IV INFUSION                    
+1|~(150 mL) IV INFUSION                    
+1|~(200 mL) IV INFUSION                    
+1|~(500 mL) IV INFUSION                    
+1|~<cool route>                            
+1|~[w Ca Gluc 1 gm] (250 mL) IV INFUSION   
+1|~[w MAG SULF 4 mEq] (1000 mL) IV INFUSION
+1|~[w MAG SULF 4 mEq] (500 mL) IV INFUSION 
+1|~[w MAG SULF 8 mEq] (1000 mL) IV INFUSION
+1|~[w NaHCO3 150mEq] (1000 mL) IV INFUSION 
+1|~[w NaHCO3 50mEq] (1000 mL) IV INFUSION  
+1|~[w THIAMINE 100mg] (1000 mL) IV INFUSION
+1|~[w vit B1 & MgSO4] (1000 mL) IV INFUSION
+1|~ALLERGY CHECK ONLY! DO NOT USE!!        
+1|~Alternating Nostrils                    
+1|~Both ends                               
+1|~BOTH EYES                               
+1|~By Mouth                                
+1|~CHEW                                    
+1|~Description: Route Type Blank           
+16|~dftrt                                   
+5|~drink me                                
+1|~EACH SIDE OF MOUTH                      
+1|~Ear LEFT                                
+1|~Ear RIGHT                               
+1|~EARS - bilateral                        
+5|~eat me                                  
+1|~ENTERAL TUBE                            
+1|~EPIDURAL                                
+1|~Eye Left                                
+1|~Eye Lids                                
+1|~FEEDING TUBE                            
+1|~FLUSH                                   
+1|~G-Tube                                  
+1|~GT                                      
+1|~Gulp it down                            
+1|~ID                                      
+40|~IM - intramuscular
+5|~in the muscle                           
+36|~in the muscle                           
+5|~in the vein                             
+36|~Inhalations                             
+5|~inhale me                               
+1|~Injection                               
+1|~injection&infusion                      
+1|~INSTILL                                 
+1|~INTRA-ARTERIAL                          
+36|~INTRA-ARTERIAL                          
+1|~INTRA-ARTICULAR                         
+1|~INTRA-LESIONAL                          
+1|~INTRAARTERIAL                           
+1|~INTRABURSAL                             
+1|~INTRADERMAL                             
+1|~Intramuscular
+36|~INTRAMUSCULAR
+1|~INTRANASAL                              
+1|~INTRAOCULAR                             
+1|~Intraperitoneal                         
+1|~INTRAPLEURAL                            
+1|~INTRASPINAL                             
+1|~Intrasynovial                           
+1|~INTRATHECAL                             
+1|~Intratracheal                           
+1|~Intravascular                           
+1|~INTRAVESICAL                            
+1|~IPPB RESP                               
+1|~IRRIGATE                                
+1|~IRRIGATION                              
+1|~IV                                      
+40|~IV - intravenous                        
+1|~IV Fluid
+40|~IV Fluid                                
+1|~IV Fluid BOLUS                          
+1|~IV HYDRATION                            
+36|~IV HYDRATION                            
+1|~IV INFUSION                             
+1|~IV INJECTION                            
+36|~IV Med Infusion                         
+1|~IV PIGGY BACK
+40|~IV Piggy Back                           
+36|~IV Push                                 
+1|~IV-P site 1                             
+11|~IV-P site 11                            
+1|~IVP                                     
+36|~IVP                                     
+40|~IVP - IV Push
+1|~IVPB                                    
+36|~IVPB                                    
+1|~JT                                      
+1|~MDI                                     
+1|~Nare LEFT                               
+1|~Nare RIGHT                              
+1|~NARES                                   
+1|~NEBULIZE                                
+1|~NG TUBE                                 
+1|~OD                                      
+1|~Oral                                    
+16|~oral                                    
+31|~oral                                    
+36|~Oral                                    
+39|~Oral                                    
+1|~OS                                      
+1|~OU                                      
+5|~per os                                  
+1|~PO
+36|~PO                                      
+40|~PO - oral                               
+1|~PO/FDG TUBE(NEONATAL ONLY)              
+1|~PO/FEEDING TUBE                         
+1|~RECTAL                                  
+36|~Rectal                                  
+1|~RIGHT EYE                               
+1|~Route Type Blank 9                      
+1|~Route Type Hydration2                   
+1|~Route Type Infusion L                   
+1|~Route Type Testing Hydration            
+1|~RT1                                     
+5|~rub me                                  
+1|~SCRUB                                   
+1|~SHAMPOO                                 
+1|~SHOWER                                  
+1|~SL                                      
+1|~SLOW IV PUSH                            
+1|~SOAK                                    
+1|~SOFT TISSUE                             
+1|~SQ                                      
+40|~SQ - subcutaneous                       
+1|~Subcutaneous                            
+36|~Subcutaneous                            
+1|~Sublingual                              
+1|~SuperLongSubLingual                     
+1|~Swish in mouth and expectorate          
+1|~Swish in mouth and swallow              
+1|~test@test#test$test%test^Tetst&test(1)  
+1|~Testing Infusion Route                  
+1|~Testing Injection Route Method          
+1|~Top & Bottom                            
+1|~TOPICAL                                 
+1|~Transdermal                             
+1|~Tropical                                
+1|~URETHRAL                                
+1|~Vaginal                                 
+1|~vg29                                    

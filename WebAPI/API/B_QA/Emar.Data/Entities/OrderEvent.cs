@@ -1,0 +1,31 @@
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Emar.Data.Entities
+{
+    [Table("order_events")]
+    public class OrderEvent
+    {
+        [Column("id", TypeName = "bigint"), Key]
+        public long Id { get; set; }
+
+        [Column("patient_order_id", TypeName = "bigint"), Required]
+        public long OrderId { get; set; }
+
+        [Column("order_administration_id", TypeName = "bigint")]
+        public long? AdministrationId { get; set; }
+
+        [Column("event_datetime", TypeName = "datetimeoffset"), Required]
+        public DateTimeOffset EventDateTime { get; set; }
+
+        [Column("add_user_id", TypeName = "int"), Required]
+        public int AddUserId { get; set; }
+
+        [Column("add_datetime", TypeName = "datetimeoffset"), Required]
+        public DateTimeOffset AddDatetime { get; set; }
+
+        [Column("action_id", TypeName = "int"), Required]
+        public int ActionId { get; set; }
+    }
+}

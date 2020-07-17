@@ -4,11 +4,11 @@
     , [site_id]                 [int] not null
     , [type]                    [char](1) not null
     , [is_active]               [bit] not null
-    , [initials_display]        [varchar](4) not null
-    , [first_name]              [varchar](20) not null
-    , [last_name]               [varchar](20) not null
+    , [initials_display]        [nvarchar](4) not null
+    , [first_name]              [nvarchar](20) not null
+    , [last_name]               [nvarchar](20) not null
     , [ordering_only_physician] [bit]
-    , [name_display_preference] [bit]
+    , [name_display_initials]   [bit]
     , [login_name]              [varchar](255) not null
     , [login_password]          [varchar](255) not null
     , [salt]                    [binary](16) not null
@@ -26,7 +26,7 @@ add constraint [df__users__ordering_only_physician] default((0)) for [ordering_o
 go
 
 alter table [dbo].[users]
-add constraint [df__users__name_display_preference] default((0)) for [name_display_preference];
+add constraint [df__users__name_display_preference] default((0)) for [name_display_initials];
 go
 
 alter table [dbo].[users]
@@ -238,13 +238,13 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Name Display Preference: 0 (default – full name), 1 (initials only)'
+  , @value = N'Name Display Initials: 0 (default – full name), 1 (initials only)'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
   , @level1name = N'users'
   , @level2type = N'COLUMN'
-  , @level2name = N'name_display_preference';
+  , @level2name = N'name_display_initials';
 go
 
 execute [sys].[sp_addextendedproperty]

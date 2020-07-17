@@ -72,7 +72,6 @@
     <Folder Include="Programmability\Functions\Scalar-values Functions" />
     <Folder Include="Views" />
     <Folder Include="Scripts\Data-Loader" />
-    <Folder Include="Scripts\Data-Loader\ibex_live_data" />
     <Folder Include="Scripts\Data-Loader\sample_data" />
   </ItemGroup>
   <ItemGroup>
@@ -89,17 +88,16 @@
     <Build Include="Tables\permissions.sql" />
     <None Include="Scripts\Post-Deployment\diagram_patients.sql" />
     <None Include="Scripts\Post-Deployment\diagram_security.sql" />
-    <Build Include="Tables\department_preferred_list.sql" />
+    <Build Include="Tables\department_preferred_list_items.sql" />
     <Build Include="Tables\options.sql" />
     <Build Include="Tables\site_options.sql" />
     <Build Include="Tables\patient_allergies.sql" />
     <Build Include="Tables\patient_home_medications.sql" />
     <Build Include="Tables\site_formulary.sql" />
     <Build Include="Tables\site_formulary_match.sql" />
-    <Build Include="Tables\user_quick_list.sql" />
+    <Build Include="Tables\user_quick_list_items.sql" />
     <Build Include="Tables\medication_routes.sql" />
-    <Build Include="Tables\patient_cart_details.sql" />
-    <Build Include="Tables\patient_carts.sql" />
+    <Build Include="Tables\patient_cart_orders.sql" />
     <Build Include="Tables\override_reasons.sql" />
     <Build Include="Tables\patient_orders.sql" />
     <Build Include="Tables\order_administrations.sql" />
@@ -114,16 +112,35 @@
     <Build Include="Tables\prompts.sql" />
     <Build Include="Tables\template_prompt_groups.sql" />
     <None Include="Scripts\Data-Loader\delete_emar_data.sql" />
-    <None Include="Scripts\Data-Loader\sample_data\sites.sql" />
-    <None Include="Scripts\Data-Loader\ibex_live_data\sites.sql" />
-    <None Include="Scripts\Data-Loader\ibex_live_data\patients.sql" />
-    <None Include="Scripts\Data-Loader\sample_data\patients.sql" />
-    <None Include="Scripts\Data-Loader\data_loader_ddl.sql" />
-    <None Include="Scripts\Data-Loader\ibex_live_data\users.sql" />
-    <None Include="Scripts\Data-Loader\sample_data\users.sql" />
+    <None Include="Scripts\Data-Loader\medication_routes.sql" />
+    <None Include="Scripts\Data-Loader\patients.sql" />
+    <None Include="Scripts\Data-Loader\sites.sql" />
+    <None Include="Scripts\Data-Loader\users.sql" />
+    <None Include="Scripts\Data-Loader\user_quick_list_items.sql" />
+    <Build Include="Programmability\Stored Procedures\export_ibex_sites.sql" />
+    <Build Include="Programmability\Stored Procedures\export_ibex_medication_routes.sql" />
+    <Build Include="Programmability\Stored Procedures\export_ibex_patients.sql" />
+    <Build Include="Programmability\Stored Procedures\export_ibex_user_quick_list_items.sql" />
+    <Build Include="Programmability\Stored Procedures\export_ibex_users.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />
+    <None Include="ROS-57C-DX01.publish.xml" />
+    <None Include="Scripts\Data-Loader\sample_data\medication_routes.bcp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Data-Loader\sample_data\patients.bcp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Data-Loader\sample_data\sites.bcp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Data-Loader\sample_data\users.bcp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Data-Loader\sample_data\user_quick_list_items.bcp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <PreDeploy Include="Scripts\Script.PreDeployment.sql" />
@@ -139,6 +156,10 @@
     </ArtifactReference>
   </ItemGroup>
   <ItemGroup>
+    <SqlCmdVariable Include="current_path">
+      <DefaultValue>$(ProjectDir)$(OutputPath)</DefaultValue>
+      <Value>$(SqlCmdVar__2)</Value>
+    </SqlCmdVariable>
     <SqlCmdVariable Include="load_data">
       <DefaultValue>none</DefaultValue>
       <Value>$(SqlCmdVar__1)</Value>

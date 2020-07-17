@@ -4,10 +4,10 @@ create table [dbo].[patients]
     , [site_id]                        [int] not null
     , [medical_record_number]          [varchar](25) null
     , [account_number]                 [varchar](25) null
-    , [last_name]                      [varchar](35) not null
-    , [first_name]                     [varchar](35) not null
-    , [middle_name]                    [varchar](35) null
-    , [name_suffix]                    [varchar](25) null
+    , [last_name]                      [nvarchar](35) not null
+    , [first_name]                     [nvarchar](35) not null
+    , [middle_name]                    [nvarchar](35) null
+    , [name_suffix]                    [nvarchar](25) null
     , [gender]                         [varchar](10) not null
     , [date_of_birth]                  [date] null
     , [age]                            [tinyint] null

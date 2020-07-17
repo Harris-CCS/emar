@@ -3,7 +3,7 @@ create table [dbo].[prompts]
       [id]              [int] identity(1, 1) not null
     , [prompt_group_id] [int] not null
     , [sequence]        [smallint] not null
-    , [prompt]          [varchar](200) not null
+    , [prompt]          [nvarchar](200) not null
     , [is_active]       [bit] not null
     , [prompt_type]     [varchar](20) not null
     , [prompt_default]  [varchar](100) null
