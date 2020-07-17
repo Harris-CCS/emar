@@ -1,3 +1,5 @@
+Print 'Loading Table: sites'
+
 drop table if exists [#sites];
 
 create table [#sites]

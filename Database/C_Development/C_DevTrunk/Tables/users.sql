@@ -4,9 +4,9 @@
     , [site_id]                 [int] not null
     , [type]                    [char](1) not null
     , [is_active]               [bit] not null
-    , [initials_display]        [varchar](4) not null
-    , [first_name]              [varchar](20) not null
-    , [last_name]               [varchar](20) not null
+    , [initials_display]        [nvarchar](4) not null
+    , [first_name]              [nvarchar](20) not null
+    , [last_name]               [nvarchar](20) not null
     , [ordering_only_physician] [bit]
     , [name_display_initials]   [bit]
     , [login_name]              [varchar](255) not null

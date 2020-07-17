@@ -1,3 +1,5 @@
+Print 'Loading Table: users'
+
 drop table if exists [#users];
 
 create table [#users]

@@ -120,7 +120,7 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'add_user_id'
+  , @value = N'Person Idendifier that created this record (Foreign Key to users table)'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'

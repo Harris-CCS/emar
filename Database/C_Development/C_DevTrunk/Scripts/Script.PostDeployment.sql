@@ -15,6 +15,10 @@ drop table if exists dbo.site_preferred_list;
 drop table if exists dbo.department_preferred_list;
 -- Table Renamed dbo.user_quick_list dbo.user_quick_list_items
 drop table if exists dbo.user_quick_list;
+-- Table Renamed dbo.patient_cart_details dbo.patient_cart_orders
+drop table if exists dbo.patient_cart_details
+-- Table no longer used
+drop table if exists dbo.patient_carts
 
 declare
     @max_id bigint;
@@ -28,26 +32,25 @@ LVL: 000 SEQ: 005 TBL: dbo.prompt_groups
 LVL: 000 SEQ: 006 TBL: dbo.sites
 LVL: 000 SEQ: 007 TBL: dbo.templates
 LVL: 001 SEQ: 001 TBL: dbo.action_route_templates
-LVL: 001 SEQ: 002 TBL: dbo.department_preferred_list
+LVL: 001 SEQ: 002 TBL: dbo.department_preferred_list_items
 LVL: 001 SEQ: 003 TBL: dbo.override_reasons
-LVL: 001 SEQ: 004 TBL: dbo.patients
-LVL: 001 SEQ: 005 TBL: dbo.prompts
-LVL: 001 SEQ: 006 TBL: dbo.site_code_shares
-LVL: 001 SEQ: 007 TBL: dbo.site_formulary
-LVL: 001 SEQ: 008 TBL: dbo.site_formulary_match
-LVL: 001 SEQ: 009 TBL: dbo.site_options
-LVL: 001 SEQ: 010 TBL: dbo.template_prompt_groups
-LVL: 001 SEQ: 011 TBL: dbo.users
+LVL: 001 SEQ: 004 TBL: dbo.patient_cart_orders
+LVL: 001 SEQ: 005 TBL: dbo.patients
+LVL: 001 SEQ: 006 TBL: dbo.prompts
+LVL: 001 SEQ: 007 TBL: dbo.site_code_shares
+LVL: 001 SEQ: 008 TBL: dbo.site_formulary
+LVL: 001 SEQ: 009 TBL: dbo.site_formulary_match
+LVL: 001 SEQ: 010 TBL: dbo.site_options
+LVL: 001 SEQ: 011 TBL: dbo.template_prompt_groups
+LVL: 001 SEQ: 012 TBL: dbo.users
 LVL: 002 SEQ: 001 TBL: dbo.patient_allergies
-LVL: 002 SEQ: 002 TBL: dbo.patient_carts
-LVL: 002 SEQ: 003 TBL: dbo.patient_home_medications
-LVL: 002 SEQ: 004 TBL: dbo.patient_indicators
-LVL: 002 SEQ: 005 TBL: dbo.patient_orders
-LVL: 002 SEQ: 006 TBL: dbo.prompt_choices
-LVL: 002 SEQ: 007 TBL: dbo.user_permissions
-LVL: 002 SEQ: 008 TBL: dbo.user_quick_list
+LVL: 002 SEQ: 002 TBL: dbo.patient_home_medications
+LVL: 002 SEQ: 003 TBL: dbo.patient_indicators
+LVL: 002 SEQ: 004 TBL: dbo.patient_orders
+LVL: 002 SEQ: 005 TBL: dbo.prompt_choices
+LVL: 002 SEQ: 006 TBL: dbo.user_permissions
+LVL: 002 SEQ: 007 TBL: dbo.user_quick_list_items
 LVL: 003 SEQ: 001 TBL: dbo.order_administrations
-LVL: 003 SEQ: 002 TBL: dbo.patient_cart_details
 LVL: 004 SEQ: 001 TBL: dbo.order_administration_notes
 LVL: 004 SEQ: 002 TBL: dbo.order_events
 LVL: 005 SEQ: 001 TBL: dbo.order_event_details
@@ -58,6 +61,12 @@ LVL: 005 SEQ: 001 TBL: dbo.order_event_details
 :r ..\Scripts\Data-Loader\users.sql
 :r ..\Scripts\Data-Loader\user_quick_list_items.sql
 
+-- procedures were only needed for data import process and are no longer needed.
+drop procedure if exists [dbo].[export_ibex_medication_routes];
+drop procedure if exists [dbo].[export_ibex_patients];
+drop procedure if exists [dbo].[export_ibex_sites];
+drop procedure if exists [dbo].[export_ibex_user_quick_list_items];
+drop procedure if exists [dbo].[export_ibex_users];
 
 --- variables global to all diagram_ published scripts
 declare

@@ -1,3 +1,5 @@
+Print 'Loading Table: patients'
+
 drop table if exists [#patients];
 
 create table [#patients]

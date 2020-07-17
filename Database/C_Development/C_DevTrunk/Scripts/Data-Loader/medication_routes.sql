@@ -1,3 +1,5 @@
+Print 'Loading Table: medication_routes'
+
 drop table if exists [#medication_routes];
 
 create table [#medication_routes]

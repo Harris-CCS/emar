@@ -1,3 +1,5 @@
+Print 'Loading Table: user_quick_list_items'
+
 drop table if exists [#user_quick_list_items];
 
 create table [#user_quick_list_items]

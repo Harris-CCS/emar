@@ -2,7 +2,7 @@ create table [dbo].[medication_routes]
     (
       [id]      [int] identity(1, 1) not null
     , [site_id] [int] not null
-    , [name]    [varchar](50) not null
+    , [name]    [nvarchar](50) not null
     , constraint [pk__medication_routes__id] primary key clustered([id] asc));
 go
 

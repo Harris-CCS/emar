@@ -6,7 +6,7 @@
     , [code]             [varchar](10) not null
     , [type]             [varchar](10) not null
     , [description]      [varchar](255) not null
-    , [image_name]       [varchar](255) not null
+    , [image_name]       [nvarchar](255) not null
     , constraint [pk__patient_indicators__id] primary key clustered([id] asc));
 go
 
@@ -95,7 +95,7 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Patient ID foreign key to patients table'
+  , @value = N'Patient identifier, Foreign Key to patients table'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'

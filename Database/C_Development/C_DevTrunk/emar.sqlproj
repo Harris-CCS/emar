@@ -97,8 +97,7 @@
     <Build Include="Tables\site_formulary_match.sql" />
     <Build Include="Tables\user_quick_list_items.sql" />
     <Build Include="Tables\medication_routes.sql" />
-    <Build Include="Tables\patient_cart_details.sql" />
-    <Build Include="Tables\patient_carts.sql" />
+    <Build Include="Tables\patient_cart_orders.sql" />
     <Build Include="Tables\override_reasons.sql" />
     <Build Include="Tables\patient_orders.sql" />
     <Build Include="Tables\order_administrations.sql" />
@@ -158,7 +157,7 @@
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="current_path">
-      <DefaultValue>D:\dev\pulsecheck\Database\C_Development\Work\David\bin\Debug\</DefaultValue>
+      <DefaultValue>$(ProjectDir)$(OutputPath)</DefaultValue>
       <Value>$(SqlCmdVar__2)</Value>
     </SqlCmdVariable>
     <SqlCmdVariable Include="load_data">
