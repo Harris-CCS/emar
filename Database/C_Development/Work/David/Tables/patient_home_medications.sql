@@ -7,7 +7,7 @@ create table [dbo].[patient_home_medications]
     , [internal_drug_id]    [varchar](32) null
     , [ndc]                 [varchar](32) null
     , [drug_id]             [varchar](32) null
-    , [name]                [varchar](255) null
+    , [name]                [nvarchar](255) null
     , [dose]                [decimal](11, 2) null
     , [dose_unit]           [varchar](20) null
     , [medication_route_id] [int] null
@@ -18,7 +18,7 @@ create table [dbo].[patient_home_medications]
     , [reaction]            [varchar](80) null
     , [severity]            [varchar](80) null
     , [parent_drug_id]      [varchar](32) null
-    , [parent_drug_name]    [varchar](255) null
+    , [parent_drug_name]    [nvarchar](255) null
     , [add_user_id]         [int] not null
     , [add_datetime]        [datetimeoffset](7) not null
     , [change_user_id]      [int] not null
@@ -312,7 +312,7 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'Person who entered this record, FKEY to DRS person table'
+  , @value = N'Person Idendifier that created this record (Foreign Key to users table)'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -334,7 +334,7 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'Person who last changed this record, FKEY to DRS person table'
+  , @value = N'Person Idendifier that last changed this record (Foreign Key to users table)'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'

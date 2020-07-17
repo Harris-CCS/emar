@@ -24,3 +24,12 @@ as
                , [source].[site];
     end;
 go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'Procedure used to export ibex export_ibex_user_quick_list_items in emar format'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'PROCEDURE'
+  , @level1name = N'export_ibex_user_quick_list_items';
+go

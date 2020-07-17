@@ -11,3 +11,12 @@ as
                , [a].[site];
     end;
 go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'Procedure used to export ibex medication_routes in emar format'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'PROCEDURE'
+  , @level1name = N'export_ibex_medication_routes';
+go

@@ -115,7 +115,7 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'User ID reference to users table'
+  , @value = N'Person Idendifier that this permission record applies to (Foreign Key to users table)'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'

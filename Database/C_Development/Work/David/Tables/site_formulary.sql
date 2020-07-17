@@ -4,7 +4,7 @@ create table [dbo].[site_formulary]
   , [site_id]             int not null
   , [ndc]                 [varchar](32) null
   , [drug_id]             [varchar](32) not null
-  , [brand_name]          [varchar](255) not null
+  , [brand_name]          [nvarchar](255) not null
   , [hospital_drug_code]  [varchar](32) null
   , [service_code]        [varchar](32) null
   , [is_inpatient]        [bit] not null

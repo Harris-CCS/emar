@@ -1,7 +1,7 @@
 create table [dbo].[templates]
     (
       [id]        [int] identity(1, 1) not null
-    , [name]      [varchar](20) not null
+    , [name]      [nvarchar](20) not null
     , [is_active] [bit] not null
     , [title]     [varchar](50) not null
     , [site_id]   [int] not null
