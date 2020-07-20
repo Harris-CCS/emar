@@ -14,18 +14,18 @@ namespace Emar.Core.Orders.Model
         /// <summary>
         /// Date and time the order was created.  Includes the local time timezone offset from UTC.
         /// </summary>
-        public DateTimeOffset CreatedDateTime { get; set; }
+        public DateTimeOffset AddDatetime { get; set; }
 
         /// <summary>
         /// Date/time that the point-in-time administration was give, or
         /// Date/time that the non-point-in-time administration started
         /// </summary>
-        public DateTimeOffset BeginDateTime { get; set; }
+        public DateTimeOffset BeginDatetime { get; set; }
 
         /// <summary>
         /// Date and time the order ended.  Includes the local time timezone offset from UTC.
         /// </summary>
-        public DateTimeOffset? EndDateTime { get; set; }
+        public DateTimeOffset? EndDatetime { get; set; }
 
         /// <summary>
         /// Indicates the order priority (STAT, Routine).
@@ -88,7 +88,7 @@ namespace Emar.Core.Orders.Model
         /// <summary>
         /// Unique identifier of the provider who ordered the order.
         /// </summary>
-        public int OrderingProviderId { get; set; }
+        public int AddUserId { get; set; }
 
         /// <summary>
         /// PatientOrder administrations.

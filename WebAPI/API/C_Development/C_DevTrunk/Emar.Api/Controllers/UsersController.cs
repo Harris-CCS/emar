@@ -5,7 +5,6 @@ using Emar.Core.Users.Repository;
 using Emar.Core.Users.Service;
 using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http.Headers;
 
 namespace Emar.Api.Controllers
 {
@@ -13,8 +12,8 @@ namespace Emar.Api.Controllers
     [Route("api/users")]
     [HttpCacheExpiration(CacheLocation = CacheLocation.Public)]
     [HttpCacheValidation(MustRevalidate = true)]
-    //[Produces(MediaTypes.PcEmar, MediaTypes.Json)]
-    [Consumes(MediaTypes.PcEmar, MediaTypes.Json)]
+    [Produces(MediaTypes.Json)]
+    [Consumes(MediaTypes.Json)]
     public class UsersController : ControllerBase
     {
         private IUserService _userService;
@@ -34,16 +33,15 @@ namespace Emar.Api.Controllers
         }
 
         [HttpGet(Name = nameof(GetUsers))]
-        [HttpHead]
         public ActionResult<UserDto> GetUsers(
             [FromHeader(Name = "Accept")] string mediaType,
             [FromQuery] string fields,
             [FromQuery] string extId
             )
         {
-            if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
+            if (!MediaTypes.IsValidMediaType(mediaType))
             {
-                return BadRequest();
+                return BadRequest("Unsupported media type header provided.");
             }
 
             if (!_propertyCheckerService.TypeHasProperties<UserDto>(fields))
@@ -58,7 +56,14 @@ namespace Emar.Api.Controllers
                     return BadRequest($"'{extId}' is not a valid external id.");
                 }
 
-                return GetUser(mediaType, fields, (int)_userRepository.GetInternalUserId(xId));
+                xId = (int)_userRepository.GetInternalUserId(xId);
+
+                if (xId == 0)
+                {
+                    return NotFound($"User with external id '{extId}' was not found.");
+                }
+
+                return GetUser(mediaType, fields, xId);
             }
 
             return null;
@@ -71,9 +76,9 @@ namespace Emar.Api.Controllers
             int userId
             )
         {
-            if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
+            if (!MediaTypes.IsValidMediaType(mediaType))
             {
-                return BadRequest();
+                return BadRequest("Unsupported media type header provided.");
             }
 
             if (!_propertyCheckerService.TypeHasProperties<UserDto>(fields))
@@ -83,7 +88,7 @@ namespace Emar.Api.Controllers
 
             var user = _userService.GetUser(userId);
 
-            if (user == null) { return NotFound($"User with id {userId} was not found"); }
+            if (user == null) { return NotFound($"User with id '{userId}' was not found."); }
 
             if (String.IsNullOrEmpty(fields))
             {
