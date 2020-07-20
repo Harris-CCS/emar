@@ -9,7 +9,7 @@ namespace Emar.Data.Entities
         [Column("id", TypeName = "int"), Key]
         public short Id { get; set; }
 
-        [Column("name", TypeName = "varchar(40)"), Required]
+        [Column("name", TypeName = "nvarchar(40)"), Required]
         public string Name { get; set; }
 
         [Column("is_active", TypeName = "bit"), Required]
@@ -17,6 +17,5 @@ namespace Emar.Data.Entities
 
         [Column("time_zone_name", TypeName = "sys.sysname"), Required]
         public string TimeZoneName { get; set; }
-        
     }
 }

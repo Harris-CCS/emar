@@ -20,20 +20,40 @@ namespace Emar.Data.Entities
         [Column("add_datetime", TypeName = "datetimeoffset"), Required]
         public DateTimeOffset AddDatetime { get; set; }
 
+        string ndc;
         [Column("ndc", TypeName = "varchar(32)")]
-        public string Ndc { get; set; }
+        public string Ndc
+        {
+            get => ndc;
+            set => ndc = value?.Trim();
+        }
 
+        string drugId;
         [Column("drug_id", TypeName = "varchar(32)"), Required]
-        public string DrugId { get; set; }
+        public string DrugId
+        {
+            get => drugId;
+            set => drugId = value?.Trim();
+        }
 
-        [Column("brand_name", TypeName = "varchar(255)"), Required]
-        public string BrandName { get; set; }
+        string brandName;
+        [Column("brand_name", TypeName = "nvarchar(255)"), Required]
+        public string BrandName
+        {
+            get => brandName;
+            set => brandName = value?.Trim();
+        }
 
         [Column("dose", TypeName = "decimal(11,2)")]
         public decimal? Dose { get; set; }
 
+        string doseUnit;
         [Column("dose_unit", TypeName = "varchar(20)")]
-        public string DoseUnit { get; set; }
+        public string DoseUnit
+        {
+            get => doseUnit;
+            set => doseUnit = value?.Trim();
+        }
 
         [Column("medication_route_id", TypeName = "int")]
         public int MedicationRouteId { get; set; }
@@ -50,17 +70,27 @@ namespace Emar.Data.Entities
         [Column("point_in_time", TypeName = "bit"), Required]
         public bool PointInTime { get; set; }
 
+        string orderStatus;
         [Column("order_status", TypeName = "varchar(10)"), Required]
-        public string OrderStatus { get; set; }
+        public string OrderStatus
+        {
+            get => orderStatus;
+            set => orderStatus = value?.Trim();
+        }
 
         [Column("begin_datetime", TypeName = "datetimeoffset"), Required]
-        public DateTimeOffset BeginDateTime { get; set; }
+        public DateTimeOffset BeginDatetime { get; set; }
 
         [Column("end_datetime", TypeName = "datetimeoffset")]
-        public DateTimeOffset? EndDateTime { get; set; }
+        public DateTimeOffset? EndDatetime { get; set; }
 
+        string orderNotes;
         [Column("order_notes", TypeName = "nvarchar(MAX)")]
-        public string OrderNotes { get; set; }
+        public string OrderNotes
+        {
+            get => orderNotes;
+            set => orderNotes = value?.Trim();
+        }
 
         [NotMapped]
         public string OrderStatusCode { get; set; } = "Pending";

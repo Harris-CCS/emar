@@ -36,7 +36,7 @@ namespace Emar.Core.Orders.Model
         /// <summary>
         /// Unique medication route identifier.
         /// </summary>
-        public int MedicationRouteId { get; set; }
+        public int? MedicationRouteId { get; set; }
 
         /// <summary>
         /// Name of the Medication Route
@@ -46,7 +46,7 @@ namespace Emar.Core.Orders.Model
         /// <summary>
         /// Unique order frequency identifier.
         /// </summary>
-        public int FrequencyId { get; set; }
+        public int? FrequencyId { get; set; }
 
         /// <summary>
         /// Indicates whether the order is Point-In-Time.

@@ -30,7 +30,7 @@
             </param>
             <param name="orderBy">
             *Optional.* \
-            Comma delimited list PatientOrder element to sort by:
+            Comma delimited list Patient Order element to sort by:
             * **Id**
             * **Priority**
             * **OrderStatus**
@@ -145,7 +145,7 @@
             <remarks>
             </remarks>
         </member>
-        <member name="M:Emar.Api.Controllers.PatientsController.GetPatients(System.String,System.String,System.String,System.Nullable{System.Int16},System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+        <member name="M:Emar.Api.Controllers.PatientsController.GetPatients(System.String,System.String,System.String,System.Nullable{System.Int16},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
             <summary>
             Get a list of patients in the system.
             </summary>

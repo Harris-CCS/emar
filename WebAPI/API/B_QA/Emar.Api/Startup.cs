@@ -122,7 +122,7 @@ namespace Emar.Api
 
                 if (newtonsoftJsonOutputFormatter != null)
                 {
-                    newtonsoftJsonOutputFormatter.SupportedMediaTypes.Add(Controllers.MediaTypes.PcEmar);
+                    ////newtonsoftJsonOutputFormatter.SupportedMediaTypes.Add(Controllers.MediaTypes.PcEmar);
 
                     // remove text/json as it isn't the approved media type
                     // for working with JSON at API level
