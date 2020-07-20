@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
+import { Patient } from '../../app/interfaces/patient';
+import { PatientService } from '../../services/patient.service';
+import { MedOrderService } from '../../services/med-order.service';
+
 @Component({
   selector: 'patients-dashboard',
   templateUrl: './patients-dashboard.component.html',
@@ -7,9 +11,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PatientsDashboardComponent implements OnInit {
 
-  constructor() { }
+  patients: Patient[];
+
+  constructor(
+    private patientService: PatientService,
+    private medOrderService: MedOrderService,
+  ) { }
 
   ngOnInit(): void {
+    this.getPatients();
   }
 
+  getPatients(): void {
+    this.patientService.getPatients()
+      .subscribe(patients => this.patients = patients);
+  }
 }
