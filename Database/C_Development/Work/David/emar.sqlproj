@@ -73,6 +73,8 @@
     <Folder Include="Views" />
     <Folder Include="Scripts\Data-Loader" />
     <Folder Include="Scripts\Data-Loader\sample_data" />
+    <Folder Include="Security" />
+    <Folder Include="Security\Logins" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\users.sql" />
@@ -122,6 +124,10 @@
     <Build Include="Programmability\Stored Procedures\export_ibex_patients.sql" />
     <Build Include="Programmability\Stored Procedures\export_ibex_user_quick_list_items.sql" />
     <Build Include="Programmability\Stored Procedures\export_ibex_users.sql" />
+    <Build Include="Tables\cart_order_administrations.sql" />
+    <Build Include="Programmability\Stored Procedures\delimited_split_8k.sql" />
+    <Build Include="Programmability\Stored Procedures\export_ibex_group_list_items.sql" />
+    <Build Include="Security\Logins\emarapiuser.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />
@@ -141,6 +147,7 @@
     <None Include="Scripts\Data-Loader\sample_data\user_quick_list_items.bcp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Scripts\Data-Loader\sample_data\group_list_items.bcp" />
   </ItemGroup>
   <ItemGroup>
     <PreDeploy Include="Scripts\Script.PreDeployment.sql" />

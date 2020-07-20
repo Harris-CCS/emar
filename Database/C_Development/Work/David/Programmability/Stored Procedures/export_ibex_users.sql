@@ -20,7 +20,7 @@ as
                end as                              [ordonly]
              , 0 as                                [name_display_initials]
              , rtrim(ltrim([source].[loginid])) as [loginid]
-             , [source].[password]
+             , rtrim(ltrim([source].[password]))   [password]
              , 0x00 as                             [salt]
              , case
                    when isdate([source].[datestamp]) = 1

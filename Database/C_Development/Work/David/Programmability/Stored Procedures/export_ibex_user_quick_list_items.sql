@@ -3,25 +3,27 @@ as
     begin
         select distinct
                [source].[site]
-             , [source].[usr]
-             , [source].[ndc]
-             , [ndc].[medid]
-             , [source].[brand]
+             , ltrim(rtrim([source].[usr]))
+             , ltrim(rtrim([source].[ndc]))
+             , ltrim(rtrim([ndc].[medid]))
+             , ltrim(rtrim([source].[brand]))
              , case
                    when isnumeric([source].[strength]) = 0
                         or [source].[strength] = '-'
                        then 0
                         else cast([source].[strength] as decimal(11, 2))
                end as              [dose]
-             , [source].[unit]
-             , [source].[route]
+             , ltrim(rtrim([source].[unit]))
+             , ltrim(rtrim([source].[route]))
              , 0 as                [frequency]
-             , [source].[notes] as [order_notes]
+             , ltrim(rtrim([source].[notes])) as [order_notes]
         from   [ibex].[dbo].[rxl] as [source]
                left join [ibex].[dbo].[fdb_ndc_info] as [ndc] on [source].[ndc] = [ndc].[ndc]
-        order by [source].[brand]
-               , [source].[usr]
+        order by ltrim(rtrim([source].[brand]))
+               , ltrim(rtrim([source].[ndc]))
+               , ltrim(rtrim([source].[usr]))
                , [source].[site];
+
     end;
 go
 

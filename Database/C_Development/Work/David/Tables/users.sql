@@ -60,7 +60,7 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'default ordering_only_physician to N'
+  , @value = N'default ordering_only_physician to 0'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -71,7 +71,7 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'default df__users__name_display_preference to N'
+  , @value = N'default df__users__name_display_preference to 0'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'

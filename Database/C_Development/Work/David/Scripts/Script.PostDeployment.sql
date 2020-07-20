@@ -62,6 +62,7 @@ LVL: 005 SEQ: 001 TBL: dbo.order_event_details
 :r ..\Scripts\Data-Loader\user_quick_list_items.sql
 
 -- procedures were only needed for data import process and are no longer needed.
+drop procedure if exists [dbo].[export_ibex_group_list_items];
 drop procedure if exists [dbo].[export_ibex_medication_routes];
 drop procedure if exists [dbo].[export_ibex_patients];
 drop procedure if exists [dbo].[export_ibex_sites];
