@@ -17,7 +17,8 @@ namespace Emar.Core
                 {"Age", new PropertyMappingValue(new List<string>() { "DateOfBirth" }, true )},
                 {"DepartmentCode", new PropertyMappingValue(new List<string>() { "DepartmentCode" } )},
                 {"WardCode", new PropertyMappingValue(new List<string>() { "WardCode" } )},
-                {"RoomBedCode", new PropertyMappingValue(new List<string>() { "RoomBedCode" } )}
+                {"RoomBedCode", new PropertyMappingValue(new List<string>() { "RoomBedCode" } )},
+                {"AccountNumber", new PropertyMappingValue(new List<string>() { "AccountNumber" } )}
             };
 
         private Dictionary<string, PropertyMappingValue> _propertyMappingOrder =
@@ -26,10 +27,11 @@ namespace Emar.Core
                 {"Id", new PropertyMappingValue(new List<string>() {"Id" } )},
                 {"Priority", new PropertyMappingValue(new List<string>() { "Priority" } )},
                 {"OrderStatus", new PropertyMappingValue(new List<string>() { "OrderStatus" }, true )},
-                {"Begin", new PropertyMappingValue(new List<string>() { "BeginDateTime" } )},
-                {"BeginDate", new PropertyMappingValue(new List<string>() { "BeginDateTime" } )},
-                {"BeginTime", new PropertyMappingValue(new List<string>() { "BeginDateTime" } )}
-                //{"OrderingProvider", new PropertyMappingValue(new List<string>() { "OrderingProvider" } )}
+                {"Begin", new PropertyMappingValue(new List<string>() { "BeginDatetime" } )},
+                {"BeginDate", new PropertyMappingValue(new List<string>() { "BeginDatetime" } )},
+                {"BeginTime", new PropertyMappingValue(new List<string>() { "BeginDatetime" } )},
+                {"BeginDatetime", new PropertyMappingValue(new List<string>() { "BeginDatetime" } )},
+                {"AddUserId", new PropertyMappingValue(new List<string>() { "AddUserId" } )}
             };
 
         private IList<IPropertyMapping> _propertyMappings = new List<IPropertyMapping>();

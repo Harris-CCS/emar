@@ -8,8 +8,8 @@ namespace Emar.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    //[Produces(MediaTypes.PcEmar, MediaTypes.Json)]
-    [Consumes(MediaTypes.PcEmar, MediaTypes.Json)]
+    [Produces(MediaTypes.Json)]
+    [Consumes(MediaTypes.Json)]
     public class ErrorsController : Controller
     {
         [HttpGet]

@@ -8,7 +8,6 @@ using Emar.Core.Orders.Service;
 using Emar.Data.Entities;
 using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http.Headers;
 
 namespace Emar.Api.Controllers
 {
@@ -19,8 +18,8 @@ namespace Emar.Api.Controllers
     [Route("api/orders")]
     [HttpCacheExpiration(CacheLocation = CacheLocation.Public)]
     [HttpCacheValidation(MustRevalidate = true)]
-    //[Produces(MediaTypes.PcEmar, MediaTypes.Json)]
-    [Consumes(MediaTypes.PcEmar, MediaTypes.Json)]
+    [Produces(MediaTypes.Json)]
+    [Consumes(MediaTypes.Json)]
     public class OrdersController : ControllerBase
     {
         private readonly IOrderService _orderService;
@@ -72,7 +71,6 @@ namespace Emar.Api.Controllers
         /// <remarks>
         /// </remarks>
         [HttpGet(Name = nameof(GetOrders))]
-        [HttpHead]
         public ActionResult<IEnumerable<PatientOrderDto>> GetOrders(
             [FromHeader(Name = "Accept")] string mediaType,
             [FromQuery] string patientId,
@@ -80,9 +78,9 @@ namespace Emar.Api.Controllers
             [FromQuery] string fields
             )
         {
-            if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
+            if (!MediaTypes.IsValidMediaType(mediaType))
             {
-                return BadRequest();
+                return BadRequest("Unsupported media type header provided.");
             }
 
             OrdersResourceParameters resourceParameters = new OrdersResourceParameters
@@ -116,31 +114,25 @@ namespace Emar.Api.Controllers
 
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
 
-            if (parsedMediaType.MediaType.Equals(MediaTypes.PcEmar))
+            var links = CreateHateOasLinksForOrders(resourceParameters, orders.HasNext, orders.HasPrevious);
+            var shapedOrders = ((IEnumerable<PatientOrderDto>)orders).ShapeData(fields);
+            var shapedOrdersWithLinks = shapedOrders.Select(order =>
             {
-                var links = CreateHateOasLinksForOrders(resourceParameters, orders.HasNext, orders.HasPrevious);
-                var shapedOrders = ((IEnumerable<PatientOrderDto>)orders).ShapeData(fields);
+                var orderAsDictionary = order as IDictionary<string, object>;
+                var orderLinks = CreateHateOasLinksForOrder((long)orderAsDictionary["Id"], resourceParameters);
 
-                var shapedOrdersWithLinks = shapedOrders.Select(order =>
-                {
-                    var orderAsDictionary = order as IDictionary<string, object>;
-                    var orderLinks = CreateHateOasLinksForOrder((long)orderAsDictionary["Id"], resourceParameters);
+                orderAsDictionary.Add("links", orderLinks);
 
-                    orderAsDictionary.Add("links", orderLinks);
+                return orderAsDictionary;
+            });
 
-                    return orderAsDictionary;
-                });
+            var linkedOrderResource = new
+            {
+                orders = shapedOrdersWithLinks,
+                links
+            };
 
-                var linkedOrderResource = new
-                {
-                    orders = shapedOrdersWithLinks,
-                    links
-                };
-
-                return Ok(linkedOrderResource);
-            }
-
-            return Ok(((IEnumerable<PatientOrderDto>)orders).ShapeData(fields));
+            return Ok(linkedOrderResource);
         }
 
         /// <summary>
@@ -166,9 +158,9 @@ namespace Emar.Api.Controllers
             long orderId
             )
         {
-            if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
+            if (!MediaTypes.IsValidMediaType(mediaType))
             {
-                return BadRequest();
+                return BadRequest("Unsupported media type header provided.");
             }
 
             OrdersResourceParameters resourceParameters = new OrdersResourceParameters
@@ -185,17 +177,12 @@ namespace Emar.Api.Controllers
 
             if (order == null) { return NotFound($"Patient order with id {orderId} was not found"); }
 
-            if (parsedMediaType.MediaType.Equals(MediaTypes.PcEmar))
-            {
-                var links = CreateHateOasLinksForOrder(orderId, resourceParameters);
-                var linkedResourceToReturn = order.ShapeData(fields) as IDictionary<string, object>;
+            var links = CreateHateOasLinksForOrder(orderId, resourceParameters);
+            var linkedResourceToReturn = order.ShapeData(fields) as IDictionary<string, object>;
 
-                linkedResourceToReturn.Add("links", links);
+            linkedResourceToReturn.Add("links", links);
 
-                return Ok(linkedResourceToReturn);
-            }
-
-            return Ok(order.ShapeData(fields));
+            return Ok(linkedResourceToReturn);
         }
 
         /// <summary>
@@ -216,9 +203,9 @@ namespace Emar.Api.Controllers
             int orderId
             )
         {
-            if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
+            if (!MediaTypes.IsValidMediaType(mediaType))
             {
-                return BadRequest();
+                return BadRequest("Unsupported media type header provided.");
             }
 
             var administrations = _orderService.GetAdministrations(orderId);
@@ -253,9 +240,9 @@ namespace Emar.Api.Controllers
             int administrationId
             )
         {
-            if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
+            if (!MediaTypes.IsValidMediaType(mediaType))
             {
-                return BadRequest();
+                return BadRequest("Unsupported media type header provided.");
             }
 
             var administration = _orderService.GetAdministration(administrationId);
@@ -295,9 +282,9 @@ namespace Emar.Api.Controllers
             int administrationId
             )
         {
-            if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
+            if (!MediaTypes.IsValidMediaType(mediaType))
             {
-                return BadRequest();
+                return BadRequest("Unsupported media type header provided.");
             }
 
             var events = _orderService.GetAdministrationEvents(administrationId);
@@ -328,9 +315,9 @@ namespace Emar.Api.Controllers
             int orderId
             )
         {
-            if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
+            if (!MediaTypes.IsValidMediaType(mediaType))
             {
-                return BadRequest();
+                return BadRequest("Unsupported media type header provided.");
             }
 
             var events = _orderService.GetEvents(orderId);
@@ -367,9 +354,9 @@ namespace Emar.Api.Controllers
             int eventId
             )
         {
-            if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
+            if (!MediaTypes.IsValidMediaType(mediaType))
             {
-                return BadRequest();
+                return BadRequest("Unsupported media type header provided.");
             }
 
             var @event = _orderService.GetEvent(eventId);

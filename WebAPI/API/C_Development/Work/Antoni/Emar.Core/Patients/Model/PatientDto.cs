@@ -81,11 +81,7 @@ namespace Emar.Core.Patients.Model
         public Site Site { get; set; }
         public string SiteName
         {
-            get
-            {
-                return Site?.Name;
-            }
+            get => Site?.Name;
         }
-
     }
 }

@@ -8,7 +8,6 @@ using Emar.Core.Patients.Service;
 using Emar.Data.Entities;
 using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http.Headers;
 
 namespace Emar.Api.Controllers
 {
@@ -16,8 +15,8 @@ namespace Emar.Api.Controllers
     [Route("api/patients")]
     [HttpCacheExpiration(CacheLocation = CacheLocation.Public)]
     [HttpCacheValidation(MustRevalidate = true)]
-    //[Produces(MediaTypes.PcEmar, MediaTypes.Json)]
-    [Consumes(MediaTypes.PcEmar, MediaTypes.Json)]
+    [Produces(MediaTypes.Json)]
+    [Consumes(MediaTypes.Json)]
     public class PatientsController : ControllerBase
     {
         private readonly IPatientService _patientService;
@@ -92,7 +91,6 @@ namespace Emar.Api.Controllers
         /// </param>
         /// <returns>An IActionResult of IEnumerable of type PatientDto</returns>
         [HttpGet(Name = nameof(GetPatients))]
-        [HttpHead]
         public ActionResult<IEnumerable<PatientDto>> GetPatients(
             [FromHeader(Name = "Accept")] string mediaType,
             [FromQuery] string orderBy,
@@ -108,9 +106,9 @@ namespace Emar.Api.Controllers
             [FromQuery] string extId2
             )
         {
-            if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
+            if (!MediaTypes.IsValidMediaType(mediaType))
             {
-                return BadRequest();
+                return BadRequest("Unsupported media type header provided.");
             }
 
             PatientsResourceParameters resourceParameters = new PatientsResourceParameters
@@ -173,39 +171,38 @@ namespace Emar.Api.Controllers
 
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
 
-            if (parsedMediaType.MediaType.Equals(MediaTypes.PcEmar))
+            var links = CreateHateOasLinksForPatients(resourceParameters, patients.HasNext, patients.HasPrevious);
+            var shapedPatients = ((IEnumerable<PatientDto>)patients).ShapeData(fields);
+
+            var shapedPatientsWithLinks = shapedPatients.Select(patient =>
             {
-                var links = CreateHateOasLinksForPatients(resourceParameters, patients.HasNext, patients.HasPrevious);
-                var shapedPatients = ((IEnumerable<PatientDto>)patients).ShapeData(fields);
+                var patientAsDictionary = patient as IDictionary<string, object>;
+                var patientLinks = CreateHateOasLinksForPatient((long)patientAsDictionary["Id"], resourceParameters);
 
-                var shapedPatientsWithLinks = shapedPatients.Select(patient =>
-                {
-                    var patientAsDictionary = patient as IDictionary<string, object>;
-                    var patientLinks = CreateHateOasLinksForPatient((long)patientAsDictionary["Id"], resourceParameters);
+                patientAsDictionary.Add("links", patientLinks);
 
-                    patientAsDictionary.Add("links", patientLinks);
+                return patientAsDictionary;
+            });
 
-                    return patientAsDictionary;
-                });
+            var linkedPatientResource = new
+            {
+                patients = shapedPatientsWithLinks,
+                links
+            };
 
-                var linkedPatientResource = new
-                {
-                    patients = shapedPatientsWithLinks,
-                    links
-                };
-
-                return Ok(linkedPatientResource);
-            }
-
-            return Ok(((IEnumerable<PatientDto>)patients).ShapeData(fields));
+            return Ok(linkedPatientResource);
         }
 
         [HttpGet("{patientId}", Name = nameof(GetPatient))]
-        public ActionResult<PatientDto> GetPatient(long? patientId, [FromQuery] PatientsResourceParameters resourceParameters, [FromHeader(Name = "Accept")] string mediaType)
+        public ActionResult<PatientDto> GetPatient(
+            [FromHeader(Name = "Accept")] string mediaType,
+            [FromQuery] PatientsResourceParameters resourceParameters,
+            long? patientId
+            )
         {
-            if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
+            if (!MediaTypes.IsValidMediaType(mediaType))
             {
-                return BadRequest();
+                return BadRequest("Unsupported media type header provided.");
             }
 
             if (!_propertyCheckerService.TypeHasProperties<PatientDto>(resourceParameters.Fields))
@@ -222,42 +219,46 @@ namespace Emar.Api.Controllers
 
             if (error.Equals(Errors.PatientNotFound) || (patient == null)) { return NotFound($"Patient with id {patientId} was not found"); }
 
-            if (parsedMediaType.MediaType.Equals(MediaTypes.PcEmar))
-            {
-                var links = CreateHateOasLinksForPatient(patientId, resourceParameters);
-                var linkedResourceToReturn = patient.ShapeData(resourceParameters.Fields) as IDictionary<string, object>;
+            var links = CreateHateOasLinksForPatient(patientId, resourceParameters);
+            var linkedResourceToReturn = patient.ShapeData(resourceParameters.Fields) as IDictionary<string, object>;
 
-                linkedResourceToReturn.Add("links", links);
+            linkedResourceToReturn.Add("links", links);
 
-                return Ok(linkedResourceToReturn);
-            }
-
-            return Ok(patient.ShapeData(resourceParameters.Fields));
+            return Ok(linkedResourceToReturn);
         }
 
         [HttpGet("{patientId}/orders", Name = nameof(GetPatientOrders))]
-        public IActionResult GetPatientOrders(long? patientId, [FromQuery] PatientsResourceParameters resourceParameters, [FromHeader(Name = "Accept")] string mediaType)
+        public ActionResult<PatientDto> GetPatientOrders(
+            [FromHeader(Name = "Accept")] string mediaType,
+            [FromQuery] PatientsResourceParameters resourceParameters,
+            long? patientId
+            )
         {
-            if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
+            if (!MediaTypes.IsValidMediaType(mediaType))
             {
-                return BadRequest();
+                return BadRequest("Unsupported media type header provided.");
             }
 
             PatientDto patient = CheckPatient(patientId, null, true);
 
             if (error.Equals(Errors.BadRequest)) { return BadRequest(); }
 
-            if (error.Equals(Errors.PatientNotFound) || (patient == null)) { return NotFound($"Patient with id {patientId} was not found"); }
+            if (error.Equals(Errors.PatientNotFound) || (patient == null)) { return NotFound($"Patient with id {patientId} was not found."); }
 
             return Ok(patient);
         }
 
         [HttpGet("{patientId}/orders/{orderId}", Name = nameof(GetPatientOrder))]
-        public IActionResult GetPatientOrder(long? patientId, long orderId, [FromQuery] PatientsResourceParameters resourceParameters, [FromHeader(Name = "Accept")] string mediaType)
+        public IActionResult GetPatientOrder(
+            [FromHeader(Name = "Accept")] string mediaType,
+            [FromQuery] PatientsResourceParameters resourceParameters,
+            long? patientId,
+            long orderId
+            )
         {
-            if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
+            if (!MediaTypes.IsValidMediaType(mediaType))
             {
-                return BadRequest();
+                return BadRequest("Unsupported media type header provided.");
             }
 
             PatientDto patient = CheckPatient(patientId, null, true);

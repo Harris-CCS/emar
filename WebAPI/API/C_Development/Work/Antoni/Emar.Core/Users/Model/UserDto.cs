@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Emar.Data.Entities;
 
 namespace Emar.Core.Users.Model
@@ -17,7 +18,7 @@ namespace Emar.Core.Users.Model
         public string LoginName { get; set; }
         public string LoginPassword { get; set; }
         public byte[] Salt { get; set; }
-        public DateTimeOffset LastLoginTime { get; set; }
+        public DateTimeOffset? LastLoginTime { get; set; }
         public int FailedLoginAttempts { get; set; }
 
         public string Name
@@ -29,29 +30,14 @@ namespace Emar.Core.Users.Model
                     return InitialsDisplay;
                 }
 
-                var firstName = (FirstName ?? "").Trim();
-
-                if (firstName.Length == 1)
-                {
-                    firstName += ".";
-                }
-
-                var ret = firstName;
-
-                ret += (ret != "" && !string.IsNullOrWhiteSpace(LastName)) ? " " : "";
-                ret += (LastName ?? "").Trim();
-
-                return ret;
+                return ((FirstName ?? String.Empty) + @" " + (LastName ?? String.Empty)).Trim();
             }
         }
 
         public Site Site { get; set; }
         public string SiteName
         {
-            get
-            {
-                return Site.Name;
-            }
+            get => Site?.Name;
         }
     }
 }
