@@ -130,6 +130,12 @@
     <Build Include="Security\Logins\emarapiuser.sql" />
     <Build Include="Tables\group_list_items.sql" />
     <None Include="Scripts\Data-Loader\group_list_items.sql" />
+    <Build Include="Programmability\Stored Procedures\export_ibex_site_formulary.sql" />
+    <Build Include="Programmability\Stored Procedures\export_ibex_site_formulary_match.sql" />
+    <None Include="Scripts\Data-Loader\site_formulary.sql" />
+    <None Include="Scripts\Data-Loader\site_formulary_match.sql" />
+    <None Include="Scripts\Data-Loader\antoni_data.sql" />
+    <None Include="Scripts\Data-Loader\bradley_data.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />
@@ -150,6 +156,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Scripts\Data-Loader\sample_data\group_list_items.bcp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Data-Loader\sample_data\site_formulary.bcp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Data-Loader\sample_data\site_formulary_match.bcp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

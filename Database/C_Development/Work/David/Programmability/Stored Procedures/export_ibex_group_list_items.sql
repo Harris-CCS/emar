@@ -120,7 +120,9 @@ as
         order by [result].[group_name]
                , [result].[ndc]
                , [result].[brand_name]
-               , [result].[site_id];
+               , [result].[site_id]
+               , [result].[dose_unit]
+               , cast([result].[order_notes] as varchar(1000));
 
         drop table if exists [#group_list_items];
         drop table if exists [#group_list_items_parsed];
