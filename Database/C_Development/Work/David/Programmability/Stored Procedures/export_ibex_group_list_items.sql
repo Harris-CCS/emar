@@ -79,10 +79,10 @@ as
         where  isnull([medication_route_id], '') = ''
                and isnull([medication_route_id_4], '') > '';
 
-        update [#group_list_items_parsed] set    
-            [dose_unit] = [dose_unit_3]
-        where  isnull([dose_unit], '') = ''
-               and isnull([dose_unit_3], '') > '';
+--        update [#group_list_items_parsed] set    
+--            [dose_unit] = [dose_unit_3]
+--        where  isnull([dose_unit], '') = ''
+--               and isnull([dose_unit_3], '') > '';
 
         update [#group_list_items_parsed] set    
             [dose] = [dose_2]

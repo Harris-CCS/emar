@@ -128,6 +128,8 @@
     <Build Include="Programmability\Stored Procedures\delimited_split_8k.sql" />
     <Build Include="Programmability\Stored Procedures\export_ibex_group_list_items.sql" />
     <Build Include="Security\Logins\emarapiuser.sql" />
+    <Build Include="Tables\group_list_items.sql" />
+    <None Include="Scripts\Data-Loader\group_list_items.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />
@@ -147,7 +149,9 @@
     <None Include="Scripts\Data-Loader\sample_data\user_quick_list_items.bcp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Scripts\Data-Loader\sample_data\group_list_items.bcp" />
+    <None Include="Scripts\Data-Loader\sample_data\group_list_items.bcp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <PreDeploy Include="Scripts\Script.PreDeployment.sql" />
