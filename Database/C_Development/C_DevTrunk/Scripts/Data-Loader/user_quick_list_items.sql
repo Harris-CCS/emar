@@ -10,7 +10,7 @@ create table [#user_quick_list_items]
     , [drug_id]             [varchar](32) null
     , [brand_name]          [nvarchar](255) not null
     , [dose]                [varchar](50) null
-    , [dose_unit]           [varchar](20) null
+    , [dose_unit]           [varchar](40) null
     , [medication_route_id] [varchar](50) null
     , [frequency_id]        [varchar](50) null
     , [order_notes]         [nvarchar](max) null);
@@ -23,6 +23,7 @@ if '$(load_data)' = 'live'
     where  [name] = 'ibex'
 )
     begin
+
         insert into [#user_quick_list_items]
             ([site_id]
            , [user_id]
@@ -80,6 +81,8 @@ if
         begin loading permanent tables
 *************************************/
 
+        -- set identity_insert [dbo].[user_quick_list_items] on;
+
         insert into [dbo].[user_quick_list_items]
             ([site_id]
            , [user_id]
@@ -131,7 +134,7 @@ if
         ) as [medication_routes]
         order by [source].[brand_name];
 
-        --set identity_insert [dbo].[user_quick_list_items] off;
+        -- set identity_insert [dbo].[user_quick_list_items] off;
 
 /***************************************
         loading [external_ids] reference

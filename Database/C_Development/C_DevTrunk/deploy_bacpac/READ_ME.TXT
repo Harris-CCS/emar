@@ -10,3 +10,6 @@ To create a new export bacpac file
 
 NOTE: For the process to work the full path location to executable file "sqlpackage.exe" must be set in the "emar_bacpac.ini" file
 sqlpackage.exe by default uses windows authentication (there is no setting for this). There are settings (if needed) to define an sql authenticated user/password.
+
+sqlpackage.exe can be downloaded here if it is not installed locally.
+https://docs.microsoft.com/en-us/sql/tools/sqlpackage-download?view=sql-server-ver15

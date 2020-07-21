@@ -1,0 +1,245 @@
+create table [dbo].[cart_order_administrations]
+    (
+      [id]                                [bigint] identity(1, 1) not null
+    , [patient_cart_order_id]             [bigint] not null
+    , [point_in_time]                     [bit] not null
+    , [on_hold]                           [bit] not null
+    , [missed_dose]                       [bit] not null
+    , [administration_scheduled_datetime] [datetimeoffset](7) not null
+    , [administration_input_datetime]     [datetimeoffset](7) null
+    , [administering_user_id]             [int] null
+    , [administration_datetime]           [datetimeoffset](7) null
+    , [stop_scheduled_datetime]           [datetimeoffset](7) null
+    , [stop_input_datetime]               [datetimeoffset](7) null
+    , [stop_user_id]                      [int] null
+    , [stop_datetime]                     [datetimeoffset](7) null
+    , [acknowledge_user_id]               [int] null
+    , [acknowledge_datetime]              [datetimeoffset](7) null
+    , constraint [pk__cart_order_administrations__id] primary key clustered([id] asc));
+go
+
+/********
+ Defaults
+********/
+/*******
+ Indexes
+*******/
+/***********
+ Foreign Key
+***********/
+
+alter table [dbo].[cart_order_administrations]
+add constraint [fk__cart_order_administrations__patient_orders] foreign key([patient_cart_order_id]) references [dbo].[patient_orders]([id]);
+go
+
+alter table [dbo].[cart_order_administrations]
+add constraint [fk__cart_order_administrations__patient_orders__administering_user_id] foreign key([administering_user_id]) references [dbo].[users]([id]);
+go
+
+alter table [dbo].[cart_order_administrations]
+add constraint [fk__cart_order_administrations__patient_orders__acknowledge_user_id] foreign key([acknowledge_user_id]) references [dbo].[users]([id]);
+go
+
+/***************
+ Data Dictionary
+    Defaults
+***************/
+/***************
+ Data Dictionary
+    Indexes
+***************/
+
+execute [sys].[sp_addextendedproperty]
+    @name = N'MS_Description'
+  , @value = N'Primary Key Constraint'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'cart_order_administrations'
+  , @level2type = N'CONSTRAINT'
+  , @level2name = N'pk__cart_order_administrations__id';
+go
+
+/***************
+ Data Dictionary
+    Table
+***************/
+
+execute [sys].[sp_addextendedproperty]
+    @name = N'MS_Description'
+  , @value = N'This table contains: order administrations'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'cart_order_administrations';
+go
+
+/***************
+ Data Dictionary
+    Columns
+***************/
+
+execute [sys].[sp_addextendedproperty]
+    @name = N'MS_Description'
+  , @value = N'Auto increment table ID'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'cart_order_administrations'
+  , @level2type = N'COLUMN'
+  , @level2name = N'id';
+go
+
+execute [sys].[sp_addextendedproperty]
+    @name = N'MS_Description'
+  , @value = N'patient_cart_order_id'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'cart_order_administrations'
+  , @level2type = N'COLUMN'
+  , @level2name = N'patient_cart_order_id';
+go
+
+execute [sys].[sp_addextendedproperty]
+    @name = N'MS_Description'
+  , @value = N'point_in_time'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'cart_order_administrations'
+  , @level2type = N'COLUMN'
+  , @level2name = N'point_in_time';
+go
+
+execute [sys].[sp_addextendedproperty]
+    @name = N'MS_Description'
+  , @value = N'on_hold'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'cart_order_administrations'
+  , @level2type = N'COLUMN'
+  , @level2name = N'on_hold';
+go
+
+execute [sys].[sp_addextendedproperty]
+    @name = N'MS_Description'
+  , @value = N'missed_dose'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'cart_order_administrations'
+  , @level2type = N'COLUMN'
+  , @level2name = N'missed_dose';
+go
+
+execute [sys].[sp_addextendedproperty]
+    @name = N'MS_Description'
+  , @value = N'administration_scheduled_datetime'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'cart_order_administrations'
+  , @level2type = N'COLUMN'
+  , @level2name = N'administration_scheduled_datetime';
+go
+
+execute [sys].[sp_addextendedproperty]
+    @name = N'MS_Description'
+  , @value = N'administration_input_datetime'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'cart_order_administrations'
+  , @level2type = N'COLUMN'
+  , @level2name = N'administration_input_datetime';
+go
+
+execute [sys].[sp_addextendedproperty]
+    @name = N'MS_Description'
+  , @value = N'Person Idendifier that administered this record (Foreign Key to users table)'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'cart_order_administrations'
+  , @level2type = N'COLUMN'
+  , @level2name = N'administering_user_id';
+go
+
+execute [sys].[sp_addextendedproperty]
+    @name = N'MS_Description'
+  , @value = N'administration_datetime'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'cart_order_administrations'
+  , @level2type = N'COLUMN'
+  , @level2name = N'administration_datetime';
+go
+
+execute [sys].[sp_addextendedproperty]
+    @name = N'MS_Description'
+  , @value = N'stop_scheduled_datetime'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'cart_order_administrations'
+  , @level2type = N'COLUMN'
+  , @level2name = N'stop_scheduled_datetime';
+go
+
+execute [sys].[sp_addextendedproperty]
+    @name = N'MS_Description'
+  , @value = N'stop_input_datetime'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'cart_order_administrations'
+  , @level2type = N'COLUMN'
+  , @level2name = N'stop_input_datetime';
+go
+
+execute [sys].[sp_addextendedproperty]
+    @name = N'MS_Description'
+  , @value = N'Person Idendifier that cancelled this record (Foreign Key to users table)'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'cart_order_administrations'
+  , @level2type = N'COLUMN'
+  , @level2name = N'stop_user_id';
+go
+
+execute [sys].[sp_addextendedproperty]
+    @name = N'MS_Description'
+  , @value = N'stop_datetime'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'cart_order_administrations'
+  , @level2type = N'COLUMN'
+  , @level2name = N'stop_datetime';
+go
+
+execute [sys].[sp_addextendedproperty]
+    @name = N'MS_Description'
+  , @value = N'Person Idendifier that acknowledged this record (Foreign Key to users table)'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'cart_order_administrations'
+  , @level2type = N'COLUMN'
+  , @level2name = N'acknowledge_user_id';
+go
+
+execute [sys].[sp_addextendedproperty]
+    @name = N'MS_Description'
+  , @value = N'acknowledge_datetime'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'cart_order_administrations'
+  , @level2type = N'COLUMN'
+  , @level2name = N'acknowledge_datetime';
+go
