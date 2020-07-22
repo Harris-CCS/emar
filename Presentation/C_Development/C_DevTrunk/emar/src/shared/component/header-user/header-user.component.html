@@ -5,13 +5,18 @@
     <div class="header-user">
         <a class="action notification" onclick="openInvision()" title="Notifications"></a>
         <a class="action help" title="Help"></a>
-        <a class="action user" (click)="onLogout()" title="Logout">
-            <span class="user-name" *ngIf="!user.displayInitials">
-              {{ user.firstName }} <br/>{{ user.lastName }}
-            </span>
-            <span class="user-name" *ngIf="user.displayInitials">
+        <div ngbDropdown class="action user" title="User Settings">
+          <div id="dropdownUser" ngbDropdownToggle>
+            <div class="user-name" *ngIf="!user.displayInitials">
+              {{ user.firstName }}<br/>{{ user.lastName }}
+            </div>
+            <div class="user-name" *ngIf="user.displayInitials">
               {{ user.initials }}
-            </span>
-        </a>
+            </div>
+          </div>
+          <div ngbDropdownMenu aria-labelledby="dropdownUser">
+            <button ngbDropdownItem>Logout</button>
+          </div>
+        </div>
     </div>
 </header>

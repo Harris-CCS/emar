@@ -57,3 +57,7 @@ header .action.user .user-name {
 .help {
     background: url('../../../assets/icon/help.svg');
 }
+
+.dropdown-toggle::after {
+    display:none;
+}
