@@ -16,6 +16,7 @@ export class HeaderUserComponent implements OnInit {
 
   onLogout() {
     this.user = null;
+    this.user
   }
 
 }

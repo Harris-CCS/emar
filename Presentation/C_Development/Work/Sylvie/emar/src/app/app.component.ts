@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 
 import { User } from './interfaces/user';
+import { UserService } from '../services/user.service';
 
 import { USER } from 'src/app/mockup/user';
 import { Observable, TimeoutError } from 'rxjs';
@@ -19,7 +20,8 @@ export class AppComponent {
 
   constructor(
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private userService: UserService
   ) {
     // https://stackoverflow.com/questions/49632152/angular-2-how-to-access-active-route-outside-router-outlet
     this.pageTitle$ = this.router.events.pipe(
@@ -37,7 +39,11 @@ export class AppComponent {
   }
 
   loginUser() {
-    this.user = USER
+    this.user = USER;
+    /* this.userService.fetchUser(244).subscribe(user => {
+      console.log('USER');console.log(user)
+    });
+    */
     return this.user;
   }
 }

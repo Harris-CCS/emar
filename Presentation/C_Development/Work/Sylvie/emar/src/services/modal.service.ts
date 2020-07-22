@@ -71,7 +71,7 @@ export class ModalService {
     let modal = this.findModal(modalId);
 
     if (modal) {
-      console.log('ModalService: retrieveModalData: ', modal.data)
+      // console.log('ModalService: retrieveModalData: ', modal.data)
       return modal.data;
     }
 
