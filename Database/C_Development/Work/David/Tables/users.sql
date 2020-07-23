@@ -5,8 +5,10 @@
     , [type]                    [char](1) not null
     , [is_active]               [bit] not null
     , [initials_display]        [nvarchar](4) not null
-    , [first_name]              [nvarchar](20) not null
-    , [last_name]               [nvarchar](20) not null
+    , [first_name]              [nvarchar](35) not null
+    , [last_name]               [nvarchar](35) not null
+    , [middle_name]             [nvarchar](35) null
+    , [name_suffix]             [nvarchar](25) null
     , [ordering_only_physician] [bit]
     , [name_display_initials]   [bit]
     , [login_name]              [varchar](255) not null
@@ -183,7 +185,7 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'is_active 1=true 0=false'
+  , @value = N'is_active 1=True 0=False'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -223,6 +225,28 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'users'
   , @level2type = N'COLUMN'
   , @level2name = N'last_name';
+go
+
+execute [sys].[sp_addextendedproperty]
+    @name = N'MS_Description'
+  , @value = N'Middle name'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'users'
+  , @level2type = N'COLUMN'
+  , @level2name = N'middle_name';
+go
+
+execute [sys].[sp_addextendedproperty]
+    @name = N'MS_Description'
+  , @value = N'Name Suffix'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'users'
+  , @level2type = N'COLUMN'
+  , @level2name = N'name_suffix';
 go
 
 execute [sys].[sp_addextendedproperty]

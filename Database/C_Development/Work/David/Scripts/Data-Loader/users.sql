@@ -1,4 +1,4 @@
-Print 'Loading Table: users'
+print 'Loading Table: users';
 
 drop table if exists [#users];
 
@@ -9,8 +9,10 @@ create table [#users]
     , [type]                    [char](1) not null
     , [is_active]               [bit] not null
     , [initials_display]        [varchar](4) not null
-    , [first_name]              [varchar](20) not null
-    , [last_name]               [varchar](20) not null
+    , [first_name]              [varchar](35) not null
+    , [last_name]               [varchar](35) not null
+    , [middle_name]             [varchar](35) not null
+    , [name_suffix]             [varchar](35) not null
     , [ordering_only_physician] [bit] null
     , [name_display_initials]   [bit] null
     , [login_name]              [varchar](255) not null
@@ -36,6 +38,8 @@ if '$(load_data)' = 'live'
            , [initials_display]
            , [first_name]
            , [last_name]
+           , [middle_name]
+           , [name_suffix]
            , [ordering_only_physician]
            , [name_display_initials]
            , [login_name]
@@ -99,6 +103,8 @@ if
            , [initials_display]
            , [first_name]
            , [last_name]
+           , [middle_name]
+           , [name_suffix]
            , [ordering_only_physician]
            , [name_display_initials]
            , [login_name]
@@ -114,6 +120,8 @@ if
              , [source].[initials_display]
              , [source].[first_name]
              , [source].[last_name]
+             , [source].[middle_name]
+             , [source].[name_suffix]
              , [source].[ordering_only_physician]
              , [source].[name_display_initials]
              , [source].[login_name]
@@ -126,6 +134,27 @@ if
             ('pulsecheck', 'sites', [source].[site_id]) as [internal_site]
         order by [source].[last_name]
                , [source].[first_name];
+
+        insert into [dbo].[users]
+            ([id]
+           , [site_id]
+           , [type]
+           , [is_active]
+           , [initials_display]
+           , [first_name]
+           , [last_name]
+           , [middle_name]
+           , [name_suffix]
+           , [ordering_only_physician]
+           , [name_display_initials]
+           , [login_name]
+           , [login_password]
+           , [salt]
+           , [last_login_time]
+           , [failed_login_attempts]
+            )
+        values
+            ('0', '-1', '', 0, 0, 'Dummy User for Relational Integrity', 'Dummy User for Relational Integrity', '', '', '0', '0', '', '', 0x00, null, '0');
 
         set identity_insert [dbo].[users] off;
 

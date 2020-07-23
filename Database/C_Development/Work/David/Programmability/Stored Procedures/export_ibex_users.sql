@@ -2,32 +2,34 @@ create procedure [dbo].[export_ibex_users]
 as
     begin
 
-        select [source].[num]
-             , [source].[site]
-             , rtrim(ltrim([source].[type])) as    [type]
+        select [source].[num] as                    [id]
+             , [source].[site] as                   [site_id]
+             , rtrim(ltrim([source].[type])) as     [type]
              , case
                    when [source].status = 'Y'
                        then 1
-                                                else 0
-               end as                              [status]
-             , rtrim(ltrim([source].[init])) as    [init]
-             , rtrim(ltrim([source].[first])) as   [first]
-             , rtrim(ltrim([source].[last])) as    [last]
+                   else 0
+               end as                               [is_active]
+             , rtrim(ltrim([source].[init])) as     [initials_display]
+             , rtrim(ltrim([source].[first])) as    [first_name]
+             , rtrim(ltrim([source].[last])) as     [last_name]
+             , '' as                                [middle_name]
+             , '' as                                [name_suffix]
              , case
                    when [source].[ordonly] = 'Y'
                        then 1
-                                                else 0
-               end as                              [ordonly]
-             , 0 as                                [name_display_initials]
-             , rtrim(ltrim([source].[loginid])) as [loginid]
-             , rtrim(ltrim([source].[password]))   [password]
-             , 0x00 as                             [salt]
+                   else 0
+               end as                               [ordering_only_physician]
+             , 0 as                                 [name_display_initials]
+             , rtrim(ltrim([source].[loginid])) as  [login_name]
+             , rtrim(ltrim([source].[password])) as [login_password]
+             , 0x00 as                              [salt]
              , case
                    when isdate([source].[datestamp]) = 1
                        then cast([source].[datestamp] as [datetimeoffset](7))
-                       else null
-               end
-             , 0 as                                [failed_login_attempts]
+                   else null
+               end as                               [last_login_time]
+             , 0 as                                 [failed_login_attempts]
         from   [ibex].[dbo].[drs] as [source]
         order by [source].[last]
                , [source].[first]
