@@ -17,6 +17,11 @@ go
 /***********
  Foreign Key
 ***********/
+
+alter table [dbo].[cart_order_administrations]
+add constraint [fk__cart_order_administrations__patient_cart_orders] foreign key([patient_cart_order_id]) references [dbo].[patient_cart_orders]([id]);
+go
+
 /***************
  Data Dictionary
     Defaults
@@ -26,7 +31,7 @@ go
     Indexes
 ***************/
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Primary Key Constraint'
   , @level0type = N'SCHEMA'
@@ -42,7 +47,7 @@ go
     Table
 ***************/
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'This table contains: order administrations'
   , @level0type = N'SCHEMA'
@@ -56,7 +61,7 @@ go
     Columns
 ***************/
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Auto increment table ID'
   , @level0type = N'SCHEMA'
@@ -67,7 +72,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'id';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'patient_cart_order_id'
   , @level0type = N'SCHEMA'
@@ -78,7 +83,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'patient_cart_order_id';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'point_in_time'
   , @level0type = N'SCHEMA'
@@ -89,7 +94,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'point_in_time';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'administration_scheduled_datetime'
   , @level0type = N'SCHEMA'
@@ -100,7 +105,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'administration_scheduled_datetime';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'stop_scheduled_datetime'
   , @level0type = N'SCHEMA'

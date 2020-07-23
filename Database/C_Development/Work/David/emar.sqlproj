@@ -75,6 +75,11 @@
     <Folder Include="Scripts\Data-Loader\sample_data" />
     <Folder Include="Security" />
     <Folder Include="Security\Logins" />
+    <Folder Include="Scripts\Data-Loader\global_data" />
+    <Folder Include="Scripts\Data-Loader\site_data" />
+    <Folder Include="Scripts\Data-Loader\user_data" />
+    <Folder Include="Scripts\Data-Loader\phi_data" />
+    <Folder Include="Scripts\Data-Loader\development_data" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\users.sql" />
@@ -114,11 +119,6 @@
     <Build Include="Tables\prompts.sql" />
     <Build Include="Tables\template_prompt_groups.sql" />
     <None Include="Scripts\Data-Loader\delete_emar_data.sql" />
-    <None Include="Scripts\Data-Loader\medication_routes.sql" />
-    <None Include="Scripts\Data-Loader\patients.sql" />
-    <None Include="Scripts\Data-Loader\sites.sql" />
-    <None Include="Scripts\Data-Loader\users.sql" />
-    <None Include="Scripts\Data-Loader\user_quick_list_items.sql" />
     <Build Include="Programmability\Stored Procedures\export_ibex_sites.sql" />
     <Build Include="Programmability\Stored Procedures\export_ibex_medication_routes.sql" />
     <Build Include="Programmability\Stored Procedures\export_ibex_patients.sql" />
@@ -129,17 +129,24 @@
     <Build Include="Programmability\Stored Procedures\export_ibex_group_list_items.sql" />
     <Build Include="Security\Logins\emarapiuser.sql" />
     <Build Include="Tables\group_list_items.sql" />
-    <None Include="Scripts\Data-Loader\group_list_items.sql" />
     <Build Include="Programmability\Stored Procedures\export_ibex_site_formulary.sql" />
     <Build Include="Programmability\Stored Procedures\export_ibex_site_formulary_match.sql" />
-    <None Include="Scripts\Data-Loader\site_formulary.sql" />
-    <None Include="Scripts\Data-Loader\site_formulary_match.sql" />
-    <None Include="Scripts\Data-Loader\antoni_data.sql" />
-    <None Include="Scripts\Data-Loader\bradley_data.sql" />
     <Build Include="Programmability\Stored Procedures\export_ibex_patient_allergies.sql" />
     <Build Include="Programmability\Stored Procedures\export_ibex_patient_home_medications.sql" />
-    <None Include="Scripts\Data-Loader\patient_allergies.sql" />
-    <None Include="Scripts\Data-Loader\patient_home_medications.sql" />
+    <None Include="Scripts\Data-Loader\global_data\options.sql" />
+    <None Include="Scripts\Data-Loader\site_data\sites.sql" />
+    <None Include="Scripts\Data-Loader\user_data\users.sql" />
+    <None Include="Scripts\Data-Loader\user_data\user_quick_list_items.sql" />
+    <None Include="Scripts\Data-Loader\site_data\site_formulary.sql" />
+    <None Include="Scripts\Data-Loader\site_data\site_formulary_match.sql" />
+    <None Include="Scripts\Data-Loader\phi_data\patients.sql" />
+    <None Include="Scripts\Data-Loader\phi_data\patient_home_medications.sql" />
+    <None Include="Scripts\Data-Loader\phi_data\patient_allergies.sql" />
+    <None Include="Scripts\Data-Loader\site_data\medication_routes.sql" />
+    <None Include="Scripts\Data-Loader\site_data\group_list_items.sql" />
+    <None Include="Scripts\Data-Loader\development_data\antoni_data.sql" />
+    <None Include="Scripts\Data-Loader\development_data\bradley_data.sql" />
+    <None Include="Scripts\Data-Loader\site_data\site_options.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />
