@@ -136,6 +136,10 @@
     <None Include="Scripts\Data-Loader\site_formulary_match.sql" />
     <None Include="Scripts\Data-Loader\antoni_data.sql" />
     <None Include="Scripts\Data-Loader\bradley_data.sql" />
+    <Build Include="Programmability\Stored Procedures\export_ibex_patient_allergies.sql" />
+    <Build Include="Programmability\Stored Procedures\export_ibex_patient_home_medications.sql" />
+    <None Include="Scripts\Data-Loader\patient_allergies.sql" />
+    <None Include="Scripts\Data-Loader\patient_home_medications.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />
@@ -162,6 +166,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Scripts\Data-Loader\sample_data\site_formulary_match.bcp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Data-Loader\sample_data\patient_home_medications.bcp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Data-Loader\sample_data\patient_allergies.bcp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

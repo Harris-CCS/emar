@@ -2,73 +2,75 @@ create procedure [dbo].[export_ibex_patients]
 as
     begin
 
-        select [source].[ibex]
-             , ltrim(rtrim([source].[site]))
-             , ltrim(rtrim([source].[medrec]))
-             , ltrim(rtrim([source].[acctnum]))
-             , ltrim(rtrim([source].[lname]))
-             , ltrim(rtrim([source].[fname]))
-             , ltrim(rtrim([source].[mname]))
-             , ltrim(rtrim([source].[suffix]))
-             , ltrim(rtrim([source].[gender]))
+        select [source].[ibex] as                          [source_id]
+             , ltrim(rtrim([source].[site])) as            [site_id]
+             , ltrim(rtrim([source].[medrec])) as          [medical_record_number]
+             , ltrim(rtrim([source].[acctnum])) as         [account_number]
+             , ltrim(rtrim([source].[lname])) as           [last_name]
+             , ltrim(rtrim([source].[fname])) as           [first_name]
+             , ltrim(rtrim([source].[mname])) as           [middle_name]
+             , ltrim(rtrim([source].[suffix])) as          [name_suffix]
+             , ltrim(rtrim([source].[gender])) as          [gender]
              , case
                    when isdate([source].[dob]) = 1
                        then cast([source].[dob] as date)
-                        else null
-               end as [date_of_birth]
-             , ltrim(rtrim([source].[age]))
-             , ltrim(rtrim([source].[ageunits]))
-             , ltrim(rtrim([source].[complaint]))
-             , ltrim(rtrim([source].[height]))
-             , ltrim(rtrim([source].[weight]))
-             , ltrim(rtrim([source].[bed]))
-             , ltrim(rtrim([source].[ward]))
-             , ltrim(rtrim([source].[dept]))
-             , ltrim(rtrim([source].[ord42]))
-             , ltrim(rtrim([source].[ord23]))
+                   else null
+               end as                                      [date_of_birth]
+             , ltrim(rtrim([source].[age])) as             [age]
+             , ltrim(rtrim([source].[ageunits])) as        [age_units]
+             , ltrim(rtrim([source].[complaint])) as       [complaint]
+             , ltrim(rtrim([source].[height])) as          [height_in_cm]
+             , ltrim(rtrim([source].[weight])) as          [weight_in_kg]
+             , ltrim(rtrim([source].[bed])) as             [room_bed_code]
+             , ltrim(rtrim([source].[ward])) as            [ward_code]
+             , ltrim(rtrim([source].[dept])) as            [department_code]
+             , ltrim(rtrim([source].[ord42])) as           [urgency]
+             , ltrim(rtrim([source].[ord23])) as           [urgency_color]
              , case
                    when [source].[naalert] = 'Y'
                        then 1
-                        else 0
-               end
+                   else 0
+               end as                                      [name_alert]
              , case
                    when [source].[withdraw] = 'Y'
                        then 1
-               else 0
-               end
+                   else 0
+               end as                                      [withdraw_consent]
              , case
                    when isdate([source].[vsdate]) = 1
                        then cast([source].[vsdate] as date)
-               else null
-               end as [vsdate]
-             , ltrim(rtrim([source].[ord11]))
-             , ltrim(rtrim([source].[vssys]))
-             , ltrim(rtrim([source].[vsdia]))
-             , ltrim(rtrim([source].[ord12]))
-             , ltrim(rtrim([source].[vspulse]))
-             , ltrim(rtrim([source].[vsmaplevel]))
-             , ltrim(rtrim([source].[vsmap]))
-             , ltrim(rtrim([source].[ord13]))
-             , ltrim(rtrim([source].[vsresp]))
-             , ltrim(rtrim([source].[ord14]))
-             , ltrim(rtrim([source].[vstemp]))
-             , ltrim(rtrim([source].[vsendtidallevel]))
-             , ltrim(rtrim([source].[vsendtidal]))
-             , ltrim(rtrim([source].[ord23]))
-             , ltrim(rtrim([source].[vso2]))
-             , ltrim(rtrim([source].[ord15]))
-             , ltrim(rtrim([source].[vspain]))
+                   else null
+               end as                                      [vs_datetime]
+             , ltrim(rtrim([source].[ord11])) as           [vs_blood_pressure_indicator]
+             , ltrim(rtrim([source].[vssys])) as           [vs_systolic]
+             , ltrim(rtrim([source].[vsdia])) as           [vs_diastolic]
+             , ltrim(rtrim([source].[ord12])) as           [vs_pulse_indicator]
+             , ltrim(rtrim([source].[vspulse])) as         [vs_pulse]
+             , ltrim(rtrim([source].[vsmaplevel])) as      [vs_map_level]
+             , ltrim(rtrim([source].[vsmap])) as           [vs_map]
+             , ltrim(rtrim([source].[ord13])) as           [vs_respiratory_indicator]
+             , ltrim(rtrim([source].[vsresp])) as          [vs_respiratory]
+             , ltrim(rtrim([source].[ord14])) as           [vs_temperature_indicator]
+             , ltrim(rtrim([source].[vstemp])) as          [vs_temperature]
+             , ltrim(rtrim([source].[vsendtidallevel])) as [vs_end_tidal_level]
+             , ltrim(rtrim([source].[vsendtidal])) as      [vs_end_tidal]
+             , ltrim(rtrim([source].[ord23])) as           [vs_oxygen_saturation_indicator]
+             , ltrim(rtrim([source].[vso2])) as            [vs_oxygen_saturation]
+             , ltrim(rtrim([source].[ord15])) as           [vs_pain_scale_indicator]
+             , ltrim(rtrim([source].[vspain])) as          [vs_pain_scale]
         from   [ibex].[dbo].[pat] as [source]
+               inner join [ibex].[dbo].[org] as [sites] on [sites].[site] = [source].[site]
         order by [source].[lname]
                , [source].[fname]
                , case
                      when isdate([source].[dob]) = 1
                          then cast([source].[dob] as date)
-                          else null
+                     else null
                  end
                , [source].[gender];
     end;
 go
+
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Procedure used to export ibex patients in emar format'

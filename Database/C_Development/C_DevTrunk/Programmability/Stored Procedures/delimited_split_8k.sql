@@ -182,7 +182,7 @@ GO
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'Procedure used to parse character string data up to 8k in length'
+  , @value = N'High Performance Procedure used to parse character string data up to 8k in length'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'FUNCTION'

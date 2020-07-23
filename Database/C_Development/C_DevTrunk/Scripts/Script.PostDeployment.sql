@@ -57,6 +57,7 @@ LVL: 004 SEQ: 001 TBL: dbo.order_administration_notes
 LVL: 004 SEQ: 002 TBL: dbo.order_events
 LVL: 005 SEQ: 001 TBL: dbo.order_event_details
 */
+-- https://stackoverflow.com/questions/23923366/specifying-a-relative-path-in-post-deployment-sql-files
 :r ..\Scripts\Data-Loader\medication_routes.sql
 :r ..\Scripts\Data-Loader\sites.sql
 :r ..\Scripts\Data-Loader\group_list_items.sql
@@ -64,6 +65,8 @@ LVL: 005 SEQ: 001 TBL: dbo.order_event_details
 :r ..\Scripts\Data-Loader\site_formulary.sql
 :r ..\Scripts\Data-Loader\site_formulary_match.sql
 :r ..\Scripts\Data-Loader\users.sql
+:r ..\Scripts\Data-Loader\patient_allergies.sql
+:r ..\Scripts\Data-Loader\patient_home_medications.sql
 :r ..\Scripts\Data-Loader\user_quick_list_items.sql
 --- custom data deployments
 :r ..\Scripts\Data-Loader\bradley_data.sql
@@ -77,6 +80,8 @@ drop procedure if exists [dbo].[export_ibex_patients];
 drop procedure if exists [dbo].[export_ibex_site_formulary];
 drop procedure if exists [dbo].[export_ibex_site_formulary_match];
 drop procedure if exists [dbo].[export_ibex_users];
+drop procedure if exists [dbo].[export_ibex_patient_allergies];
+drop procedure if exists [dbo].[export_ibex_patient_home_medications];
 drop procedure if exists [dbo].[export_ibex_user_quick_list_items];
 
 --- variables global to all diagram_ published scripts
