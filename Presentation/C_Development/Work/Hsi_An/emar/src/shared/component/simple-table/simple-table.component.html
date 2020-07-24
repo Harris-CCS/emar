@@ -1,0 +1,59 @@
+<table *ngIf="tableHasData()" class="table table-md table-striped">
+  <thead *ngIf="tableStructure.title && tableStructure.body.row.length">
+    <tr class="thead-dark">
+      <th [colSpan]="tableStructure.body.row.length + 1">{{tableStructure.title}}</th>
+    </tr>
+    <tr *ngFor="let row of tableStructure.header.row">
+      <th *ngFor="let cell of row.cell" scope="col" class={{cell.className}}>
+        <content *ngIf="cell.dataType === 'date'">
+          {{cell.data | date: 'medium' }}
+        </content>
+        <content *ngIf="cell.dataType !== 'date'">
+          {{cell.data}}
+        </content>
+      </th>
+    </tr>
+  </thead>
+  <tbody *ngIf="tableStructure.params.pagination.usePagination">
+    <tr
+      *ngFor="let row of tableStructure.body.row | slice: (tableStructure.params.pagination.page-1) * tableStructure.params.pagination.pageSize : (tableStructure.params.pagination.page-1) * tableStructure.params.pagination.pageSize + tableStructure.params.pagination.pageSize">
+      <td *ngFor="let cell of row.cell" scope="col" class={{cell.className}}>
+        <content *ngIf="cell.dataType === 'date'">
+          {{cell.data | date: 'medium' }}
+        </content>
+        <content *ngIf="cell.dataType !== 'date'">
+          {{cell.data}}
+        </content>
+      </td>
+    </tr>
+  </tbody>
+  <tbody *ngIf="!tableStructure.params.pagination.usePagination">
+    <tr *ngFor="let row of tableStructure.body.row">
+      <td *ngFor="let cell of row.cell" scope="col" class={{cell.className}}>
+        <content *ngIf="cell.dataType === 'date'">
+          {{cell.data | date: 'medium' }}
+        </content>
+        <content *ngIf="cell.dataType !== 'date'">
+          {{cell.data}}
+        </content>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div *ngIf="tableStructure.params.pagination.usePagination" class="d-flex justify-content-between p-2">
+  <ngb-pagination [collectionSize]="tableStructure.params.pagination.collectionSize"
+    [(page)]="tableStructure.params.pagination.page" [pageSize]="tableStructure.params.pagination.pageSize"
+    (pageChange)="refreshPaginationItems()" size='sm'>
+  </ngb-pagination>
+
+  <span>
+    <label *ngIf="tableStructure.params.pagination.usePagination" for="items-per-page"> Items Per Page:</label>
+    <select *ngIf="tableStructure.params.pagination.usePagination" name="items-per-page" id="items-per-page"
+      class="custom-select-sm pagination-select" [(ngModel)]="tableStructure.params.pagination.pageSize"
+      (ngModelChange)="refreshPaginationItems()" size="sm">
+      <option *ngFor="let opt of tableStructure.params.pagination.itemsPerPageChoices" [ngValue]="opt">{{opt}}
+      </option>
+    </select>
+  </span>
+</div>

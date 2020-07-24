@@ -17,8 +17,8 @@
 }
 
 .horizontal-icon-list li img {
-  height: 20px;
-  width: 20px;
+  height: 18px;
+  width: 18px;
 }
 
 /* Table */
@@ -151,29 +151,34 @@ td {
   color: gray;
   font-size: 1rem;
   font-weight: bold;
+  border: 1px solid #000;
 }
 
 /* Alert and Custom Indicators Container */
 
 .patient-indicators {
-  display: table;
+  /* display: table; */
   padding: 0 5px 5px 5px;
   margin: 0 5px 5px 0;
   flex: 1;
 }
 
 .standard-indicators {
+  display: table;
   padding: 0 5px 5px 5px;
 }
 
 .custom-indicators {
+  display: table;
   padding: 5px;
 }
 
 /* Patient Image */
 
 .patient-image {
-  float: right;
+  /* float: right; */
+  flex: 1;
+  text-align: right;
   padding: 0 5px 5px 5px;
   margin: 0 5px 5px 0;
 }
@@ -206,6 +211,7 @@ td {
   width: 14px;
   height: 14px;
   margin: 0 5px;
+  cursor: pointer;
 }
 
 .gender.gender-male {
@@ -216,6 +222,17 @@ td {
 .gender.gender-female {
   background: url("../../../assets/icon/female.svg") no-repeat center center;
   background-size: 100% auto;
+}
+
+.gender-other-unknown {
+  height: 20px;
+  width: 20px;
+  text-align: center;
+  background-color: #f4f4f4f4;
+  color: gray;
+  font-size: 1rem;
+  font-weight: bold;
+  border: 1px solid #000;
 }
 
 .patient-ids {
