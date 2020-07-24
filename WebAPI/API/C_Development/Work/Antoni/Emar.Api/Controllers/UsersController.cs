@@ -51,12 +51,7 @@ namespace Emar.Api.Controllers
 
             if (extId != null)
             {
-                if (!int.TryParse(extId, out int xId))
-                {
-                    return BadRequest($"'{extId}' is not a valid external id.");
-                }
-
-                xId = (int)_userRepository.GetInternalUserId(xId);
+                int xId = (int)_userRepository.GetInternalUserId(extId);
 
                 if (xId == 0)
                 {
@@ -95,6 +90,8 @@ namespace Emar.Api.Controllers
                 fields =
                     nameof(user.Id) + "," +
                     nameof(user.Name) + "," +
+                    (!user.NameDisplayInitials ? nameof(user.FirstName) + "," : "") +
+                    (!user.NameDisplayInitials ? nameof(user.LastName) + "," : "") +
                     nameof(user.SiteId) + "," +
                     nameof(user.SiteName);
             }

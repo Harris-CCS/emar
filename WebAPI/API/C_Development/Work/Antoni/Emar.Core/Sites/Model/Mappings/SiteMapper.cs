@@ -15,7 +15,7 @@ namespace Emar.Core.Sites.Model.Mappings
             {
                 Id = site.Id,
                 Name = site.Name,
-                Active = site.Active,
+                Active = site.IsActive,
                 TimeZoneName = site.TimeZoneName
             };
 

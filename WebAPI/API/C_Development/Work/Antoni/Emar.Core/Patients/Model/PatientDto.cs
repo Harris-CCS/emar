@@ -7,13 +7,53 @@ namespace Emar.Core.Patients.Model
     public class PatientDto
     {
         public long Id { get; set; }
+
         public bool Active { get; set; }
-        public string AccountNumber { get; set; }
+
+        string accountNumber;
+        public string AccountNumber
+        {
+            get => accountNumber?.Trim();
+            set => accountNumber = value?.Trim();
+        }
+
+        string medicalRecordNumber;
+        public string MedicalRecordNumber
+        {
+            get => medicalRecordNumber?.Trim();
+            set => medicalRecordNumber = value?.Trim();
+        }
         #region name
-        public string FirstName { get; set; }
-        public string MiddleName { get; set; }
-        public string LastName { get; set; }
-        public string NameSuffix { get; set; }
+
+        string firstName;
+        public string FirstName
+        {
+            get => firstName?.Trim();
+            set => firstName = value?.Trim();
+        }
+
+        string middleName;
+        public string MiddleName
+        {
+            get => middleName?.Trim();
+            set => middleName = value?.Trim();
+        }
+
+
+        string lastName;
+        public string LastName
+        {
+            get => lastName?.Trim();
+            set => lastName = value?.Trim();
+        }
+
+        string nameSuffix;
+        public string NameSuffix
+        {
+            get => nameSuffix?.Trim();
+            set => nameSuffix = value?.Trim();
+        }
+
         public string FullName
         {
             get
@@ -37,41 +77,200 @@ namespace Emar.Core.Patients.Model
             }
         }
         #endregion
-        public string Gender { get; set; }
+
+        string gender;
+        public string Gender
+        {
+            get => gender?.Trim();
+            set => gender = value?.Trim();
+        }
+
         public DateTime? DateOfBirth { get; set; }
+
         public int? Age { get; set; }
-        public string AgeUnits { get; set; }
-        public string ChiefComplaint { get; set; }
+
+        string ageUnits;
+        public string AgeUnits
+        {
+            get => ageUnits?.Trim();
+            set => ageUnits = value?.Trim();
+        }
+
+        string complaint;
+        public string Complaint
+        {
+            get => complaint?.Trim();
+            set => complaint = value?.Trim();
+        }
+
         public decimal? HeightInCm { get; set; }
+
         public decimal? WeightInKg { get; set; }
+
         #region geography - room, ward, department
-        public short SiteId { get; set; }
-        public string DepartmentCode { get; set; }
-        public string WardCode { get; set; }
-        public string RoomBedCode { get; set; }
+        public int SiteId { get; set; }
+        
+        string departmentCode;
+        public string DepartmentCode
+        {
+            get => departmentCode?.Trim();
+            set => departmentCode = value?.Trim();
+        }
+
+        string wardCode;
+        public string WardCode
+        {
+            get => wardCode?.Trim();
+            set => wardCode = value?.Trim();
+        }
+
+        string roomBedCode;
+        public string RoomBedCode
+        {
+            get => roomBedCode?.Trim();
+            set => roomBedCode = value?.Trim();
+        }
         #endregion
-        public string UrgencyColor { get; set; }
+
+        string urgency;
+        public string Urgency
+        {
+            get => urgency?.Trim();
+            set => urgency = value?.Trim();
+        }
+
+        string urgencyColor;
+        public string UrgencyColor
+        {
+            get => urgencyColor?.Trim();
+            set => urgencyColor = value?.Trim();
+        }
+
         public bool? NameAlert { get; set; }
+
         public bool? WithdrawConsent { get; set; }
+
         #region vital signs
         public DateTimeOffset? VsDatetime { get; set; }
-        public string VsBloodPressureIndicator { get; set; }
-        public string VsSystolic { get; set; }
-        public string VsDiastolic { get; set; }
-        public string VsPulseIndicator { get; set; }
-        public string VsPulse { get; set; }
-        public string VsMapLevel { get; set; }
-        public string VsMap { get; set; }
-        public string VsRespiratoryIndicator { get; set; }
-        public string VsRespiratory { get; set; }
-        public string VsTemperatureIndicator { get; set; }
-        public string VsTemperature { get; set; }
-        public string VsEndTidalLevel { get; set; }
-        public string VsEndTidal { get; set; }
-        public string VsOxygenSaturationIndicator { get; set; }
-        public string VsOxygenSaturation { get; set; }
-        public string VsPainScaleIndicator { get; set; }
-        public string VsPainScale { get; set; }
+
+        string vsBloodPressureIndicator;
+        public string VsBloodPressureIndicator
+        {
+            get => vsBloodPressureIndicator?.Trim();
+            set => vsBloodPressureIndicator = value?.Trim();
+        }
+
+        string vsSystolic;
+        public string VsSystolic
+        {
+            get => vsSystolic?.Trim();
+            set => vsSystolic = value?.Trim();
+        }
+
+        string vsDiastolic;
+        public string VsDiastolic
+        {
+            get => vsDiastolic?.Trim();
+            set => vsDiastolic = value?.Trim();
+        }
+
+        string vsPulseIndicator;
+        public string VsPulseIndicator
+        {
+            get => vsPulseIndicator?.Trim();
+            set => vsPulseIndicator = value?.Trim();
+        }
+
+        string vsPulse;
+        public string VsPulse
+        {
+            get => vsPulse?.Trim();
+            set => vsPulse = value?.Trim();
+        }
+
+        string vsMapLevel;
+        public string VsMapLevel
+        {
+            get => vsMapLevel?.Trim();
+            set => vsMapLevel = value?.Trim();
+        }
+
+        string vsMap;
+        public string VsMap
+        {
+            get => vsMap?.Trim();
+            set => vsMap = value?.Trim();
+        }
+
+        string vsRespiratoryIndicator;
+        public string VsRespiratoryIndicator
+        {
+            get => vsRespiratoryIndicator?.Trim();
+            set => vsRespiratoryIndicator = value?.Trim();
+        }
+
+        string vsRespiratory;
+        public string VsRespiratory
+        {
+            get => vsRespiratory?.Trim();
+            set => vsRespiratory = value?.Trim();
+        }
+
+        string vsTemperatureIndicator;
+        public string VsTemperatureIndicator
+        {
+            get => vsTemperatureIndicator?.Trim();
+            set => vsTemperatureIndicator = value?.Trim();
+        }
+
+        string vsTemperature;
+        public string VsTemperature
+        {
+            get => vsTemperature?.Trim();
+            set => vsTemperature = value?.Trim();
+        }
+
+        string vsEndTidalLevel;
+        public string VsEndTidalLevel
+        {
+            get => vsEndTidalLevel?.Trim();
+            set => vsEndTidalLevel = value?.Trim();
+        }
+
+        string vsEndTidal;
+        public string VsEndTidal
+        {
+            get => vsEndTidal?.Trim();
+            set => vsEndTidal = value?.Trim();
+        }
+
+        string vsOxygenSaturationIndicator;
+        public string VsOxygenSaturationIndicator
+        {
+            get => vsOxygenSaturationIndicator?.Trim();
+            set => vsOxygenSaturationIndicator = value?.Trim();
+        }
+
+        string vsOxygenSaturation;
+        public string VsOxygenSaturation
+        {
+            get => vsOxygenSaturation?.Trim();
+            set => vsOxygenSaturation = value?.Trim();
+        }
+
+        string vsPainScaleIndicator;
+        public string VsPainScaleIndicator
+        {
+            get => vsPainScaleIndicator?.Trim();
+            set => vsPainScaleIndicator = value?.Trim();
+        }
+
+        string vsPainScale;
+        public string VsPainScale
+        {
+            get => vsPainScale?.Trim();
+            set => vsPainScale = value?.Trim();
+        }
         #endregion
 
         //private List<Allergy> Allergies { get; set; }
@@ -79,6 +278,7 @@ namespace Emar.Core.Patients.Model
         public IEnumerable<PatientOrder>? Orders { get; set; }
 
         public Site Site { get; set; }
+
         public string SiteName
         {
             get => Site?.Name;

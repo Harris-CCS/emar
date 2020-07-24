@@ -12,63 +12,28 @@ namespace Emar.Data.Entities
         public long Id { get; set; }
 
         [Column("site_id", TypeName = "int"), Required]
-        public short SiteId { get; set; }
+        public int SiteId { get; set; }
 
-        string medicalRecordNumber;
         [Column("medical_record_number", TypeName = "varchar(25)")]
-        public string MedicalRecordNumber
-        {
-            get => medicalRecordNumber;
-            set => medicalRecordNumber = value?.Trim();
-        }
+        public string MedicalRecordNumber { get; set; }
 
-        string accountNumber;
         [Column("account_number", TypeName = "varchar(25)")]
-        public string AccountNumber
-        {
-            get => accountNumber;
-            set => accountNumber = value?.Trim();
-        }
+        public string AccountNumber { get; set; }
 
-        string firstName;
         [Column("first_name", TypeName = "nvarchar(35)"), Required]
-        public string FirstName
-        {
-            get => firstName;
-            set => firstName = value?.Trim();
-        }
+        public string FirstName { get; set; }
 
-        string middleName;
         [Column("middle_name", TypeName = "nvarchar(35)")]
-        public string MiddleName
-        {
-            get => middleName;
-            set => middleName = value?.Trim();
-        }
+        public string MiddleName { get; set; }
 
-        string lastName;
         [Column("last_name", TypeName = "nvarchar(35)"), Required]
-        public string LastName
-        {
-            get => lastName;
-            set => lastName = value?.Trim();
-        }
+        public string LastName { get; set; }
 
-        string nameSuffix;
         [Column("name_suffix", TypeName = "nvarchar(25)")]
-        public string NameSuffix
-        {
-            get => nameSuffix;
-            set => nameSuffix = value?.Trim();
-        }
+        public string NameSuffix { get; set; }
 
-        string gender;
         [Column("gender", TypeName = "varchar(10)"), Required]
-        public string Gender
-        {
-            get => gender;
-            set => gender = value?.Trim();
-        }
+        public string Gender { get; set; }
 
         [Column("date_of_birth", TypeName = "date")]
         public DateTime? DateOfBirth { get; set; }
@@ -76,21 +41,11 @@ namespace Emar.Data.Entities
         [Column("age", TypeName = "tinyint")]
         public short? Age { get; set; }
 
-        string ageUnits;
         [Column("age_units", TypeName = "char(1)")]
-        public string AgeUnits
-        {
-            get => ageUnits;
-            set => ageUnits = value?.Trim();
-        }
+        public string AgeUnits { get; set; }
 
-        string chiefComplaint;
         [Column("complaint", TypeName = "varchar(80)")]
-        public string ChiefComplaint
-        {
-            get => chiefComplaint;
-            set => chiefComplaint = value?.Trim();
-        }
+        public string Complaint { get; set; }
 
         [Column("height_in_cm", TypeName = "numeric(6,2")]
         public decimal? HeightInCm { get; set; }
@@ -98,45 +53,20 @@ namespace Emar.Data.Entities
         [Column("weight_in_kg", TypeName = "numeric(6,2)")]
         public decimal? WeightInKg { get; set; }
 
-        string departmentCode;
         [Column("department_code", TypeName = "varchar(15)")]
-        public string DepartmentCode
-        {
-            get => departmentCode;
-            set => departmentCode = value?.Trim();
-        }
+        public string DepartmentCode { get; set; }
 
-        string wardCode;
         [Column("ward_code", TypeName = "varchar(15)")]
-        public string WardCode
-        {
-            get => wardCode;
-            set => wardCode = value?.Trim();
-        }
+        public string WardCode { get; set; }
 
-        string roomBedCode;
         [Column("room_bed_code", TypeName = "varchar(15)")]
-        public string RoomBedCode
-        {
-            get => roomBedCode;
-            set => roomBedCode = value?.Trim();
-        }
+        public string RoomBedCode { get; set; }
 
-        string urgency;
         [Column("urgency", TypeName = "varchar(50)")]
-        public string Urgency
-        {
-            get => urgency;
-            set => urgency = value?.Trim();
-        }
+        public string Urgency { get; set; }
 
-        string urgencyColor;
         [Column("urgency_color", TypeName = "varchar(25)")]
-        public string UrgencyColor
-        {
-            get => urgencyColor;
-            set => urgencyColor = value?.Trim();
-        }
+        public string UrgencyColor { get; set; }
 
         [Column("name_alert", TypeName = "bit"), Required]
         public bool NameAlert { get; set; }
@@ -147,154 +77,65 @@ namespace Emar.Data.Entities
         [Column("vs_datetime", TypeName = "datetimeoffset")]
         public DateTimeOffset? VsDatetime { get; set; }
 
-        string vsBloodPressureIndicator;
         [Column("vs_blood_pressure_indicator", TypeName = "char(1)")]
-        public string VsBloodPressureIndicator
-        {
-            get => vsBloodPressureIndicator;
-            set => vsBloodPressureIndicator = value?.Trim();
-        }
+        public string VsBloodPressureIndicator { get; set; }
 
-        string vsSystolic;
         [Column("vs_systolic", TypeName = "char(14)")]
-        public string VsSystolic
-        {
-            get => vsSystolic;
-            set => vsSystolic = value?.Trim();
-        }
+        public string VsSystolic { get; set; }
 
-        string vsDiastolic;
         [Column("vs_diastolic", TypeName = "char(14)")]
-        public string VsDiastolic
-        {
-            get => vsDiastolic;
-            set => vsDiastolic = value?.Trim();
-        }
+        public string VsDiastolic { get; set; }
 
-        string vsPulseIndicator;
         [Column("vs_pulse_indicator", TypeName = "char(1)")]
-        public string VsPulseIndicator
-        {
-            get => vsPulseIndicator;
-            set => vsPulseIndicator = value?.Trim();
-        }
+        public string VsPulseIndicator { get; set; }
 
-        string vsPulse;
         [Column("vs_pulse", TypeName = "char(14)")]
-        public string VsPulse
-        {
-            get => vsPulse;
-            set => vsPulse = value?.Trim();
-        }
+        public string VsPulse { get; set; }
 
-        string vsMapLevel;
         [Column("vs_map_level", TypeName = "char(1)")]
-        public string VsMapLevel
-        {
-            get => vsMapLevel;
-            set => vsMapLevel = value?.Trim();
-        }
+        public string VsMapLevel { get; set; }
 
-        string vsMap;
         [Column("vs_map", TypeName = "varchar(14)")]
-        public string VsMap
-        {
-            get => vsMap;
-            set => vsMap = value?.Trim();
-        }
+        public string VsMap { get; set; }
 
-        string vsRespiratoryIndicator;
         [Column("vs_respiratory_indicator", TypeName = "char(1)")]
-        public string VsRespiratoryIndicator
-        {
-            get => vsRespiratoryIndicator;
-            set => vsRespiratoryIndicator = value?.Trim();
-        }
+        public string VsRespiratoryIndicator { get; set; }
 
-        string vsRespiratory;
         [Column("vs_respiratory", TypeName = "char(14)")]
-        public string VsRespiratory
-        {
-            get => vsRespiratory;
-            set => vsRespiratory = value?.Trim();
-        }
+        public string VsRespiratory { get; set; }
 
-        string vsTemperatureIndicator;
         [Column("vs_temperature_indicator", TypeName = "char(1)")]
-        public string VsTemperatureIndicator
-        {
-            get => vsTemperatureIndicator;
-            set => vsTemperatureIndicator = value?.Trim();
-        }
+        public string VsTemperatureIndicator { get; set; }
 
-        string vsTemperature;
         [Column("vs_temperature", TypeName = "char(14)")]
-        public string VsTemperature
-        {
-            get => vsTemperature;
-            set => vsTemperature = value?.Trim();
-        }
+        public string VsTemperature { get; set; }
 
-        string vsEndTidalLevel;
         [Column("vs_end_tidal_level", TypeName = "char(1)")]
-        public string VsEndTidalLevel
-        {
-            get => vsEndTidalLevel;
-            set => vsEndTidalLevel = value?.Trim();
-        }
+        public string VsEndTidalLevel { get; set; }
 
-        string vsEndTidal;
         [Column("vs_end_tidal", TypeName = "varchar(14)")]
-        public string VsEndTidal
-        {
-            get => vsEndTidal;
-            set => vsEndTidal = value?.Trim();
-        }
+        public string VsEndTidal { get; set; }
 
-        string vsOxygenSaturationIndicator;
         [Column("vs_oxygen_saturation_indicator", TypeName = "char(1)")]
-        public string VsOxygenSaturationIndicator
-        {
-            get => vsOxygenSaturationIndicator;
-            set => vsOxygenSaturationIndicator = value?.Trim();
-        }
+        public string VsOxygenSaturationIndicator { get; set; }
 
-        string vsOxygenSaturation;
         [Column("vs_oxygen_saturation", TypeName = "varchar(50)")]
-        public string VsOxygenSaturation
-        {
-            get => vsOxygenSaturation;
-            set => vsOxygenSaturation = value?.Trim();
-        }
+        public string VsOxygenSaturation { get; set; }
 
-        string vsPainScaleIndicator;
         [Column("vs_pain_scale_indicator", TypeName = "char(1)")]
-        public string VsPainScaleIndicator
-        {
-            get => vsPainScaleIndicator;
-            set => vsPainScaleIndicator = value?.Trim();
-        }
+        public string VsPainScaleIndicator { get; set; }
 
-        string vsPainScale;
         [Column("vs_pain_scale", TypeName = "char(14)")]
-        public string VsPainScale
-        {
-            get => vsPainScale;
-            set => vsPainScale = value?.Trim();
-        }
+        public string VsPainScale { get; set; }
 
-
-        //[Column("is_active", TypeName = "char(1)")]
+        //[Column("is_active", TypeName = "bit")]
         [NotMapped]
-        public bool Active { get; set; } = true;
+        public bool IsActive { get; set; } = true;
 
         [NotMapped]
-        public IEnumerable<PatientOrder>? Orders { get; set; }
+        public IEnumerable<PatientOrder>? PatientOrders { get; set; }
 
         [NotMapped]
         public Site Site { get; set; }
-
-        [NotMapped]
-        public string SiteName { get; set; }
     }
 }

@@ -3,6 +3,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Emar.Core;
+using Emar.Core.Carts.Repository;
+using Emar.Core.Carts.Service;
 using Emar.Core.Orders.Repository;
 using Emar.Core.Orders.Service;
 using Emar.Core.Patients.Repository;
@@ -133,10 +135,15 @@ namespace Emar.Api
                 }
             });
 
-            services.AddDbContext<EmarContext>(options => options.UseSqlServer(ConfigurationExtensions.GetConnectionString(Configuration, "SqlConnection")));
+            services.AddDbContext<EmarContext>(options =>
+                options.UseSqlServer(ConfigurationExtensions.GetConnectionString(Configuration, "SqlConnection"))
+                    .EnableSensitiveDataLogging());
 
             services.AddTransient<IPropertyMappingService, PropertyMappingService>();
             services.AddTransient<IPropertyCheckerService, PropertyCheckerService>();
+
+            services.AddScoped<ICartOrderService, CartOrderService>();
+            services.AddScoped<ICartOrderRepository, CartOrderRepository>();
 
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IOrderRepository, OrderRepository>();

@@ -13,23 +13,24 @@ namespace Emar.Data
         }
 
         public DbSet<ExternalId> ExternalIds { get; set; }
-        public DbSet<PatientOrder> Orders { get; set; }
-        public DbSet<OrderAdministration> OrderAdministrations { get; set; }
-        public DbSet<OrderEvent> OrderEvents { get; set; }
+        public DbSet<PatientOrder> PatientOrders { get; set; }
+        public DbSet<OrderAdministration> PatientOrderAdministrations { get; set; }
+        public DbSet<OrderEvent> PatientOrderEvents { get; set; }
         public DbSet<Patient> Patients { get; set; }
         public DbSet<Site> Sites { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<PatientCartOrder> PatientCartOrders { get; set; }
+        public DbSet<CartOrderAdministration> PatientCartOrderAdministrations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Patient>().HasMany(patient => patient.Orders).WithOne().HasForeignKey(order => order.PatientId);
+            modelBuilder.Entity<Patient>().HasMany(patient => patient.PatientOrders).WithOne().HasForeignKey(order => order.PatientId);
             modelBuilder.Entity<Patient>().HasOne(patient => patient.Site).WithMany().HasForeignKey(patient => patient.SiteId);
-            modelBuilder.Entity<PatientOrder>().HasMany(order => order.Events).WithOne().HasForeignKey(@event => @event.OrderId);
-            modelBuilder.Entity<PatientOrder>().HasMany(order => order.Administrations).WithOne().HasForeignKey(administration => administration.OrderId);
-            modelBuilder.Entity<OrderAdministration>().HasMany(administration => administration.Events).WithOne().HasForeignKey(@event => @event.AdministrationId);
+            modelBuilder.Entity<PatientOrder>().HasMany(order => order.OrderEvents).WithOne().HasForeignKey(@event => @event.PatientOrderId);
+            modelBuilder.Entity<PatientOrder>().HasMany(order => order.OrderAdministrations).WithOne().HasForeignKey(administration => administration.PatientOrderId);
+            modelBuilder.Entity<OrderAdministration>().HasMany(administration => administration.OrderEvents).WithOne().HasForeignKey(@event => @event.OrderAdministrationId);
             modelBuilder.Entity<User>().HasOne(user => user.Site).WithMany().HasForeignKey(user => user.SiteId);
-            //modelBuilder.Entity<PatientOrder>().HasOne(order => order.MedicationRouteId).WithOne().HasForeignKey<(mr => mr.)
+            modelBuilder.Entity<PatientCartOrder>().HasMany(order => order.CartOrderAdministrations).WithOne().HasForeignKey(administration => administration.PatientCartOrderId);
         }
     }
 }
-

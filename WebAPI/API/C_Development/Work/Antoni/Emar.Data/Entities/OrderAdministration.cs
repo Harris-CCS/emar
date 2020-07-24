@@ -12,7 +12,7 @@ namespace Emar.Data.Entities
         public long Id { get; set; }
 
         [Column("patient_order_id", TypeName = "bigint"), Required]
-        public long OrderId { get; set; }
+        public long PatientOrderId { get; set; }
 
         [Column("point_in_time", TypeName = "bit"), Required]
         public bool PointInTime { get; set; }
@@ -54,6 +54,15 @@ namespace Emar.Data.Entities
         public DateTimeOffset? AcknowledgeDatetime { get; set; }
 
         [NotMapped]
-        public IEnumerable<OrderEvent>? Events { get; set; }
+        public User? AcknowledgeUser { get; set; }
+
+        [NotMapped]
+        public User? AdministeringUser { get; set; }
+
+        [NotMapped]
+        public User? StopUser { get; set; }
+
+        [NotMapped]
+        public IEnumerable<OrderEvent>? OrderEvents { get; set; }
     }
 }

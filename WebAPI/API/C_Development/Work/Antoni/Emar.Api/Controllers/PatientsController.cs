@@ -95,7 +95,7 @@ namespace Emar.Api.Controllers
             [FromHeader(Name = "Accept")] string mediaType,
             [FromQuery] string orderBy,
             [FromQuery] string fields,
-            [FromQuery] short? siteId,
+            [FromQuery] int? siteId,
             [FromQuery] string accountNumber,
             [FromQuery] string departmentCode,
             [FromQuery] string wardCodes,

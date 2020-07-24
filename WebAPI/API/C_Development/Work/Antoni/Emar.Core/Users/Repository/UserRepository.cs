@@ -38,10 +38,10 @@ namespace Emar.Core.Users.Repository
             return user;
         }
 
-        public long? GetInternalUserId(int extId)
+        public long? GetInternalUserId(string extId)
         {
             var userId = from e in _context.ExternalIds
-                         where e.External_Id == extId.ToString() &&
+                         where e.External_Id == extId &&
                                e.Entity == "users" &&
                                e.Vendor == "pulsecheck"
                          select e.InternalId;

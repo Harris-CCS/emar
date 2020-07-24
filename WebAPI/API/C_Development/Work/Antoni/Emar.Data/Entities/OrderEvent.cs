@@ -11,10 +11,10 @@ namespace Emar.Data.Entities
         public long Id { get; set; }
 
         [Column("patient_order_id", TypeName = "bigint"), Required]
-        public long OrderId { get; set; }
+        public long PatientOrderId { get; set; }
 
         [Column("order_administration_id", TypeName = "bigint")]
-        public long? AdministrationId { get; set; }
+        public long? OrderAdministrationId { get; set; }
 
         [Column("event_datetime", TypeName = "datetimeoffset"), Required]
         public DateTimeOffset EventDateTime { get; set; }
@@ -27,5 +27,14 @@ namespace Emar.Data.Entities
 
         [Column("action_id", TypeName = "int"), Required]
         public int ActionId { get; set; }
+
+        [NotMapped]
+        public Action Action { get; set; }
+
+        [NotMapped]
+        public OrderAdministration OrderAdministration { get; set; }
+
+        [NotMapped]
+        public PatientOrder PatientOrder { get; set; }
     }
 }
