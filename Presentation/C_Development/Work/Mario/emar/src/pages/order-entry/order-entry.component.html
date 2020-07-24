@@ -1,5 +1,5 @@
 <div class="page-content patient-details">
-    <header-patient [patient]="selectedPatient()"></header-patient>
+    <header-patient [patient]="selectedPatient()" class="header-patient"></header-patient>
 
     <div class="page-content-wrapper">
         <div class="orders">
@@ -10,17 +10,18 @@
                     <med-search></med-search>
                 </div>
                 <div id="orders-cart">
-                    <order-cart-list 
-                        [items] = "cartListOrders()"
-                    ></order-cart-list>
+                    <order-cart-list [items]="cartListOrders()"></order-cart-list>
                 </div>
             </div>
             <div class="orders-current">
                 <h3>CURRENT ORDERS</h3>
                 <ul>
                     <li *ngFor="let ord of currentOrders">
-                        {{ord.name}} {{ord.route | uppercase}} {{ord.dose}}  <span [ngClass]="{'allergy-dot': ord.allergies?.length}"></span><span [ngClass]="{'drug-dot' : ord.drugs?.length}"></span>
-                        <span class="timestamp">{{ord.signedOn | date: "HH:mm"}} on {{ord.signedOn | date: "MM/dd/yy"}} , Ordering physician: {{ord.signedBy}}</span>
+                        {{ord.name}} {{ord.route | uppercase}} {{ord.dose}} <span
+                            [ngClass]="{'allergy-dot': ord.allergies?.length}"></span><span
+                            [ngClass]="{'drug-dot' : ord.drugs?.length}"></span>
+                        <span class="timestamp">{{ord.signedOn | date: "HH:mm"}} on {{ord.signedOn | date: "MM/dd/yy"}}
+                            , Ordering physician: {{ord.signedBy}}</span>
                     </li>
                 </ul>
             </div>
@@ -28,7 +29,8 @@
         <div class="lists">
             <div class="toggle">
                 <span [ngClass]="{'active': qlSelected}" (click)="onSelectTab('list-quick-orders')">Quick List</span>
-                <span [ngClass]="{'active': dpSelected}" (click)="onSelectTab('list-dept-preferred-orders')">Dept Preferred List</span>
+                <span [ngClass]="{'active': dpSelected}" (click)="onSelectTab('list-dept-preferred-orders')">Dept
+                    Preferred List</span>
                 <span [ngClass]="{'active': gSelected}" (click)="onSelectTab('list-groups-orders')">Groups</span>
             </div>
 
