@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, map, tap, switchMap } from 'rxjs/operators';
 
 import { Medication } from '../app/interfaces/medication';
@@ -21,6 +21,8 @@ export class MedOrderService {
   private quickListOrders: Medication[];
   private dptPreferredOrders: Medication[];
   private groupsOrders: Medication[];
+  allergiesInteractionChanged : Subject<any> = new Subject();
+  drugsInteractionChanged : Subject<any> = new Subject();
 
   private searchResults: Observable<Medication[]>;
 

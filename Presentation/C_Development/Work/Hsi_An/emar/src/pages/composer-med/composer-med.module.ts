@@ -6,7 +6,7 @@ import { ComposerMedComponent } from './composer-med.component';
 @NgModule({
   declarations: [ComposerMedComponent],
   imports: [
-    CommonModule
+    CommonModule,
   ],
   exports: [
     ComposerMedComponent,
