@@ -15,18 +15,14 @@ body {
   text-rendering: geometricPrecision;
 }
 
-#ngb-popover-2 {
-  max-width: 415px !important;
-  max-height: 100% !important;
-  height: auto;
+body .popover {
+  max-width: 80% !important;
+  max-height: 80% !important;
   overflow: visible;
 }
 
-#ngb-popover-1 {
-  max-width: 360px !important;
-  max-height: 100% !important;
-  height: auto;
-  overflow: visible;
+body .popover .arrow {
+  display: none;
 }
 
 .allergy-dot {
