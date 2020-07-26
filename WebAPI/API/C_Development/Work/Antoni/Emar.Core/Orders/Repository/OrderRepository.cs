@@ -32,6 +32,10 @@ namespace Emar.Core.Orders.Repository
                 .Include(order => order.OrderEvents)
                 .Include(order => order.OrderAdministrations)
                     .ThenInclude(administration => administration.OrderEvents)
+                .Include(order => order.MedicationRoute)
+                .Include(order => order.AddUser)
+                .Include(order => order.OrderPhysicianUser)
+                .Include(order => order.MedicationRoute)
                 .AsEnumerable();
 
             if ((patientId != null) &&
@@ -58,6 +62,9 @@ namespace Emar.Core.Orders.Repository
                     .Include(order => order.OrderEvents)
                     .Include(order => order.OrderAdministrations)
                         .ThenInclude(administration => administration.OrderEvents)
+                    .Include(order => order.MedicationRoute)
+                    .Include(order => order.AddUser)
+                    .Include(order => order.OrderPhysicianUser)
                     .FirstOrDefault(order => order.Id == orderId);
         }
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -22,8 +21,5 @@ namespace Emar.Data.Entities
 
         [Column("stop_scheduled_datetime", TypeName = "datetimeoffset")]
         public DateTimeOffset? StopScheduledDatetime { get; set; }
-
-        //[NotMapped]
-        //public PatientCartOrder PatientCartOrder { get; set; }
     }
 }

@@ -136,6 +136,9 @@ namespace Emar.Data.Entities
         public IEnumerable<PatientOrder>? PatientOrders { get; set; }
 
         [NotMapped]
+        public IEnumerable<PatientCartOrder>? PatientCartOrders { get; set; }
+
+        [NotMapped]
         public Site Site { get; set; }
     }
 }

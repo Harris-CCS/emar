@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -23,12 +22,17 @@ namespace Emar.Data.Entities
         [Column("initials_display", TypeName = "nvarchar(4)"), Required]
         public string InitialsDisplay { get; set; }
 
-        string firstName;
-        [Column("first_name", TypeName = "nvarchar(20)"), Required]
+        [Column("first_name", TypeName = "nvarchar(35)"), Required]
         public string FirstName { get; set; }
 
-        [Column("last_name", TypeName = "nvarchar(20)"), Required]
+        [Column("last_name", TypeName = "nvarchar(35)"), Required]
         public string LastName { get; set; }
+
+        [Column("middle_name", TypeName = "nvarchar(35)"), Required]
+        public string MiddleName { get; set; }
+
+        [Column("name_suffix", TypeName = "nvarchar(25)"), Required]
+        public string NameSuffix { get; set; }
 
         [Column("ordering_only_physician", TypeName = "bit")]
         public bool? OrderingOnlyPhysician { get; set; }
@@ -36,7 +40,6 @@ namespace Emar.Data.Entities
         [Column("name_display_initials", TypeName = "bit")]
         public bool? NameDisplayInitials { get; set; }
 
-        string loginName;
         [Column("login_name", TypeName = "varchar(255)"), Required]
         public string LoginName { get; set; }
 

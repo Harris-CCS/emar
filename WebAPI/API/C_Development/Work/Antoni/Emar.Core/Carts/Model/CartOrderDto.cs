@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Emar.Core.Medications.Model;
 using Emar.Core.Orders.Model;
 using Emar.Data.Entities;
 
@@ -69,9 +68,14 @@ namespace Emar.Core.Carts.Model
         }
 
         /// <summary>
-        /// DTO of the Medication Route
+        /// Unique medication route identifier.
         /// </summary>
-        public MedicationRouteDto MedicationRoute { get; set; }
+        public int? MedicationRouteId { get; set; }
+
+        /// <summary>
+        /// Medication Route.
+        /// </summary>
+        public MedicationRoute? MedicationRoute { get; set; }
 
         /// <summary>
         /// Indicates the order priority (STAT, Routine).
@@ -125,5 +129,10 @@ namespace Emar.Core.Carts.Model
         /// Cart order administrations.
         /// </summary>
         public IEnumerable<CartOrderAdministration>? CartOrderAdministrations { get; set; }
+
+        /// <summary>
+        /// Provider who entered the order in the cart.
+        /// </summary>
+        public User User { get; set; }
     }
 }

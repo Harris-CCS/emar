@@ -70,9 +70,9 @@ namespace Emar.Core.Patients.Model
                 ret += (ret != "" && !string.IsNullOrWhiteSpace(middleName)) ? " " : "";
                 ret += middleName;
                 ret += (ret != "" && !string.IsNullOrWhiteSpace(LastName)) ? " " : "";
-                ret += (LastName ?? "").Trim();
+                ret += (LastName ?? "");
                 ret += ((!string.IsNullOrWhiteSpace(ret) && !string.IsNullOrWhiteSpace(NameSuffix)) ? ", " : "") +
-                    (NameSuffix ?? "").Trim();
+                    (NameSuffix ?? "");
                 return ret;
             }
         }
@@ -109,7 +109,7 @@ namespace Emar.Core.Patients.Model
 
         #region geography - room, ward, department
         public int SiteId { get; set; }
-        
+
         string departmentCode;
         public string DepartmentCode
         {
@@ -278,10 +278,5 @@ namespace Emar.Core.Patients.Model
         public IEnumerable<PatientOrder>? Orders { get; set; }
 
         public Site Site { get; set; }
-
-        public string SiteName
-        {
-            get => Site?.Name;
-        }
     }
 }

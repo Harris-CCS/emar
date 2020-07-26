@@ -20,6 +20,9 @@ namespace Emar.Data.Entities
         [Column("add_datetime", TypeName = "datetimeoffset"), Required]
         public DateTimeOffset AddDatetime { get; set; }
 
+        [Column("order_physician_user_id", TypeName = "int"), Required]
+        public int OrderPhysicianUserId { get; set; }
+
         [Column("ndc", TypeName = "varchar(32)")]
         public string Ndc { get; set; }
 
@@ -61,7 +64,6 @@ namespace Emar.Data.Entities
 
         [Column("order_notes", TypeName = "nvarchar(MAX)")]
         public string OrderNotes { get; set; }
- 
 
         [NotMapped]
         public string OrderStatusCode { get; set; } = "Pending";
@@ -71,6 +73,9 @@ namespace Emar.Data.Entities
 
         [NotMapped]
         public User AddUser { get; set; }
+
+        [NotMapped]
+        public User OrderPhysicianUser { get; set; }
 
         [NotMapped]
         public MedicationRoute MedicationRoute { get; set; }

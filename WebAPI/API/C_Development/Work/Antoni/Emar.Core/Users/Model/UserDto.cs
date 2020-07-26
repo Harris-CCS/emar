@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using Emar.Data.Entities;
 
 namespace Emar.Core.Users.Model
@@ -40,6 +39,20 @@ namespace Emar.Core.Users.Model
             set => lastName = value?.Trim();
         }
 
+        string middleName;
+        public string MiddleName
+        {
+            get => middleName?.Trim();
+            set => middleName = value?.Trim();
+        }
+
+        string nameSuffix;
+        public string NameSuffix
+        {
+            get => nameSuffix?.Trim();
+            set => nameSuffix = value?.Trim();
+        }
+
         public bool OrderingOnlyPhysician { get; set; }
 
         public bool NameDisplayInitials { get; set; }
@@ -59,27 +72,18 @@ namespace Emar.Core.Users.Model
         }
 
         public byte[] Salt { get; set; }
+
         public DateTimeOffset? LastLoginTime { get; set; }
+
         public int FailedLoginAttempts { get; set; }
 
-        public string Name
+        string displayName;
+        public string DisplayName
         {
-            get
-            {
-                if (NameDisplayInitials)
-                {
-                    return InitialsDisplay;
-                }
-
-                return ((FirstName ?? String.Empty) + @" " + (LastName ?? String.Empty));
-            }
+            get => displayName?.Trim();
+            set => displayName = value?.Trim();
         }
 
         public Site Site { get; set; }
-
-        public string SiteName
-        {
-            get => Site?.Name;
-        }
     }
 }

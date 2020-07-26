@@ -25,7 +25,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 
-//[assembly: ApiConventionType(typeof(CustomConventions))]
 namespace Emar.Api
 {
     public class Startup

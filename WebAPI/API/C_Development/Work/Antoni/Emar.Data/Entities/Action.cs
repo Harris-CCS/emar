@@ -1,34 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Emar.Data.Entities
 {
     [Table("actions")]
-    public class Action
+    public partial class Action
     {
-        //////////public Action()
-        //////////{
-        //////////    OrderEvents = new HashSet<OrderEvent>();
-        //////////}
-
-        [Column("id"), Key]
+        [Key]
+        [Column("id")]
         public int Id { get; set; }
-
-        [Column("title", TypeName = "varchar(20)"), Required]
+        [Required]
+        [Column("title")]
+        [StringLength(20)]
         public string Title { get; set; }
-
-        [Column("description", TypeName = "varchar(100)"), Required]
+        [Required]
+        [Column("description")]
+        [StringLength(100)]
         public string Description { get; set; }
-
-        [Column("site_id", TypeName = "int"), Required]
+        [Column("site_id")]
         public int SiteId { get; set; }
-
-        [Column("is_active", TypeName = "bit"), Required]
+        [Column("is_active")]
         public bool IsActive { get; set; }
-
-        //////////[InverseProperty("Action")]
-        //////////public virtual ICollection<OrderEvent> OrderEvents { get; set; }
     }
 }

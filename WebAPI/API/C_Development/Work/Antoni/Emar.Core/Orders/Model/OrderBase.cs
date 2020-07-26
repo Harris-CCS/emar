@@ -1,5 +1,5 @@
 ﻿using System.Text.RegularExpressions;
-using Emar.Core.Medications.Model;
+using Emar.Data.Entities;
 
 namespace Emar.Core.Orders.Model
 {
@@ -43,16 +43,21 @@ namespace Emar.Core.Orders.Model
         public decimal? Dose { get; set; }
 
         string doseUnit;
-        public string DoseUnit 
+        public string DoseUnit
         {
             get => doseUnit?.Trim();
             set => doseUnit = value?.Trim();
         }
 
         /// <summary>
-        /// DTO of the Medication Route
+        /// Unique identifier of the Medication Route
         /// </summary>
-        public MedicationRouteDto MedicationRoute { get; set; }
+        public int? MedicationRouteId { get; set; }
+
+        /// <summary>
+        /// Medication Route.
+        /// </summary>
+        public MedicationRoute MedicationRoute { get; set; }
 
         /// <summary>
         /// Unique order frequency identifier.

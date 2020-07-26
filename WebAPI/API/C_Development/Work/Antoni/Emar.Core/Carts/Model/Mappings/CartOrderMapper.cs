@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Emar.Core.Medications.Model;
 using Emar.Data.Entities;
 
 namespace Emar.Core.Carts.Model.Mappings
@@ -18,13 +17,15 @@ namespace Emar.Core.Carts.Model.Mappings
                 Id = order.Id,
                 PatientId = order.PatientId,
                 UserId = order.UserId,
+                User = order.User,
                 AddDatetime = order.AddDatetime,
                 Ndc = order.Ndc,
                 DrugId = order.DrugId,
                 BrandName = order.BrandName,
                 Dose = order.Dose,
                 DoseUnit = order.DoseUnit,
-                ///TODOANTONI///MedicationRouteId = order.MedicationRouteId,
+                MedicationRouteId = order.MedicationRouteId,
+                MedicationRoute = order.MedicationRoute,
                 ////Priority = (OrderPriorities)Enum.Parse(typeof(OrderPriorities), order.Priority),
                 FrequencyId = order.FrequencyId,
                 Prn = order.Prn,
@@ -56,38 +57,8 @@ namespace Emar.Core.Carts.Model.Mappings
                 BrandName = orderDto.BrandName,
                 Dose = orderDto.Dose,
                 DoseUnit = orderDto.DoseUnit,
-                ///TODOANTONI///MedicationRouteId = order.MedicationRouteId,
-                ////Priority = (OrderPriorities)Enum.Parse(typeof(OrderPriorities), order.Priority),
-                FrequencyId = orderDto.FrequencyId,
-                Prn = orderDto.Prn,
-                PointInTime = orderDto.PointInTime,
-                BeginDatetime = orderDto.BeginDatetime,
-                EndDatetime = orderDto.EndDatetime,
-                OrderNotes = orderDto.OrderNotes,
-                CartOrderAdministrations = orderDto.CartOrderAdministrations.ToList()
-            };
-
-            return order;
-        }
-
-        public static PatientCartOrder MapCartOrderAddDto(CartOrderDto orderDto)
-        {
-            if (orderDto == null)
-            {
-                return null;
-            }
-
-            PatientCartOrder order = new PatientCartOrder
-            {
-                PatientId = orderDto.PatientId,
-                UserId = orderDto.UserId,
-                AddDatetime = orderDto.AddDatetime,
-                Ndc = orderDto.Ndc,
-                DrugId = orderDto.DrugId,
-                BrandName = orderDto.BrandName,
-                Dose = orderDto.Dose,
-                DoseUnit = orderDto.DoseUnit,
-                ///TODOANTONI///MedicationRouteId = order.MedicationRouteId,
+                MedicationRouteId = orderDto.MedicationRouteId,
+                MedicationRoute = orderDto.MedicationRoute,
                 ////Priority = (OrderPriorities)Enum.Parse(typeof(OrderPriorities), order.Priority),
                 FrequencyId = orderDto.FrequencyId,
                 Prn = orderDto.Prn,

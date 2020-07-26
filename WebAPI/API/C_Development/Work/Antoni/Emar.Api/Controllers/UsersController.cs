@@ -81,20 +81,23 @@ namespace Emar.Api.Controllers
                 return BadRequest();
             }
 
-            var user = _userService.GetUser(userId);
+            var user = _userService.GetUserMinimal(userId);
 
             if (user == null) { return NotFound($"User with id '{userId}' was not found."); }
 
-            if (String.IsNullOrEmpty(fields))
-            {
-                fields =
-                    nameof(user.Id) + "," +
-                    nameof(user.Name) + "," +
-                    (!user.NameDisplayInitials ? nameof(user.FirstName) + "," : "") +
-                    (!user.NameDisplayInitials ? nameof(user.LastName) + "," : "") +
-                    nameof(user.SiteId) + "," +
-                    nameof(user.SiteName);
-            }
+            //if (String.IsNullOrEmpty(fields))
+            //{
+            //    fields =
+            //        nameof(user.Id) + "," +
+            //        nameof(user.DisplayName) + "," +
+            //        (!user.NameDisplayInitials ? nameof(user.FirstName) + "," +
+            //                                     nameof(user.MiddleName) + "," +
+            //                                     nameof(user.LastName) + "," +
+            //                                     nameof(user.NameSuffix) + ","
+            //                                   : "") +
+            //        nameof(user.SiteId) + "," +
+            //        nameof(user.Site) + "." + nameof(user.Site.Name);
+            //}
 
             return Ok(user.ShapeData(fields));
         }

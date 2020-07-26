@@ -15,33 +15,9 @@ namespace Emar.Core.Carts.Service
             _orderRepository = orderRepository;
         }
 
-        public PagedList<CartOrderDto> GetOrders(long? patientId, OrdersResourceParameters resourceParameters)
+        public bool CheckoutOrders(int? userId, long? patientId)
         {
-            var orders = _orderRepository.GetOrders(patientId, resourceParameters);
-
-            if ((orders == null) ||
-                (!orders.Any()))
-            {
-                return null;
-            }
-
-            var ordersList = orders.Select(order => CartOrderMapper.MapCartOrder(order)).ToList();
-
-            return new PagedList<CartOrderDto>(ordersList, orders.TotalCount, orders.CurrentPage, orders.PageSize);
-        }
-
-        public CartOrderDto GetOrder(long orderId, OrdersResourceParameters resourceParameters)
-        {
-            var order = _orderRepository.GetOrder(orderId, resourceParameters);
-
-            if (order == null)
-            {
-                return null;
-            }
-
-            var orderDto = CartOrderMapper.MapCartOrder(order);
-
-            return orderDto;
+            return _orderRepository.CheckoutOrders(userId, patientId);
         }
 
         public IEnumerable<CartOrderAdministrationDto> GetAdministrations(long orderId)
@@ -64,44 +40,6 @@ namespace Emar.Core.Carts.Service
             var administrationDto = CartOrderMapper.MapCartOrderAdministration(administration);
 
             return administrationDto;
-        }
-
-        public CartOrderDto AddCartOrder(CartOrderDto cartOrderAddDto)
-        {
-            var order = CartOrderMapper.MapCartOrderDto(cartOrderAddDto);
-            order = _orderRepository.AddCartOrder(order);
-
-            if (order == null)
-            {
-                return null;
-            }
-
-            var orderDto = CartOrderMapper.MapCartOrder(order);
-
-            return orderDto;
-        }
-
-        public bool UpdateCartOrder(long? cartOrderId, CartOrderDto cartOrderDto, CartOrderDto cartOrderUpdateDto)
-        {
-            var order = CartOrderMapper.MapCartOrderDto(cartOrderUpdateDto);
-
-            return _orderRepository.UpdateCartOrder(order);
-            //return _orderRepository.UpdateCartOrder(cartOrderId, cartOrderDto, cartOrderUpdateDto);
-        }
-
-        public bool DeleteCartOrder(long? cartOrderId)
-        {
-            return _orderRepository.DeleteCartOrder(cartOrderId);
-        }
-
-        public bool DeleteCartOrders(int? userId, long? patientId)
-        {
-            return _orderRepository.DeleteCartOrders(userId, patientId);
-        }
-
-        public bool CheckoutOrders(int? userId, long? patientId)
-        {
-            return _orderRepository.CheckoutOrders(userId, patientId);
         }
     }
 }
