@@ -86,9 +86,14 @@ namespace Emar.Core.Orders.Model
         }
 
         /// <summary>
-        /// Unique identifier of the provider who ordered the order.
+        /// Unique identifier of the user who entered the order.
         /// </summary>
         public int AddUserId { get; set; }
+
+        /// <summary>
+        /// Unique identifier of the provider who ordered the order.
+        /// </summary>
+        public int OrderPhysicianUserId { get; set; }
 
         /// <summary>
         /// PatientOrder administrations.
@@ -101,5 +106,15 @@ namespace Emar.Core.Orders.Model
         public IEnumerable<OrderEvent>? OrderEvents { get; set; }
 
         public IEnumerable<string> ApplicableFilters = new List<string>();
+
+        /// <summary>
+        /// User who entered the order.
+        /// </summary>
+        public User AddUser { get; set; }
+
+        /// <summary>
+        /// Provider who ordered the order.
+        /// </summary>
+        public User OrderPhysicianUser { get; set; }
     }
 }

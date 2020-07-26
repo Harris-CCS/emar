@@ -1,14 +1,32 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using Emar.Core.Orders.Model;
 using Emar.Data.Entities;
 
-namespace Emar.Core.Orders.Model
+namespace Emar.Core.Carts.Model
 {
-    public class OrderBase
+    public class CartOrderDto 
     {
         /// <summary>
-        /// Unique order identifier
+        /// Unique cart order identifier
         /// </summary>
         public long Id { get; set; }
+
+        /// <summary>
+        /// Unique patient identifier
+        /// </summary>
+        public long PatientId { get; set; }
+
+        /// <summary>
+        /// Unique identifier of the provider who entered the order in the cart.
+        /// </summary>
+        public int UserId { get; set; }
+
+        /// <summary>
+        /// Date and time the order was entered in the cart.  Includes the local time timezone offset from UTC.
+        /// </summary>
+        public DateTimeOffset AddDatetime { get; set; }
 
         string ndc;
         /// <summary>
@@ -50,14 +68,19 @@ namespace Emar.Core.Orders.Model
         }
 
         /// <summary>
-        /// Unique identifier of the Medication Route
+        /// Unique medication route identifier.
         /// </summary>
         public int? MedicationRouteId { get; set; }
 
         /// <summary>
         /// Medication Route.
         /// </summary>
-        public MedicationRoute MedicationRoute { get; set; }
+        public MedicationRoute? MedicationRoute { get; set; }
+
+        /// <summary>
+        /// Indicates the order priority (STAT, Routine).
+        /// </summary>
+        public OrderPriorities Priority { get; set; }
 
         /// <summary>
         /// Unique order frequency identifier.
@@ -65,11 +88,27 @@ namespace Emar.Core.Orders.Model
         public int? FrequencyId { get; set; }
 
         /// <summary>
+        /// Indicates whether the order is PRN.
+        /// </summary>
+        public bool Prn { get; set; }
+
+        /// <summary>
         /// Indicates whether the order is Point-In-Time.
         /// </summary>
         // Will be derivable from the Frequency - in the future,
         // include a Frequency object instead of an Id and trash this property
         public bool PointInTime { get; set; }
+
+        /// <summary>
+        /// Date/time that the point-in-time administration was give, or
+        /// Date/time that the non-point-in-time administration started
+        /// </summary>
+        public DateTimeOffset BeginDatetime { get; set; }
+
+        /// <summary>
+        /// Date and time the order ended.  Includes the local time timezone offset from UTC.
+        /// </summary>
+        public DateTimeOffset? EndDatetime { get; set; }
 
         string orderNotes;
         /// <summary>
@@ -80,44 +119,20 @@ namespace Emar.Core.Orders.Model
             get => orderNotes?.Trim();
             set => orderNotes = value?.Trim();
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public long? UserQuickListItemId { get; set; }
+
+        /// <summary>
+        /// Cart order administrations.
+        /// </summary>
+        public IEnumerable<CartOrderAdministration>? CartOrderAdministrations { get; set; }
+
+        /// <summary>
+        /// Provider who entered the order in the cart.
+        /// </summary>
+        public User User { get; set; }
     }
-
-    #region Constants
-
-    /// <summary>
-    /// Order types
-    /// </summary>
-    public enum OrderTypes
-    {
-        Stat = 1,
-        Prn = 2,
-        Continuous = 3,
-        Scheduled = 4
-    }
-
-    /// <summary>
-    /// Order priorities
-    /// </summary>
-    public enum OrderPriorities
-    {
-        Stat = 2,
-        Routine = 4
-    }
-
-    /// <summary>
-    /// Order statuses
-    /// </summary>
-    public enum OrderStatuses
-    {
-        Pending = 1,
-        Cancelled = 2,
-        OnGoing = 3,
-        OnHold = 4,
-        PendingDiscontinue = 5,
-        Discontinued = 6,
-        Completed = 7
-    }
-
-    #endregion
-
 }

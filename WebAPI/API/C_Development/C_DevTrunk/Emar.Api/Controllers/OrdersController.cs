@@ -102,7 +102,7 @@ namespace Emar.Api.Controllers
 
             PagedList<PatientOrderDto> orders = _orderService.GetOrders(null, resourceParameters);
 
-            if (orders == null) { return NotFound($"No orders found"); }
+            if (orders == null) { return NotFound($"No orders found."); }
 
             var paginationMetadata = new
             {
@@ -175,7 +175,7 @@ namespace Emar.Api.Controllers
 
             var order = _orderService.GetOrder(orderId, resourceParameters);
 
-            if (order == null) { return NotFound($"Patient order with id {orderId} was not found"); }
+            if (order == null) { return NotFound($"Patient order with id {orderId} was not found."); }
 
             var links = CreateHateOasLinksForOrder(orderId, resourceParameters);
             var linkedResourceToReturn = order.ShapeData(fields) as IDictionary<string, object>;

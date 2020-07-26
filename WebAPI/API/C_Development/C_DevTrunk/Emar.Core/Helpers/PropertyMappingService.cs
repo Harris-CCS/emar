@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Emar.Core.Carts.Model;
 using Emar.Core.Orders.Model;
 using Emar.Core.Patients.Model;
 using Emar.Data.Entities;
@@ -34,12 +35,25 @@ namespace Emar.Core
                 {"AddUserId", new PropertyMappingValue(new List<string>() { "AddUserId" } )}
             };
 
+        private Dictionary<string, PropertyMappingValue> _propertyMappingCartOrder =
+            new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
+            {
+                {"Id", new PropertyMappingValue(new List<string>() {"Id" } )},
+                {"Priority", new PropertyMappingValue(new List<string>() { "Priority" } )},
+                {"Begin", new PropertyMappingValue(new List<string>() { "BeginDatetime" } )},
+                {"BeginDate", new PropertyMappingValue(new List<string>() { "BeginDatetime" } )},
+                {"BeginTime", new PropertyMappingValue(new List<string>() { "BeginDatetime" } )},
+                {"BeginDatetime", new PropertyMappingValue(new List<string>() { "BeginDatetime" } )},
+                {"AddUserId", new PropertyMappingValue(new List<string>() { "AddUserId" } )}
+            };
+
         private IList<IPropertyMapping> _propertyMappings = new List<IPropertyMapping>();
 
         public PropertyMappingService()
         {
             _propertyMappings.Add(new PropertyMapping<PatientDto, Patient>(_propertyMappingPatient));
             _propertyMappings.Add(new PropertyMapping<PatientOrderDto, PatientOrder>(_propertyMappingOrder));
+            _propertyMappings.Add(new PropertyMapping<CartOrderDto, PatientCartOrder>(_propertyMappingCartOrder));
         }
 
         public bool ValidMappingExistsFor<TSource, TDestination>(string fields)

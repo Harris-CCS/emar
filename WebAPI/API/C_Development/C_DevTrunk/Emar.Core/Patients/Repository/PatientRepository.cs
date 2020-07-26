@@ -41,7 +41,7 @@ namespace Emar.Core.Patients.Repository
             if (!resourceParameters.IncludeInactive)
             {
                 patients = patients
-                    .Where(pt => pt.Active == true);
+                    .Where(pt => pt.IsActive == true);
             }
 
             if (resourceParameters.SiteId != null)
@@ -86,11 +86,11 @@ namespace Emar.Core.Patients.Repository
         IEnumerable<Patient> GetPatientsWithOrders()
         {
             return _context.Patients
-                    .Include(patient => patient.Orders)
-                        .ThenInclude(order => order.Events)
-                    .Include(patient => patient.Orders)
-                        .ThenInclude(order => order.Administrations)
-                            .ThenInclude(administration => administration.Events)
+                    .Include(patient => patient.PatientOrders)
+                        .ThenInclude(order => order.OrderEvents)
+                    .Include(patient => patient.PatientOrders)
+                        .ThenInclude(order => order.OrderAdministrations)
+                            .ThenInclude(administration => administration.OrderEvents)
                     .Include(patient => patient.Site)
                     .AsEnumerable();
         }
@@ -117,11 +117,11 @@ namespace Emar.Core.Patients.Repository
                 includeOrders)
             {
                 patient = _context.Patients
-                    .Include(patient => patient.Orders)
-                        .ThenInclude(order => order.Events)
-                    .Include(patient => patient.Orders)
-                        .ThenInclude(order => order.Administrations)
-                            .ThenInclude(administration => administration.Events)
+                    .Include(patient => patient.PatientOrders)
+                        .ThenInclude(order => order.OrderEvents)
+                    .Include(patient => patient.PatientOrders)
+                        .ThenInclude(order => order.OrderAdministrations)
+                            .ThenInclude(administration => administration.OrderEvents)
                     .Include(patient => patient.Site)
                     .FirstOrDefault(patient => patient.Id == patientId);
             }
