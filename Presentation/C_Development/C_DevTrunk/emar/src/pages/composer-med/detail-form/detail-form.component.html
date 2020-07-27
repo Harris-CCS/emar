@@ -1,0 +1,77 @@
+<div [formGroup]="detailForm">
+<span class="subheader">
+    <span>Other Details</span>
+</span>
+<span class="item">
+    <!--
+    <div class="form-group">
+        <label for="diagnosis">Diagnosis</label>
+        <select class="form-control" formControlName="diagnosis" id="diagnosis">
+            <option></option>
+            <option *ngFor="let diagnosis of diagnoses">
+                {{ diagnosis }}
+            </option>
+        </select>
+    </div>
+    -->
+    <div class="form-group">
+        <label for="diagnosis">Diagnosis</label>
+        <div ngbDropdown class="d-inline-block dropdown-select">
+            <button class="btn btn-outline-dark" id="diagnosis" ngbDropdownToggle>
+                {{ selectedDiagnosis? selectedDiagnosis: "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;" }}
+            </button>
+            <div ngbDropdownMenu aria-labelledby="diagnosis">
+                <button ngbDropdownItem *ngFor="let diagnosis of diagnoses" (click)="changeSelectedDiagnosis(diagnosis)">
+                    {{ diagnosis }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <span *ngIf="mandatoryIndication">
+        <!--
+        <div class="form-group">
+            <label for="antimicrobialIndication">Antimicrobial Indication</label>
+            <select class="form-control" formControlName="antimicrobialIndication" id="antimicrobialIndication">
+                <option></option>
+                <option *ngFor="let indication of indications">
+                    {{ indication }}
+                </option>
+            </select>
+        </div>
+        -->
+        <div class="form-group">
+            <label for="diagnosis">Antimicrobial Indication</label>
+            <div ngbDropdown class="d-inline-block dropdown-select" #indicationDrop="ngbDropdown">
+                <button class="btn"
+                    [ngClass]="{'btn-outline-danger': selectedIndication==='', 'btn-outline-dark':selectedIndication!==''}"
+                    id="indication"
+                    ngbDropdownToggle>
+                    {{ selectedIndication? selectedIndication: "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;" }}
+                </button>
+                <div ngbDropdownMenu aria-labelledby="indication">
+                    <button ngbDropdownItem *ngFor="let indication of indications" (click)="changeSelectedIndication(indication)">
+                        {{ indication }}
+                    </button>
+                    <div class="input-group mb-3">
+                        <input type="text"
+                            id="otherIndication"
+                            placeholder="Other, please describe"
+                            formControlName="otherAntimicrobialIndication">
+                        <div class="input-group-append">
+                            <button class="btn btn-secondary"
+                                type="button"
+                                (click)="changeOtherIndication();indicationDrop.close()">
+                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-right text-secondary" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="requirement" *ngIf="selectedIndication==''">Indication is mandatory</div>
+    </span>
+</span>
+</div>

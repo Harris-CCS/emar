@@ -1,6 +1,6 @@
 <div class="dialog-createOrder">
     <div class="form">
-        <form id="createOrderForm">
+       <form id="createOrderForm" [formGroup]="composerMedForm">
             <div class="form-group">
                 <div class="partialDiv">
                     <div class="dialog-title">
@@ -10,11 +10,19 @@
                     <div class="form-part">
                         <div class="form-column">
                             <span class="subheader">
-                                <span>Product</span>
+                                <span>New Orders</span>
                             </span>
                             <span class="item">
                                 {{getMed().name}}
                             </span>
+                            <span class="subheader">
+                                <span>Administration Instructions</span>
+                            </span>
+                            <span class="item">
+                                <textarea class="form-control" formControlName="orderNotes"></textarea>
+                            </span>
+
+                            <detail-form (formReady)="formInitialized('detail', $event)"></detail-form>
                         </div>
                         <div class="form-column">
                             <span class="subheader">
@@ -29,14 +37,16 @@
             </div>
         </form>
         <div class="dialog-footer">
-            <button class="secondary-button button-raised" title="Add to Quick List">&#10025;</button>
-            <button class="secondary-button button-raised" title="Continue">Continue</button>
+            <button class="secondary-button button-raised" title="Add to Quick List">&#10025;</button>&nbsp;
+            <button class="secondary-button button-raised" title="Continue">Continue</button>&nbsp;
             <button 
+                disabled="!composerMedForm.valid"
                 class="primary-button button-raised" 
                 title={{getActionText()}}
                 (click)="processCartOrder()">
                 {{getActionText()}}
             </button>
         </div>
+        <div>{{ composerMedForm.valid? 'Valid': 'Invalid' }} {{ composerMedForm.value | json }}</div>
     </div>
 </div>

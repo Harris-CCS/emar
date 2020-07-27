@@ -3,7 +3,7 @@
   min-height: 100%;
 }
 
-body.emar {
+body {
     background: #EDEDED url('/assets/img/background_2.svg');
     background-size: cover;
     background-repeat: no-repeat;

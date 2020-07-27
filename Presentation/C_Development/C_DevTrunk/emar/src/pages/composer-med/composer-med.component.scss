@@ -197,3 +197,23 @@
     padding-bottom: 20px;
 }
 
+.item .dropdown-select input {
+    margin-left: 1.5rem;
+}
+.dropdown-select .btn {
+    margin-right: 1.5em;
+}
+.dropdown-select .btn {
+    background: white;
+}
+.dropdown-select ::placeholder {
+    font-style:italic;
+}
+.dropdown-select .btn-outline-dark:hover, .dropdown-select .btn-outline-danger:hover {
+    color: #C2C7CC;
+}
+.requirement {
+    color: red;
+    font-style: italic;
+    font-size: smaller;
+}
