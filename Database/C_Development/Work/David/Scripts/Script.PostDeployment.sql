@@ -70,10 +70,12 @@ LVL: 005 SEQ: 001 TBL: dbo.order_event_details
 :r ..\Scripts\Data-Loader\user_data\users.sql
 :r ..\Scripts\Data-Loader\phi_data\patient_allergies.sql
 :r ..\Scripts\Data-Loader\phi_data\patient_home_medications.sql
-:r ..\Scripts\Data-Loader\user_data\user_quick_list_items.sql
---- custom data deployments for development
+--- BEGIN: custom data deployments for development
 :r ..\Scripts\Data-Loader\development_data\bradley_data.sql
 :r ..\Scripts\Data-Loader\development_data\antoni_data.sql
+--- END: custom data deployments for development
+:r ..\Scripts\Data-Loader\phi_data\patient_orders.sql
+:r ..\Scripts\Data-Loader\user_data\user_quick_list_items.sql
 
 -- procedures were only needed for data import process and are no longer needed.
 drop procedure if exists [dbo].[export_ibex_medication_routes];
@@ -85,6 +87,7 @@ drop procedure if exists [dbo].[export_ibex_site_formulary_match];
 drop procedure if exists [dbo].[export_ibex_users];
 drop procedure if exists [dbo].[export_ibex_patient_allergies];
 drop procedure if exists [dbo].[export_ibex_patient_home_medications];
+drop procedure if exists [dbo].[export_ibex_patient_orders];
 drop procedure if exists [dbo].[export_ibex_user_quick_list_items];
 
 --- variables global to all diagram_ published scripts

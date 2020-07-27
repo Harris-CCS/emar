@@ -147,6 +147,9 @@
     <None Include="Scripts\Data-Loader\development_data\antoni_data.sql" />
     <None Include="Scripts\Data-Loader\development_data\bradley_data.sql" />
     <None Include="Scripts\Data-Loader\site_data\site_options.sql" />
+    <Build Include="Programmability\Functions\Scalar-values Functions\ibex_date_to_offset_date.sql" />
+    <Build Include="Programmability\Stored Procedures\export_ibex_patient_orders.sql" />
+    <None Include="Scripts\Data-Loader\phi_data\patient_orders.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />
@@ -179,6 +182,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Scripts\Data-Loader\sample_data\patient_allergies.bcp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Data-Loader\sample_data\patient_orders.bcp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

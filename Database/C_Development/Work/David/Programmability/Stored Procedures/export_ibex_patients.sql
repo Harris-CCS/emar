@@ -36,11 +36,7 @@ as
                        then 1
                    else 0
                end as                                      [withdraw_consent]
-             , case
-                   when isdate([source].[vsdate]) = 1
-                       then cast([source].[vsdate] as date)
-                   else null
-               end as                                      [vs_datetime]
+             , ltrim(rtrim([source].[vsdate])) as          [vs_datetime]
              , ltrim(rtrim([source].[ord11])) as           [vs_blood_pressure_indicator]
              , ltrim(rtrim([source].[vssys])) as           [vs_systolic]
              , ltrim(rtrim([source].[vsdia])) as           [vs_diastolic]

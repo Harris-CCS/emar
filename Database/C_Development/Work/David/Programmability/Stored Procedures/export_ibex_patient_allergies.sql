@@ -10,9 +10,6 @@ as
              , isnull(cast([ndc].[medid] as varchar(25)), '') as              [drug_id]
              , ltrim(rtrim([source].[name])) as                               [name]
              , ltrim(rtrim([source].[alt_name])) as                           [alternate__name]
-             , ltrim(rtrim([source].[dose])) as                               [dose]
-             , ltrim(rtrim([source].[unit])) as                               [dose_unit]
-             , ltrim(rtrim([source].[route])) as                              [medication_route_id]
              , ltrim(rtrim([source].[alg_drug_id])) as                        [allergy_drug_id]
              , case
                    when ltrim(rtrim([source].[status])) = 'A'

@@ -26,7 +26,7 @@ create table [#patients]
     , [urgency_color]                  [varchar](25) null
     , [name_alert]                     [bit] not null
     , [withdraw_consent]               [bit] not null
-    , [vs_datetime]                    [datetimeoffset](7) null
+    , [vs_datetime]                    [varchar](14) null
     , [vs_blood_pressure_indicator]    [char](1) null
     , [vs_systolic]                    [char](14) null
     , [vs_diastolic]                   [char](14) null
@@ -188,6 +188,7 @@ if
            , [vs_oxygen_saturation]
            , [vs_pain_scale_indicator]
            , [vs_pain_scale]
+           , [is_active]
             )
         select [source].[target_id]
              , isnull([internal_site].[id], -1) as [site_id]
@@ -211,7 +212,7 @@ if
              , [source].[urgency_color]
              , [source].[name_alert]
              , [source].[withdraw_consent]
-             , [source].[vs_datetime]
+             , dbo.ibex_date_to_offset_date([source].[vs_datetime],[site].[time_zone_name]) 
              , [source].[vs_blood_pressure_indicator]
              , [source].[vs_systolic]
              , [source].[vs_diastolic]
@@ -229,9 +230,11 @@ if
              , [source].[vs_oxygen_saturation]
              , [source].[vs_pain_scale_indicator]
              , [source].[vs_pain_scale]
+             , cast(1 as bit) [is_active]
         from   [#patients] as [source]
                outer apply [dbo].[get_internal_id]
             ('pulsecheck', 'sites', [source].[site_id]) as [internal_site]
+               left join dbo.sites [site] on [site].[id]= [internal_site].[id]
         order by [source].[last_name]
                , [source].[first_name];
 

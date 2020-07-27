@@ -9,9 +9,6 @@ create table [dbo].[patient_allergies]
     , [drug_id]             [varchar](32) null
     , [name]                [nvarchar](255) null
     , [alternate_name]      [nvarchar](255) null
-    , [dose]                [decimal](11, 2) null
-    , [dose_unit]           [varchar](20) null
-    , [medication_route_id] [int] null
     , [allergy_drug_id]     [varchar](32) null
     , [is_active]           [bit] not null
     , [comment]             [varchar](255) null
@@ -47,10 +44,6 @@ go
 
 alter table [dbo].[patient_allergies]
 add constraint [fk__users__patient_allergies__change_user_id] foreign key([change_user_id]) references [dbo].[users]([id]);
-go
-
-alter table [dbo].[patient_allergies]
-add constraint [fk__patient_allergies__medication_routes] foreign key([medication_route_id]) references [dbo].[medication_routes]([id]);
 go
 
 /***************
@@ -240,28 +233,6 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'Medication Unit: unit portion of dose/dose_unit pair'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'patient_allergies'
-  , @level2type = N'COLUMN'
-  , @level2name = N'dose_unit';
-go
-
-execute [sys].[sp_addextendedproperty] 
-    @name = N'MS_Description'
-  , @value = N'Medication route'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'patient_allergies'
-  , @level2type = N'COLUMN'
-  , @level2name = N'medication_route_id';
-go
-
-execute [sys].[sp_addextendedproperty] 
-    @name = N'MS_Description'
   , @value = N'Medication schedule'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
@@ -269,17 +240,6 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'patient_allergies'
   , @level2type = N'COLUMN'
   , @level2name = N'schedule';
-go
-
-execute [sys].[sp_addextendedproperty] 
-    @name = N'MS_Description'
-  , @value = N'Medication Dose: numeric portion of dose/dose_unit pair'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'patient_allergies'
-  , @level2type = N'COLUMN'
-  , @level2name = N'dose';
 go
 
 execute [sys].[sp_addextendedproperty] 
