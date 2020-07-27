@@ -49,7 +49,7 @@ where  [source].[site_id] is null;
 
 /***********************
 update goes here
-but his script requires 
+but this script requires 
 no update statement
 ***********************/
 

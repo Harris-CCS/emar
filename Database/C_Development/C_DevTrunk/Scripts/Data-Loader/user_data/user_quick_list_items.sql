@@ -73,7 +73,7 @@ if
 
         set @max_id = isnull(@max_id, 0);
 
-        update [source] set    
+        update [source] set
             [target_id] = [source].[id] + @max_id
         from   [#user_quick_list_items] as [source];
 
@@ -119,14 +119,14 @@ if
                      , [mr].[id]
                      , [internal_site_site].[id] as [site_id]
                 from     [dbo].[medication_routes] as [mr]
-                where      [mr].[name] = [source].[medication_route_id]
+                where      [mr].[name] = [source].[medication_route_id] COLLATE DATABASE_DEFAULT
                            and [mr].[site_id] = [internal_site_site].[id]
                 union
                 select 2 as [type]
                      , [mr].[id]
                      , [internal_site_site].[id]
                 from   [dbo].[medication_routes] as [mr]
-                where  [mr].[name] = [source].[medication_route_id]
+                where  [mr].[name] = [source].[medication_route_id] COLLATE DATABASE_DEFAULT
                        and [mr].[site_id] <> [internal_site_site].[id]
             ) as [mr_item]
             order by [mr_item].[type]

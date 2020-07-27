@@ -18,7 +18,7 @@ create table [#users]
     , [login_name]              [varchar](255) not null
     , [login_password]          [varchar](255) not null
     , [salt]                    [binary](16) not null
-    , [last_login_time]         [datetimeoffset](7) null
+    , [last_login_time]         [varchar](50) null
     , [failed_login_attempts]   [int] not null);
 
 if '$(load_data)' = 'live'
@@ -127,11 +127,16 @@ if
              , [source].[login_name]
              , [source].[login_password]
              , [source].[salt]
-             , [source].[last_login_time]
+             , case
+                   when [source].[last_login_time] <= 100
+                       then null
+                   else dateadd(second,cast([source].[last_login_time] as bigint),'19700101') at time zone [site].[time_zone_name]
+               end as                              [last_login_time]
              , [source].[failed_login_attempts]
         from   [#users] as [source]
                outer apply [dbo].[get_internal_id]
             ('pulsecheck', 'sites', [source].[site_id]) as [internal_site]
+               left join [dbo].[sites] as [site] on [site].[id] = [internal_site].[id]
         order by [source].[last_name]
                , [source].[first_name];
 

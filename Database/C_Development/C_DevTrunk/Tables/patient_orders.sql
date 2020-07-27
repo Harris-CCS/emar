@@ -5,9 +5,11 @@ create table [dbo].[patient_orders]
     , [add_user_id]             [int] not null
     , [add_datetime]            [datetimeoffset](7) not null
     , [order_physician_user_id] [int] not null
+    , [begin_datetime]          [datetimeoffset](7) not null
+    , [end_datetime]            [datetimeoffset](7) null
     , [ndc]                     [varchar](32) null
-    , [drug_id]                 [varchar](32) not null
-    , [brand_name]              [nvarchar](255) not null
+    , [drug_id]                 [varchar](32) null
+    , [brand_name]              [nvarchar](255) null
     , [dose]                    [decimal](11, 2) null
     , [dose_unit]               [varchar](20) null
     , [medication_route_id]     [int] null
@@ -16,8 +18,6 @@ create table [dbo].[patient_orders]
     , [prn]                     [bit] not null
     , [point_in_time]           [bit] not null
     , [order_status]            [varchar](10) not null
-    , [begin_datetime]          [datetimeoffset](7) not null
-    , [end_datetime]            [datetimeoffset](7) null
     , [order_notes]             [nvarchar](max) null
     , constraint [pk__patient_orders__id] primary key clustered([id] asc));
 go

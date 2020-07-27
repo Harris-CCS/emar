@@ -7,7 +7,7 @@ set nocount on;
 
 drop table if exists [#table_order];
 
-declare 
+declare
     @load_level    int
   , @load_sequence int
   , @schema_name   sysname
@@ -68,11 +68,11 @@ with cte_identity
              from   [sys].[identity_columns]
              where  [object_id] = [t].[object_id]
          ))
-     update [tbl] set    
+     update [tbl] set
          [has_identity] = 1
      from   [#table_order] as [tbl]
-            inner join [cte_identity] as [id] on [tbl].[schema_name] = [id].[schema]
-                                                 and [tbl].[table_name] = [id].[table];
+            inner join [cte_identity] as [id] on [tbl].[schema_name] COLLATE DATABASE_DEFAULT = [id].[schema]
+                                                 and [tbl].[table_name]  COLLATE DATABASE_DEFAULT = [id].[table];
 
 declare csr cursor local fast_forward
 for select [tbl].[load_level]
@@ -86,7 +86,7 @@ for select [tbl].[load_level]
 
 open csr;
 
-fetch next from csr into 
+fetch next from csr into
     @load_level
   , @load_sequence
   , @schema_name
@@ -114,7 +114,7 @@ while @@FETCH_STATUS = 0
             end;
 
         set @has_identity = 0;
-        fetch next from csr into 
+        fetch next from csr into
             @load_level
           , @load_sequence
           , @schema_name
