@@ -7,7 +7,7 @@
             <div class="patient-data-location">
                 <span class="patient-location" [ngStyle]="{
                 'borderColor': getPatientUrgencyColor()
-            }" [innerText]=" getPatientLocation()"></span>
+            }" [innerText]="getPatientLocation()"></span>
 
             </div>
             <div class="patient-data-basic">
@@ -16,24 +16,31 @@
                 </div>
 
                 <div>
-                    <span *ngIf="patient.complaint"><em>Complaint: </em>{{patient.complaint}}</span>
+                    <span *ngIf="patient.chiefComplaint"><em>Complaint: </em>{{patient.chiefComplaint}}</span>
                 </div>
                 <div class="action-icons">
                     <ul class="horizontal-icon-list">
                         <li>
-                            <img *ngIf="checkForData('vitals')" [src]="getVitalSignIconPath()"
-                                class={{vsOverallIndicatorClass}} alt="Vital Signs" [ngbPopover]="lastVitalSignsTaken"
-                                placement="bottom" triggers="click" [autoClose]="'outside'" container="body">
+                            <span placement="bottom" ngbTooltip="Click to view Current Vital Signs">
+                                <img *ngIf="checkForData('vitals')" [src]="getVitalSignIconPath()"
+                                    class={{vsOverallIndicatorClass}} alt="Vital Signs"
+                                    [ngbPopover]="lastVitalSignsTaken" placement="bottom-left" triggers="click"
+                                    [autoClose]="'outside'" container="body">
+                            </span>
                         </li>
                         <li>
-                            <button type="button" *ngIf="checkForData('allergies')" class="action-button"
-                                placement="bottom" triggers="click " [autoClose]="'outside'" [ngbPopover]="allergies"
-                                container="body">A</button>
+                            <span placement="bottom" ngbTooltip="Click to view Allergies">
+                                <button type="button" *ngIf="checkForData('allergies')" class="action-button"
+                                    placement="bottom-left" triggers="click " [autoClose]="'outside'"
+                                    [ngbPopover]="allergies" container="body">A</button>
+                            </span>
                         </li>
                         <li>
-                            <button type="button" *ngIf="checkForData('homeMeds')" class="action-button"
-                                placement="bottom" triggers="click" [autoClose]="'outside'" [ngbPopover]="homeMeds"
-                                container="body">M</button>
+                            <span placement="bottom" ngbTooltip="Click to view Home Medications">
+                                <button type="button" *ngIf="checkForData('homeMeds')" class="action-button"
+                                    placement="bottom-left" triggers="click" [autoClose]="'outside'"
+                                    [ngbPopover]="homeMeds" container="body">M</button>
+                            </span>
                         </li>
                     </ul>
                 </div>
@@ -61,27 +68,34 @@
                 </div>
             </div>
             <div class='patient-image'>
-                <img src='../../../assets/img/mock_patient_image.jpg' alt="Sample Patient Image">
+                <img [src]="patient.patientImage" alt="">
             </div>
             <div class="patient-demo-ids">
                 <div class="patient-data-demographics">
                     <div class="demographics-header">
                         <span *ngIf="patient.age && patient.ageUnits">
-                            {{patient.age | Age: patient.age:patient.ageUnits}}
-                            <span *ngIf="patient.dateOfBirth">({{patient.dateOfBirth | date: 'MM/dd/yyyy' }})</span>
-                            <span [class]="getPatientGenderIconStyle()" *ngIf="patient.gender"></span>
+                            <!-- {{patient.age | Age: patient.age:patient.ageUnits}} -->
+                            {{patient.age}} {{patient.ageUnits}}
                         </span>
+                        <span *ngIf="patient.dateOfBirth">({{patient.dateOfBirth | date: 'MM/dd/yyyy' }})</span>
+
+                        <span [class]="getPatientGenderIconStyle()" *ngIf="patient.gender"
+                            ngbTooltip="{{patientGenderText}}" placement="bottom-right">{{patientGenderLetter}}</span>
                     </div>
                     <div>
-                        <span *ngIf="patient.heightInCm"><em>HT/WT: </em>{{patient.heightInCm}} cm
-                            <span *ngIf="patient.weightInKg"> / {{patient.weightInKg}} kg</span></span>
+                        <span *ngIf="patient.heightInCm">{{patient.heightInCm}} cm </span>
+                        <span *ngIf="patient.weightInKg" [innerText]="appendDisplayValue('weight')"></span>
                     </div>
                 </div>
                 <div class="patient-ids">
-                    <span *ngIf=" patient.medicalRecordNumber">{{patient.medicalRecordNumber}}
-                        <span *ngIf="patient.accountNumber"> / {{patient.accountNumber}}</span>
-                    </span>
-                    <span *ngIf="patient.enterprisePatientId"> / {{patient.enterprisePatientId}}</span>
+                    <span *ngIf=" patient.medicalRecordNumber" placement="bottom"
+                        ngbTooltip="Medical Record Number">{{patient.medicalRecordNumber}}</span>
+                    <span *ngIf="patient.accountNumber" [innerText]="appendDisplayValue('accountNumber')"
+                        placement="bottom" ngbTooltip="Account Number"></span>
+                    <span *ngIf="patient.personId" [innerText]="appendDisplayValue('personId')" placement="bottom"
+                        ngbTooltip="Person Identifier"></span>
+                    <span *ngIf="patient.customPatientId" [innerText]="appendDisplayValue('customId')"
+                        placement="bottom" ngbTooltip="Custom Identifier"></span>
                 </div>
             </div>
         </div>
@@ -89,8 +103,8 @@
 </div>
 
 <ng-template #lastVitalSignsTaken>
-    <!-- <simple-table [tableStructure]="tableStructureCurrentVitals"></simple-table> -->
-    <table class="table">
+    <simple-table [tableStructure]="vitalsTableStructure"></simple-table>
+    <!-- <table class="table"> 
         <thead>
             <tr>
                 <th [colSpan]="2">Current Vital Signs</th>
@@ -106,11 +120,12 @@
                 </td>
             </tr>
         </tbody>
-    </table>
+    </table> -->
 </ng-template>
 
 <ng-template #allergies>
-    <table *ngIf="this.patient.allergies" class='table'>
+    <simple-table [tableStructure]="allergiesTableStructure"></simple-table>
+    <!-- <table *ngIf="this.patient.allergies" class='table'>
         <thead>
             <tr>
                 <th [colSpan]="5">Current Allergies</th>
@@ -146,11 +161,12 @@
     <button type="button" class='btn-expand' *ngIf="!showAllAllergies" (click)="onExpandButtonClick('allergies')">See
         more..</button>
     <button type="button" class='btn-expand' *ngIf="showAllAllergies" (click)="onExpandButtonClick('allergies')">See
-        less...</button>
+        less...</button> -->
 </ng-template>
 
 <ng-template #homeMeds>
-    <table *ngIf="this.patient.homeMeds" class="table">
+    <simple-table [tableStructure]="homeMedsTableStructure"></simple-table>
+    <!-- <table *ngIf="this.patient.homeMeds" class="table">
         <thead>
             <tr>
                 <th [colSpan]="6">Home Medications</th>
@@ -190,5 +206,5 @@
     <button type="button" class='btn-expand' *ngIf="!showAllMeds" (click)="onExpandButtonClick('meds')">See
         more..</button>
     <button type="button" class='btn-expand' *ngIf="showAllMeds" (click)="onExpandButtonClick('meds')">See
-        less...</button>
+        less...</button> -->
 </ng-template>
