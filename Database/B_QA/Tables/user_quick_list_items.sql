@@ -19,6 +19,15 @@ go
 /********
  Defaults
 ********/
+
+alter table [dbo].[user_quick_list_items]
+add constraint [df__user_quick_list_items__usages_this_week] default((0)) for [usages_this_week];
+go
+
+alter table [dbo].[user_quick_list_items]
+add constraint [df__user_quick_list_items__weekly_usage_rolling_average] default((-1)) for [weekly_usage_rolling_average];
+go
+
 /*****************
  Unique constraint
 *****************/
@@ -30,7 +39,7 @@ go
 ***********/
 
 alter table [dbo].[user_quick_list_items]
-add constraint [fk__user_quick_list_items__user] foreign key([site_id]) references [dbo].[users]([id]);
+add constraint [fk__user_quick_list_items__user] foreign key([user_id]) references [dbo].[users]([id]);
 go
 
 alter table [dbo].[user_quick_list_items]
@@ -45,6 +54,29 @@ go
  Data Dictionary
     Defaults
 ***************/
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'default usages_this_week to 0'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'usages_this_week'
+  , @level2type = N'CONSTRAINT'
+  , @level2name = N'df__user_quick_list_items__usages_this_week';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'default weekly_usage_rolling_average to -1'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'weekly_usage_rolling_average'
+  , @level2type = N'CONSTRAINT'
+  , @level2name = N'df__user_quick_list_items__weekly_usage_rolling_average';
+go
+
 /***************
  Data Dictionary
     Indexes

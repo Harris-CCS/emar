@@ -123,7 +123,7 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'ndc'
+  , @value = N'Drug NDC (National Drug Code)'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -134,7 +134,13 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'drug_id'
+  , @value = N'External Vendor Drug Database Identifier
+    FDB: MEDID (MED Medication ID (Stable ID))
+    Multum: dnum
+These 3 columns will be carried as a set ndc,drug_id,brand_name
+while drug_id and brand_name are vendor specific concepts and can be derived from ndc number
+this will aid in display and lookup performance.
+'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'

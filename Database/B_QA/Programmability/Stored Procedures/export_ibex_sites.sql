@@ -3,7 +3,7 @@ as
     begin
 
         select [source].[site]
-             , [source].[name]
+             , ltrim(rtrim([source].[name]))
              , case
                    when [source].[status] = 'A'
                        then 1

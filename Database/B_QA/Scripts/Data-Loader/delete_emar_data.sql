@@ -7,7 +7,7 @@ set nocount on;
 
 drop table if exists [#table_order];
 
-declare 
+declare
     @load_level    int
   , @load_sequence int
   , @schema_name   sysname
@@ -32,16 +32,17 @@ insert into [#table_order] values(0,6,'dbo','sites',0);
 insert into [#table_order] values(0,7,'dbo','templates',0);
 insert into [#table_order] values(1,1,'dbo','action_route_templates',0);
 insert into [#table_order] values(1,2,'dbo','department_preferred_list_items',0);
-insert into [#table_order] values(1,3,'dbo','override_reasons',0);
-insert into [#table_order] values(1,4,'dbo','patient_cart_orders',0);
-insert into [#table_order] values(1,5,'dbo','patients',0);
-insert into [#table_order] values(1,6,'dbo','prompts',0);
-insert into [#table_order] values(1,7,'dbo','site_code_shares',0);
-insert into [#table_order] values(1,8,'dbo','site_formulary',0);
-insert into [#table_order] values(1,9,'dbo','site_formulary_match',0);
-insert into [#table_order] values(1,10,'dbo','site_options',0);
-insert into [#table_order] values(1,11,'dbo','template_prompt_groups',0);
-insert into [#table_order] values(1,12,'dbo','users',0);
+insert into [#table_order] values(1,3,'dbo','group_list_items',0);
+insert into [#table_order] values(1,4,'dbo','override_reasons',0);
+insert into [#table_order] values(1,5,'dbo','patient_cart_orders',0);
+insert into [#table_order] values(1,6,'dbo','patients',0);
+insert into [#table_order] values(1,7,'dbo','prompts',0);
+insert into [#table_order] values(1,8,'dbo','site_code_shares',0);
+insert into [#table_order] values(1,9,'dbo','site_formulary',0);
+insert into [#table_order] values(1,10,'dbo','site_formulary_match',0);
+insert into [#table_order] values(1,11,'dbo','site_options',0);
+insert into [#table_order] values(1,12,'dbo','template_prompt_groups',0);
+insert into [#table_order] values(1,13,'dbo','users',0);
 insert into [#table_order] values(2,1,'dbo','patient_allergies',0);
 insert into [#table_order] values(2,2,'dbo','patient_home_medications',0);
 insert into [#table_order] values(2,3,'dbo','patient_indicators',0);
@@ -49,7 +50,8 @@ insert into [#table_order] values(2,4,'dbo','patient_orders',0);
 insert into [#table_order] values(2,5,'dbo','prompt_choices',0);
 insert into [#table_order] values(2,6,'dbo','user_permissions',0);
 insert into [#table_order] values(2,7,'dbo','user_quick_list_items',0);
-insert into [#table_order] values(3,1,'dbo','order_administrations',0);
+insert into [#table_order] values(3,1,'dbo','cart_order_administrations',0);
+insert into [#table_order] values(3,2,'dbo','order_administrations',0);
 insert into [#table_order] values(4,1,'dbo','order_administration_notes',0);
 insert into [#table_order] values(4,2,'dbo','order_events',0);
 insert into [#table_order] values(5,1,'dbo','order_event_details',0);
@@ -66,11 +68,11 @@ with cte_identity
              from   [sys].[identity_columns]
              where  [object_id] = [t].[object_id]
          ))
-     update [tbl] set    
+     update [tbl] set
          [has_identity] = 1
      from   [#table_order] as [tbl]
-            inner join [cte_identity] as [id] on [tbl].[schema_name] = [id].[schema]
-                                                 and [tbl].[table_name] = [id].[table];
+            inner join [cte_identity] as [id] on [tbl].[schema_name] COLLATE DATABASE_DEFAULT = [id].[schema]
+                                                 and [tbl].[table_name]  COLLATE DATABASE_DEFAULT = [id].[table];
 
 declare csr cursor local fast_forward
 for select [tbl].[load_level]
@@ -84,7 +86,7 @@ for select [tbl].[load_level]
 
 open csr;
 
-fetch next from csr into 
+fetch next from csr into
     @load_level
   , @load_sequence
   , @schema_name
@@ -112,7 +114,7 @@ while @@FETCH_STATUS = 0
             end;
 
         set @has_identity = 0;
-        fetch next from csr into 
+        fetch next from csr into
             @load_level
           , @load_sequence
           , @schema_name

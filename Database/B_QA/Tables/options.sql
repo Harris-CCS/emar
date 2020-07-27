@@ -1,6 +1,6 @@
 create table [dbo].[options]
     (
-      [id]          [int] identity(1, 1) not null
+      [id]          [int] not null
     , [name]        [nvarchar](40) not null
     , [description] [varchar](1000) not null
     , constraint [pk__options__id] primary key clustered([id] asc));
