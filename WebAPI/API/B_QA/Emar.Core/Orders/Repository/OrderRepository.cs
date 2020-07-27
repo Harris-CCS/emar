@@ -28,10 +28,14 @@ namespace Emar.Core.Orders.Repository
         {
             patientId ??= resourceParameters.PatientId;
 
-            var orders = _context.Orders
-                .Include(order => order.Events)
-                .Include(order => order.Administrations)
-                    .ThenInclude(administration => administration.Events)
+            var orders = _context.PatientOrders
+                .Include(order => order.OrderEvents)
+                .Include(order => order.OrderAdministrations)
+                    .ThenInclude(administration => administration.OrderEvents)
+                .Include(order => order.MedicationRoute)
+                .Include(order => order.AddUser)
+                .Include(order => order.OrderPhysicianUser)
+                .Include(order => order.MedicationRoute)
                 .AsEnumerable();
 
             if ((patientId != null) &&
@@ -54,44 +58,47 @@ namespace Emar.Core.Orders.Repository
 
         public PatientOrder GetOrder(long orderId, OrdersResourceParameters resourceParameters)
         {
-            return _context.Orders
-                    .Include(order => order.Events)
-                    .Include(order => order.Administrations)
-                        .ThenInclude(administration => administration.Events)
+            return _context.PatientOrders
+                    .Include(order => order.OrderEvents)
+                    .Include(order => order.OrderAdministrations)
+                        .ThenInclude(administration => administration.OrderEvents)
+                    .Include(order => order.MedicationRoute)
+                    .Include(order => order.AddUser)
+                    .Include(order => order.OrderPhysicianUser)
                     .FirstOrDefault(order => order.Id == orderId);
         }
 
         public IEnumerable<OrderAdministration> GetAdministrations(long orderId)
         {
-            return _context.OrderAdministrations
-                    .Where(administration => administration.OrderId == orderId)
-                    .Include(administration => administration.Events)
+            return _context.PatientOrderAdministrations
+                    .Where(administration => administration.PatientOrderId == orderId)
+                    .Include(administration => administration.OrderEvents)
                     .AsEnumerable();
         }
 
         public OrderAdministration GetAdministration(long administrationId)
         {
-            return _context.OrderAdministrations
-                    .Include(administration => administration.Events)
+            return _context.PatientOrderAdministrations
+                    .Include(administration => administration.OrderEvents)
                     .FirstOrDefault(administration => administration.Id == administrationId);
         }
 
         public IEnumerable<OrderEvent> GetEvents(long orderId)
         {
-            return _context.OrderEvents
-                    .Where(@event => @event.OrderId == orderId)
+            return _context.PatientOrderEvents
+                    .Where(@event => @event.PatientOrderId == orderId)
                     .AsEnumerable();
         }
 
         public OrderEvent GetEvent(long eventId)
         {
-            return _context.OrderEvents.Find(eventId);
+            return _context.PatientOrderEvents.Find(eventId);
         }
 
         public IEnumerable<OrderEvent> GetAdministrationEvents(long administrationId)
         {
-            return _context.OrderEvents
-                    .Where(@event => @event.AdministrationId == administrationId)
+            return _context.PatientOrderEvents
+                    .Where(@event => @event.OrderAdministrationId == administrationId)
                     .AsEnumerable();
         }
     }
