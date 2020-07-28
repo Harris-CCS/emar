@@ -9,13 +9,12 @@ import { User } from '../app/interfaces/user';
   providedIn: 'root'
 })
 export class UserService {
-  url: string = 'http://ros-57c-dx01.picis.com:82/api/';
-
   constructor(private http: HttpClient) { }
 
   fetchUser(externalId: number): Observable<User> {
+    // will use the proxy(-qa).conf.json
      return this.http.get<User>(
-       this.url + '/users/' + externalId,
+       '/users/' + externalId,
        {
          headers: new HttpHeaders({ 'Accept' :'application/json'}),
          responseType: 'json'

@@ -1,24 +1,33 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 
 import { ModalService } from '../../services/modal.service';
 import { MedOrderService } from '../../services/med-order.service';
-import { InteractionModalComponent } from '../order-entry/interaction-modal/interaction-modal.component';
 
 @Component({
   selector: 'composer-med',
   templateUrl: './composer-med.component.html',
   styleUrls: ['./composer-med.component.scss']
 })
+
+// Inspiration: https://itnext.io/partial-reactive-form-with-angular-components-443ca06d8419
 export class ComposerMedComponent implements OnInit {
+  composerMedForm: FormGroup;
 
   constructor(
+    private fb: FormBuilder,
     private modalService: ModalService,
     private medOrderService: MedOrderService
   ) {}
 
   ngOnInit(): void {
-    
+    this.composerMedForm = this.fb.group({
+      orderNotes: null // this is here for test 
+    });
+  }
+  
+  formInitialized(name: string, form: FormGroup) {
+    this.composerMedForm.setControl(name, form);
   }
 
   getData() {
@@ -53,6 +62,7 @@ export class ComposerMedComponent implements OnInit {
       });
     });
   }
+  
   saveCartOrder = () => {
     if (this.getData().action === 'update') {
       this.medOrderService.updateCartOrder(this.getMed());
