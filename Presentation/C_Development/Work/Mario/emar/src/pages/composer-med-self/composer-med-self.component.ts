@@ -6,19 +6,27 @@ import { Patient } from 'src/app/interfaces/patient';
 @Component({
   selector: 'composer-med-self',
   templateUrl: './composer-med-self.component.html',
-  styleUrls: ['./composer-med-self.component.scss', '../../assets/css/site.css']
+  styleUrls: [
+    './composer-med-self.component.scss',
+    '../../assets/css/site.css',
+  ],
 })
 export class ComposerMedSelfComponent implements OnInit {
   patient: Patient;
 
   constructor(
     private route: ActivatedRoute,
-    private patientService: PatientService) { }
+    private patientService: PatientService
+  ) {}
 
   ngOnInit(): void {
-    const patientId:number = +this.route.snapshot.params['id'];
-    this.patientService.getPatient(patientId)
-      .subscribe(patient => this.patient = patient);
+    const patientId: number = +this.route.snapshot.params['id'];
+
+    this.patient = this.patientService.getPatient(patientId);
+
+    // this.patientService
+    //   .getPatient(patientId)
+    //   .subscribe((patient) => (this.patient = patient));
   }
 
   selectedPatient() {

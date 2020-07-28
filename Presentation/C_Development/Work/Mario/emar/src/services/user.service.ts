@@ -1,28 +1,47 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, of } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
-
+import { USER } from '../app/mockup/user';
 import { User } from '../app/interfaces/user';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
-  constructor(private http: HttpClient) { }
+  // url: string = 'http://ros-57c-dx01.picis.com:82/api/';
+  private userUrl = 'api/users';
 
-  fetchUser(externalId: number): Observable<User> {
-    // will use the proxy(-qa).conf.json
-     return this.http.get<User>(
-       '/users/' + externalId,
-       {
-         headers: new HttpHeaders({ 'Accept' :'application/json'}),
-         responseType: 'json'
-        }
-       ).pipe(
-         catchError(error => {
-          return throwError(error)
-         })
-       );
+  constructor(private http: HttpClient) {}
+
+  getUsers(): Observable<User[]> {
+    const headers = new HttpHeaders({ Accept: 'application/json' });
+
+    return this.http
+      .get<User[]>(this.userUrl, { headers })
+      .pipe(catchError(this.handleError<User[]>('getUsers', [])));
   }
+
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      console.error('error', error);
+      return of(result as T);
+    };
+  }
+
+  getUser(userId: number): User {
+    const user = USER.find((p) => {
+      return p.id === userId;
+    });
+    return user;
+  }
+
+  // getUser(userId: number): Observable<User> {
+  //   const headers = new HttpHeaders({ Accept: 'application/json' });
+  //   const url = `${this.userUrl}/${userId}`;
+  //   console.log('userId', userId);
+  //   return this.http
+  //     .get<User>(url, { headers })
+  //     .pipe(catchError(this.handleError<User>('getUser')));
+  // }
 }
