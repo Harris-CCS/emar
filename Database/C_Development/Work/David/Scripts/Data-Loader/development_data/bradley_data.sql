@@ -16,6 +16,13 @@ if '$(load_data)' in('sample', 'live')
         where  [first_name] = 'Chester'
                and [last_name] = 'Arthur';
 
+        update [users] set    
+            [first_name] = 'Heather'
+          , [last_name] = 'Abebe'
+          , [middle_name] = 'L'
+          , [name_suffix] = 'P.A.C.'
+        where  [id] = 240;
+
         declare 
             @userId int =
         (

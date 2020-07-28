@@ -76,6 +76,7 @@ LVL: 005 SEQ: 001 TBL: dbo.order_event_details
 :r ..\Scripts\Data-Loader\user_data\users.sql
 :r ..\Scripts\Data-Loader\phi_data\patient_allergies.sql
 :r ..\Scripts\Data-Loader\phi_data\patient_home_medications.sql
+:r ..\Scripts\Data-Loader\phi_data\patient_indicators.sql
 --- BEGIN: custom data deployments for development
 :r ..\Scripts\Data-Loader\development_data\antoni_data.sql
 --- END: custom data deployments for development
@@ -100,6 +101,7 @@ drop procedure if exists [dbo].[export_ibex_site_formulary_match];
 drop procedure if exists [dbo].[export_ibex_users];
 drop procedure if exists [dbo].[export_ibex_patient_allergies];
 drop procedure if exists [dbo].[export_ibex_patient_home_medications];
+drop procedure if exists [dbo].[export_ibex_patient_indicators];
 drop procedure if exists [dbo].[export_ibex_patient_orders];
 drop procedure if exists [dbo].[export_ibex_user_quick_list_items];
 
