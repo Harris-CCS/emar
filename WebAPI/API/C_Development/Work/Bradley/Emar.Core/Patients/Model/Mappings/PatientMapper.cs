@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using Emar.Core.Orders.Model.Mappings;
+using Emar.Core.Sites.Model.Mappings;
 using Emar.Data.Entities;
 
 namespace Emar.Core.Patients.Model.Mappings
@@ -20,6 +23,7 @@ namespace Emar.Core.Patients.Model.Mappings
                 LastName = pt.LastName.Trim(),
                 NameSuffix = (pt.NameSuffix == null) ? pt.NameSuffix : pt.NameSuffix.Trim(),
                 AccountNumber = pt.AccountNumber,
+                MedicalRecordNumber = pt.MedicalRecordNumber,
                 Gender = pt.Gender,
                 DateOfBirth = pt.DateOfBirth,
                 Age = pt.Age,
@@ -27,10 +31,10 @@ namespace Emar.Core.Patients.Model.Mappings
                 ChiefComplaint = pt.ChiefComplaint,
                 HeightInCm = pt.HeightInCm,
                 WeightInKg = pt.WeightInKg,
-                SiteName = pt.SiteName,
                 DepartmentCode = pt.DepartmentCode,
                 WardCode = pt.WardCode,
                 RoomBedCode = pt.RoomBedCode,
+                Urgency = pt.Urgency,
                 UrgencyColor = pt.UrgencyColor,
                 NameAlert = pt.NameAlert,
                 WithdrawConsent = pt.WithdrawConsent,
@@ -52,7 +56,8 @@ namespace Emar.Core.Patients.Model.Mappings
                 VsOxygenSaturation = pt.VsOxygenSaturation,
                 VsPainScaleIndicator = pt.VsPainScaleIndicator,
                 VsPainScale = pt.VsPainScale,
-                Orders = pt.Orders
+                Orders = pt.PatientOrders?.Select(OrderMapper.MapOrder).ToList(),
+                Site = SiteMapper.MapSite(pt.Site)
             };
 
             // Calculate the age if the date-of-birth is present

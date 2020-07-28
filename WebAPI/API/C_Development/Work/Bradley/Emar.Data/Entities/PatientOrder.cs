@@ -2,29 +2,63 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Xml.Schema;
 
 namespace Emar.Data.Entities
 {
     [Table("patient_orders")]
     public class PatientOrder
     {
-        [Column("id", TypeName = "bigint"), Key]
+        public PatientOrder()
+        {
+            OrderAdministrations = new HashSet<OrderAdministration>();
+            OrderEvents = new HashSet<OrderEvent>();
+        }
+
+        [Key]
+        [Column("id", TypeName = "bigint")]
         public long Id { get; set; }
 
         [Column("patient_id", TypeName = "bigint"), Required]
         public long PatientId { get; set; }
 
-        [Column("create_stamp", TypeName = "datetimeoffset"), Required]
-        public DateTimeOffset CreatedDateTime { get; set; }
+        [Column("add_user_id", TypeName = "int"), Required]
+        public int AddUserId { get; set; }
 
-        [Column("drug_id", TypeName = "varchar(50)"), Required]
+        [Column("add_datetime", TypeName = "datetimeoffset"), Required]
+        public DateTimeOffset AddDatetime { get; set; }
+
+        [Column("order_physician_user_id", TypeName = "int"), Required]
+        public int OrderingPhysicianId { get; set; }
+
+        [Column("ndc")]
+        [StringLength(32)]
+        public string Ndc { get; set; }
+
+        [Required]
+        [Column("drug_id", TypeName = "varchar(32)")]
         public string DrugId { get; set; }
 
-        [NotMapped]
-        public string OrderType { get; set; }
+        [Required]
+        [Column("brand_name")]
+        [StringLength(255)]
+        public string BrandName { get; set; }
+
+        [Column("dose", TypeName = "decimal(11,2)")]
+        public decimal? Dose { get; set; }
+
+        [Column("dose_unit")]
+        [StringLength(20)]
+        public string DoseUnit { get; set; }
+
+        [Column("medication_route_id", TypeName = "int")]
+        public int? MedicationRouteId { get; set; }
 
         [Column("priority", TypeName = "tinyint"), Required]
-        public short Priority { get; set; }
+        public byte Priority { get; set; }
+
+        [Column("frequency_id", TypeName = "int")]
+        public int? FrequencyId { get; set; }
 
         [Column("prn", TypeName = "bit"), Required]
         public bool Prn { get; set; }
@@ -35,40 +69,40 @@ namespace Emar.Data.Entities
         [Column("order_status", TypeName = "varchar(10)"), Required]
         public string OrderStatus { get; set; }
 
-        [NotMapped]
-        public string OrderStatusCode { get; set; } = "Pending";
+        [Column("begin_datetime", TypeName = "datetimeoffset"), Required]
+        public DateTimeOffset BeginDatetime { get; set; }
 
-        [Column("begin_stamp", TypeName = "datetimeoffset"), Required]
-        public DateTimeOffset BeginDateTime { get; set; }
-
-        [Column("end_stamp", TypeName = "datetimeoffset")]
+        [Column("end_datetime", TypeName = "datetimeoffset")]
         public DateTimeOffset? EndDateTime { get; set; }
-
-        [Column("frequency_id", TypeName = "int"), Required]
-        public int FrequencyId { get; set; }
-
-        [Column("medication_route_id", TypeName = "int"), Required]
-        public int MedicationRouteId { get; set; }
 
         [Column("order_notes", TypeName = "ntext")]
         public string OrderNotes { get; set; }
 
         [NotMapped]
-        public string Name { get; set; }
-
-        [NotMapped]
-        public string Unit { get; set; }
-
-        [NotMapped]
-        public string Dose { get; set; }
+        public string OrderStatusCode { get; set; } = "Pending";
 
         [NotMapped]
         public int OrderingProviderId { get; set; }
 
         [NotMapped]
-        public IEnumerable<OrderAdministration>? Administrations { get; set; }
+        public string OrderType { get; set; }
 
-        [NotMapped]
-        public IEnumerable<OrderEvent>? Events { get; set; }
+        [ForeignKey(nameof(AddUserId))]
+        [InverseProperty(nameof(User.PatientOrders))]
+        public virtual User AddUser { get; set; }
+
+        [ForeignKey(nameof(MedicationRouteId))]
+        [InverseProperty(nameof(Entities.MedicationRoute.PatientOrders))]
+        public virtual MedicationRoute MedicationRoute { get; set; }
+
+        [ForeignKey(nameof(PatientId))]
+        [InverseProperty(nameof(Entities.Patient.PatientOrders))]
+        public virtual Patient Patient { get; set; }
+
+        [InverseProperty("PatientOrder")]
+        public virtual ICollection<OrderAdministration> OrderAdministrations { get; set; }
+
+        [InverseProperty("PatientOrder")]
+        public virtual ICollection<OrderEvent> OrderEvents { get; set; }
     }
 }

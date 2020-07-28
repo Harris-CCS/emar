@@ -5,10 +5,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Emar.Data.Entities
 {
-    [Table("patient_order_administrations")]
+    [Table("order_administrations")]
     public class OrderAdministration
     {
-        [Column("id", TypeName = "bigint"), Key]
+        public OrderAdministration()
+        {
+            OrderEvents = new HashSet<OrderEvent>();
+        }
+
+        [Key]
+        [Column("id", TypeName = "bigint")]
         public long Id { get; set; }
 
         [Column("patient_order_id", TypeName = "bigint"), Required]
@@ -23,38 +29,49 @@ namespace Emar.Data.Entities
         [Column("missed_dose", TypeName = "bit"), Required]
         public bool MissedDose { get; set; }
 
-        [Column("scheduled_administration_time", TypeName = "datetimeoffset"), Required]
-        public DateTimeOffset ScheduledAdministrationTime { get; set; }
+        [Column("administration_scheduled_datetime", TypeName = "datetimeoffset"), Required]
+        public DateTimeOffset AdministrationScheduledDatetime { get; set; }
 
-        [Column("actual_administration_time", TypeName = "datetimeoffset")]
-        public DateTimeOffset? ActualAdministrationTime { get; set; }
+        [Column("administration_input_datetime", TypeName = "datetimeoffset")]
+        public DateTimeOffset? AdministrationInputDatetime { get; set; }
 
-        [Column("system_administration_time", TypeName = "datetimeoffset")]
-        public DateTimeOffset? SystemAdministrationTime { get; set; }
+        [Column("administering_user_id", TypeName = "int")]
+        public int? AdministeringUserId { get; set; }
 
-        //[Column("user_administering_id", TypeName = "int")]
-        [NotMapped]
-        public int? AdministrationUserId { get; set; }
+        [Column("administration_datetime", TypeName = "datetimeoffset")]
+        public DateTimeOffset? AdministrationDatetime { get; set; }
 
-        [Column("scheduled_stop_time", TypeName = "datetimeoffset")]
-        public DateTimeOffset? ScheduledStopTime { get; set; }
+        [Column("stop_scheduled_datetime", TypeName = "datetimeoffset")]
+        public DateTimeOffset? StopScheduledDatetime { get; set; }
 
-        [Column("actual_stop_time", TypeName = "datetimeoffset")]
-        public DateTimeOffset? ActualStopTime { get; set; }
+        [Column("stop_input_datetime", TypeName = "datetimeoffset")]
+        public DateTimeOffset? StopInputDatetime { get; set; }
 
-        [Column("system_stop_time", TypeName = "datetimeoffset")]
-        public DateTimeOffset? SystemStopTime { get; set; }
-
-        [Column("user_stopping_id", TypeName = "int")]
+        [Column("stop_user_id", TypeName = "int")]
         public int? StopUserId { get; set; }
+
+        [Column("stop_datetime", TypeName = "datetimeoffset")]
+        public DateTimeOffset? StopDatetime { get; set; }
 
         [Column("acknowledge_user_id", TypeName = "int")]
         public int? AcknowledgeUserId { get; set; }
 
-        [Column("acknowledge_time", TypeName = "datetimeoffset")]
-        public DateTimeOffset? AcknowledgeTime { get; set; }
+        [Column("acknowledge_datetime", TypeName = "datetimeoffset")]
+        public DateTimeOffset? AcknowledgeDatetime { get; set; }
 
-        [NotMapped]
-        public IEnumerable<OrderEvent>? Events { get; set; }
+        [ForeignKey(nameof(AcknowledgeUserId))]
+        [InverseProperty(nameof(User.OrderAdministrationsAcknowledgeUser))]
+        public virtual User AcknowledgeUser { get; set; }
+
+        [ForeignKey(nameof(AdministeringUserId))]
+        [InverseProperty(nameof(User.OrderAdministrationsAdministeringUser))]
+        public virtual User AdministeringUser { get; set; }
+
+        [ForeignKey(nameof(OrderId))]
+        [InverseProperty(nameof(Entities.PatientOrder.OrderAdministrations))]
+        public virtual PatientOrder PatientOrder { get; set; }
+
+        [InverseProperty("OrderAdministration")]
+        public virtual ICollection<OrderEvent> OrderEvents { get; set; }
     }
 }

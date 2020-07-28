@@ -512,6 +512,14 @@
         //            { REPEAT_CODE, REPEAT_CODE.ToTitleCase() },
         //            { COMPLETE_CODE, COMPLETE_CODE.ToTitleCase() }
         //        };
+
+        #endregion
+
+
+        #region UserQuickList Constants
+
+        public const string MostUsedTabTitle = "MostUsed";
+
         #endregion
     }
 }

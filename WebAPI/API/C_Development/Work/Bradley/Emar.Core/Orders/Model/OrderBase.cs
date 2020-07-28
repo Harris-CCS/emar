@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using Emar.Core.Medications.Model;
 
 namespace Emar.Core.Orders.Model
 {
@@ -9,44 +10,54 @@ namespace Emar.Core.Orders.Model
         /// </summary>
         public long Id { get; set; }
 
+        string ndc;
         /// <summary>
         /// National Drug Code value
         /// </summary>
-        public string Ndc { get; set; }
+        public string Ndc
+        {
+            get => ndc?.Trim();
+            set => ndc = value?.Trim() != null ? Regex.Replace(value, "( : ){2,}", " : ") : null;
+        }
 
+        string drugId;
         /// <summary>
         /// Link to the Medication Provider Database
         /// </summary>
-        public string DrugId { get; set; }
+        public string DrugId
+        {
+            get => drugId?.Trim();
+            set => drugId = value?.Trim() != null ? Regex.Replace(value, "( : ){2,}", " : ") : null;
+        }
 
-        private string _brandBrandName;
+        private string _brandName;
         /// <summary>
         /// Brand name of the medication
         /// </summary>
         public string BrandName
         {
-            get => _brandBrandName;
-            set => _brandBrandName = value != null ? Regex.Replace(value, "( : ){2,}", " : ") : null;
+            get => _brandName.Trim();
+            set => _brandName = value?.Trim() != null ? Regex.Replace(value, "( : ){2,}", " : ") : null;
         }
 
-        public string Dose { get; set; }
+        public decimal? Dose { get; set; }
 
-        public string Unit { get; set; }
+        string doseUnit;
+        public string DoseUnit 
+        {
+            get => doseUnit?.Trim();
+            set => doseUnit = value?.Trim();
+        }
 
         /// <summary>
-        /// Unique medication route identifier.
+        /// DTO of the Medication Route
         /// </summary>
-        public int MedicationRouteId { get; set; }
-
-        /// <summary>
-        /// Name of the Medication Route
-        /// </summary>
-        public string MedicationRoute { get; set; }
+        public MedicationRouteDto MedicationRoute { get; set; }
 
         /// <summary>
         /// Unique order frequency identifier.
         /// </summary>
-        public int FrequencyId { get; set; }
+        public int? FrequencyId { get; set; }
 
         /// <summary>
         /// Indicates whether the order is Point-In-Time.
@@ -55,10 +66,15 @@ namespace Emar.Core.Orders.Model
         // include a Frequency object instead of an Id and trash this property
         public bool PointInTime { get; set; }
 
+        string orderNotes;
         /// <summary>
         /// Order notes.
         /// </summary>
-        public string OrderNotes { get; set; }
+        public string OrderNotes
+        {
+            get => orderNotes?.Trim();
+            set => orderNotes = value?.Trim();
+        }
     }
 
     #region Constants

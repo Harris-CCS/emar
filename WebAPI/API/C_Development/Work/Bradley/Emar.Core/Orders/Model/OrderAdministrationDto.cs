@@ -19,37 +19,37 @@ namespace Emar.Core.Orders.Model
         /// <summary>
         /// Date and time the order administration is scheduled to start.  Includes the local time timezone offset from UTC.
         /// </summary>
-        public DateTimeOffset ScheduledAdministrationTime { get; set; }
+        public DateTimeOffset AdministrationScheduledDatetime { get; set; }
 
         /// <summary>
         /// Date and time the order administration actually started.  Includes the local time timezone offset from UTC.
         /// </summary>
-        public DateTimeOffset? ActualAdministrationTime { get; set; }
+        public DateTimeOffset? AdministrationInputDatetime { get; set; }
 
         /// <summary>
         /// Date and time the order administration start was recorder.  Includes the local time timezone offset from UTC.
         /// </summary>
-        public DateTimeOffset? SystemAdministrationTime { get; set; }
+        public DateTimeOffset? AdministrationDatetime { get; set; }
 
         /// <summary>
         /// Unique user identifier of the user that started the order administration.
         /// </summary>
-        public int? AdministrationUserId { get; set; }
+        public int? AdministeringUserId { get; set; }
 
         /// <summary>
         /// Date and time the order administration is scheduled to end.  Includes the local time timezone offset from UTC.
         /// </summary>
-        public DateTimeOffset? ScheduledStopTime { get; set; }
+        public DateTimeOffset? StopScheduledDatetime { get; set; }
 
         /// <summary>
         /// Date and time the order administration actually ended.  Includes the local time timezone offset from UTC.
         /// </summary>
-        public DateTimeOffset? ActualStopTime { get; set; }
+        public DateTimeOffset? StopInputDatetime { get; set; }
 
         /// <summary>
         /// Date and time the order administration end was recorder.  Includes the local time timezone offset from UTC.
         /// </summary>
-        public DateTimeOffset? SystemStopTime { get; set; }
+        public DateTimeOffset? StopDatetime { get; set; }
 
         /// <summary>
         /// Unique user identifier of the user that ended the order administration.
@@ -64,12 +64,12 @@ namespace Emar.Core.Orders.Model
         /// <summary>
         /// Date and time the order administration was acknowledged.  Includes the local time timezone offset from UTC.
         /// </summary>
-        public DateTimeOffset? AcknowledgeTime { get; set; }
+        public DateTimeOffset? AcknowledgeDatetime { get; set; }
 
-        ///////// <summary>
-        ///////// Indicates whether the order administration is continuous.
-        ///////// </summary>
-        //////public bool Continuous { get; set; }
+        // <summary>
+        // Indicates whether the order administration is point-in-time.
+        // </summary>
+        public bool PointInTime { get; set; }
 
         /// <summary>
         /// Indicates whether the order administration is on hold.
@@ -82,8 +82,8 @@ namespace Emar.Core.Orders.Model
         public bool MissedDose { get; set; }
 
         /// <summary>
-        /// PatientOrder administration events.
+        /// Patient order administration events.
         /// </summary>
-        public IEnumerable<OrderEvent>? AdministrationEvents { get; set; }
+        public IEnumerable<OrderEventDto> AdministrationEvents { get; set; }
     }
 }

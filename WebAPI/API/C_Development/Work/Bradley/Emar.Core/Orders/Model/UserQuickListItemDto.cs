@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using Emar.Data.Entities;
-
-namespace Emar.Core.Orders.Model
+﻿namespace Emar.Core.Orders.Model
 {
     public class UserQuickListItemDto : OrderBase
     {

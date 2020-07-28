@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using Emar.Core.Patients.Model;
 using Emar.Data;
 using Emar.Data.Entities;
@@ -86,37 +87,46 @@ namespace Emar.Core.Patients.Repository
         IEnumerable<Patient> GetPatientsWithOrders()
         {
             return _context.Patients
-                    .Include(patient => patient.Orders)
-                        .ThenInclude(order => order.Events)
-                    .Include(patient => patient.Orders)
-                        .ThenInclude(order => order.Administrations)
-                            .ThenInclude(administration => administration.Events)
-                    .AsEnumerable();
+                    .Include(patient => patient.PatientOrders)
+                        .ThenInclude(order => order.OrderEvents)
+                    .Include(patient => patient.PatientOrders)
+                        .ThenInclude(order => order.OrderAdministrations)
+                        .ThenInclude(administration => administration.OrderEvents)
+                    .Include(patient => patient.Site)
+                    .ToList();
         }
 
         IEnumerable<Patient> GetPatientsWithoutOrders()
         {
             return _context.Patients
-                    .AsEnumerable();
+                    .Include(patient => patient.Site)
+                    .ToList();
         }
 
         public Patient GetPatient(long? patientId, PatientsResourceParameters resourceParameters, bool includeOrders)
         {
             patientId = (long)GetPatientId(patientId, resourceParameters);
 
-            var patient = _context.Patients.Find(patientId);
+            //var patient = _context.Patients.Find(patientId);
 
-            //if (((resourceParameters != null) && resourceParameters.IncludeOrders) ||
-            //    includeOrders)
-            //{
-            //    patient = _context.Patients
-            //        .Include(patient => patient.Orders)
-            //            .ThenInclude(order => order.Events)
-            //        .Include(patient => patient.Orders)
-            //            .ThenInclude(order => order.Administrations)
-            //                .ThenInclude(administration => administration.Events)
-            //        .FirstOrDefault(patient => patient.Id == patientId);
-            //}
+            Patient patient;
+            if (((resourceParameters != null) && resourceParameters.IncludeOrders) || includeOrders)
+            {
+                patient = _context.Patients
+                    .Include(patient => patient.PatientOrders)
+                    .ThenInclude(order => order.OrderEvents)
+                    .Include(patient => patient.PatientOrders)
+                    .ThenInclude(order => order.OrderAdministrations)
+                    .ThenInclude(administration => administration.OrderEvents)
+                    .Include(s => s.Site)
+                    .FirstOrDefault(p => p.Id == patientId);
+            }
+            else
+            {
+                patient = _context.Patients
+                    .Include(s => s.Site)
+                    .FirstOrDefault(p => p.Id == patientId);
+            }
 
             return patient;
         }
@@ -129,7 +139,7 @@ namespace Emar.Core.Patients.Repository
             {
                 patientId = _context.ExternalIds
                                 .Where(@x_id =>
-                                        @x_id.External_Id.Equals(resourceParameters.ExtId1 + "|" + resourceParameters.ExtId2) &&
+                                        @x_id.ExternalId.Equals(resourceParameters.ExtId1 + "|" + resourceParameters.ExtId2) &&
                                         @x_id.Entity.ToLower().Equals(@"patients") &&
                                         @x_id.Vendor.ToLower().Equals(@"pulsecheck"))
                                 .FirstOrDefault()
@@ -142,7 +152,7 @@ namespace Emar.Core.Patients.Repository
         public long GetInternalPatientId(short extId1, string extId2)
         {
             var ptId = from e in _context.ExternalIds
-                where e.External_Id == extId1 + "|" + extId2
+                where e.ExternalId == extId1 + "|" + extId2
                       && e.Entity == "patients"
                       && e.Vendor == "pulsecheck"
                 select e.InternalId;
@@ -152,7 +162,9 @@ namespace Emar.Core.Patients.Repository
 
         public Patient GetPatientByAccountNumber(string accountNumber)
         {
-            var query = _context.Patients.Where(p => p.AccountNumber == accountNumber);
+            var query = _context.Patients
+                .Where(p => p.AccountNumber == accountNumber)
+                .Include(s => s.Site);
             return query.FirstOrDefault();
         }
     }

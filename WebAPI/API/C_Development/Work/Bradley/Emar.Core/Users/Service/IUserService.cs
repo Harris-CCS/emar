@@ -4,6 +4,7 @@ namespace Emar.Core.Users.Service
 {
     public interface IUserService
     {
-        UserDto GetUser(in int userId);
+        UserDto GetUser(int userId);
+        UserDto GetUser(string loginName);
     }
 }

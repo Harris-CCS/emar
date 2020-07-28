@@ -1,31 +1,45 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Emar.Data.Entities
 {
-    [Table("patient_order_events")]
+    [Table("order_events")]
     public class OrderEvent
     {
-        [Column("id", TypeName = "bigint"), Key]
+        [Key]
+        [Column("id", TypeName = "bigint")]
         public long Id { get; set; }
 
         [Column("patient_order_id", TypeName = "bigint"), Required]
-        public long OrderId { get; set; }
+        public long PatientOrderId { get; set; }
 
-        [Column("patient_order_administration_id", TypeName = "bigint")]
-        public long? AdministrationId { get; set; }
+        [Column("order_administration_id", TypeName = "bigint")]
+        public long? OrderAdministrationId { get; set; }
 
-        [Column("event_time", TypeName = "datetimeoffset"), Required]
+        [Column("event_datetime", TypeName = "datetimeoffset"), Required]
         public DateTimeOffset EventDateTime { get; set; }
 
-        [Column("system_time", TypeName = "datetimeoffset"), Required]
-        public DateTimeOffset SystemDateTime { get; set; }
+        [Column("add_user_id", TypeName = "int"), Required]
+        public int AddUserId { get; set; }
 
-        [Column("user_id", TypeName = "int"), Required]
-        public int UserId { get; set; }
+        [Column("add_datetime", TypeName = "datetimeoffset"), Required]
+        public DateTimeOffset SystemDateTime { get; set; }
 
         [Column("action_id", TypeName = "int"), Required]
         public int ActionId { get; set; }
+
+        [ForeignKey(nameof(ActionId))]
+        [InverseProperty(nameof(Entities.Action.OrderEvents))]
+        public virtual Action Action { get; set; }
+
+        [ForeignKey(nameof(OrderAdministrationId))]
+        [InverseProperty(nameof(Entities.OrderAdministration.OrderEvents))]
+        public virtual OrderAdministration OrderAdministration { get; set; }
+
+        [ForeignKey(nameof(PatientOrderId))]
+        [InverseProperty(nameof(Entities.PatientOrder.OrderEvents))]
+        public virtual PatientOrder PatientOrder { get; set; }
     }
 }

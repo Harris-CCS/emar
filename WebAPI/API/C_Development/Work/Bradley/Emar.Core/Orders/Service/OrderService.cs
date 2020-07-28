@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Emar.Core.Medications.Model;
 using Emar.Core.Orders.Model;
 using Emar.Core.Orders.Model.Mappings;
 using Emar.Core.Orders.Repository;
+using Emar.Data.Entities;
 
 namespace Emar.Core.Orders.Service
 {
-    public class OrderService : IOrderService
+    public partial class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
 
@@ -97,6 +100,63 @@ namespace Emar.Core.Orders.Service
             }
 
             return eventsList;
+        }
+
+        public UserQuickListFrameworkDto GetInitialUserQuickList(in int userId, int? siteId)
+        {
+            var ret = new UserQuickListFrameworkDto();
+
+            List<string> tabList = _orderRepository.GetUserQuickListTabs(userId, siteId).OrderBy(i => i).ToList();
+            // Compress all non-alpha values into "#"
+            if (!tabList.Any())
+                return null;
+
+            var foundNonAlpha = false;
+            for (int i = tabList.Count - 1; i >= 0; i--)
+            {
+                if (!Char.IsLetter(Convert.ToChar(tabList[i])))
+                {
+                    foundNonAlpha = true;
+                    tabList.RemoveAt(i);
+                }
+            }
+            if(foundNonAlpha)
+                tabList.Add("#");
+
+            var mostUsedItems = _orderRepository.GetUserQuickListMostUsed(userId, siteId).ToList();
+            if (mostUsedItems.Any())
+            {
+                ret.CurrentTabName = Constants.MostUsedTabTitle;
+                ret.CurrentTabContents = mostUsedItems.Select(item => OrderMapper.MapUserQuickListItem(item))
+                    .OrderBy(i => i.BrandName).ToList();
+                tabList.Insert(0, Constants.MostUsedTabTitle);
+            }
+            else
+            {
+                ret.CurrentTabName = tabList[0];
+                var items = _orderRepository.GetUserQuickListTabItems(userId, siteId, tabList[0]).ToList();
+
+                ret.CurrentTabContents = items.Select(OrderMapper.MapUserQuickListItem)
+                    .OrderBy(i => i.BrandName).ToList();
+            }
+
+            ret.TabListing = tabList;
+            return ret;
+        }
+
+        public IEnumerable<UserQuickListItemDto> GetQuickListTab(in int userId, int? siteId, string tab)
+        {
+            List<UserQuickListItem> tabItems;
+            if (tab == Constants.MostUsedTabTitle)
+                tabItems = _orderRepository.GetUserQuickListMostUsed(userId, siteId).ToList();
+            else
+                tabItems = _orderRepository.GetUserQuickListTabItems(userId, siteId, tab).ToList();
+
+            if (!tabItems.Any())
+                return null;
+
+            return tabItems.Select(item => OrderMapper.MapUserQuickListItem(item))
+                .OrderBy(i => i.BrandName);
         }
     }
 }

@@ -6,8 +6,8 @@ namespace Emar.Api.Controllers
 {
     [ApiController]
     [Route("api")]
-    //[Produces(MediaTypes.PcEmar, MediaTypes.Json)]
-    [Consumes(MediaTypes.PcEmar, MediaTypes.Json)]
+    [Produces(MediaTypes.Json)]
+    [Consumes(MediaTypes.Json)]
     public class RootController : ControllerBase
     {
         [HttpGet("About")]

@@ -7,5 +7,7 @@ namespace Emar.Core.Users.Repository
     {
         IEnumerable<User> GetUsers();
         User GetUser(int userId);
+        long? GetInternalUserId(string extId);
+        User GetUser(string loginName);
     }
 }

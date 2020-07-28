@@ -1,3 +1,4 @@
+using Emar.Core.Sites.Model.Mappings;
 using Emar.Data.Entities;
 
 namespace Emar.Core.Users.Model.Mappings
@@ -15,17 +16,21 @@ namespace Emar.Core.Users.Model.Mappings
             {
                 Id = user.Id,
                 SiteId = user.SiteId,
-                Active = user.Active,
+                Type = user.Type,
+                IsActive = user.IsActive,
                 InitialsDisplay = user.InitialsDisplay,
                 FirstName = user.FirstName,
+                MiddleName = user.MiddleName,
                 LastName = user.LastName,
-                OrderingOnlyPhysician = user.OrderingOnlyPhysician,
-                NameDisplayPreference = user.NameDisplayPreference,
+                NameSuffix = user.NameSuffix,
+                OrderingOnlyPhysician = user.OrderingOnlyPhysician ?? false,
+                NameDisplayInitials = user.NameDisplayInitials ?? false,
                 LoginName = user.LoginName,
                 LoginPassword = user.LoginPassword,
                 Salt = user.Salt,
                 LastLoginTime = user.LastLoginTime,
-                FailedLoginAttempts = user.FailedLoginAttempts
+                FailedLoginAttempts = user.FailedLoginAttempts,
+                Site = SiteMapper.MapSite(user.Site)
             };
 
             return _userDto;

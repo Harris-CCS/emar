@@ -30,7 +30,7 @@
             </param>
             <param name="orderBy">
             *Optional.* \
-            Comma delimited list Order element to sort by:
+            Comma delimited list Patient Order element to sort by:
             * **Id**
             * **Priority**
             * **OrderStatus**
@@ -145,7 +145,7 @@
             <remarks>
             </remarks>
         </member>
-        <member name="M:Emar.Api.Controllers.PatientsController.GetPatients(System.String,System.String,System.String,System.Nullable{System.Int16},System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+        <member name="M:Emar.Api.Controllers.PatientsController.GetPatients(System.String,System.String,System.String,System.Nullable{System.Int16},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
             <summary>
             Get a list of patients in the system.
             </summary>
@@ -203,6 +203,25 @@
             Second key of the external patient Id. In PulseCheck, it is the Ibex number.
             </param>
             <returns>An IActionResult of IEnumerable of type PatientDto</returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.UserQuickListsController.GetUserQuickListInitial(System.Int32,System.Nullable{System.Int32})">
+            <summary>
+            Return initial information about a User's Quick List:
+            will return the name and contents of the first Quick List tab,
+            and a list of all the tabs that will return remembered orders
+            </summary>
+            <param name="userId">The user to retrieve the quick list for (provided in the header)</param>
+            <param name="siteId">(Optional) The Site to retrieve the user's quick list for (if omitted, return the user's quick list for all sites)</param>
+            <returns></returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.UserQuickListsController.GetUserQuickListTab(System.Int32,System.Nullable{System.Int32},System.String)">
+            <summary>
+            Return the contents for one tab of a a User's Quick List
+            </summary>
+            <param name="userId">The user to retrieve the quick list for (provided in the header)</param>
+            <param name="siteId">(Optional) The Site to retrieve the user's quick list for (if omitted, return the user's quick list for all sites)</param>
+            <param name="tabTitle">the tab to retrieve remembered orders for</param>
+            <returns></returns>
         </member>
     </members>
 </doc>
