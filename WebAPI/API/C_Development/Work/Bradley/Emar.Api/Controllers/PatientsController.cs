@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using Emar.Api.Helpers;
 using Emar.Core;
+using Emar.Core.Helpers;
 using Emar.Core.Patients.Model;
 using Emar.Core.Patients.Service;
+using Emar.Core.ResourceParameters;
 using Emar.Data.Entities;
 using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Mvc;
@@ -95,7 +98,7 @@ namespace Emar.Api.Controllers
             [FromHeader(Name = "Accept")] string mediaType,
             [FromQuery] string orderBy,
             [FromQuery] string fields,
-            [FromQuery] short? siteId,
+            [FromQuery] int? siteId,
             [FromQuery] string accountNumber,
             [FromQuery] string departmentCode,
             [FromQuery] string wardCodes,

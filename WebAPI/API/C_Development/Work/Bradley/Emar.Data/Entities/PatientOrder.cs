@@ -75,21 +75,20 @@ namespace Emar.Data.Entities
         [Column("end_datetime", TypeName = "datetimeoffset")]
         public DateTimeOffset? EndDateTime { get; set; }
 
-        [Column("order_notes", TypeName = "ntext")]
+        [Column("order_notes", TypeName = "nvarchar(MAX)")]
         public string OrderNotes { get; set; }
 
         [NotMapped]
         public string OrderStatusCode { get; set; } = "Pending";
 
-        [NotMapped]
-        public int OrderingProviderId { get; set; }
-
-        [NotMapped]
-        public string OrderType { get; set; }
 
         [ForeignKey(nameof(AddUserId))]
         [InverseProperty(nameof(User.PatientOrders))]
         public virtual User AddUser { get; set; }
+
+        [ForeignKey(nameof(OrderingPhysicianId))]
+        [InverseProperty(nameof(User.PatientOrders))]
+        public virtual User OrderingPhysician { get; set; }
 
         [ForeignKey(nameof(MedicationRouteId))]
         [InverseProperty(nameof(Entities.MedicationRoute.PatientOrders))]

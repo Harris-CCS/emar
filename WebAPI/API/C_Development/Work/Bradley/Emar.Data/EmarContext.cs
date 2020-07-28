@@ -21,6 +21,8 @@ namespace Emar.Data
         public virtual DbSet<OrderAdministration> OrderAdministrations { get; set; }
         public virtual DbSet<OrderEvent> OrderEvents { get; set; }
         public virtual DbSet<Patient> Patients { get; set; }
+        public virtual DbSet<PatientCartOrder> PatientCartOrders { get; set; }
+        public virtual DbSet<CartOrderAdministration> PatientCartOrderAdministrations { get; set; }
         public virtual DbSet<PatientOrder> PatientOrders { get; set; }
         public virtual DbSet<Site> Sites { get; set; }
         public virtual DbSet<User> Users { get; set; }
@@ -281,6 +283,11 @@ namespace Emar.Data
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk__users__sites");
             });
+
+            modelBuilder.Entity<PatientCartOrder>().HasOne(order => order.Patient).WithMany(patient => patient.PatientCartOrders).HasForeignKey(order => order.PatientId);
+            modelBuilder.Entity<PatientCartOrder>().HasOne(order => order.MedicationRoute).WithMany().HasForeignKey(order => order.MedicationRouteId);
+            modelBuilder.Entity<PatientCartOrder>().HasOne(order => order.User).WithMany().HasForeignKey(order => order.UserId);
+            modelBuilder.Entity<PatientCartOrder>().HasMany(order => order.CartOrderAdministrations).WithOne().HasForeignKey(administration => administration.PatientCartOrderId);
 
             //OnModelCreatingPartial(modelBuilder);
         }

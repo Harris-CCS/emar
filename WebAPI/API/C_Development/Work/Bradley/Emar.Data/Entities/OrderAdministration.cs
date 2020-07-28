@@ -18,7 +18,7 @@ namespace Emar.Data.Entities
         public long Id { get; set; }
 
         [Column("patient_order_id", TypeName = "bigint"), Required]
-        public long OrderId { get; set; }
+        public long PatientOrderId { get; set; }
 
         [Column("point_in_time", TypeName = "bit"), Required]
         public bool PointInTime { get; set; }
@@ -67,7 +67,7 @@ namespace Emar.Data.Entities
         [InverseProperty(nameof(User.OrderAdministrationsAdministeringUser))]
         public virtual User AdministeringUser { get; set; }
 
-        [ForeignKey(nameof(OrderId))]
+        [ForeignKey(nameof(PatientOrderId))]
         [InverseProperty(nameof(Entities.PatientOrder.OrderAdministrations))]
         public virtual PatientOrder PatientOrder { get; set; }
 

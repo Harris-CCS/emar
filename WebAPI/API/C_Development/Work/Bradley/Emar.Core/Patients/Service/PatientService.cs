@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Emar.Core.Helpers;
 using Emar.Core.Patients.Model;
 using Emar.Core.Patients.Model.Mappings;
 using Emar.Core.Patients.Repository;
+using Emar.Core.ResourceParameters;
 using Emar.Data.Entities;
 
 namespace Emar.Core.Patients.Service

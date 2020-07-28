@@ -6,7 +6,7 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Reflection;
 
-namespace Emar.Core
+namespace Emar.Core.Helpers
 {
     public static class StringExtensions
     {
@@ -118,11 +118,6 @@ namespace Emar.Core
     {
         public static IEnumerable<ExpandoObject> ShapeData<TSource>(this IEnumerable<TSource> source, string fields)
         {
-            return source.ShapeData(fields, String.Empty);
-        }
-
-        public static IEnumerable<ExpandoObject> ShapeData<TSource>(this IEnumerable<TSource> source, string fields, string excludeFields)
-        {
             if (source == null)
             {
                 throw new ArgumentNullException(nameof(source));
@@ -136,9 +131,6 @@ namespace Emar.Core
             // it once and reuse the results.  After all, part of the reflection is on the 
             // type of the object (TSource), not on the instance
             var propertyInfoList = new List<PropertyInfo>();
-
-            // the excludeFields are separated by ",", so we split it.
-            var excludeFieldsAfterSplit = excludeFields != null ? excludeFields.Split(',') : new string[] { };
 
             if (string.IsNullOrWhiteSpace(fields))
             {
@@ -197,12 +189,9 @@ namespace Emar.Core
                     // GetValue returns the value of the property on the source object
                     var propertyValue = propertyInfo.GetValue(sourceObject);
 
-                    if (!excludeFieldsAfterSplit.Contains(propertyInfo.Name.ToTitleCase()))
-                    {
-                        // add the field to the ExpandoObject
-                        ((IDictionary<string, object>)dataShapedObject)
-                            .Add(propertyInfo.Name, propertyValue);
-                    }
+                    // add the field to the ExpandoObject
+                    ((IDictionary<string, object>)dataShapedObject)
+                        .Add(propertyInfo.Name, propertyValue);
                 }
 
                 // add the ExpandoObject to the list
@@ -218,20 +207,12 @@ namespace Emar.Core
     {
         public static ExpandoObject ShapeData<TSource>(this TSource source, string fields)
         {
-            return source.ShapeData(fields, String.Empty);
-        }
-
-        public static ExpandoObject ShapeData<TSource>(this TSource source, string fields, string excludeFields)
-        {
             if (source == null)
             {
                 throw new ArgumentNullException(nameof(source));
             }
 
             var dataShapedObject = new ExpandoObject();
-
-            // the excludeFields are separated by ",", so we split it.
-            var excludeFieldsAfterSplit = excludeFields != null ? excludeFields.Split(',') : new string[] { };
 
             if (string.IsNullOrWhiteSpace(fields))
             {
@@ -247,19 +228,16 @@ namespace Emar.Core
                     // get the value of the property on the source object
                     var propertyValue = propertyInfo.GetValue(source);
 
-                    if (!excludeFieldsAfterSplit.Contains(propertyInfo.Name))
-                    {
-                        // add the field to the ExpandoObject
-                        ((IDictionary<string, object>)dataShapedObject)
-                            .Add(propertyInfo.Name, propertyValue);
-                    }
+                    // add the field to the ExpandoObject
+                    ((IDictionary<string, object>)dataShapedObject)
+                        .Add(propertyInfo.Name, propertyValue);
                 }
 
                 return dataShapedObject;
             }
 
             // the field are separated by ",", so we split it.
-            var fieldsAfterSplit = fields != null ? fields.Split(',') : new string[] { };
+            var fieldsAfterSplit = fields.Split(',');
 
             foreach (var field in fieldsAfterSplit)
             {
@@ -267,6 +245,12 @@ namespace Emar.Core
                 // or trailing spaces. Can't trim the var in foreach,
                 // so use another var.
                 var propertyName = field.Trim();
+
+                ////   subfield  - BEGIN -  subfield   ////
+                // if the field is a field of a structure then it is separated by ".", so we split it.
+                var subFieldArray = field.Split('.');
+                var subSourceName = propertyName = subFieldArray.Length > 0 ? subFieldArray[0].Trim() : null;
+                ////   subfield  - END -  subfield   ////
 
                 // use reflection to get the property on the source object
                 // we need to include public and instance, b/c specifying a 
@@ -286,12 +270,39 @@ namespace Emar.Core
                 // get the value of the property on the source object
                 var propertyValue = propertyInfo.GetValue(source);
 
-                if (!excludeFieldsAfterSplit.Contains(propertyInfo.Name))
+                // add the field to the ExpandoObject
+                ((IDictionary<string, object>)dataShapedObject)
+                    .Add(propertyInfo.Name, propertyValue);
+
+                ////   subfield  - BEGIN -  subfield   ////
+                if (subFieldArray.Length > 1)
                 {
-                    // add the field to the ExpandoObject
+                    var subPropertyName = subFieldArray[1]?.Trim();
+
+                    if (((IDictionary<string, object>)dataShapedObject).TryGetValue(subSourceName, out object subSource))
+                    {
+                        var subPropertyInfo = subSource.GetType()
+                            .GetProperty(
+                                subPropertyName,
+                                BindingFlags.IgnoreCase |
+                                BindingFlags.Public |
+                                BindingFlags.Instance);
+
+                        if (subPropertyInfo == null)
+                        {
+                            throw new Exception($"Property {subPropertyName} wasn't found on {subSource.GetType()}");
+                        }
+
+                        var subPropertyValue = subPropertyInfo.GetValue(subSource);
+
+                        ((IDictionary<string, object>)dataShapedObject)
+                            .Add(subSourceName + "." + subPropertyName, subPropertyValue);
+                    }
+
                     ((IDictionary<string, object>)dataShapedObject)
-                        .Add(propertyInfo.Name, propertyValue);
+                        .Remove(propertyInfo.Name);
                 }
+                ////   subfield  - END -  subfield   ////
             }
 
             // return the list

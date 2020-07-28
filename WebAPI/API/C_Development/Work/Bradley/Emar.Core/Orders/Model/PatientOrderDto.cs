@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Emar.Data.Entities;
+using Emar.Core.Users.Model;
 
 namespace Emar.Core.Orders.Model
 {
@@ -86,12 +86,12 @@ namespace Emar.Core.Orders.Model
         }
 
         /// <summary>
-        /// Unique identifier of the provider who ordered the order.
+        /// Unique identifier of the user who entered the order.
         /// </summary>
         public int AddUserId { get; set; }
 
         /// <summary>
-        /// The Unique identifier of the provider who is signing off on the order
+        /// Unique identifier of the provider who ordered the order.
         /// </summary>
         public int OrderingPhysicianId { get; set; }
 
@@ -106,5 +106,15 @@ namespace Emar.Core.Orders.Model
         public IEnumerable<OrderEventDto> OrderEvents { get; set; }
 
         public IEnumerable<string> ApplicableFilters = new List<string>();
+
+        /// <summary>
+        /// User who entered the order.
+        /// </summary>
+        public UserDto AddUser { get; set; }
+
+        /// <summary>
+        /// Provider who ordered the order.
+        /// </summary>
+        public UserDto OrderingPhysicianUser { get; set; }
     }
 }

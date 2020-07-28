@@ -1,4 +1,6 @@
-﻿using Emar.Data.Entities;
+﻿using Emar.Core.Helpers;
+using Emar.Core.ResourceParameters;
+using Emar.Data.Entities;
 
 namespace Emar.Core.Patients.Repository
 {

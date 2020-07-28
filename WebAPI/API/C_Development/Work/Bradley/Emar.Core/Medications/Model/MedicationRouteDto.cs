@@ -12,7 +12,12 @@
         /// <summary>
         /// Medication route name.
         /// </summary>
-        public string RouteName { get; set; }
+        string name;
+        public string RouteName
+        {
+            get => name?.Trim();
+            set => name = value?.Trim();
+        }
 
         public bool PointInTime => true;
     }

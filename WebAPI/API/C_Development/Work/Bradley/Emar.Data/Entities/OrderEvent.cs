@@ -25,7 +25,7 @@ namespace Emar.Data.Entities
         public int AddUserId { get; set; }
 
         [Column("add_datetime", TypeName = "datetimeoffset"), Required]
-        public DateTimeOffset SystemDateTime { get; set; }
+        public DateTimeOffset AddDatetime { get; set; }
 
         [Column("action_id", TypeName = "int"), Required]
         public int ActionId { get; set; }

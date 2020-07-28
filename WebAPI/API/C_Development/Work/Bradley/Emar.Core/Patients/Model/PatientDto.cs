@@ -8,6 +8,7 @@ namespace Emar.Core.Patients.Model
     public class PatientDto
     {
         public long Id { get; set; }
+
         public bool Active { get; set; }
 
         private string _accountNumber;
@@ -109,7 +110,7 @@ namespace Emar.Core.Patients.Model
 
         #region geography - room, ward, department
         public int SiteId { get; set; }
-        
+
         string departmentCode;
         public string DepartmentCode
         {

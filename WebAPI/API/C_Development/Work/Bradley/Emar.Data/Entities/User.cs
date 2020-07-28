@@ -49,7 +49,6 @@ namespace Emar.Data.Entities
         [Column("name_suffix", TypeName = "nvarchar(25)")]
         public string NameSuffix { get; set; }
 
-
         [Column("ordering_only_physician", TypeName = "bit")]
         public bool? OrderingOnlyPhysician { get; set; }
 

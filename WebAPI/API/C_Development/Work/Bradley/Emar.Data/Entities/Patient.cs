@@ -17,8 +17,7 @@ namespace Emar.Data.Entities
         [Column("id", TypeName = "bigint")]
         public long Id { get; set; }
 
-        //[Column("is_active", TypeName = "char(1)")]
-        [NotMapped]
+        [Column("is_active", TypeName = "bool")]
         public bool Active { get; set; } = true;
 
         [Column("site_id", TypeName = "int"), Required]
@@ -142,6 +141,9 @@ namespace Emar.Data.Entities
 
         [InverseProperty("Patient")]
         public virtual ICollection<PatientOrder>? PatientOrders { get; set; }
+
+        [InverseProperty("Patient")]
+        public virtual ICollection<PatientCartOrder>? PatientCartOrders { get; set; }
 
         [ForeignKey(nameof(SiteId))]
         [InverseProperty(nameof(Entities.Site.Patients))]

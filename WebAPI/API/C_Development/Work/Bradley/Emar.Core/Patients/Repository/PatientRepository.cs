@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using Emar.Core.Helpers;
 using Emar.Core.Patients.Model;
+using Emar.Core.ResourceParameters;
 using Emar.Data;
 using Emar.Data.Entities;
 using Microsoft.EntityFrameworkCore;

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Emar.Core.Helpers;
 using Emar.Core.Orders.Model;
+using Emar.Core.ResourceParameters;
 using Emar.Data;
 using Emar.Data.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +34,10 @@ namespace Emar.Core.Orders.Repository
                 .Include(order => order.OrderEvents)
                 .Include(order => order.OrderAdministrations)
                     .ThenInclude(administration => administration.OrderEvents)
+                .Include(order => order.MedicationRoute)
+                .Include(order => order.AddUser)
+                .Include(order => order.OrderingPhysician)
+                .Include(order => order.MedicationRoute)
                 .AsEnumerable();
 
             if ((patientId != null) &&
@@ -58,15 +64,18 @@ namespace Emar.Core.Orders.Repository
                     .Include(order => order.OrderEvents)
                     .Include(order => order.OrderAdministrations)
                         .ThenInclude(administration => administration.OrderEvents)
+                    .Include(order => order.MedicationRoute)
+                    .Include(order => order.AddUser)
+                    .Include(order => order.OrderingPhysician)
                     .FirstOrDefault(order => order.Id == orderId);
         }
 
         public IEnumerable<OrderAdministration> GetAdministrations(long orderId)
         {
             return _context.OrderAdministrations
-                .Where(administration => administration.OrderId == orderId)
-                .Include(administration => administration.OrderEvents)
-                .AsEnumerable();
+                    .Where(administration => administration.PatientOrderId == orderId)
+                    .Include(administration => administration.OrderEvents)
+                    .AsEnumerable();
         }
 
         public OrderAdministration GetAdministration(long administrationId)
@@ -79,8 +88,8 @@ namespace Emar.Core.Orders.Repository
         public IEnumerable<OrderEvent> GetEvents(long orderId)
         {
             return _context.OrderEvents
-                .Where(@event => @event.PatientOrderId == orderId)
-                .AsEnumerable();
+                    .Where(@event => @event.PatientOrderId == orderId)
+                    .AsEnumerable();
         }
 
         public OrderEvent GetEvent(long eventId)
@@ -91,8 +100,8 @@ namespace Emar.Core.Orders.Repository
         public IEnumerable<OrderEvent> GetAdministrationEvents(long administrationId)
         {
             return _context.OrderEvents
-                .Where(@event => @event.OrderAdministrationId == administrationId)
-                .AsEnumerable();
+                    .Where(@event => @event.OrderAdministrationId == administrationId)
+                    .AsEnumerable();
         }
 
 

@@ -12,11 +12,11 @@ namespace Emar.Data.Entities
         [Key]
         [Column("id")]
         public int Id { get; set; }
-        
-        [Column("site_id")]
+
+        [Column("site_id", TypeName = "int"), Required]
         public int SiteId { get; set; }
-        
-        [Column("user_id")]
+
+        [Column("user_id", TypeName = "int"), Required]
         public int UserId { get; set; }
         
         [Column("ndc")]
@@ -26,26 +26,24 @@ namespace Emar.Data.Entities
         [Column("drug_id")]
         [StringLength(32)]
         public string DrugId { get; set; }
-        
-        [Required]
-        [Column("brand_name")]
-        [StringLength(255)]
+
+        [Column("brand_name", TypeName = "nvarchar(255)"), Required]
         public string BrandName { get; set; }
-        
+
         [Column("dose", TypeName = "decimal(11, 2)")]
         public decimal? Dose { get; set; }
-        
+
         [Column("dose_unit")]
         [StringLength(20)]
         public string DoseUnit { get; set; }
-        
-        [Column("medication_route_id")]
+
+        [Column("medication_route_id", TypeName = "int")]
         public int? MedicationRouteId { get; set; }
-        
-        [Column("frequency_id")]
+
+        [Column("frequency_id", TypeName = "int")]
         public int? FrequencyId { get; set; }
-        
-        [Column("order_notes")]
+
+        [Column("order_notes", TypeName = "nvarchar(MAX)")]
         public string OrderNotes { get; set; }
 
         [Column("usages_this_week", TypeName = "int")]

@@ -1,7 +1,13 @@
-﻿namespace Emar.Core
+﻿namespace Emar.Core.ResourceParameters
 {
     public class BaseResourceParameters
     {
+
+        /// <summary>
+        /// eMAR unique user identifier.
+        /// </summary>
+        public int? UserId { get; set; }
+
         #region Paging
         const int maxPageSize = 20;
         private int _pageSize = 10;

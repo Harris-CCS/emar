@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using Emar.Api.Helpers;
 using Emar.Core;
+using Emar.Core.Helpers;
 using Emar.Core.Orders.Model;
 using Emar.Core.Orders.Service;
+using Emar.Core.ResourceParameters;
 using Emar.Data.Entities;
 using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Mvc;
@@ -85,7 +88,7 @@ namespace Emar.Api.Controllers
 
             OrdersResourceParameters resourceParameters = new OrdersResourceParameters
             {
-                PatientId = long.TryParse(patientId, out long PtId) ? PtId : -1,
+                PatientId = long.TryParse(patientId, out long ptId) ? ptId : -1,
                 OrderBy = orderBy,
                 Fields = fields
             };
@@ -102,7 +105,7 @@ namespace Emar.Api.Controllers
 
             PagedList<PatientOrderDto> orders = _orderService.GetOrders(null, resourceParameters);
 
-            if (orders == null) { return NotFound($"No orders found"); }
+            if (orders == null) { return NotFound($"No orders found."); }
 
             var paginationMetadata = new
             {
@@ -175,7 +178,7 @@ namespace Emar.Api.Controllers
 
             var order = _orderService.GetOrder(orderId, resourceParameters);
 
-            if (order == null) { return NotFound($"Patient order with id {orderId} was not found"); }
+            if (order == null) { return NotFound($"Patient order with id {orderId} was not found."); }
 
             var links = CreateHateOasLinksForOrder(orderId, resourceParameters);
             var linkedResourceToReturn = order.ShapeData(fields) as IDictionary<string, object>;
@@ -388,7 +391,6 @@ namespace Emar.Api.Controllers
                         resourceParameters.PageNumber += 1;
                         return Url.Link(nameof(GetOrders), resourceParameters);
                     }
-                case ResourceUriType.Current:
                 default:
                     {
                         return Url.Link(nameof(GetOrders), resourceParameters);

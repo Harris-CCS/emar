@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
+using Emar.Api.Helpers;
 using Emar.Core;
-using Emar.Core.Orders.Model;
+using Emar.Core.Helpers;
 using Emar.Core.Orders.Service;
 using Emar.Core.Users.Model;
 using Emar.Core.Users.Repository;
 using Emar.Core.Users.Service;
 using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http.Headers;
 
 namespace Emar.Api.Controllers
 {
@@ -71,7 +70,7 @@ namespace Emar.Api.Controllers
             return null;
         }
 
-        [HttpGet("{userId:int}", Name = nameof(GetUser))]
+        [HttpGet("{userId}", Name = nameof(GetUser))]
         public ActionResult<UserDto> GetUser(
             [FromHeader(Name = "Accept")] string mediaType,
             [FromQuery] string fields,
@@ -88,18 +87,23 @@ namespace Emar.Api.Controllers
                 return BadRequest();
             }
 
-            var user = _userService.GetUser(userId);
+            var user = _userService.GetUserMinimal(userId);
 
             if (user == null) { return NotFound($"User with id '{userId}' was not found."); }
 
-            if (String.IsNullOrEmpty(fields))
-            {
-                fields =
-                    nameof(user.Id) + "," +
-                    nameof(user.Name) + "," +
-                    nameof(user.SiteId) + "," +
-                    nameof(user.SiteName);
-            }
+            //if (String.IsNullOrEmpty(fields))
+            //{
+            //    fields =
+            //        nameof(user.Id) + "," +
+            //        nameof(user.DisplayName) + "," +
+            //        (!user.NameDisplayInitials ? nameof(user.FirstName) + "," +
+            //                                     nameof(user.MiddleName) + "," +
+            //                                     nameof(user.LastName) + "," +
+            //                                     nameof(user.NameSuffix) + ","
+            //                                   : "") +
+            //        nameof(user.SiteId) + "," +
+            //        nameof(user.Site) + "." + nameof(user.Site.Name);
+            //}
 
             return Ok(user.ShapeData(fields));
         }

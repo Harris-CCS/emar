@@ -4,6 +4,34 @@
         <name>Emar.Api</name>
     </assembly>
     <members>
+        <member name="T:Emar.Api.Controllers.CartOrdersController">
+            <summary>
+            Patient Cart Orders Controller
+            </summary>
+        </member>
+        <member name="M:Emar.Api.Controllers.CartOrdersController.#ctor(Emar.Core.Carts.Service.ICartOrderService,Emar.Core.IPropertyMappingService,Emar.Core.IPropertyCheckerService)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="cartOrderService"></param>
+            <param name="propertyMappingService"></param>
+            <param name="propertyCheckerService"></param>
+        </member>
+        <member name="M:Emar.Api.Controllers.CartOrdersController.CheckoutCart(System.String,System.Nullable{System.Int32},System.Nullable{System.Int64})">
+            <summary>
+            Order (checkout) the cart orders.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="userId">
+            Unique user identifier from Accept header.
+            </param>
+            <param name="patientId">
+            Unique patient identifier.
+            </param>
+            <returns></returns>
+        </member>
         <member name="T:Emar.Api.Controllers.OrdersController">
             <summary>
             Patient Orders Controller
@@ -145,7 +173,7 @@
             <remarks>
             </remarks>
         </member>
-        <member name="M:Emar.Api.Controllers.PatientsController.GetPatients(System.String,System.String,System.String,System.Nullable{System.Int16},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+        <member name="M:Emar.Api.Controllers.PatientsController.GetPatients(System.String,System.String,System.String,System.Nullable{System.Int32},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
             <summary>
             Get a list of patients in the system.
             </summary>
