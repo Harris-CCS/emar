@@ -10,18 +10,22 @@
                     <med-search></med-search>
                 </div>
                 <div id="orders-cart">
-                    <order-cart-list [items]="cartListOrders()"></order-cart-list>
+                    <order-cart-list 
+                        [items]="cartListOrders()" 
+                        [patientId]="patientId"
+                    ></order-cart-list>
                 </div>
             </div>
             <div class="orders-current">
                 <h3>CURRENT ORDERS</h3>
                 <ul>
                     <li *ngFor="let ord of currentOrders">
-                        {{ord.name}} {{ord.route | uppercase}} {{ord.dose}} <span
-                            [ngClass]="{'allergy-dot': ord.allergies?.length}"></span><span
-                            [ngClass]="{'drug-dot' : ord.drugs?.length}"></span>
-                        <span class="timestamp">{{ord.signedOn | date: "HH:mm"}} on {{ord.signedOn | date: "MM/dd/yy"}}
-                            , Ordering physician: {{ord.signedBy}}</span>
+                        <span [ngClass]="{'allergy-dot': ord.allergies?.length, 'placeholder-dot': ord.allergies?.length === 0 || !ord.allergies}"></span>
+                        <span [ngClass]="{'drug-dot' : ord.drugs?.length, 'placeholder-dot': ord.drugs?.length === 0 || !ord.drugs}"></span>
+                        <span>{{ord.name}} {{ord.route | uppercase}} {{ord.dose}}</span>
+                        <span 
+                            class="timestamp">{{ord.signedOn | date: "HH:mm"}} on {{ord.signedOn | date: "MM/dd/yy"}}, Ordering physician: <i>{{ord.signedBy}}</i>
+                        </span>
                     </li>
                 </ul>
             </div>
@@ -57,3 +61,4 @@
 
 <composer-med-modal></composer-med-modal>
 <interaction-modal></interaction-modal>
+<app-delete-all-cart-orders-modal></app-delete-all-cart-orders-modal>

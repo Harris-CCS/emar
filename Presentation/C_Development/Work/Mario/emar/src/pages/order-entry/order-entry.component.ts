@@ -23,6 +23,7 @@ import { PatientService } from 'src/services/patient.service';
 })
 export class OrderEntryComponent implements OnInit {
 
+  patientId: number;
   patient: Patient;
   orders: Order[];
   //currentOrders = ORDERS;
@@ -38,12 +39,14 @@ export class OrderEntryComponent implements OnInit {
       private medOrderService: MedOrderService) { }
 
   ngOnInit(): void {
-    const patientId:number = +this.route.snapshot.params['id'];
+    //const patientId:number = +this.route.snapshot.params['id'];
+    this.patientId = +this.route.snapshot.params['id'];
+    console.log('OrderEntry: patientId: ', this.patientId)
     //this.patient = this.patientService.getPatient(patientId);
-    this.orders = this.patientService.getPatientOrders(patientId);
+    this.orders = this.patientService.getPatientOrders(this.patientId);
     this.currentListOrders();
 
-    this.patientService.getPatient(patientId)
+    this.patientService.getPatient(this.patientId)
       .subscribe(patient => this.patient = patient);
   }
 

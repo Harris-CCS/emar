@@ -8,4 +8,14 @@
     </li>
 </ul>
 <span class="no-data" *ngIf="!displayCartItems.length">No New Orders</span>
-<button *ngIf="displayCartItems.length" class="button button-raised">Sign</button>
+<button 
+    *ngIf="displayCartItems.length" 
+    class="button-primary button-raised"
+>Sign</button>
+<button 
+    *ngIf="displayCartItems.length" 
+    class="button-secondary button-raised" 
+    title="Delete All" 
+    (click)="showDeleteAllCartOrderModal(patientId)"
+>&#9851;</button>
+ 
