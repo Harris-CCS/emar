@@ -24,6 +24,6 @@ export class PatientsDashboardComponent implements OnInit {
 
   getPatients(): void {
     this.patientService.getPatients()
-      .subscribe(patients => this.patients = patients);
+      .subscribe(patientsRes => this.patients = patientsRes.patients);
   }
 }

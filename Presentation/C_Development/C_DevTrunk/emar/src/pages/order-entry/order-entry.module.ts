@@ -11,6 +11,7 @@ import { ComposerMedModalComponent } from './composer-med-modal/composer-med-mod
 import { ComposerMedModule } from '../composer-med/composer-med.module';
 import { InteractionModalComponent } from './interaction-modal/interaction-modal.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { DeleteAllCartOrdersModalComponent } from './delete-all-cart-orders-modal/delete-all-cart-orders-modal.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     DeptPreferredComponent,
     OrderCartListComponent,
     ComposerMedModalComponent,
-    InteractionModalComponent
+    InteractionModalComponent,
+    DeleteAllCartOrdersModalComponent
   ],
   imports: [
     CommonModule,

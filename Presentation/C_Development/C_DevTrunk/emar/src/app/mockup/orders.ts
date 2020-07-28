@@ -9,7 +9,7 @@ export const ORDERS: Order[] = [{
 	"dose": "500mg",
 	"route": "PO",
 	"signedOn": "2019-05-13T10:12:45",
-	"signedBy": "Merrily",
+	"signedBy": "Merrily Turnbull, MD",
 	"allergies": [1],
 }, {
 	"id": 2,
@@ -20,7 +20,7 @@ export const ORDERS: Order[] = [{
 	"dose": "500mg",
 	"route": "PO",
 	"signedOn": "2019-05-13T10:15:12",
-	"signedBy": "Romel"
+	"signedBy": "Romel Ursua, MD"
 }, {
 	"id": 3,
 	"patientId": 2,
@@ -30,7 +30,7 @@ export const ORDERS: Order[] = [{
 	"dose": "100mg",
 	"route": "PO",
 	"signedOn": "2019-05-13T17:12:45",
-	"signedBy": "Pete",
+	"signedBy": "Pete Turnbull, MD",
 	"allergies": [1],
 	"drugs": [1]
 }, {
@@ -42,7 +42,7 @@ export const ORDERS: Order[] = [{
 	"dose": "500mg",
 	"route": "PO",
 	"signedOn": "2019-05-13T10:12:45",
-	"signedBy": "Peter"
+	"signedBy": "Peter Turnbull, MD"
 }, {
 	"id": 5,
 	"patientId": 1,
@@ -52,7 +52,7 @@ export const ORDERS: Order[] = [{
 	"dose": "8mg",
 	"route": "injection",
 	"signedOn": "2019-05-13T10:15:12",
-	"signedBy": "Merrily",
+	"signedBy": "Merrily Turnbull, MD",
 	"allergies": [],
 	"drugs": [1]
 }, {
@@ -64,7 +64,7 @@ export const ORDERS: Order[] = [{
 	"dose": "0.2mg",
 	"route": "injection",
 	"signedOn": "2019-05-13T17:12:45",
-	"signedBy": "Peter",
+	"signedBy": "Peter Turnbull, MD",
 	"allergies": [1],
 	"drugs": []
 }, {
@@ -76,7 +76,7 @@ export const ORDERS: Order[] = [{
 	"dose": "300mg",
 	"route": "PO",
 	"signedOn": "2019-05-14T11:13:45",
-	"signedBy": "Romel",
+	"signedBy": "Romel Ursua, MD",
 	"allergies": [1],
 	"drugs": [1]
 }, {
@@ -88,7 +88,7 @@ export const ORDERS: Order[] = [{
 	"dose": "500mg",
 	"route": "PO",
 	"signedOn": "2019-05-13T10:15:12",
-	"signedBy": "Merrily",
+	"signedBy": "Merrily Turnbull, MD",
 	"allergies": [],
 	"drugs": [1]
 }, {
@@ -100,7 +100,7 @@ export const ORDERS: Order[] = [{
 	"dose": "20ml",
 	"route": "IV",
 	"signedOn": "2019-05-15T07:12:45",
-	"signedBy": "Romel",
+	"signedBy": "Romel Ursua, MD",
 	"allergies": [1],
 	"drugs": [1]
 }]
