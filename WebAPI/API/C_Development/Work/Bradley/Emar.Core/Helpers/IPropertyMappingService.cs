@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Emar.Core
+namespace Emar.Core.Helpers
 {
     public interface IPropertyMappingService
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Emar.Core
+namespace Emar.Core.Helpers
 {
     public class PagedList<T> : List<T>
     {

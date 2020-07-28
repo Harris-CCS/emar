@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using Emar.Core.Helpers;
+using Emar.Core.ResourceParameters;
 using Emar.Data.Entities;
 
 namespace Emar.Core.Orders.Repository

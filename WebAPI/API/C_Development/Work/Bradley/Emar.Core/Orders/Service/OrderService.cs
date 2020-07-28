@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Emar.Core.Helpers;
 using Emar.Core.Medications.Model;
 using Emar.Core.Orders.Model;
 using Emar.Core.Orders.Model.Mappings;
 using Emar.Core.Orders.Repository;
+using Emar.Core.ResourceParameters;
 using Emar.Data.Entities;
 
 namespace Emar.Core.Orders.Service

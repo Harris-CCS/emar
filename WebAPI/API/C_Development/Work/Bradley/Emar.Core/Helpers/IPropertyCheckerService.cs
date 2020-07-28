@@ -1,4 +1,4 @@
-﻿namespace Emar.Core
+﻿namespace Emar.Core.Helpers
 {
     public interface IPropertyCheckerService
     {
