@@ -156,6 +156,9 @@
     <Build Include="Programmability\Stored Procedures\export_ibex_fdb_ndc_info.sql" />
     <Build Include="Programmability\Stored Procedures\export_ibex_fdb_allergy.sql" />
     <Build Include="Programmability\Stored Procedures\export_ibex_fdb_brand_name.sql" />
+    <None Include="Scripts\Data-Loader\global_data\fdb_allergy_name.sql" />
+    <None Include="Scripts\Data-Loader\global_data\fdb_brand_name.sql" />
+    <None Include="Scripts\Data-Loader\global_data\fdb_ndc_info.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />
