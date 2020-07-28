@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, tap } from 'rxjs/operators';
 
+import { PatientResponse } from 'src/app/interfaces/patient-response';
 import { Patient } from 'src/app/interfaces/patient';
 import { Order } from 'src/app/interfaces/order';
 
@@ -32,20 +33,22 @@ export class PatientService {
   }
   */
 
-  getPatients(): Observable<Patient[]> {
+  getPatients(): Observable<PatientResponse> {
     const headers = new HttpHeaders({Accept: 'application/json'})
 
-    return this.http.get<Patient[]>(this.patientUrl, { headers })
+    return this.http.get<PatientResponse>(this.patientUrl, { headers })
       .pipe(
-        catchError(this.handleError<Patient[]>('getPatients', []))
+        catchError(this.handleError<PatientResponse>('getPatients'))
       );
   }
-
   
   getPatient(patientId: number): Observable<Patient> {
     const headers = new HttpHeaders({Accept: 'application/json'})
     const url = `${this.patientUrl}/${patientId}`
 
+    // console.log('patient.service: getPatient patientId:', patientId)
+    // console.log('patient.service: getPatient patientId:', patientId)
+    console.log('patient.service: getPatient url:', url)
     return this.http.get<Patient>(url, { headers })
       .pipe(
         catchError(this.handleError<Patient>('getPatient'))

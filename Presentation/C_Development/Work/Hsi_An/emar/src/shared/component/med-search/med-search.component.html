@@ -8,7 +8,7 @@
         
         [(ngModel)]="model"
         [ngbTypeahead]="search"
-        placeholder="Medication search"
+        placeholder=""
         (selectItem)="onSelect($event, input)"
         [inputFormatter]="inputFormat" 
         [resultFormatter]="resultFormat" 

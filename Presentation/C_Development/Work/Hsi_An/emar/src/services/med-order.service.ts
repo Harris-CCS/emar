@@ -91,6 +91,11 @@ export class MedOrderService {
     this.cartOrders = this.cartOrders.filter(cartord => cartord.name !== ord.name);
   }
 
+  removeAllCartOrder(patientId: number) {
+    console.log('MedOrderService: removeAllCartOrder: patientId: ', patientId);
+    this.cartOrders = [];
+  }
+
   /* QuickList Orders */
   getQuickListOrders(): Medication[] {
     console.log('MedOrderService: getQuickListOrders: ', this.quickListOrders);

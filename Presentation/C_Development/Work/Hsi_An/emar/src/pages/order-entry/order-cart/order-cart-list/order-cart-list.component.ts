@@ -13,6 +13,7 @@ export class OrderCartListComponent implements OnInit {
 
   displayCartItems: Order[];
 
+  @Input() patientId
   @Input() set items(data) {
     this.displayCartItems = data;
   }
@@ -24,6 +25,11 @@ export class OrderCartListComponent implements OnInit {
 
   editCartItem = (item: Order) => {
     this.modalService.open('medComposer', {action: 'update', med: item});
+  }
+
+  showDeleteAllCartOrderModal = (patientId: number) => {
+    console.log(`showDeleteAllCartOrderModal - Delete All cart orders? for patientId: ${patientId}`);
+    this.modalService.open('deleteAllCartOrder', {patientId});
   }
 
   constructor(
