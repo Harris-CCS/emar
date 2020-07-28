@@ -34,7 +34,8 @@ as
         where  [source].[type] = 'A'
         order by [source].[ibex]
                , [source].[dateadd]
-               , [source].[name];
+               , [source].[name]
+               , [source].[parent_name];
     end;
 go
 

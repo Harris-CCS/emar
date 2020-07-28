@@ -26,12 +26,15 @@ declare
 
 /* Insert table order
 LVL: 000 SEQ: 001 TBL: dbo.actions
-LVL: 000 SEQ: 002 TBL: dbo.medication_routes
-LVL: 000 SEQ: 003 TBL: dbo.options
-LVL: 000 SEQ: 004 TBL: dbo.permissions
-LVL: 000 SEQ: 005 TBL: dbo.prompt_groups
-LVL: 000 SEQ: 006 TBL: dbo.sites
-LVL: 000 SEQ: 007 TBL: dbo.templates
+LVL: 000 SEQ: 002 TBL: dbo.fdb_allergy_name
+LVL: 000 SEQ: 003 TBL: dbo.fdb_brand_name
+LVL: 000 SEQ: 004 TBL: dbo.fdb_ndc_info
+LVL: 000 SEQ: 005 TBL: dbo.medication_routes
+LVL: 000 SEQ: 006 TBL: dbo.options
+LVL: 000 SEQ: 007 TBL: dbo.permissions
+LVL: 000 SEQ: 008 TBL: dbo.prompt_groups
+LVL: 000 SEQ: 009 TBL: dbo.sites
+LVL: 000 SEQ: 010 TBL: dbo.templates
 LVL: 001 SEQ: 001 TBL: dbo.action_route_templates
 LVL: 001 SEQ: 002 TBL: dbo.department_preferred_list_items
 LVL: 001 SEQ: 003 TBL: dbo.group_list_items
@@ -45,20 +48,23 @@ LVL: 001 SEQ: 010 TBL: dbo.site_formulary_match
 LVL: 001 SEQ: 011 TBL: dbo.site_options
 LVL: 001 SEQ: 012 TBL: dbo.template_prompt_groups
 LVL: 001 SEQ: 013 TBL: dbo.users
-LVL: 002 SEQ: 001 TBL: dbo.patient_allergies
-LVL: 002 SEQ: 002 TBL: dbo.patient_home_medications
-LVL: 002 SEQ: 003 TBL: dbo.patient_indicators
-LVL: 002 SEQ: 004 TBL: dbo.patient_orders
-LVL: 002 SEQ: 005 TBL: dbo.prompt_choices
-LVL: 002 SEQ: 006 TBL: dbo.user_permissions
-LVL: 002 SEQ: 007 TBL: dbo.user_quick_list_items
-LVL: 003 SEQ: 001 TBL: dbo.cart_order_administrations
-LVL: 003 SEQ: 002 TBL: dbo.order_administrations
+LVL: 002 SEQ: 001 TBL: dbo.cart_order_administrations
+LVL: 002 SEQ: 002 TBL: dbo.patient_allergies
+LVL: 002 SEQ: 003 TBL: dbo.patient_home_medications
+LVL: 002 SEQ: 004 TBL: dbo.patient_indicators
+LVL: 002 SEQ: 005 TBL: dbo.patient_orders
+LVL: 002 SEQ: 006 TBL: dbo.prompt_choices
+LVL: 002 SEQ: 007 TBL: dbo.user_permissions
+LVL: 002 SEQ: 008 TBL: dbo.user_quick_list_items
+LVL: 003 SEQ: 001 TBL: dbo.order_administrations
 LVL: 004 SEQ: 001 TBL: dbo.order_administration_notes
 LVL: 004 SEQ: 002 TBL: dbo.order_events
 LVL: 005 SEQ: 001 TBL: dbo.order_event_details
 */
 -- https://stackoverflow.com/questions/23923366/specifying-a-relative-path-in-post-deployment-sql-files
+:r ..\Scripts\Data-Loader\global_data\fdb_allergy_name.sql
+:r ..\Scripts\Data-Loader\global_data\fdb_brand_name.sql
+:r ..\Scripts\Data-Loader\global_data\fdb_ndc_info.sql
 :r ..\Scripts\Data-Loader\site_data\medication_routes.sql
 :r ..\Scripts\Data-Loader\global_data\options.sql
 :r ..\Scripts\Data-Loader\site_data\sites.sql
@@ -71,13 +77,20 @@ LVL: 005 SEQ: 001 TBL: dbo.order_event_details
 :r ..\Scripts\Data-Loader\phi_data\patient_allergies.sql
 :r ..\Scripts\Data-Loader\phi_data\patient_home_medications.sql
 --- BEGIN: custom data deployments for development
-:r ..\Scripts\Data-Loader\development_data\bradley_data.sql
 :r ..\Scripts\Data-Loader\development_data\antoni_data.sql
 --- END: custom data deployments for development
 :r ..\Scripts\Data-Loader\phi_data\patient_orders.sql
 :r ..\Scripts\Data-Loader\user_data\user_quick_list_items.sql
+--- BEGIN: custom data deployments for development
+:r ..\Scripts\Data-Loader\development_data\bradley_data.sql
+--- END: custom data deployments for development
+
+
 
 -- procedures were only needed for data import process and are no longer needed.
+drop procedure if exists [dbo].[export_ibex_fdb_allergy_name];
+drop procedure if exists [dbo].[export_ibex_fdb_brand_name];
+drop procedure if exists [dbo].[export_ibex_fdb_ndc_info];
 drop procedure if exists [dbo].[export_ibex_medication_routes];
 drop procedure if exists [dbo].[export_ibex_sites];
 drop procedure if exists [dbo].[export_ibex_group_list_items];
