@@ -19,7 +19,8 @@ insert into [#options]
     )
 values
     (1, 'LONG_DATE_FORMAT', 'Long Date Format for user display'),
-    (2, 'SHORT_DATE_FORMAT', 'Short Date Format for user display');
+    (2, 'SHORT_DATE_FORMAT', 'Short Date Format for user display'),
+    (3, 'SCHEDULE_FUTURE_ITEMS', 'How many days forward (including today) to generate future administration records');
 
 /*************************************
         begin loading permanent tables
