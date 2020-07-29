@@ -25,12 +25,9 @@
                             <detail-form (formReady)="formInitialized('detail', $event)"></detail-form>
                         </div>
                         <div class="form-column">
-                            <span class="subheader">
-                                <span>Frequency</span>
-                            </span>
-                            <span class="item">
-                                
-                            </span>
+                            <frequency-form (formReady)="formInitialized('frequency', $event)"
+                                [preferredFrequencies]="options.availableFormStrength[selectedFormStrength].preferredFrequencies">
+                            </frequency-form>
                         </div>
                     </div> 
                 </div>
@@ -40,13 +37,13 @@
             <button class="button-secondary button-raised" title="Add to Quick List">&#10025;</button>&nbsp;
             <button class="button-secondary button-raised" title="Continue">Continue</button>&nbsp;
             <button 
-                disabled="!composerMedForm.valid"
+                [disabled]="!composerMedForm.valid"
                 class="button-primary button-raised" 
                 title={{getActionText()}}
                 (click)="processCartOrder()">
                 {{getActionText()}}
             </button>
         </div>
-        <div>{{ composerMedForm.valid? 'Valid': 'Invalid' }} {{ composerMedForm.value | json }}</div>
+        <div><small><i>{{ composerMedForm.valid? 'Valid': 'Invalid' }} {{ composerMedForm.value | json }}</i></small></div>
     </div>
 </div>

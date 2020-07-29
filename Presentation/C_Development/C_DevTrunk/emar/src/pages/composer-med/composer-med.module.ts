@@ -4,12 +4,14 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { ComposerMedComponent } from './composer-med.component';
 import { DetailFormComponent } from './detail-form/detail-form.component';
+import { FrequencyFormComponent } from './frequency-form/frequency-form.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
     ComposerMedComponent,
-    DetailFormComponent
+    DetailFormComponent,
+    FrequencyFormComponent
   ],
   imports: [
     CommonModule,
