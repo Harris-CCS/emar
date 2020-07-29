@@ -1,0 +1,17 @@
+<div [formGroup]="frequencyForm">
+    <span class="subheader">
+        <span>Frequency</span>
+    </span>
+    <span class="item">
+        <div ngbDropdown class="d-inline-block dropdown-select">
+            <button class="btn btn-outline-dark" id="diagnosis" ngbDropdownToggle>
+                {{ selectedFrequency? selectedFrequency.frequencyName: "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;" }}
+            </button>
+            <div ngbDropdownMenu aria-labelledby="diagnosis">
+                <button ngbDropdownItem *ngFor="let frequency of frequencies" (click)="changeSelectedFrequency(frequency)">
+                    {{ frequency.frequencyName }}
+                </button>
+            </div>
+        </div>
+    </span>
+</div>
