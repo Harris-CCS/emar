@@ -97,14 +97,14 @@ namespace Emar.Core.Carts.Repository
 
         public IEnumerable<CartOrderAdministration> GetAdministrations(long orderId)
         {
-            return _context.PatientCartOrderAdministrations
+            return _context.CartOrderAdministrations
                     .Where(administration => administration.PatientCartOrderId == orderId)
                     .AsEnumerable();
         }
 
         public CartOrderAdministration GetAdministration(long administrationId)
         {
-            return _context.PatientCartOrderAdministrations
+            return _context.CartOrderAdministrations
                     .FirstOrDefault(administration => administration.Id == administrationId);
         }
     }

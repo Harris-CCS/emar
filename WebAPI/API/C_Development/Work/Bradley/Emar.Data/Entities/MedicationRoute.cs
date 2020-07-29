@@ -10,6 +10,8 @@ namespace Emar.Data.Entities
     {
         public MedicationRoute()
         {
+            GroupListItems = new HashSet<GroupListItem>();
+            PatientCartOrders = new HashSet<PatientCartOrder>();
             PatientOrders = new HashSet<PatientOrder>();
             UserQuickListItems = new HashSet<UserQuickListItem>();
         }
@@ -25,6 +27,13 @@ namespace Emar.Data.Entities
         [Column("name")]
         [StringLength(50)]
         public string Name { get; set; }
+
+
+        [InverseProperty("MedicationRoute")]
+        public virtual ICollection<GroupListItem> GroupListItems { get; set; }
+
+        [InverseProperty("MedicationRoute")]
+        public virtual ICollection<PatientCartOrder> PatientCartOrders { get; set; }
 
         [InverseProperty("MedicationRoute")]
         public virtual ICollection<PatientOrder> PatientOrders { get; set; }

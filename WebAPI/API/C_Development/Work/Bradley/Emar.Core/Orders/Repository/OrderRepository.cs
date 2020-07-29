@@ -36,7 +36,7 @@ namespace Emar.Core.Orders.Repository
                     .ThenInclude(administration => administration.OrderEvents)
                 .Include(order => order.MedicationRoute)
                 .Include(order => order.AddUser)
-                .Include(order => order.OrderingPhysician)
+                .Include(order => order.OrderPhysicianUser)
                 .Include(order => order.MedicationRoute)
                 .AsEnumerable();
 
@@ -66,7 +66,7 @@ namespace Emar.Core.Orders.Repository
                         .ThenInclude(administration => administration.OrderEvents)
                     .Include(order => order.MedicationRoute)
                     .Include(order => order.AddUser)
-                    .Include(order => order.OrderingPhysician)
+                    .Include(order => order.OrderPhysicianUser)
                     .FirstOrDefault(order => order.Id == orderId);
         }
 

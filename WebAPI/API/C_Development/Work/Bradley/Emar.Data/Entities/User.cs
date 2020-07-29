@@ -12,7 +12,8 @@ namespace Emar.Data.Entities
         {
             OrderAdministrationsAcknowledgeUser = new HashSet<OrderAdministration>();
             OrderAdministrationsAdministeringUser = new HashSet<OrderAdministration>();
-            PatientOrders = new HashSet<PatientOrder>();
+            PatientOrdersAddUser = new HashSet<PatientOrder>();
+            PatientOrdersOrderPhysicianUser = new HashSet<PatientOrder>();
             UserQuickListItems = new HashSet<UserQuickListItem>();
         }
 
@@ -39,12 +40,12 @@ namespace Emar.Data.Entities
         [Column("first_name", TypeName = "nvarchar(35)")]
         public string FirstName { get; set; }
 
-        [Column("middle_name", TypeName = "nvarchar(35)")]
-        public string MiddleName { get; set; }
-
         [Required]
         [Column("last_name", TypeName = "nvarchar(35)")]
         public string LastName { get; set; }
+
+        [Column("middle_name", TypeName = "nvarchar(35)")]
+        public string MiddleName { get; set; }
 
         [Column("name_suffix", TypeName = "nvarchar(25)")]
         public string NameSuffix { get; set; }
@@ -81,8 +82,11 @@ namespace Emar.Data.Entities
         [InverseProperty(nameof(OrderAdministration.AdministeringUser))]
         public virtual ICollection<OrderAdministration> OrderAdministrationsAdministeringUser { get; set; }
 
-        [InverseProperty("AddUser")]
-        public virtual ICollection<PatientOrder> PatientOrders { get; set; }
+        [InverseProperty(nameof(PatientOrder.AddUser))]
+        public virtual ICollection<PatientOrder> PatientOrdersAddUser { get; set; }
+
+        [InverseProperty(nameof(PatientOrder.OrderPhysicianUser))]
+        public virtual ICollection<PatientOrder> PatientOrdersOrderPhysicianUser { get; set; }
 
         [InverseProperty("User")]
         public virtual ICollection<UserQuickListItem> UserQuickListItems { get; set; }

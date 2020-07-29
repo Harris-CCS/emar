@@ -89,11 +89,11 @@ namespace Emar.Core.Patients.Repository
         IEnumerable<Patient> GetPatientsWithOrders()
         {
             return _context.Patients
-                    .Include(patient => patient.PatientOrders)
-                        .ThenInclude(order => order.OrderEvents)
+                    //.Include(patient => patient.PatientOrders)
+                    //    .ThenInclude(order => order.OrderEvents)
                     .Include(patient => patient.PatientOrders)
                         .ThenInclude(order => order.OrderAdministrations)
-                        .ThenInclude(administration => administration.OrderEvents)
+                        //.ThenInclude(administration => administration.OrderEvents)
                     .Include(patient => patient.Site)
                     .ToList();
         }
@@ -115,11 +115,11 @@ namespace Emar.Core.Patients.Repository
             if (((resourceParameters != null) && resourceParameters.IncludeOrders) || includeOrders)
             {
                 patient = _context.Patients
-                    .Include(patient => patient.PatientOrders)
-                    .ThenInclude(order => order.OrderEvents)
-                    .Include(patient => patient.PatientOrders)
+                    //.Include(p => p.PatientOrders)
+                    //.ThenInclude(order => order.OrderEvents)
+                    .Include(p => p.PatientOrders)
                     .ThenInclude(order => order.OrderAdministrations)
-                    .ThenInclude(administration => administration.OrderEvents)
+                    //.ThenInclude(administration => administration.OrderEvents)
                     .Include(s => s.Site)
                     .FirstOrDefault(p => p.Id == patientId);
             }

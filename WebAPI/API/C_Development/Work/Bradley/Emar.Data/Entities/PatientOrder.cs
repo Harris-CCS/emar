@@ -31,6 +31,12 @@ namespace Emar.Data.Entities
         [Column("order_physician_user_id", TypeName = "int"), Required]
         public int OrderingPhysicianId { get; set; }
 
+        [Column("begin_datetime", TypeName = "datetimeoffset"), Required]
+        public DateTimeOffset BeginDatetime { get; set; }
+
+        [Column("end_datetime", TypeName = "datetimeoffset")]
+        public DateTimeOffset? EndDateTime { get; set; }
+
         [Column("ndc")]
         [StringLength(32)]
         public string Ndc { get; set; }
@@ -69,26 +75,19 @@ namespace Emar.Data.Entities
         [Column("order_status", TypeName = "varchar(10)"), Required]
         public string OrderStatus { get; set; }
 
-        [Column("begin_datetime", TypeName = "datetimeoffset"), Required]
-        public DateTimeOffset BeginDatetime { get; set; }
-
-        [Column("end_datetime", TypeName = "datetimeoffset")]
-        public DateTimeOffset? EndDateTime { get; set; }
-
         [Column("order_notes", TypeName = "nvarchar(MAX)")]
         public string OrderNotes { get; set; }
 
         [NotMapped]
         public string OrderStatusCode { get; set; } = "Pending";
 
-
         [ForeignKey(nameof(AddUserId))]
-        [InverseProperty(nameof(User.PatientOrders))]
+        [InverseProperty(nameof(User.PatientOrdersAddUser))]
         public virtual User AddUser { get; set; }
 
         [ForeignKey(nameof(OrderingPhysicianId))]
-        [InverseProperty(nameof(User.PatientOrders))]
-        public virtual User OrderingPhysician { get; set; }
+        [InverseProperty(nameof(User.PatientOrdersOrderPhysicianUser))]
+        public virtual User OrderPhysicianUser { get; set; }
 
         [ForeignKey(nameof(MedicationRouteId))]
         [InverseProperty(nameof(Entities.MedicationRoute.PatientOrders))]

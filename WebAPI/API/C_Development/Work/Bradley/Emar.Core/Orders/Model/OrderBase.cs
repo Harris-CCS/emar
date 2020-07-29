@@ -36,7 +36,7 @@ namespace Emar.Core.Orders.Model
         /// </summary>
         public string BrandName
         {
-            get => _brandName.Trim();
+            get => _brandName?.Trim();
             set => _brandName = value?.Trim() != null ? Regex.Replace(value, "( : ){2,}", " : ") : null;
         }
 

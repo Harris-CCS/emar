@@ -64,14 +64,14 @@ namespace Emar.Data.Entities
         [Column("weight_in_kg", TypeName = "numeric(6,2)")]
         public decimal? WeightInKg { get; set; }
 
-        [Column("department_code", TypeName = "varchar(15)")]
-        public string DepartmentCode { get; set; }
+        [Column("room_bed_code", TypeName = "varchar(15)")]
+        public string RoomBedCode { get; set; }
 
         [Column("ward_code", TypeName = "varchar(15)")]
         public string WardCode { get; set; }
 
-        [Column("room_bed_code", TypeName = "varchar(15)")]
-        public string RoomBedCode { get; set; }
+        [Column("department_code", TypeName = "varchar(15)")]
+        public string DepartmentCode { get; set; }
 
         [Column("urgency", TypeName = "varchar(50)")]
         public string Urgency { get; set; }
@@ -139,14 +139,15 @@ namespace Emar.Data.Entities
         [Column("vs_pain_scale", TypeName = "char(14)")]
         public string VsPainScale { get; set; }
 
-        [InverseProperty("Patient")]
-        public virtual ICollection<PatientOrder>? PatientOrders { get; set; }
-
-        [InverseProperty("Patient")]
-        public virtual ICollection<PatientCartOrder>? PatientCartOrders { get; set; }
-
         [ForeignKey(nameof(SiteId))]
         [InverseProperty(nameof(Entities.Site.Patients))]
         public virtual Site Site { get; set; }
+
+        [InverseProperty("Patient")]
+        public virtual ICollection<PatientOrder> PatientOrders { get; set; }
+
+		// No foreign key yet....
+        //[InverseProperty("Patient")]
+        //public virtual ICollection<PatientCartOrder>? PatientCartOrders { get; set; }
     }
 }

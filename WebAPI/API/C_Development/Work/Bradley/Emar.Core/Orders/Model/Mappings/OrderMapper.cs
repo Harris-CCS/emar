@@ -23,7 +23,7 @@ namespace Emar.Core.Orders.Model.Mappings
                 AddUser = UserMapper.MapUser(patientOrder.AddUser),
                 AddDatetime = patientOrder.AddDatetime,
                 OrderingPhysicianId = patientOrder.OrderingPhysicianId,
-                OrderingPhysicianUser = UserMapper.MapUser(patientOrder.OrderingPhysician),
+                OrderingPhysicianUser = UserMapper.MapUser(patientOrder.OrderPhysicianUser),
                 Ndc = patientOrder.Ndc,
                 DrugId = patientOrder.DrugId,
                 BrandName = patientOrder.BrandName,

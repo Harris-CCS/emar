@@ -1,5 +1,6 @@
 ﻿using Emar.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Design;
 
 namespace Emar.Data
@@ -16,17 +17,18 @@ namespace Emar.Data
         }
 
         public virtual DbSet<Action> Actions { get; set; }
+        public virtual DbSet<CartOrderAdministration> CartOrderAdministrations { get; set; }
         public virtual DbSet<ExternalIdEntity> ExternalIds { get; set; }
+        public virtual DbSet<GroupListItem> GroupListItems { get; set; }
         public virtual DbSet<MedicationRoute> MedicationRoutes { get; set; }
         public virtual DbSet<OrderAdministration> OrderAdministrations { get; set; }
         public virtual DbSet<OrderEvent> OrderEvents { get; set; }
-        public virtual DbSet<Patient> Patients { get; set; }
         public virtual DbSet<PatientCartOrder> PatientCartOrders { get; set; }
-        public virtual DbSet<CartOrderAdministration> PatientCartOrderAdministrations { get; set; }
         public virtual DbSet<PatientOrder> PatientOrders { get; set; }
+        public virtual DbSet<Patient> Patients { get; set; }
         public virtual DbSet<Site> Sites { get; set; }
-        public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserQuickListItem> UserQuickListItems { get; set; }
+        public virtual DbSet<User> Users { get; set; }
 
 //        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 //        {
@@ -46,6 +48,15 @@ namespace Emar.Data
                 entity.Property(e => e.Title).IsUnicode(false);
             });
 
+            modelBuilder.Entity<CartOrderAdministration>(entity =>
+            {
+                entity.HasOne(d => d.PatientCartOrder)
+                    .WithMany(p => p.CartOrderAdministrations)
+                    .HasForeignKey(d => d.PatientCartOrderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__cart_order_administrations__patient_cart_orders");
+            });
+
             modelBuilder.Entity<ExternalIdEntity>(entity =>
             {
                 entity.HasKey(e => new { e.InternalId, e.Vendor, e.Entity })
@@ -62,6 +73,26 @@ namespace Emar.Data
                 entity.Property(e => e.ExternalId).IsUnicode(false);
             });
 
+            modelBuilder.Entity<GroupListItem>(entity =>
+            {
+                entity.Property(e => e.DoseUnit).IsUnicode(false);
+
+                entity.Property(e => e.DrugId).IsUnicode(false);
+
+                entity.Property(e => e.Ndc).IsUnicode(false);
+
+                entity.HasOne(d => d.MedicationRoute)
+                    .WithMany(p => p.GroupListItems)
+                    .HasForeignKey(d => d.MedicationRouteId)
+                    .HasConstraintName("fk__group_list_items__medication_routes");
+
+                entity.HasOne(d => d.Site)
+                    .WithMany(p => p.GroupListItems)
+                    .HasForeignKey(d => d.SiteId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__group_list_items__sites");
+            });
+
             modelBuilder.Entity<OrderAdministration>(entity =>
             {
                 entity.HasOne(d => d.AcknowledgeUser)
@@ -76,7 +107,7 @@ namespace Emar.Data
 
                 entity.HasOne(d => d.PatientOrder)
                     .WithMany(p => p.OrderAdministrations)
-                    .HasForeignKey(d => d.Id)
+                    .HasForeignKey(d => d.PatientOrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk__order_administrations__patient_orders");
             });
@@ -99,6 +130,59 @@ namespace Emar.Data
                     .HasForeignKey(d => d.PatientOrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk__order_events__patient_orders");
+            });
+
+            modelBuilder.Entity<PatientCartOrder>(entity =>
+            {
+                entity.Property(e => e.DoseUnit).IsUnicode(false);
+
+                entity.Property(e => e.DrugId).IsUnicode(false);
+
+                entity.Property(e => e.Ndc).IsUnicode(false);
+
+                entity.HasOne(d => d.MedicationRoute)
+                    .WithMany(p => p.PatientCartOrders)
+                    .HasForeignKey(d => d.MedicationRouteId)
+                    .HasConstraintName("fk__patient_cart_orders__medication_routes");
+            });
+
+            //modelBuilder.Entity<PatientCartOrder>().HasOne(order => order.Patient).WithMany(patient => patient.PatientCartOrders).HasForeignKey(order => order.PatientId);
+            //modelBuilder.Entity<PatientCartOrder>().HasOne(order => order.MedicationRoute).WithMany().HasForeignKey(order => order.MedicationRouteId);
+            //modelBuilder.Entity<PatientCartOrder>().HasOne(order => order.User).WithMany().HasForeignKey(order => order.UserId);
+            //modelBuilder.Entity<PatientCartOrder>().HasMany(order => order.CartOrderAdministrations).WithOne().HasForeignKey(administration => administration.PatientCartOrderId);
+
+            modelBuilder.Entity<PatientOrder>(entity =>
+            {
+                entity.Property(e => e.DoseUnit).IsUnicode(false);
+
+                entity.Property(e => e.DrugId).IsUnicode(false);
+
+                entity.Property(e => e.Ndc).IsUnicode(false);
+
+                entity.Property(e => e.OrderStatus).IsUnicode(false);
+
+                entity.HasOne(d => d.AddUser)
+                    .WithMany(p => p.PatientOrdersAddUser)
+                    .HasForeignKey(d => d.AddUserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__patient_orders__users");
+
+                entity.HasOne(d => d.MedicationRoute)
+                    .WithMany(p => p.PatientOrders)
+                    .HasForeignKey(d => d.MedicationRouteId)
+                    .HasConstraintName("fk__patient_orders__medication_routes");
+
+                entity.HasOne(d => d.OrderPhysicianUser)
+                    .WithMany(p => p.PatientOrdersOrderPhysicianUser)
+                    .HasForeignKey(d => d.OrderingPhysicianId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_patient_orders__user__ordering_physician");
+
+                entity.HasOne(d => d.Patient)
+                    .WithMany(p => p.PatientOrders)
+                    .HasForeignKey(d => d.PatientId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__patient_orders__patients");
             });
 
             modelBuilder.Entity<Patient>(entity =>
@@ -194,34 +278,6 @@ namespace Emar.Data
                     .HasConstraintName("fk__patients__sites");
             });
 
-            modelBuilder.Entity<PatientOrder>(entity =>
-            {
-                entity.Property(e => e.DoseUnit).IsUnicode(false);
-
-                entity.Property(e => e.DrugId).IsUnicode(false);
-
-                entity.Property(e => e.Ndc).IsUnicode(false);
-
-                entity.Property(e => e.OrderStatus).IsUnicode(false);
-
-                entity.HasOne(d => d.AddUser)
-                    .WithMany(p => p.PatientOrders)
-                    .HasForeignKey(d => d.AddUserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk__patient_orders__users");
-
-                entity.HasOne(d => d.MedicationRoute)
-                    .WithMany(p => p.PatientOrders)
-                    .HasForeignKey(d => d.MedicationRouteId)
-                    .HasConstraintName("fk__patient_orders__medication_routes");
-
-                entity.HasOne(d => d.Patient)
-                    .WithMany(p => p.PatientOrders)
-                    .HasForeignKey(d => d.PatientId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk__patient_orders__patients");
-            });
-
             modelBuilder.Entity<Site>(entity =>
             {
                 entity.HasIndex(e => e.Name)
@@ -236,6 +292,10 @@ namespace Emar.Data
                 entity.Property(e => e.DrugId).IsUnicode(false);
 
                 entity.Property(e => e.Ndc).IsUnicode(false);
+
+                entity.Property(e => e.UsagesThisWeek).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.WeeklyUsageRollingAverage).HasDefaultValueSql("((-1))");
 
                 entity.HasOne(d => d.MedicationRoute)
                     .WithMany(p => p.UserQuickListItems)
@@ -283,11 +343,6 @@ namespace Emar.Data
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk__users__sites");
             });
-
-            modelBuilder.Entity<PatientCartOrder>().HasOne(order => order.Patient).WithMany(patient => patient.PatientCartOrders).HasForeignKey(order => order.PatientId);
-            modelBuilder.Entity<PatientCartOrder>().HasOne(order => order.MedicationRoute).WithMany().HasForeignKey(order => order.MedicationRouteId);
-            modelBuilder.Entity<PatientCartOrder>().HasOne(order => order.User).WithMany().HasForeignKey(order => order.UserId);
-            modelBuilder.Entity<PatientCartOrder>().HasMany(order => order.CartOrderAdministrations).WithOne().HasForeignKey(administration => administration.PatientCartOrderId);
 
             //OnModelCreatingPartial(modelBuilder);
         }
