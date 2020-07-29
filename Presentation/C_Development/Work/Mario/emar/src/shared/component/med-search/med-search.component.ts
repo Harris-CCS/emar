@@ -19,6 +19,8 @@ export class MedSearchComponent implements OnInit {
   searching: boolean = false;
   //searchFailed: boolean = false;
   label: string = '';
+  selectedSource: string = 'All'
+  sources: string[] = ['Quick List', 'Dept Preferred List', 'Groups', 'Formulary', 'All']
 
   constructor(
     private medOrderService: MedOrderService,
@@ -26,6 +28,10 @@ export class MedSearchComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+  }
+
+  changeSource(newSource: string) {
+    this.selectedSource = newSource
   }
 
   /*search = (text$: Observable<string>) =>
@@ -52,14 +58,14 @@ export class MedSearchComponent implements OnInit {
       return value.name;
     }
 
-    search = (text$: Observable<string>) =>
+    search = (text$: Observable<string>, source: string) =>
     text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
       //switchMap( (searchText) => this.medOrderService.search(searchText) ),
       //catchError(new ErrorInfo().parseObservableResponseError)
       map(term => term.length < 2 
-        ? []
+        ? [] //console.log('selectedSource: ', source = this.selectedSource)
         : MEDICATIONS.filter(m => m.name.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10))
     )
 
@@ -71,6 +77,6 @@ export class MedSearchComponent implements OnInit {
       console.log(`next from NEW: ${$event.item.name}`);
       this.modalService.open('medComposer', {action: 'add', med: $event.item});
       input.value = '';
-
+      input.blur();
     }
 }
