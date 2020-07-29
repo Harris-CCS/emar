@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using Emar.Api.Helpers;
 using Emar.Core;
+using Emar.Core.Helpers;
 using Emar.Core.Patients.Model;
 using Emar.Core.Patients.Service;
+using Emar.Core.ResourceParameters;
 using Emar.Data.Entities;
 using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Mvc;
@@ -216,14 +219,19 @@ namespace Emar.Api.Controllers
                 return BadRequest();
             }
 
-            if (error.Equals(Errors.PatientNotFound) || (patient == null)) { return NotFound($"Patient with id {patientId} was not found"); }
+            if (error.Equals(Errors.PatientNotFound) || (patient == null))
+            {
+                return NotFound($"Patient with id {patientId} was not found");
+            }
 
             var links = CreateHateOasLinksForPatient(patientId, resourceParameters);
-            var linkedResourceToReturn = patient.ShapeData(resourceParameters.Fields) as IDictionary<string, object>;
+            var linkedResourceToReturn =
+                patient.ShapeData(resourceParameters.Fields) as IDictionary<string, object>;
 
             linkedResourceToReturn.Add("links", links);
 
-            return Ok(linkedResourceToReturn);
+            //return Ok(linkedResourceToReturn);
+            return Ok(patient);
         }
 
         [HttpGet("{patientId}/orders", Name = nameof(GetPatientOrders))]

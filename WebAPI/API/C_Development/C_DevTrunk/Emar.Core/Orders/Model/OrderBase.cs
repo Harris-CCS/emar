@@ -1,5 +1,5 @@
 ﻿using System.Text.RegularExpressions;
-using Emar.Data.Entities;
+using Emar.Core.Medications.Model;
 
 namespace Emar.Core.Orders.Model
 {
@@ -30,34 +30,29 @@ namespace Emar.Core.Orders.Model
             set => drugId = value?.Trim() != null ? Regex.Replace(value, "( : ){2,}", " : ") : null;
         }
 
-        string brandName;
+        private string _brandName;
         /// <summary>
         /// Brand name of the medication
         /// </summary>
         public string BrandName
         {
-            get => brandName?.Trim();
-            set => brandName = value?.Trim() != null ? Regex.Replace(value, "( : ){2,}", " : ") : null;
+            get => _brandName?.Trim();
+            set => _brandName = value?.Trim() != null ? Regex.Replace(value, "( : ){2,}", " : ") : null;
         }
 
         public decimal? Dose { get; set; }
 
         string doseUnit;
-        public string DoseUnit
+        public string DoseUnit 
         {
             get => doseUnit?.Trim();
             set => doseUnit = value?.Trim();
         }
 
         /// <summary>
-        /// Unique identifier of the Medication Route
+        /// DTO of the Medication Route
         /// </summary>
-        public int? MedicationRouteId { get; set; }
-
-        /// <summary>
-        /// Medication Route.
-        /// </summary>
-        public MedicationRoute MedicationRoute { get; set; }
+        public MedicationRouteDto MedicationRoute { get; set; }
 
         /// <summary>
         /// Unique order frequency identifier.

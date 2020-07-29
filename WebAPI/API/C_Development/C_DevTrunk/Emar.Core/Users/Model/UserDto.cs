@@ -1,5 +1,5 @@
 ﻿using System;
-using Emar.Data.Entities;
+using Emar.Core.Sites.Model;
 
 namespace Emar.Core.Users.Model
 {
@@ -9,66 +9,66 @@ namespace Emar.Core.Users.Model
 
         public int SiteId { get; set; }
 
-        string type;
+        string _type;
         public string Type
         {
-            get => type?.Trim();
-            set => type = value?.Trim();
+            get => _type?.Trim();
+            set => _type = value?.Trim();
         }
 
         public bool IsActive { get; set; }
 
-        string initialsDisplay;
+        string _initialsDisplay;
         public string InitialsDisplay
         {
-            get => initialsDisplay?.Trim();
-            set => initialsDisplay = value?.Trim();
+            get => _initialsDisplay?.Trim();
+            set => _initialsDisplay = value?.Trim();
         }
 
-        string firstName;
+        string _firstName;
         public string FirstName
         {
-            get => firstName?.Trim();
-            set => firstName = value?.Trim();
+            get => _firstName?.Trim();
+            set => _firstName = value?.Trim();
         }
 
-        string lastName;
-        public string LastName
-        {
-            get => lastName?.Trim();
-            set => lastName = value?.Trim();
-        }
-
-        string middleName;
+        string _middleName;
         public string MiddleName
         {
-            get => middleName?.Trim();
-            set => middleName = value?.Trim();
+            get => _middleName?.Trim();
+            set => _middleName = value?.Trim();
         }
 
-        string nameSuffix;
+        string _lastName;
+        public string LastName
+        {
+            get => _lastName?.Trim();
+            set => _lastName = value?.Trim();
+        }
+
+        string _nameSuffix;
         public string NameSuffix
         {
-            get => nameSuffix?.Trim();
-            set => nameSuffix = value?.Trim();
+            get => _nameSuffix?.Trim();
+            set => _nameSuffix = value?.Trim();
         }
 
         public bool OrderingOnlyPhysician { get; set; }
 
         public bool NameDisplayInitials { get; set; }
 
-        string loginName;
+        string _loginName;
         public string LoginName
         {
-            get => loginName?.Trim();
-            set => loginName = value?.Trim();
+            get => _loginName?.Trim();
+            set => _loginName = value?.Trim();
         }
 
-        string loginPassword;
+        string _loginPassword;
         public string LoginPassword
         {
-            get => loginPassword?.Trim();
-            set => loginPassword = value?.Trim();
+            get => _loginPassword?.Trim();
+            set => _loginPassword = value?.Trim();
         }
 
         public byte[] Salt { get; set; }
@@ -77,13 +77,18 @@ namespace Emar.Core.Users.Model
 
         public int FailedLoginAttempts { get; set; }
 
-        string displayName;
+        string _displayName;
         public string DisplayName
         {
-            get => displayName?.Trim();
-            set => displayName = value?.Trim();
+            get => _displayName?.Trim();
+            set => _displayName = value?.Trim();
         }
 
-        public Site Site { get; set; }
+        public SiteDto Site { get; set; }
+
+        public string SiteName
+        {
+            get => Site?.Name;
+        }
     }
 }

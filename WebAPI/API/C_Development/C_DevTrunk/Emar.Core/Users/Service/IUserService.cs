@@ -6,5 +6,6 @@ namespace Emar.Core.Users.Service
     {
         UserDto GetUser(int userId);
         UserMinimalDto GetUserMinimal(int userId);
+        UserDto GetUser(string loginName);
     }
 }

@@ -1,3 +1,4 @@
+using Emar.Core.Sites.Model.Mappings;
 using Emar.Data.Entities;
 
 namespace Emar.Core.Users.Model.Mappings
@@ -30,7 +31,7 @@ namespace Emar.Core.Users.Model.Mappings
                 Salt = user.Salt,
                 LastLoginTime = user.LastLoginTime,
                 FailedLoginAttempts = user.FailedLoginAttempts,
-                Site = user.Site
+                Site = SiteMapper.MapSite(user.Site)
             };
 
             return userDto;

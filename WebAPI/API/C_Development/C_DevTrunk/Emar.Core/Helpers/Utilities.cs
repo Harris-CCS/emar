@@ -6,7 +6,7 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Reflection;
 
-namespace Emar.Core
+namespace Emar.Core.Helpers
 {
     public static class StringExtensions
     {

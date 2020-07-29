@@ -51,5 +51,10 @@ namespace Emar.Core.Users.Service
 
             return userMinimalDto;
         }
+
+        public UserDto GetUser(string loginName)
+        {
+            return UserMapper.MapUser(_userRepository.GetUser(loginName));
+        }
     }
 }

@@ -30,10 +30,10 @@ namespace Emar.Core.Users.Repository
 
         public User GetUser(int userId)
         {
-            User user = _context.Users
-                        .Where(u => u.Id == userId)
+            var user = _context.Users
                         .Include(u => u.Site)
-                        .FirstOrDefault(u => u.Site.Id == u.SiteId);
+                        .FirstOrDefault(u => u.Id == userId);
+            //.FirstOrDefault(u => u.Site.Id == u.SiteId);
 
             return user;
         }
@@ -41,12 +41,19 @@ namespace Emar.Core.Users.Repository
         public long? GetInternalUserId(string extId)
         {
             var userId = from e in _context.ExternalIds
-                         where e.External_Id == extId &&
+                         where e.ExternalId == extId &&
                                e.Entity == "users" &&
                                e.Vendor == "pulsecheck"
                          select e.InternalId;
 
             return userId.FirstOrDefault();
+        }
+
+        public User GetUser(string loginName)
+        {
+            return _context.Users
+                .Include(u => u.Site)
+                .FirstOrDefault(u => u.LoginName == loginName);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Emar.Core.Medications.Model.Mappings
             var ret = new MedicationRouteDto
             {
                 Id = medicationRoute.Id,
-                Name = medicationRoute.Name,
+                RouteName = medicationRoute.Name,
                 SiteId = medicationRoute.SiteId
             };
 

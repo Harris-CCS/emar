@@ -8,8 +8,17 @@ namespace Emar.Data.Entities
     [Table("patients")]
     public class Patient
     {
-        [Column("id", TypeName = "bigint"), Key]
+        public Patient()
+        {
+            PatientOrders = new HashSet<PatientOrder>();
+        }
+
+        [Key]
+        [Column("id", TypeName = "bigint")]
         public long Id { get; set; }
+
+        [Column("is_active", TypeName = "bool")]
+        public bool Active { get; set; } = true;
 
         [Column("site_id", TypeName = "int"), Required]
         public int SiteId { get; set; }
@@ -20,7 +29,8 @@ namespace Emar.Data.Entities
         [Column("account_number", TypeName = "varchar(25)")]
         public string AccountNumber { get; set; }
 
-        [Column("first_name", TypeName = "nvarchar(35)"), Required]
+        [Required]
+        [Column("first_name", TypeName = "nvarchar(35)")]
         public string FirstName { get; set; }
 
         [Column("middle_name", TypeName = "nvarchar(35)")]
@@ -32,7 +42,8 @@ namespace Emar.Data.Entities
         [Column("name_suffix", TypeName = "nvarchar(25)")]
         public string NameSuffix { get; set; }
 
-        [Column("gender", TypeName = "varchar(10)"), Required]
+        [Required]
+        [Column("gender", TypeName = "varchar(10)")]
         public string Gender { get; set; }
 
         [Column("date_of_birth", TypeName = "date")]
@@ -45,7 +56,7 @@ namespace Emar.Data.Entities
         public string AgeUnits { get; set; }
 
         [Column("complaint", TypeName = "varchar(80)")]
-        public string Complaint { get; set; }
+        public string ChiefComplaint { get; set; }
 
         [Column("height_in_cm", TypeName = "numeric(6,2")]
         public decimal? HeightInCm { get; set; }
@@ -53,14 +64,14 @@ namespace Emar.Data.Entities
         [Column("weight_in_kg", TypeName = "numeric(6,2)")]
         public decimal? WeightInKg { get; set; }
 
-        [Column("department_code", TypeName = "varchar(15)")]
-        public string DepartmentCode { get; set; }
+        [Column("room_bed_code", TypeName = "varchar(15)")]
+        public string RoomBedCode { get; set; }
 
         [Column("ward_code", TypeName = "varchar(15)")]
         public string WardCode { get; set; }
 
-        [Column("room_bed_code", TypeName = "varchar(15)")]
-        public string RoomBedCode { get; set; }
+        [Column("department_code", TypeName = "varchar(15)")]
+        public string DepartmentCode { get; set; }
 
         [Column("urgency", TypeName = "varchar(50)")]
         public string Urgency { get; set; }
@@ -128,17 +139,15 @@ namespace Emar.Data.Entities
         [Column("vs_pain_scale", TypeName = "char(14)")]
         public string VsPainScale { get; set; }
 
-        //[Column("is_active", TypeName = "bit")]
-        [NotMapped]
-        public bool IsActive { get; set; } = true;
+        [ForeignKey(nameof(SiteId))]
+        [InverseProperty(nameof(Entities.Site.Patients))]
+        public virtual Site Site { get; set; }
 
-        [NotMapped]
-        public IEnumerable<PatientOrder>? PatientOrders { get; set; }
+        [InverseProperty("Patient")]
+        public virtual ICollection<PatientOrder> PatientOrders { get; set; }
 
-        [NotMapped]
-        public IEnumerable<PatientCartOrder>? PatientCartOrders { get; set; }
-
-        [NotMapped]
-        public Site Site { get; set; }
+		// No foreign key yet....
+        //[InverseProperty("Patient")]
+        //public virtual ICollection<PatientCartOrder>? PatientCartOrders { get; set; }
     }
 }

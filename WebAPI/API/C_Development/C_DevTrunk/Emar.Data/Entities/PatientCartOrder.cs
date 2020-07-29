@@ -62,17 +62,17 @@ namespace Emar.Data.Entities
         [Column("user_quick_list_item_id", TypeName = "bigint")]
         public long? UserQuickListItemId { get; set; }
 
+        [ForeignKey(nameof(MedicationRouteId))]
+        [InverseProperty(nameof(Entities.MedicationRoute.PatientCartOrders))]
+        public virtual MedicationRoute MedicationRoute { get; set; }
+
         [NotMapped]
         public User User { get; set; }
 
         [NotMapped]
-        public MedicationRoute MedicationRoute { get; set; }
-
-        [NotMapped]
         public Patient Patient { get; set; }
 
-        [NotMapped]
-        //public List<CartOrderAdministration> CartOrderAdministrations { get; set; } = new List<CartOrderAdministration>();
-        public IEnumerable<CartOrderAdministration>? CartOrderAdministrations { get; set; }
+        [InverseProperty("PatientCartOrder")]
+        public virtual ICollection<CartOrderAdministration> CartOrderAdministrations { get; set; }
     }
 }
