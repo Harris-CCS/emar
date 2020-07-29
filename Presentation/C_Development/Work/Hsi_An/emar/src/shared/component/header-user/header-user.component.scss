@@ -1,63 +1,177 @@
 header {
-    display: flex;
-    position: relative;
-    height: 40px;
-    margin: 25px 35px;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  position: relative;
+  height: 40px;
+  margin: 25px 35px;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.header-user {
-    display: flex;
+header p {
+  font-weight: bold;
 }
 
-header .action {
-    display: inline-block;
-    width: 24px;
-    height: 24px;
-    background-size: auto 19px;
-    background-repeat: no-repeat;
-    background-position: center;
-    margin: 0 10px;
-    cursor: pointer;
-}
-
-.notification {
-    background: url('../../../assets/icon/notifications.svg');
-}
-
-header .action.user {
-    background-image: url('../../../assets/icon/user.svg');
-    height: 29px;
-    width: auto;
-    background-size: auto 29px;
-    background-position: right bottom;
-    display: flex;
-    align-items: center;
-    padding-right: 34px;
-    margin-right: 0;
-    margin-left: 30px;
-}
-
-header .action.user .user-name {
-    font-weight: 400;
-    line-height: 14px;
-    font-size: 14px;
-    text-align: right;
+hr {
+  margin: 5px;
+  border-top: 2px solid #000;
 }
 
 .logo {
-    background: url('../../../assets/icon/logo.svg');
-    background-repeat: no-repeat;
-    background-size: 100% auto;
-    width: 180px;
-    height: 50px;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  outline: none;
+  background: url("../../../assets/icon/logo.svg");
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+  width: 180px;
+  height: 50px;
+}
+
+.header-user {
+  // flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-block {
+  font-size: 12px;
+  text-align: right;
+  font-weight: bold;
+  padding: 0 5px;
+  margin: 0 5px;
+}
+
+.user-icons {
+  text-align: center;
+}
+
+.user-icons a {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  background-size: auto 19px;
+  background-repeat: no-repeat;
+  background-position: center;
+  align-items: center;
+  margin: 0 10px;
+  cursor: pointer;
+}
+
+.notification {
+  background: url("../../../assets/icon/notifications.svg");
 }
 
 .help {
-    background: url('../../../assets/icon/help.svg');
+  background: url("../../../assets/icon/help.svg");
 }
 
-.dropdown-toggle::after {
-    display:none;
+.user-data {
+  display: flex;
+  padding-left: 5px;
+  margin-left: 5px;
+}
+
+.user-name {
+  font-weight: 500;
+  line-height: 14px;
+  font-size: 14px;
+  text-align: right;
+}
+
+#user-full-name span {
+  display: block;
+}
+
+.user-options {
+  background-image: url("../../../assets/icon/user.svg");
+  height: 29px;
+  width: auto;
+  background-size: auto 29px;
+  background-repeat: no-repeat;
+  background-position: right bottom;
+  padding-right: 34px;
+  margin-right: 0;
+}
+
+#user-options-dropdown {
+  background: none;
+  border: none;
+  outline: none;
+  text-align: center;
+  padding-right: 0;
+  margin-right: 0;
+}
+
+.dropdown-menu {
+  font-size: 12px;
+  border-radius: 5px;
+  // background-color: #343a40;
+  background: #0077ab;
+  padding: 5px;
+  margin: 10px;
+}
+
+.dropdown-item {
+  cursor: pointer;
+  text-align: center;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  // background-color: #343a40;
+  background: #0077ab;
+}
+
+.dropdown-item a {
+  // display: block;
+  color: #fff;
+  // background-color: #343a40;
+  background: #0077ab;
+  padding: 5px;
+}
+
+.dropdown-item a:hover {
+  background-color: #fff;
+  border-radius: 5px;
+  text-decoration: none;
+  color: #0077ab;
+  font-weight: bold;
+}
+
+.dropdown-item:active {
+  // background-color: #343a40;
+  background-color: #0077ab;
+  font-weight: bold;
+}
+
+.dropdown-item a:active {
+  // background-color: #f8f8f8;
+  background-color: #fff;
+}
+
+.horizontal-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.horizontal-list li a {
+  display: inline;
+  padding: 3px;
+  margin: 3px;
+  font-size: 14px;
+}
+
+.vertical-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+}
+
+.vertical-list li a {
+  display: table;
+  padding: 3px;
+  margin: 3px;
 }

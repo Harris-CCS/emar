@@ -15,14 +15,12 @@ import { MEDICATIONS } from '../../app/mockup/medications';
 import { MedOrderService } from '../../services/med-order.service';
 import { PatientService } from 'src/services/patient.service';
 
-
 @Component({
   selector: 'order-entry',
   templateUrl: './order-entry.component.html',
-  styleUrls: ['./order-entry.component.scss', '../../assets/css/site.css']
+  styleUrls: ['./order-entry.component.scss', '../../assets/css/site.css'],
 })
 export class OrderEntryComponent implements OnInit {
-
   patientId: number;
   patient: Patient;
   orders: Order[];
@@ -34,25 +32,27 @@ export class OrderEntryComponent implements OnInit {
   dpSelected: boolean = false;
   gSelected: boolean = false;
 
-  constructor(private route: ActivatedRoute,
-      private patientService: PatientService,
-      private medOrderService: MedOrderService) { }
+  constructor(
+    private route: ActivatedRoute,
+    private patientService: PatientService,
+    private medOrderService: MedOrderService
+  ) {}
 
   ngOnInit(): void {
     //const patientId:number = +this.route.snapshot.params['id'];
     this.patientId = +this.route.snapshot.params['id'];
-    console.log('OrderEntry: patientId: ', this.patientId)
-    //this.patient = this.patientService.getPatient(patientId);
+    console.log('OrderEntry: patientId: ', this.patientId);
+    this.patient = this.patientService.getPatient(this.patientId);
     this.orders = this.patientService.getPatientOrders(this.patientId);
     this.currentListOrders();
 
-    this.patientService.getPatient(this.patientId)
-      .subscribe(patient => this.patient = patient);
+    // this.patientService.getPatient(this.patientId)
+    //   .subscribe(patient => this.patient = patient);
   }
 
   //currentUser() {
   //  this.user = USER
-  //  
+  //
   //  return this.user;
   //}
 
@@ -62,32 +62,28 @@ export class OrderEntryComponent implements OnInit {
 
   onSelectTab(tab: string) {
     if (tab === 'list-dept-preferred-orders') {
-      
       this.qlSelected = false;
       this.dpSelected = true;
       this.gSelected = false;
-
     } else if (tab === 'list-groups-orders') {
-      
       this.qlSelected = false;
       this.dpSelected = false;
       this.gSelected = true;
-    
-    } else { //default list-quick-orders
-    
+    } else {
+      //default list-quick-orders
+
       this.qlSelected = true;
       this.dpSelected = false;
       this.gSelected = false;
-    
     }
   }
 
   currentListOrders() {
-    return this.currentOrders = this.medOrderService.getCurrentOrders();
+    return (this.currentOrders = this.medOrderService.getCurrentOrders());
   }
 
   cartListOrders() {
     //return ORDERS.slice(2, 5);
-    return this.cartOrders = this.medOrderService.getCartOrders();
+    return (this.cartOrders = this.medOrderService.getCartOrders());
   }
 }

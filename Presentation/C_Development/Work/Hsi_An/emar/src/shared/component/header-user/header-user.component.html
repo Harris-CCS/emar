@@ -1,22 +1,92 @@
-<header>
-    <div class="logo">
+<header *ngIf="user">
+  <div>
+    <a [href]="assignExternalRoute('/index.mpex')">
+      <button type="button" class="logo"></button>
+    </a>
+  </div>
+  <h2>{{ title }}</h2>
+  <div class="header-user">
+    <div class="user-icons">
+      <a class="notification" href="#" placement="bottom" ngbTooltip="Notifications"></a>
+      <a class="help" href="#" placement="bottom" ngbTooltip="Legend"></a>
     </div>
-    <h2>{{ title }}</h2>
-    <div class="header-user">
-        <a class="action notification" onclick="openInvision()" title="Notifications"></a>
-        <a class="action help" title="Help"></a>
-        <div ngbDropdown class="action user" title="User Settings">
-          <div id="dropdownUser" ngbDropdownToggle>
-            <div class="user-name" *ngIf="!user.displayInitials">
-              {{ user.firstName }}<br/>{{ user.lastName }}
-            </div>
-            <div class="user-name" *ngIf="user.displayInitials">
-              {{ user.initials }}
-            </div>
-          </div>
-          <div ngbDropdownMenu aria-labelledby="dropdownUser">
-            <button ngbDropdownItem>Logout</button>
+    <div class="user-block">
+      <div>{{user.siteName}}</div>
+      <div class="user-data">
+        <div *ngIf="user.initialsDisplay || (user.firstName && user.lastName)" class="user-name">
+          <span *ngIf="user.nameDisplayInitials;else userFullName">{{ user.initialsDisplay }}</span>
+        </div>
+        <div class="user-options" placement="bottom" ngbTooltip="User Options"></div>
+        <div ngbDropdown class='d-inline-block'>
+          <button type="button" id="user-options-dropdown" placement="bottom" ngbDropdownToggle>
+          </button>
+          <div ngbDropdownMenu aria-labelledby="user-options-dropdown">
+            <ul class="horizontal-list">
+              <!-- Non-Patient Centric Options-->
+              <li ngbDropdownItem>
+                <a [href]="assignExternalRoute('/index.mpex')">Main</a>
+                <a
+                  [href]="assignExternalRoute('/help/Default_Left.htm#CSHID=index|SkinName=Picis%20Skin|OpenType=Javascript')">Help</a>
+                <a [href]="assignExternalRoute('/rep01.ibx')">Archive</a>
+                <a [href]="assignExternalRoute('/rep08.ibx')"> My Charts</a>
+                <a href="#">Logout</a>
+              </li>
+            </ul>
+            <hr>
+            <ul class="horizontal-list">
+              <!-- EMAR Options-->
+              <li ngbDropdownItem>
+                <a href="#">Med Services</a>
+                <a href="#">MAR Department</a>
+                <a href="#"> MAR Patient</a>
+              </li>
+            </ul>
+            <hr>
+            <ul class="vertical-list">
+              <!-- Patient Centric Options-->
+              <!-- 
+              Save for integration with authentication, routing, and API
+
+            <li ngbDropdownItem><a [href]="assignExternalRoute('/ibex1s.ibx?aorm=A&p=$$IBEX$$')">Allergies</a>
+              <a [href]="assignExternalRoute('/ibex70.mpex?f=d&p=$$IBEX$$')">Chart</a>
+              <a [href]="assignExternalRoute('/ibex1s.ibx?aorm=M&p=$$IBEX$$')">Current
+                Medications</a>
+              <a [href]="assignExternalRoute('/ibex93.ibx?p=$$IBEX$$')">DCI</a>
+              <a [href]="assignExternalRoute('/ibex11.ibx?p=$$IBEX$$')">Disposition</a>
+            </li>
+            <li ngbDropdownItem><a [href]="assignExternalRoute('/ibex1s.ibx?aorm=R&p=$$IBEX$$')">Med
+                Reconciliation</a>
+              <a [href]="assignExternalRoute('/ibex6a.ibx?p=$$IBEX$$')">Orders</a>
+              <a [href]="assignExternalRoute('/ibex44.ibx?p=$$IBEX$$')">Patient Data</a>
+              <a [href]="assignExternalRoute('/ibex07.ibx?p=$$IBEX$$')">Rx</a>
+            </li>
+          -->
+              <li ngbDropdownItem>
+                <a href="#">Allergies</a>
+                <a href="#">Chart</a>
+                <a href="#">Current
+                  Medications</a>
+                <a href="#">DCI</a>
+                <a href="#">Disposition</a>
+              </li>
+              <li ngbDropdownItem>
+                <a href="#">Med
+                  Reconciliation</a>
+                <a href="#">Orders</a>
+                <a href="#">Patient Data</a>
+                <a href="#">Rx</a>
+              </li>
+            </ul>
           </div>
         </div>
+      </div>
     </div>
+  </div>
 </header>
+
+<ng-template #userFullName>
+  <span id="user-full-name">
+    <span>{{user.firstName}}</span>
+    <span>{{user.lastName}}</span>
+  </span>
+</ng-template>
