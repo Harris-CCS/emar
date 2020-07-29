@@ -3,6 +3,8 @@ import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms'
 
 import { ModalService } from '../../services/modal.service';
 import { MedOrderService } from '../../services/med-order.service';
+import { COMPOSER_OPTIONS } from '../../app/mockup/composerOptions';
+import { ComposerOptions } from '../../app/interfaces/composerOptions';
 
 @Component({
   selector: 'composer-med',
@@ -13,6 +15,8 @@ import { MedOrderService } from '../../services/med-order.service';
 // Inspiration: https://itnext.io/partial-reactive-form-with-angular-components-443ca06d8419
 export class ComposerMedComponent implements OnInit {
   composerMedForm: FormGroup;
+  options: ComposerOptions = COMPOSER_OPTIONS[0]; // TODO API call
+  selectedFormStrength = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -24,6 +28,7 @@ export class ComposerMedComponent implements OnInit {
     this.composerMedForm = this.fb.group({
       orderNotes: null // this is here for test 
     });
+    console.log('OPTIONS',this.options)
   }
   
   formInitialized(name: string, form: FormGroup) {
