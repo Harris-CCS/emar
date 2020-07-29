@@ -1,0 +1,28 @@
+<app-modal modalId="deleteAllCartOrder" blocking="true" closebtn="true" [modalTitle]="modalTitle">
+    <div *ngIf="!isDone">
+        <div 
+            class="dialog-title"
+        >Do you want to delete all cart orders?
+        </div>
+        
+        <div class="dialog-footer">
+            <button 
+                class="button-secondary button-raised"
+                (click)="cancelDeleteAllCartOrders()"            
+            >Cancel</button>
+            <button 
+                [ngClass]="{'button-processing': isProcessing}"
+                class="button-primary button-raised" 
+                (click)="deleteAllCartOrders()"
+            >Confirmed</button>
+        </div>
+    </div>
+    <div *ngIf="isDone">
+        <div class="dialog-result-title">
+            SUCCESS
+        </div>
+        <div class="dialog-result-message">
+            All cart orders are deleted for patient {{patientId}}
+        </div>
+    </div>
+</app-modal>

@@ -33,7 +33,7 @@ export class HeaderPatientComponent implements OnInit {
   ngOnInit(): void {}
 
   getPatientFullName(): string {
-    console.log('patient', this.patient);
+    //console.log('patient', this.patient);
     const fullName: string =
       this.patient.fullName ||
       `${this.patient.firstName} ${
@@ -51,7 +51,7 @@ export class HeaderPatientComponent implements OnInit {
   }
 
   getPatientUrgencyColor(): string {
-    if (this.patient.urgencyColor.includes('#')) {
+    if (this.patient.urgencyColor && this.patient.urgencyColor.includes('#')) {
       return this.patient.urgencyColor;
     } else {
       /*
