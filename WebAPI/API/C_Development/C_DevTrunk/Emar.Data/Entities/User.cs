@@ -11,7 +11,9 @@ namespace Emar.Data.Entities
         public User()
         {
             OrderAdministrationsAcknowledgeUser = new HashSet<OrderAdministration>();
-            OrderAdministrationsAdministeringUser = new HashSet<OrderAdministration>();
+            OrderAdministrationAdministeringUser = new HashSet<OrderAdministration>();
+            OrderAdministrationStopUser = new HashSet<OrderAdministration>();
+            PatientCartOrders = new HashSet<PatientCartOrder>();
             PatientOrdersAddUser = new HashSet<PatientOrder>();
             PatientOrdersOrderPhysicianUser = new HashSet<PatientOrder>();
             UserQuickListItems = new HashSet<UserQuickListItem>();
@@ -34,7 +36,7 @@ namespace Emar.Data.Entities
 
         [Required]
         [Column("initials_display", TypeName = "nvarchar(4)")]
-        public string InitialsDisplay { get; set; }
+        public string UserInitials { get; set; }
 
         [Required]
         [Column("first_name", TypeName = "nvarchar(35)")]
@@ -54,7 +56,7 @@ namespace Emar.Data.Entities
         public bool? OrderingOnlyPhysician { get; set; }
 
         [Column("name_display_initials", TypeName = "bit")]
-        public bool? NameDisplayInitials { get; set; }
+        public bool? DisplayInitialsIndicator { get; set; }
 
         [Required]
         [Column("login_name", TypeName = "varchar(255)")]
@@ -80,10 +82,17 @@ namespace Emar.Data.Entities
         public virtual ICollection<OrderAdministration> OrderAdministrationsAcknowledgeUser { get; set; }
 
         [InverseProperty(nameof(OrderAdministration.AdministeringUser))]
-        public virtual ICollection<OrderAdministration> OrderAdministrationsAdministeringUser { get; set; }
+        public virtual ICollection<OrderAdministration> OrderAdministrationAdministeringUser { get; set; }
+
+        [InverseProperty(nameof(OrderAdministration.StopUser))]
+        public virtual ICollection<OrderAdministration> OrderAdministrationStopUser { get; set; }
+
 
         [InverseProperty(nameof(PatientOrder.AddUser))]
         public virtual ICollection<PatientOrder> PatientOrdersAddUser { get; set; }
+
+        [InverseProperty("User")]
+        public virtual ICollection<PatientCartOrder> PatientCartOrders { get; set; }
 
         [InverseProperty(nameof(PatientOrder.OrderPhysicianUser))]
         public virtual ICollection<PatientOrder> PatientOrdersOrderPhysicianUser { get; set; }

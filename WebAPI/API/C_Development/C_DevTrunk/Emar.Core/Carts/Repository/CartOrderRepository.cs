@@ -52,7 +52,7 @@ namespace Emar.Core.Carts.Repository
                             DrugId = cartOrder.DrugId,
                             BrandName = cartOrder.BrandName,
                             Dose = cartOrder.Dose,
-                            DoseUnit = cartOrder.DoseUnit,
+                            MedicationUnitId = cartOrder.MedicationUnitId,
                             MedicationRouteId = cartOrder.MedicationRouteId,
                             Priority = cartOrder.Priority,
                             FrequencyId = cartOrder.FrequencyId,

@@ -10,24 +10,24 @@ namespace Emar.Core.Orders.Model
         /// </summary>
         public long Id { get; set; }
 
-        string ndc;
+        string _ndc;
         /// <summary>
         /// National Drug Code value
         /// </summary>
         public string Ndc
         {
-            get => ndc?.Trim();
-            set => ndc = value?.Trim() != null ? Regex.Replace(value, "( : ){2,}", " : ") : null;
+            get => _ndc?.Trim();
+            set => _ndc = value?.Trim() != null ? Regex.Replace(value, "( : ){2,}", " : ") : null;
         }
 
-        string drugId;
+        string _drugId;
         /// <summary>
         /// Link to the Medication Provider Database
         /// </summary>
         public string DrugId
         {
-            get => drugId?.Trim();
-            set => drugId = value?.Trim() != null ? Regex.Replace(value, "( : ){2,}", " : ") : null;
+            get => _drugId?.Trim();
+            set => _drugId = value?.Trim() != null ? Regex.Replace(value, "( : ){2,}", " : ") : null;
         }
 
         private string _brandName;
@@ -42,12 +42,7 @@ namespace Emar.Core.Orders.Model
 
         public decimal? Dose { get; set; }
 
-        string doseUnit;
-        public string DoseUnit 
-        {
-            get => doseUnit?.Trim();
-            set => doseUnit = value?.Trim();
-        }
+        public MedicationUnitDto DoseUnit { get; set; }
 
         /// <summary>
         /// DTO of the Medication Route
@@ -66,14 +61,14 @@ namespace Emar.Core.Orders.Model
         // include a Frequency object instead of an Id and trash this property
         public bool PointInTime { get; set; }
 
-        string orderNotes;
+        string _orderNotes;
         /// <summary>
         /// Order notes.
         /// </summary>
         public string OrderNotes
         {
-            get => orderNotes?.Trim();
-            set => orderNotes = value?.Trim();
+            get => _orderNotes?.Trim();
+            set => _orderNotes = value?.Trim();
         }
     }
 

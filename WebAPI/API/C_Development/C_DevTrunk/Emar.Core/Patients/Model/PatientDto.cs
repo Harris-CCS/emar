@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Emar.Core.Helpers;
 using Emar.Core.Orders.Model;
 using Emar.Core.Sites.Model;
 
@@ -18,19 +19,20 @@ namespace Emar.Core.Patients.Model
             set => _accountNumber = value?.Trim();
         }
 
-        string medicalRecordNumber;
+        string _medicalRecordNumber;
         public string MedicalRecordNumber
         {
-            get => medicalRecordNumber?.Trim();
-            set => medicalRecordNumber = value?.Trim();
+            get => _medicalRecordNumber?.Trim();
+            set => _medicalRecordNumber = value?.Trim();
         }
+
         #region name
 
-        string firstName;
+        string _firstName;
         public string FirstName
         {
-            get => firstName?.Trim();
-            set => firstName = value?.Trim();
+            get => _firstName?.Trim();
+            set => _firstName = value?.Trim();
         }
 
         string middleName;
@@ -55,28 +57,8 @@ namespace Emar.Core.Patients.Model
             set => nameSuffix = value?.Trim();
         }
 
-        public string FullName
-        {
-            get
-            {
-                var firstName = (FirstName ?? "").Trim();
-                if (firstName.Length == 1)
-                    firstName += ".";
+        public string FullName => NameHelper.GetDisplayName(_firstName,middleName,lastName, nameSuffix);
 
-                var middleName = (MiddleName ?? "").Trim();
-                if (middleName.Length == 1)
-                    middleName += ".";
-
-                var ret = firstName;
-                ret += (ret != "" && !string.IsNullOrWhiteSpace(middleName)) ? " " : "";
-                ret += middleName;
-                ret += (ret != "" && !string.IsNullOrWhiteSpace(LastName)) ? " " : "";
-                ret += (LastName ?? "").Trim();
-                ret += ((!string.IsNullOrWhiteSpace(ret) && !string.IsNullOrWhiteSpace(NameSuffix)) ? ", " : "") +
-                    (NameSuffix ?? "").Trim();
-                return ret;
-            }
-        }
         #endregion
 
         string gender;
@@ -98,7 +80,7 @@ namespace Emar.Core.Patients.Model
         }
 
         string complaint;
-        public string ChiefComplaint 
+        public string Complaint 
         {
             get => complaint?.Trim();
             set => complaint = value?.Trim();
