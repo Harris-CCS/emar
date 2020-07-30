@@ -10,7 +10,7 @@ as
             , [drug_id]             [varchar](32) null
             , [brand_name]          [nvarchar](255) not null
             , [dose]                [varchar](40) null
-            , [dose_unit]           [varchar](100) null
+            , [medication_unit_id]  [varchar](100) null
             , [medication_route_id] [varchar](40) null
             , [frequency_id]        [int] null
             , [order_notes]         [nvarchar](max) null);
@@ -22,7 +22,7 @@ as
              , '' as                          [drug_id]
              , rtrim(ltrim([grp].[name])) as  [brand_name]
              , rtrim(ltrim([grp].[dose])) as  [dose]
-             , rtrim(ltrim([grp].[unit])) as  [dose_unit]
+             , rtrim(ltrim([grp].[unit])) as  [medication_unit_id]
              , rtrim(ltrim([grp].[route])) as [medication_route_id]
              , 0 as                           [frequency_id]
              , [grp].[notes] as               [order_notes]
@@ -36,13 +36,13 @@ as
              , [drug_id]
              , [brand_name]
              , [dose]
-             , [dose_unit]
+             , [medication_unit_id]
              , [medication_route_id]
              , [frequency_id]
              , [order_notes]
              , rtrim(ltrim([1])) as [brand_name_1]
              , rtrim(ltrim([2])) as [dose_2]
-             , rtrim(ltrim([3])) as [dose_unit_3]
+             , rtrim(ltrim([3])) as [medication_unit_id_3]
              , rtrim(ltrim([4])) as [medication_route_id_4]
              , rtrim(ltrim([5])) as [medication_route_id_5]
         into [#group_list_items_parsed]
@@ -54,7 +54,7 @@ as
                  , [grp].[drug_id]
                  , [grp].[brand_name]
                  , [grp].[dose]
-                 , [grp].[dose_unit]
+                 , [grp].[medication_unit_id]
                  , [grp].[medication_route_id]
                  , [grp].[frequency_id]
                  , [grp].[order_notes]
@@ -79,10 +79,10 @@ as
         where  isnull([medication_route_id], '') = ''
                and isnull([medication_route_id_4], '') > '';
 
---        update [#group_list_items_parsed] set    
---            [dose_unit] = [dose_unit_3]
---        where  isnull([dose_unit], '') = ''
---               and isnull([dose_unit_3], '') > '';
+        --        update [#group_list_items_parsed] set    
+        --            [medication_unit_id] = [medication_unit_id_3]
+        --        where  isnull([medication_unit_id], '') = ''
+        --               and isnull([medication_unit_id_3], '') > '';
 
         update [#group_list_items_parsed] set    
             [dose] = [dose_2]
@@ -112,7 +112,7 @@ as
              , [result].[drug_id]
              , [result].[brand_name]
              , [result].[dose]
-             , [result].[dose_unit]
+             , [result].[medication_unit_id]
              , [result].[medication_route_id]
              , [result].[frequency_id]
              , [result].[order_notes]
@@ -121,7 +121,7 @@ as
                , [result].[ndc]
                , [result].[brand_name]
                , [result].[site_id]
-               , [result].[dose_unit]
+               , [result].[medication_unit_id]
                , cast([result].[order_notes] as varchar(1000));
 
         drop table if exists [#group_list_items];

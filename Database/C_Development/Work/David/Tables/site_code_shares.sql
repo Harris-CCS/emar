@@ -21,7 +21,7 @@ go
 ***********/
 
 alter table [dbo].[site_code_shares]
-add constraint [fk__site_code_shares__sites__site_id] foreign key([source_site_id]) references [dbo].[sites]([id]);
+add constraint [fk__site_code_shares__sites__source_site_id] foreign key([source_site_id]) references [dbo].[sites]([id]);
 go
 
 alter table [dbo].[site_code_shares]

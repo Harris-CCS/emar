@@ -7,7 +7,7 @@ create table [dbo].[group_list_items]
     , [drug_id]             [varchar](32) null
     , [brand_name]          [nvarchar](255) not null
     , [dose]                [decimal](11, 2) null
-    , [dose_unit]           [varchar](20) null
+    , [medication_unit_id]  [int] null
     , [medication_route_id] [int] null
     , [frequency_id]        [int] null
     , [order_notes]         [nvarchar](max) null
@@ -29,6 +29,10 @@ go
 
 alter table [dbo].[group_list_items]
 add constraint [fk__group_list_items__sites] foreign key([site_id]) references [dbo].[sites]([id]);
+go
+
+alter table [dbo].[group_list_items]
+add constraint [fk__group_list_items__medication_units] foreign key([medication_unit_id]) references [dbo].[medication_units]([id]);
 go
 
 alter table [dbo].[group_list_items]
@@ -159,7 +163,7 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'Medication Dose: numeric portion of dose/dose_unit pair'
+  , @value = N'Medication Dose: numeric portion of dose/medication_unit_id pair'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -170,13 +174,13 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'Medication Unit: unit portion of dose/dose_unit pair'
+  , @value = N'Medication Unit: unit portion of dose/medication_unit_id pair'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
   , @level1name = N'group_list_items'
   , @level2type = N'COLUMN'
-  , @level2name = N'dose_unit';
+  , @level2name = N'medication_unit_id';
 go
 
 execute [sys].[sp_addextendedproperty] 
