@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Emar.Data.Entities;
 
 namespace Emar.Core.Orders.Model
 {

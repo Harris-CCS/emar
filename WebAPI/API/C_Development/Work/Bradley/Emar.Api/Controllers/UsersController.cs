@@ -2,7 +2,6 @@
 using Emar.Api.Helpers;
 using Emar.Core;
 using Emar.Core.Helpers;
-using Emar.Core.Orders.Service;
 using Emar.Core.Users.Model;
 using Emar.Core.Users.Repository;
 using Emar.Core.Users.Service;
@@ -23,19 +22,16 @@ namespace Emar.Api.Controllers
         private IUserRepository _userRepository;
         private readonly IPropertyMappingService _propertyMappingService;
         private readonly IPropertyCheckerService _propertyCheckerService;
-        private IOrderService _orderService;
 
         public UsersController(IUserService userService,
                                 IUserRepository userRepository,
                                 IPropertyMappingService propertyMappingService,
-                                IPropertyCheckerService propertyCheckerService,
-                                IOrderService orderService)
+                                IPropertyCheckerService propertyCheckerService)
         {
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             _propertyMappingService = propertyMappingService ?? throw new ArgumentNullException(nameof(propertyMappingService));
             _propertyCheckerService = propertyCheckerService ?? throw new ArgumentNullException(nameof(propertyCheckerService));
-            _orderService = orderService;
         }
 
         [HttpGet(Name = nameof(GetUsers))]
@@ -87,7 +83,7 @@ namespace Emar.Api.Controllers
                 return BadRequest();
             }
 
-            var user = _userService.GetUserMinimal(userId);
+            var user = _userService.GetUser(userId);
 
             if (user == null) { return NotFound($"User with id '{userId}' was not found."); }
 

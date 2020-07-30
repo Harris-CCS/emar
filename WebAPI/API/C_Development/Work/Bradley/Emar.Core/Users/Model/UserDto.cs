@@ -1,4 +1,5 @@
 ﻿using System;
+using Emar.Core.Helpers;
 using Emar.Core.Sites.Model;
 
 namespace Emar.Core.Users.Model
@@ -7,19 +8,37 @@ namespace Emar.Core.Users.Model
     {
         public int Id { get; set; }
 
-        public int SiteId { get; set; }
-
         string _type;
-        public string Type
+        public string TypeCode
         {
             get => _type?.Trim();
             set => _type = value?.Trim();
         }
 
-        public bool IsActive { get; set; }
+        public string TypeDescription
+        {
+            get
+            {
+                switch (_type)
+                {
+                    case "D":
+                        return "physician";
+                    case "N":
+                        return "nurse";
+                    case "S":
+                        return "associate";
+                    case "A":
+                        return "administrator";
+                    default:
+                        return "unknown";
+                }
+            }
+        }
+
+        //public bool IsActive { get; set; }
 
         string _initialsDisplay;
-        public string InitialsDisplay
+        public string UserInitials
         {
             get => _initialsDisplay?.Trim();
             set => _initialsDisplay = value?.Trim();
@@ -53,42 +72,34 @@ namespace Emar.Core.Users.Model
             set => _nameSuffix = value?.Trim();
         }
 
+        public string DisplayName => NameHelper.GetDisplayName(FirstName, MiddleName, LastName, NameSuffix);
+
         public bool OrderingOnlyPhysician { get; set; }
 
-        public bool NameDisplayInitials { get; set; }
+        public bool DisplayInitialsIndicator { get; set; }
 
-        string _loginName;
-        public string LoginName
-        {
-            get => _loginName?.Trim();
-            set => _loginName = value?.Trim();
-        }
+        //string _loginName;
+        //public string LoginName
+        //{
+        //    get => _loginName?.Trim();
+        //    set => _loginName = value?.Trim();
+        //}
 
-        string _loginPassword;
-        public string LoginPassword
-        {
-            get => _loginPassword?.Trim();
-            set => _loginPassword = value?.Trim();
-        }
+        /* Commenting out the following so that sensitive information is not
+         * sent over the wire needlessly */
+        //string _loginPassword;
+        //public string LoginPassword
+        //{
+        //    get => _loginPassword?.Trim();
+        //    set => _loginPassword = value?.Trim();
+        //}
 
-        public byte[] Salt { get; set; }
+        //public byte[] Salt { get; set; }
 
-        public DateTimeOffset? LastLoginTime { get; set; }
+        //public DateTimeOffset? LastLoginTime { get; set; }
 
-        public int FailedLoginAttempts { get; set; }
-
-        string _displayName;
-        public string DisplayName
-        {
-            get => _displayName?.Trim();
-            set => _displayName = value?.Trim();
-        }
+        //public int FailedLoginAttempts { get; set; }
 
         public SiteDto Site { get; set; }
-
-        public string SiteName
-        {
-            get => Site?.Name;
-        }
-    }
+   }
 }

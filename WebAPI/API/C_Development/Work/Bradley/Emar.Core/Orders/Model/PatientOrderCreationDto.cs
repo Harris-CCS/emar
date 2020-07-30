@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using Emar.Data.Entities;
+using Emar.Core.Medications.Model;
 
 namespace Emar.Core.Orders.Model
 {
@@ -21,7 +20,7 @@ namespace Emar.Core.Orders.Model
 
         public decimal? Dose { get; set; }
 
-        public string DoseUnit { get; set; }
+        public MedicationUnitDto DoseUnit { get; set; }
 
         public int? MedicationRouteId { get; set; }
 
@@ -41,8 +40,8 @@ namespace Emar.Core.Orders.Model
 
         public string OrderNotes { get; set; }
 
-        public IEnumerable<OrderAdministration>? OrderAdministrations { get; set; }
+        public IEnumerable<OrderAdministrationDto>? OrderAdministrations { get; set; }
 
-        public IEnumerable<OrderEvent>? OrderEvents { get; set; }
+        public IEnumerable<OrderEventDto>? OrderEvents { get; set; }
     }
 }

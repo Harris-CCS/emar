@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Emar.Core.Medications.Model;
+using Emar.Core.Medications.Model.Mappings;
 using Emar.Core.Users.Model.Mappings;
 using Emar.Data.Entities;
 
@@ -28,7 +30,7 @@ namespace Emar.Core.Orders.Model.Mappings
                 DrugId = patientOrder.DrugId,
                 BrandName = patientOrder.BrandName,
                 Dose = patientOrder.Dose,
-                DoseUnit = patientOrder.DoseUnit,
+                DoseUnit = MedicationMapper.MapMedicationUnit(patientOrder.MedicationUnit),
                 MedicationRoute = OrderMapper.MapMedicationRoute(patientOrder.MedicationRoute),
                 ////Priority = (OrderPriorities)Enum.Parse(typeof(OrderPriorities), patientOrder.Priority),
                 FrequencyId = patientOrder.FrequencyId,
@@ -112,7 +114,7 @@ namespace Emar.Core.Orders.Model.Mappings
                 DrugId = dbObj.DrugId,
                 BrandName = dbObj.BrandName,
                 Dose = dbObj.Dose,
-                DoseUnit = dbObj.DoseUnit,
+                DoseUnit = MedicationMapper.MapMedicationUnit(dbObj.MedicationUnit),
                 MedicationRoute = MapMedicationRoute(dbObj.MedicationRoute),
                 FrequencyId = dbObj.FrequencyId,
                 OrderNotes = dbObj.OrderNotes
@@ -153,7 +155,7 @@ namespace Emar.Core.Orders.Model.Mappings
                 DrugId = patientOrder.DrugId,
                 BrandName = patientOrder.BrandName,
                 Dose = patientOrder.Dose,
-                DoseUnit = patientOrder.DoseUnit,
+                DoseUnit = MedicationMapper.MapMedicationUnit(patientOrder.MedicationUnit),
                 MedicationRouteId = patientOrder.MedicationRoute.Id,
                 Priority = patientOrder.Priority,
                 FrequencyId = patientOrder.FrequencyId,
@@ -163,8 +165,8 @@ namespace Emar.Core.Orders.Model.Mappings
                 BeginDatetime = patientOrder.BeginDatetime,
                 EndDatetime = patientOrder.EndDateTime,
                 OrderNotes = patientOrder.OrderNotes,
-                OrderAdministrations = patientOrder.OrderAdministrations,
-                OrderEvents = (patientOrder.OrderEvents ?? Array.Empty<OrderEvent>()).Where(@event => @event.OrderAdministrationId == null)
+                OrderAdministrations = patientOrder.OrderAdministrations.Select(MapOrderAdministration).ToList(),
+                OrderEvents = patientOrder.OrderEvents.Select(MapOrderEvent).ToList()
             };
 
             return patientOrderCreationDto;

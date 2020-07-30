@@ -8,6 +8,11 @@ namespace Emar.Data.Entities
     [Table("patient_cart_orders")]
     public class PatientCartOrder
     {
+        public PatientCartOrder()
+        {
+            CartOrderAdministrations = new HashSet<CartOrderAdministration>();
+        }
+
         [Column("id", TypeName = "bigint"), Key]
         public long Id { get; set; }
 
@@ -32,8 +37,8 @@ namespace Emar.Data.Entities
         [Column("dose", TypeName = "decimal(11,2)")]
         public decimal? Dose { get; set; }
 
-        [Column("dose_unit", TypeName = "varchar(20)")]
-        public string DoseUnit { get; set; }
+        [Column("medication_unit_id")]
+        public int? MedicationUnitId { get; set; }
 
         [Column("medication_route_id", TypeName = "int")]
         public int? MedicationRouteId { get; set; }
@@ -60,17 +65,27 @@ namespace Emar.Data.Entities
         public string OrderNotes { get; set; }
 
         [Column("user_quick_list_item_id", TypeName = "bigint")]
-        public long? UserQuickListItemId { get; set; }
+        public int? UserQuickListItemId { get; set; }
 
         [ForeignKey(nameof(MedicationRouteId))]
         [InverseProperty(nameof(Entities.MedicationRoute.PatientCartOrders))]
         public virtual MedicationRoute MedicationRoute { get; set; }
 
-        [NotMapped]
-        public User User { get; set; }
+        [ForeignKey(nameof(MedicationUnitId))]
+        [InverseProperty(nameof(Entities.MedicationUnit.PatientCartOrders))]
+        public virtual MedicationUnit MedicationUnit { get; set; }
 
-        [NotMapped]
-        public Patient Patient { get; set; }
+        [ForeignKey(nameof(PatientId))]
+        [InverseProperty(nameof(Entities.Patient.PatientCartOrders))]
+        public virtual Patient Patient { get; set; }
+
+        [ForeignKey(nameof(UserId))]
+        [InverseProperty(nameof(Entities.User.PatientCartOrders))]
+        public virtual User User { get; set; }
+
+        [ForeignKey(nameof(UserQuickListItemId))]
+        [InverseProperty(nameof(Entities.UserQuickListItem.PatientCartOrders))]
+        public virtual UserQuickListItem UserQuickListItem { get; set; }
 
         [InverseProperty("PatientCartOrder")]
         public virtual ICollection<CartOrderAdministration> CartOrderAdministrations { get; set; }
