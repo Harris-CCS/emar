@@ -41,6 +41,8 @@ create table [dbo].[patients]
     , [vs_pain_scale_indicator]        [char](1) null        ---- [ord15]
     , [vs_pain_scale]                  [varchar](14) null    ---- [vspain]
     , [is_active]                      [bit] not null
+    , [custom_number]                  [varchar](25) null
+    , [person_number]                  [varchar](25) null
     , constraint [pk__patients__id] primary key clustered([id] asc));
 go
 
@@ -546,4 +548,26 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'patients'
   , @level2type = N'COLUMN'
   , @level2name = N'is_active';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'Primary Use: Insurance id for canadian patients'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'patients'
+  , @level2type = N'COLUMN'
+  , @level2name = N'custom_number';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'Primary Use: Master patient index HL7 2.4 super number of the patient from ADT interface'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'patients'
+  , @level2type = N'COLUMN'
+  , @level2name = N'person_number';
 go
