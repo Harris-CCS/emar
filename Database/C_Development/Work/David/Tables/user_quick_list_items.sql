@@ -7,7 +7,7 @@ create table [dbo].[user_quick_list_items]
     , [drug_id]                      [varchar](32) null
     , [brand_name]                   [nvarchar](255) not null
     , [dose]                         [decimal](11, 2) null
-    , [medication_unit_id]           [varchar](20) null
+    , [medication_unit_id]           [int] null
     , [medication_route_id]          [int] null
     , [frequency_id]                 [int] null
     , [order_notes]                  [nvarchar](max) null
@@ -44,6 +44,10 @@ go
 
 alter table [dbo].[user_quick_list_items]
 add constraint [fk__user_quick_list_items__sites] foreign key([site_id]) references [dbo].[sites]([id]);
+go
+
+alter table [dbo].[user_quick_list_items]
+add constraint [fk__user_quick_list_items__medication_units] foreign key([medication_unit_id]) references [dbo].[medication_units]([id]);
 go
 
 alter table [dbo].[user_quick_list_items]
