@@ -10,7 +10,7 @@ create table [dbo].[patient_home_medications]
     , [name]                [nvarchar](255) null
     , [alternate_name]      [nvarchar](255) null
     , [dose]                [decimal](11, 2) null
-    , [dose_unit]           [varchar](20) null
+    , [medication_unit_id]  [int] null
     , [medication_route_id] [int] null
     , [medication_drug_id]  [varchar](32) null
     , [is_active]           [bit] not null
@@ -47,6 +47,10 @@ go
 
 alter table [dbo].[patient_home_medications]
 add constraint [fk__users__patient_home_medications__change_user_id] foreign key([change_user_id]) references [dbo].[users]([id]);
+go
+
+alter table [dbo].[patient_home_medications]
+add constraint [fk__patient_home_medications__medication_units] foreign key([medication_unit_id]) references [dbo].[medication_units]([id]);
 go
 
 alter table [dbo].[patient_home_medications]
@@ -240,13 +244,13 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'Medication Unit: unit portion of dose/dose_unit pair'
+  , @value = N'Medication Unit: unit portion of dose/medication_unit_id pair'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
   , @level1name = N'patient_home_medications'
   , @level2type = N'COLUMN'
-  , @level2name = N'dose_unit';
+  , @level2name = N'medication_unit_id';
 go
 
 execute [sys].[sp_addextendedproperty] 
@@ -273,7 +277,7 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'Medication Dose: numeric portion of dose/dose_unit pair'
+  , @value = N'Medication Dose: numeric portion of dose/medication_unit_id pair'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'

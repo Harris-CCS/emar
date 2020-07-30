@@ -8,7 +8,7 @@ create table [dbo].[patient_cart_orders]
     , [drug_id]                 [varchar](32) not null
     , [brand_name]              [nvarchar](255) not null
     , [dose]                    [decimal](11, 2) null
-    , [dose_unit]               [varchar](20) null
+    , [medication_unit_id]      [int] null
     , [medication_route_id]     [int] null
     , [priority]                [tinyint] not null
     , [frequency_id]            [int] null
@@ -17,7 +17,7 @@ create table [dbo].[patient_cart_orders]
     , [begin_datetime]          [datetimeoffset](7) not null
     , [end_datetime]            [datetimeoffset](7) null
     , [order_notes]             [nvarchar](max) null
-    , [user_quick_list_item_id] [bigint] null
+    , [user_quick_list_item_id] [int] null
     , constraint [pk__patient_cart_orders__id] primary key clustered([id] asc));
 go
 
@@ -35,7 +35,23 @@ go
 ***********/
 
 alter table [dbo].[patient_cart_orders]
+add constraint [fk__patient_cart_orders__patients] foreign key([patient_id]) references [dbo].[patients]([id]);
+go
+
+alter table [dbo].[patient_cart_orders]
+add constraint [fk__patient_cart_orders__users] foreign key([user_id]) references [dbo].[users]([id]);
+go
+
+alter table [dbo].[patient_cart_orders]
 add constraint [fk__patient_cart_orders__medication_routes] foreign key([medication_route_id]) references [dbo].[medication_routes]([id]);
+go
+
+alter table [dbo].[patient_cart_orders]
+add constraint [fk__patient_cart_orders__medication_units] foreign key([medication_unit_id]) references [dbo].[medication_units]([id]);
+go
+
+alter table [dbo].[patient_cart_orders]
+add constraint [fk__patient_cart_orders__user_quick_list_items] foreign key([user_quick_list_item_id]) references [dbo].[user_quick_list_items]([id]);
 go
 
 /***************
@@ -162,7 +178,7 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'Medication Dose: numeric portion of dose/dose_unit pair'
+  , @value = N'Medication Dose: numeric portion of dose/medication_unit_id pair'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -195,13 +211,13 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'Medication Unit: unit portion of dose/dose_unit pair'
+  , @value = N'Medication Unit: unit portion of dose/medication_unit_id pair'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
   , @level1name = N'patient_cart_orders'
   , @level2type = N'COLUMN'
-  , @level2name = N'dose_unit';
+  , @level2name = N'medication_unit_id';
 go
 
 execute [sys].[sp_addextendedproperty] 
@@ -280,4 +296,3 @@ execute [sys].[sp_addextendedproperty]
   , @level2type = N'COLUMN'
   , @level2name = N'user_quick_list_item_id';
 go
-

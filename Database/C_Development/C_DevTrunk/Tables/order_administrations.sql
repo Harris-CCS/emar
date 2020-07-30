@@ -40,6 +40,10 @@ alter table [dbo].[order_administrations]
 add constraint [fk__order_administrations__patient_orders__acknowledge_user_id] foreign key([acknowledge_user_id]) references [dbo].[users]([id]);
 go
 
+alter table [dbo].[order_administrations]
+add constraint [fk__order_administrations__patient_orders__stop_user_id] foreign key([stop_user_id]) references [dbo].[users]([id]);
+go
+
 /***************
  Data Dictionary
     Defaults

@@ -21,7 +21,8 @@ if '$(load_data)' in('sample', 'live')
           , [last_name] = 'Abebe'
           , [middle_name] = 'L'
           , [name_suffix] = 'P.A.C.'
-        where  [id] = 240;
+        from   [get_internal_id]('pulsecheck', 'users', 10087) [internal_id]
+               inner join [dbo].[users] [users] on [internal_id].[id] = [users].[id];
 
         declare 
             @userId int =

@@ -10,7 +10,7 @@ create table [#group_list_items]
     , [drug_id]             [varchar](32) null
     , [brand_name]          [nvarchar](255) not null
     , [dose]                [varchar](50) null
-    , [dose_unit]           [varchar](40) null
+    , [medication_unit_id]  [varchar](40) null
     , [medication_route_id] [varchar](50) null
     , [frequency_id]        [varchar](50) null
     , [order_notes]         [nvarchar](max) null);
@@ -31,7 +31,7 @@ if '$(load_data)' = 'live'
            , [drug_id]
            , [brand_name]
            , [dose]
-           , [dose_unit]
+           , [medication_unit_id]
            , [medication_route_id]
            , [frequency_id]
            , [order_notes]
@@ -90,50 +90,29 @@ if
            , [drug_id]
            , [brand_name]
            , [dose]
-           , [dose_unit]
+           , [medication_unit_id]
            , [medication_route_id]
            , [frequency_id]
            , [order_notes]
             )
-        select        isnull([internal_site].[id], -1) as [site_id]
-                    , [source].[group_name]
-                    , [source].[ndc]
-                    , [source].[drug_id]
-                    , [source].[brand_name]
-                    , [source].[dose]
-                    , [source].[dose_unit]
-                    , [medication_routes].[id] as         [medication_routes_id]
-                    , [source].[frequency_id]
-                    , [source].[order_notes]
-        from          [#group_list_items] as [source]
-                      outer apply [dbo].[get_internal_id]
-            ('pulsecheck', 'sites', [source].[site_id]) as [internal_site]
-                      outer apply
-        (
-            select top 1 [mr_item].[id]
-            from
-            (
-                select 1 as                    [type]
-                     , [mr].[id]
-                     , [internal_site].[id] as [site_id]
-                from     [dbo].[medication_routes] as [mr]
-                where      [mr].[name] = [source].[medication_route_id]
-                           and [mr].[site_id] = [internal_site].[id]
-                union
-                select 2 as [type]
-                     , [mr].[id]
-                     , [internal_site].[id]
-                from   [dbo].[medication_routes] as [mr]
-                where  [mr].[name] = [source].[medication_route_id]
-                       and [mr].[site_id] <> [internal_site].[id]
-            ) as [mr_item]
-            order by [mr_item].[type]
-                   , [mr_item].[site_id]
-        ) as [medication_routes]
-        order by [source].[group_name]
-               , [source].[ndc]
-               , [source].[brand_name]
-               , [source].[site_id];
+        select isnull([internal_site].[id], -1) as [site_id]
+             , [source].[group_name]
+             , [source].[ndc]
+             , [source].[drug_id]
+             , [source].[brand_name]
+             , [source].[dose]
+             , [mu].[id] as                        [medication_unit_id]
+             , [mr].[id] as                        [medication_routes_id]
+             , [source].[frequency_id]
+             , [source].[order_notes]
+        from   [#group_list_items] as [source]
+               outer apply [dbo].[get_internal_id]('pulsecheck', 'sites', [source].[site_id]) as [internal_site]
+               cross apply [dbo].[get_code_share_site]([internal_site].[id], 'medication_units') as [mu_site]
+               cross apply [dbo].[get_code_share_site]([internal_site].[id], 'medication_routes') as [mr_site]
+               left join [dbo].[medication_routes] as [mr] on [mr].[site_id] = [mr_site].[site_id]
+                                                              and [mr].[name] = [source].[medication_route_id]
+               left join [dbo].[medication_units] as [mu] on [mu].[site_id] = [mu_site].[site_id]
+                                                             and [mu].[code] = [source].[medication_unit_id];
 
         -- set identity_insert [dbo].[group_list_items] off;
 

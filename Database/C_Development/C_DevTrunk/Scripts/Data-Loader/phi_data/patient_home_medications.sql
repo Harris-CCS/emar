@@ -13,7 +13,7 @@ create table [#patient_home_medications]
     , [name]                [nvarchar](255) null
     , [alternate_name]      [nvarchar](255) null
     , [dose]                [varchar](50) null
-    , [dose_unit]           [varchar](20) null
+    , [medication_unit_id]  [varchar](20) null
     , [medication_route_id] [varchar](50) null
     , [medication_drug_id]  [varchar](32) null
     , [is_active]           [bit] not null
@@ -47,7 +47,7 @@ if '$(load_data)' = 'live'
            , [name]
            , [alternate_name]
            , [dose]
-           , [dose_unit]
+           , [medication_unit_id]
            , [medication_route_id]
            , [medication_drug_id]
            , [is_active]
@@ -88,27 +88,29 @@ if
         add [id]        [bigint] identity(1, 1)
           , [target_id] [bigint];
 
-        update [source] set
+        update [source] set    
             [dose] = '0'
-        from   [#patient_home_medications] [source]
-        where  isnumeric([source].[dose]) = 0
-               and isnull([source].[dose], '') = '';
+        from   [#patient_home_medications] as [source]
+        where  rtrim(ltrim(isnull([source].[dose], ''))) = '';
 
-        update [source] set
+        update [source] set    
+            [dose] = '0'
+        from   [#patient_home_medications] as [source]
+        where  isnumeric([source].[dose]) = 0
+               and charindex(' ', [source].[dose], 1) = 0;
+
+        update [source] set    
             [dose] = left([source].[dose], charindex(' ', [source].[dose], 1) - 1)
-          , [dose_unit] = right([source].[dose], len([source].[dose]) - charindex(' ', [source].[dose], 1))
-        from   [#patient_home_medications] [source]
+          , [medication_unit_id] = substring([source].[dose], charindex(' ', [source].[dose], 1) + 1, len([source].[dose]))
+        from   [#patient_home_medications] as [source]
         where  isnumeric([source].[dose]) = 0
-               and isnull([source].[dose], '') > ''
-               and isnull([source].[dose_unit], '') = ''
                and charindex(' ', [source].[dose], 1) > 0
-               and isnumeric(left([source].[dose], charindex(' ', [source].[dose], 1) - 1)) = 1;
+               and isnull([source].[medication_unit_id], '') = '';
 
-        update [source] set
+        update [source] set    
             [dose] = '0'
         from   [#patient_home_medications] [source]
-        where  isnumeric([source].[dose]) = 0
-               and isnull([source].[dose], '') > '';
+        where  isnumeric([source].[dose]) = 0;
 
 /********************************
         get max id for seed value
@@ -121,7 +123,7 @@ if
 
         set @max_id = isnull(@max_id, 0);
 
-        update [source] set
+        update [source] set    
             [target_id] = [source].[id] + @max_id
         from   [#patient_home_medications] as [source];
 
@@ -140,7 +142,7 @@ if
            , [drug_id]
            , [name]
            , [dose]
-           , [dose_unit]
+           , [medication_unit_id]
            , [medication_route_id]
            , [medication_drug_id]
            , [is_active]
@@ -155,68 +157,40 @@ if
            , [change_user_id]
            , [change_datetime]
             )
-        select isnull([internal_patient_id].[id], -1) as             [patient_id]
-            , [source].[class]
-            , [source].[category]
-            , [source].[internal_drug_id]
-            , [source].[ndc]
-            , [source].[drug_id]
-            , [source].[name]
-            , case
-                    when isnumeric([source].[dose]) = 1
-                        then [source].[dose]
-                    when isnull([source].[dose_unit], '') = ''
-                        and isnumeric(left([source].[dose], charindex(' ', [source].[dose], 1) - 1)) = 1
-                        then left([source].[dose], charindex(' ', [source].[dose], 1) - 1)
-                end as                                         [dose]
-            , [source].[dose_unit]
-            , [medication_routes].[id] as                    [medication_routes_id]
-            , [source].[medication_drug_id]
-            , [source].[is_active]
-            , [source].[comment]
-            , [source].[schedule]
-            , [source].[reaction]
-            , [source].[severity]
-            , [source].[parent_drug_id]
-            , [source].[parent_drug_name]
-            , isnull([internal_add_user_id].[id], 0) as             [add_user_id]
-            , [dbo].[ibex_date_to_offset_date]
-            ([source].[add_datetime], [site].[time_zone_name]) as    [add_datetime]
-            , isnull([internal_change_user_id].[id], 0) as          [change_user_id]
-            , [dbo].[ibex_date_to_offset_date]
-            ([source].[change_datetime], [site].[time_zone_name]) as [change_datetime]
-        from          [#patient_home_medications] as [source]
-               outer apply [dbo].[get_internal_id]
-            ('pulsecheck', 'patients', [source].[patient_id]) as [internal_patient_id]
+        select isnull([internal_patient_id].[id], -1) as                                                [patient_id]
+             , [source].[class]
+             , [source].[category]
+             , [source].[internal_drug_id]
+             , [source].[ndc]
+             , [source].[drug_id]
+             , [source].[name]
+             , [source].[dose]
+             , [mu].[id] as                                                                             [medication_unit_id]
+             , [mr].[id] as                                                                             [medication_routes_id]
+             , [source].[medication_drug_id]
+             , [source].[is_active]
+             , [source].[comment]
+             , [source].[schedule]
+             , [source].[reaction]
+             , [source].[severity]
+             , [source].[parent_drug_id]
+             , [source].[parent_drug_name]
+             , isnull([internal_add_user_id].[id], 0) as                                                [add_user_id]
+             , [dbo].[ibex_date_to_offset_date]([source].[add_datetime], [site].[time_zone_name]) as    [add_datetime]
+             , isnull([internal_change_user_id].[id], 0) as                                             [change_user_id]
+             , [dbo].[ibex_date_to_offset_date]([source].[change_datetime], [site].[time_zone_name]) as [change_datetime]
+        from   [#patient_home_medications] as [source]
+               outer apply [dbo].[get_internal_id]('pulsecheck', 'patients', [source].[patient_id]) as [internal_patient_id]
                left join [dbo].[patients] as [patients] on [patients].[id] = [internal_patient_id].[id]
                left join [dbo].[sites] as [site] on [site].[id] = [patients].[site_id]
-               outer apply [dbo].[get_internal_id]
-            ('pulsecheck', 'users', [source].[add_user_id]) as [internal_add_user_id]
-               outer apply [dbo].[get_internal_id]
-            ('pulsecheck', 'users', [source].[change_user_id]) as [internal_change_user_id]
-                      outer apply
-        (
-            select top 1 [mr_item].[id]
-            from
-            (
-                select 1 as [type]
-                     , [mr].[id]
-                     , [patients].[site_id]
-                from     [dbo].[medication_routes] as [mr]
-                where      [mr].[name] = [source].[medication_route_id]
-                           and [mr].[site_id] = [patients].[site_id]
-                union
-                select 2 as [type]
-                     , [mr].[id]
-                     , [patients].[site_id]
-                from   [dbo].[medication_routes] as [mr]
-                where  [mr].[name] = [source].[medication_route_id]
-                       and [mr].[site_id] <> [patients].[site_id]
-            ) as [mr_item]
-            order by [mr_item].[type]
-                   , [mr_item].[site_id]
-        ) as [medication_routes]
-        order by [patient_id];
+               outer apply [dbo].[get_internal_id]('pulsecheck', 'users', [source].[add_user_id]) as [internal_add_user_id]
+               outer apply [dbo].[get_internal_id]('pulsecheck', 'users', [source].[change_user_id]) as [internal_change_user_id]
+               cross apply [dbo].[get_code_share_site]([site].[id], 'medication_units') as [mu_site]
+               cross apply [dbo].[get_code_share_site]([site].[id], 'medication_routes') as [mr_site]
+               left join [dbo].[medication_routes] as [mr] on [mr].[site_id] = [mr_site].[site_id]
+                                                              and [mr].[name] = [source].[medication_route_id]
+               left join [dbo].[medication_units] as [mu] on [mu].[site_id] = [mu_site].[site_id]
+                                                             and [mu].[code] = [source].[medication_unit_id];
 
         -- set identity_insert [dbo].[patient_home_medications] off;
 
