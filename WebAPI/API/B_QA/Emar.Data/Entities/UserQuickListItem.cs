@@ -1,12 +1,20 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+
 
 namespace Emar.Data.Entities
 {
     [Table("user_quick_list_items")]
     public class UserQuickListItem
     {
-        [Column("id", TypeName = "int"), Key]
+        public UserQuickListItem()
+        {
+            PatientCartOrders = new HashSet<PatientCartOrder>();
+        }
+
+        [Key]
+        [Column("id")]
         public int Id { get; set; }
 
         [Column("site_id", TypeName = "int"), Required]
@@ -15,10 +23,12 @@ namespace Emar.Data.Entities
         [Column("user_id", TypeName = "int"), Required]
         public int UserId { get; set; }
 
-        [Column("ndc", TypeName = "varchar(32)")]
+        [Column("ndc")]
+        [StringLength(32)]
         public string Ndc { get; set; }
 
-        [Column("drug_id", TypeName = "varchar(32)")]
+        [Column("drug_id")]
+        [StringLength(32)]
         public string DrugId { get; set; }
 
         [Column("brand_name", TypeName = "nvarchar(255)"), Required]
@@ -27,8 +37,8 @@ namespace Emar.Data.Entities
         [Column("dose", TypeName = "decimal(11, 2)")]
         public decimal? Dose { get; set; }
 
-        [Column("dose_unit", TypeName = "varchar(20)")]
-        public string DoseUnit { get; set; }
+        [Column("medication_unit_id")]
+        public int? MedicationUnitId { get; set; }
 
         [Column("medication_route_id", TypeName = "int")]
         public int? MedicationRouteId { get; set; }
@@ -45,22 +55,23 @@ namespace Emar.Data.Entities
         [Column("weekly_usage_rolling_average", TypeName = "decimal(9, 3)")]
         public decimal? WeeklyUsageRollingAverage { get; set; }
 
-        [NotMapped]
-        public MedicationRoute MedicationRoute { get; set; }
-        //////////[ForeignKey(nameof(MedicationRouteId))]
-        //////////[InverseProperty(nameof(Entities.MedicationRoute.UserQuickListItems))]
-        //////////public virtual MedicationRoute MedicationRoute { get; set; }
+        [ForeignKey(nameof(MedicationRouteId))]
+        [InverseProperty(nameof(Entities.MedicationRoute.UserQuickListItems))]
+        public virtual MedicationRoute MedicationRoute { get; set; }
 
-        [NotMapped]
-        public Site Site { get; set; }
-        //////////[ForeignKey(nameof(SiteId))]
-        //////////[InverseProperty(nameof(UserQuickListItem))]
-        //////////public virtual Site Site { get; set; }
+        [ForeignKey(nameof(MedicationUnitId))]
+        [InverseProperty(nameof(Entities.MedicationUnit.UserQuickListItems))]
+        public virtual MedicationUnit MedicationUnit { get; set; }
 
-        [NotMapped]
-        public User User { get; set; }
-        //////////[ForeignKey(nameof(UserId))]
-        //////////[InverseProperty(nameof(UserQuickListItem))]
-        //////////public virtual User User { get; set; }
+        [ForeignKey(nameof(SiteId))]
+        [InverseProperty(nameof(Entities.Site.UserQuickListItems))]
+        public virtual Site Site { get; set; }
+
+        [ForeignKey(nameof(UserId))]
+        [InverseProperty(nameof(Entities.User.UserQuickListItems))]
+        public virtual User User { get; set; }
+
+        [InverseProperty("UserQuickListItem")]
+        public virtual ICollection<PatientCartOrder> PatientCartOrders { get; set; }
     }
 }

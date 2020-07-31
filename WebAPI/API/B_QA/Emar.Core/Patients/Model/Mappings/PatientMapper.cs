@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using Emar.Core.Orders.Model.Mappings;
+using Emar.Core.Sites.Model.Mappings;
 using Emar.Data.Entities;
 
 namespace Emar.Core.Patients.Model.Mappings
@@ -14,7 +17,7 @@ namespace Emar.Core.Patients.Model.Mappings
             {
                 Id = pt.Id,
                 SiteId = pt.SiteId,
-                Active = pt.IsActive,
+                Active = pt.Active,
                 FirstName = pt.FirstName.Trim(),
                 MiddleName = (pt.MiddleName == null) ? pt.MiddleName : pt.MiddleName.Trim(),
                 LastName = pt.LastName.Trim(),
@@ -53,8 +56,8 @@ namespace Emar.Core.Patients.Model.Mappings
                 VsOxygenSaturation = pt.VsOxygenSaturation,
                 VsPainScaleIndicator = pt.VsPainScaleIndicator,
                 VsPainScale = pt.VsPainScale,
-                Orders = pt.PatientOrders,
-                Site = pt.Site
+                Orders = pt.PatientOrders?.Select(OrderMapper.MapOrder).ToList(),
+                Site = SiteMapper.MapSite(pt.Site)
             };
 
             // Calculate the age if the date-of-birth is present

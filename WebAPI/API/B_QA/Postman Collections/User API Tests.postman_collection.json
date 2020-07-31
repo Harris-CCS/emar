@@ -1,0 +1,594 @@
+{
+	"info": {
+		"_postman_id": "704a3d5e-6bc6-4ffd-8e18-e032c33cfbf4",
+		"name": "User API Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f73b1e91-4daa-4215-a70e-2f15ee4feed3",
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json,text/plain"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/users",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get users",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json,text/plain"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/users",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"status": "No Content",
+					"code": 204,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 25 Jul 2020 04:13:40 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Sat, 25 Jul 2020 04:14:40 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Sat, 25 Jul 2020 04:13:40 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"6C438A85749032AFD982FFCD98DFB33C\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Get user (external id)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9f37e0fc-1934-476a-8170-a184f1397f70",
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.environment.set(\"HeatherId\", jsonData.id);\r",
+							"\r",
+							"pm.test(\"Correct Name returned\", function() {\r",
+							"    pm.expect(jsonData.displayName).to.eql(\"Heather L. Abebe, P.A.C.\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json,text/plain",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/users?extId=10087",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"users"
+					],
+					"query": [
+						{
+							"key": "extId",
+							"value": "10087"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get user (external id)",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/users?extId=10087",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"users"
+							],
+							"query": [
+								{
+									"key": "extId",
+									"value": "10087"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 25 Jul 2020 04:14:49 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "176"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Sat, 25 Jul 2020 04:15:50 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Sat, 25 Jul 2020 04:14:50 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"1182D5EAE019AA339FD46255D6073840\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 240,\n    \"displayName\": \"Heather L. Abebe, P.A.C.\",\n    \"firstName\": \"Heather\",\n    \"middleName\": \"L\",\n    \"lastName\": \"Abebe\",\n    \"nameSuffix\": \"P.A.C.\",\n    \"siteId\": 28,\n    \"siteName\": \"Pulsecheck Hospital\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Get user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ad432aa5-43d9-4147-8dc5-0a4f34a647ca",
+						"exec": [
+							"pm.test(\"Correct Name returned\", function() {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.displayName).to.eql(\"Heather L. Abebe, P.A.C.\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json,text/plain",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/users/{{HeatherId}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"users",
+						"{{HeatherId}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get user",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/users/240",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"240"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 25 Jul 2020 04:13:56 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "176"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Sat, 25 Jul 2020 04:14:57 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Sat, 25 Jul 2020 04:13:57 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"F05FFAB01E46488DAA8DC6093CA9D380\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 240,\n    \"displayName\": \"Heather L. Abebe, P.A.C.\",\n    \"firstName\": \"Heather\",\n    \"middleName\": \"L\",\n    \"lastName\": \"Abebe\",\n    \"nameSuffix\": \"P.A.C.\",\n    \"siteId\": 28,\n    \"siteName\": \"Pulsecheck Hospital\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Get user (user doesn't exist)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5b87c4e5-55be-4260-84b8-9f10a60707f4",
+						"exec": [
+							"pm.test(\"User was not found\", function () {\r",
+							"    let expectedStrings = ['User with id', 'was not found'];\r",
+							"    var textData = pm.response.text();\r",
+							"    expectedStrings.forEach(str => pm.expect(textData).to.include(str));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json,text/plain",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/users/99999",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"users",
+						"99999"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get user (user doesn't exist)",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/users/99999",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"99999"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 25 Jul 2020 04:14:09 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "37"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Sat, 25 Jul 2020 04:15:10 GMT"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "\"User with id '99999' was not found.\""
+				}
+			]
+		},
+		{
+			"name": "Get user (external id - user doesn't exist)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d30c353c-4125-4446-862f-e86c54e4ab89",
+						"exec": [
+							"pm.test(\"User was not found\", function () {\r",
+							"    let expectedStrings = ['User with external id', 'was not found'];\r",
+							"    var textData = pm.response.text();\r",
+							"    expectedStrings.forEach(str => pm.expect(textData).to.include(str));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json,text/plain",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/users?extId=999999",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"users"
+					],
+					"query": [
+						{
+							"key": "extId",
+							"value": "999999"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get user (external id - user doesn't exist)",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/users?extId=999999",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"users"
+							],
+							"query": [
+								{
+									"key": "extId",
+									"value": "999999"
+								}
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 25 Jul 2020 04:15:12 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "47"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Sat, 25 Jul 2020 04:16:13 GMT"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "\"User with external id '999999' was not found.\""
+				}
+			]
+		}
+	],
+	"protocolProfileBehavior": {}
+}

@@ -1,5 +1,5 @@
-﻿using System;
-using Emar.Data.Entities;
+﻿using Emar.Core.Helpers;
+using Emar.Core.Sites.Model;
 
 namespace Emar.Core.Users.Model
 {
@@ -7,83 +7,98 @@ namespace Emar.Core.Users.Model
     {
         public int Id { get; set; }
 
-        public int SiteId { get; set; }
-
-        string type;
-        public string Type
+        string _type;
+        public string TypeCode
         {
-            get => type?.Trim();
-            set => type = value?.Trim();
+            get => _type?.Trim();
+            set => _type = value?.Trim();
         }
 
-        public bool IsActive { get; set; }
-
-        string initialsDisplay;
-        public string InitialsDisplay
+        public string TypeDescription
         {
-            get => initialsDisplay?.Trim();
-            set => initialsDisplay = value?.Trim();
+            get
+            {
+                switch (_type)
+                {
+                    case "D":
+                        return "physician";
+                    case "N":
+                        return "nurse";
+                    case "S":
+                        return "associate";
+                    case "A":
+                        return "administrator";
+                    default:
+                        return "unknown";
+                }
+            }
         }
 
-        string firstName;
+        //public bool IsActive { get; set; }
+
+        string _initialsDisplay;
+        public string UserInitials
+        {
+            get => _initialsDisplay?.Trim();
+            set => _initialsDisplay = value?.Trim();
+        }
+
+        string _firstName;
         public string FirstName
         {
-            get => firstName?.Trim();
-            set => firstName = value?.Trim();
+            get => _firstName?.Trim();
+            set => _firstName = value?.Trim();
         }
 
-        string lastName;
-        public string LastName
-        {
-            get => lastName?.Trim();
-            set => lastName = value?.Trim();
-        }
-
-        string middleName;
+        string _middleName;
         public string MiddleName
         {
-            get => middleName?.Trim();
-            set => middleName = value?.Trim();
+            get => _middleName?.Trim();
+            set => _middleName = value?.Trim();
         }
 
-        string nameSuffix;
+        string _lastName;
+        public string LastName
+        {
+            get => _lastName?.Trim();
+            set => _lastName = value?.Trim();
+        }
+
+        string _nameSuffix;
         public string NameSuffix
         {
-            get => nameSuffix?.Trim();
-            set => nameSuffix = value?.Trim();
+            get => _nameSuffix?.Trim();
+            set => _nameSuffix = value?.Trim();
         }
+
+        public string DisplayName => NameHelper.GetDisplayName(FirstName, MiddleName, LastName, NameSuffix);
 
         public bool OrderingOnlyPhysician { get; set; }
 
-        public bool NameDisplayInitials { get; set; }
+        public bool DisplayInitialsIndicator { get; set; }
 
-        string loginName;
-        public string LoginName
-        {
-            get => loginName?.Trim();
-            set => loginName = value?.Trim();
-        }
+        /* Commenting out the following so that sensitive information is not
+         * sent over the wire needlessly */
+        //string _loginName;
+        //public string LoginName
+        //{
+        //    get => _loginName?.Trim();
+        //    set => _loginName = value?.Trim();
+        //}
 
-        string loginPassword;
-        public string LoginPassword
-        {
-            get => loginPassword?.Trim();
-            set => loginPassword = value?.Trim();
-        }
+        //string _loginPassword;
+        //public string LoginPassword
+        //{
+        //    get => _loginPassword?.Trim();
+        //    set => _loginPassword = value?.Trim();
+        //}
 
-        public byte[] Salt { get; set; }
+        //public byte[] Salt { get; set; }
 
-        public DateTimeOffset? LastLoginTime { get; set; }
+        //public DateTimeOffset? LastLoginTime { get; set; }
 
-        public int FailedLoginAttempts { get; set; }
+        //public int FailedLoginAttempts { get; set; }
 
-        string displayName;
-        public string DisplayName
-        {
-            get => displayName?.Trim();
-            set => displayName = value?.Trim();
-        }
-
-        public Site Site { get; set; }
+        public SiteDto Site { get; set; }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Emar.Core
+namespace Emar.Core.Helpers
 {
     public class PropertyMapping<TSource, TDestination> : IPropertyMapping
     {

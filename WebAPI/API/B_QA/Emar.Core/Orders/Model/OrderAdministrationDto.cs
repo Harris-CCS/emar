@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Emar.Data.Entities;
 
 namespace Emar.Core.Orders.Model
 {
@@ -84,6 +83,6 @@ namespace Emar.Core.Orders.Model
         /// <summary>
         /// Patient order administration events.
         /// </summary>
-        public IEnumerable<OrderEvent>? AdministrationEvents { get; set; }
+        public IEnumerable<OrderEventDto> AdministrationEvents { get; set; }
     }
 }

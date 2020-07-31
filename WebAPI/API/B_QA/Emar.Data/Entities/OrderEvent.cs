@@ -7,7 +7,8 @@ namespace Emar.Data.Entities
     [Table("order_events")]
     public class OrderEvent
     {
-        [Column("id", TypeName = "bigint"), Key]
+        [Key]
+        [Column("id", TypeName = "bigint")]
         public long Id { get; set; }
 
         [Column("patient_order_id", TypeName = "bigint"), Required]
@@ -28,13 +29,16 @@ namespace Emar.Data.Entities
         [Column("action_id", TypeName = "int"), Required]
         public int ActionId { get; set; }
 
-        [NotMapped]
-        public Action Action { get; set; }
+        [ForeignKey(nameof(ActionId))]
+        [InverseProperty(nameof(Entities.Action.OrderEvents))]
+        public virtual Action Action { get; set; }
 
-        [NotMapped]
-        public OrderAdministration OrderAdministration { get; set; }
+        [ForeignKey(nameof(OrderAdministrationId))]
+        [InverseProperty(nameof(Entities.OrderAdministration.OrderEvents))]
+        public virtual OrderAdministration OrderAdministration { get; set; }
 
-        [NotMapped]
-        public PatientOrder PatientOrder { get; set; }
+        [ForeignKey(nameof(PatientOrderId))]
+        [InverseProperty(nameof(Entities.PatientOrder.OrderEvents))]
+        public virtual PatientOrder PatientOrder { get; set; }
     }
 }

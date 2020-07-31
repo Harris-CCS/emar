@@ -3,6 +3,8 @@ using System.Linq;
 using Emar.Core.Carts.Model;
 using Emar.Core.Carts.Model.Mappings;
 using Emar.Core.Carts.Repository;
+using Emar.Core.Helpers;
+using Emar.Core.ResourceParameters;
 
 namespace Emar.Core.Carts.Service
 {
@@ -13,6 +15,67 @@ namespace Emar.Core.Carts.Service
         public CartOrderService(ICartOrderRepository orderRepository)
         {
             _orderRepository = orderRepository;
+        }
+
+        public PagedList<CartOrderDto> GetOrders(long? patientId, OrdersResourceParameters resourceParameters)
+        {
+            var orders = _orderRepository.GetOrders(patientId, resourceParameters);
+
+            if ((orders == null) ||
+                (!orders.Any()))
+            {
+                return null;
+            }
+
+            var ordersList = orders.Select(order => CartOrderMapper.MapCartOrder(order)).ToList();
+
+            return new PagedList<CartOrderDto>(ordersList, orders.TotalCount, orders.CurrentPage, orders.PageSize);
+        }
+
+        public CartOrderDto GetOrder(long orderId, OrdersResourceParameters resourceParameters)
+        {
+            var order = _orderRepository.GetOrder(orderId, resourceParameters);
+
+            if (order == null)
+            {
+                return null;
+            }
+
+            var orderDto = CartOrderMapper.MapCartOrder(order);
+
+            return orderDto;
+        }
+
+        public CartOrderDto AddCartOrder(CartOrderDto cartOrderAddDto)
+        {
+            var order = CartOrderMapper.MapCartOrderDto(cartOrderAddDto);
+            order = _orderRepository.AddCartOrder(order);
+
+            if (order == null)
+            {
+                return null;
+            }
+
+            var orderDto = CartOrderMapper.MapCartOrder(order);
+
+            return orderDto;
+        }
+
+        public bool UpdateCartOrder(long? cartOrderId, CartOrderDto cartOrderDto, CartOrderDto cartOrderUpdateDto)
+        {
+            var order = CartOrderMapper.MapCartOrderDto(cartOrderUpdateDto);
+
+            return _orderRepository.UpdateCartOrder(order);
+        }
+
+        public bool DeleteCartOrder(long? cartOrderId)
+        {
+            return _orderRepository.DeleteCartOrder(cartOrderId);
+        }
+
+        public bool DeleteCartOrders(int? userId, long? patientId)
+        {
+            return _orderRepository.DeleteCartOrders(userId, patientId);
         }
 
         public bool CheckoutOrders(int? userId, long? patientId)

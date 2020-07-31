@@ -1,0 +1,1691 @@
+{
+	"info": {
+		"_postman_id": "d4338a28-2525-4d6f-8f37-af7740bd0ec2",
+		"name": "Order API Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "via PatientsController",
+			"item": [
+				{
+					"name": "GET pt/orders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b8cc4f06-8d90-4552-b8e8-8bf3cc2e02e1",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/patients/1/orders",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"patients",
+								"1",
+								"orders"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "GET pt/orders",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json,text/plain",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{URL}}/api/patients/1/orders",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"api",
+										"patients",
+										"1",
+										"orders"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Sat, 18 Jul 2020 01:44:58 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Content-Length",
+									"value": "4373"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "public,max-age=60,must-revalidate"
+								},
+								{
+									"key": "Expires",
+									"value": "Sat, 18 Jul 2020 01:45:58 GMT"
+								},
+								{
+									"key": "Last-Modified",
+									"value": "Sat, 18 Jul 2020 01:44:58 GMT"
+								},
+								{
+									"key": "ETag",
+									"value": "\"B5BA69BD8EF2464DE5FA5133E89045D5\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept, Accept-Language, Accept-Encoding"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 1,\n    \"active\": true,\n    \"accountNumber\": \"6544624       \",\n    \"firstName\": \"Jillian\",\n    \"middleName\": \"\",\n    \"lastName\": \"Abbott\",\n    \"nameSuffix\": \"\",\n    \"fullName\": \"Jillian Abbott\",\n    \"gender\": \"F\",\n    \"dateOfBirth\": \"1973-03-11T00:00:00\",\n    \"age\": 47,\n    \"ageUnits\": \"years\",\n    \"chiefComplaint\": \"Irritated throat\",\n    \"heightInCm\": 0,\n    \"weightInKg\": 0,\n    \"siteId\": 18,\n    \"departmentCode\": \"ED  \",\n    \"wardCode\": \"SHIRE   \",\n    \"roomBedCode\": \"            \",\n    \"urgencyColor\": \"0\",\n    \"nameAlert\": false,\n    \"withdrawConsent\": false,\n    \"vsDatetime\": null,\n    \"vsBloodPressureIndicator\": \"0\",\n    \"vsSystolic\": \"120           \",\n    \"vsDiastolic\": \"80            \",\n    \"vsPulseIndicator\": \"0\",\n    \"vsPulse\": \"64            \",\n    \"vsMapLevel\": \"0\",\n    \"vsMap\": \"\",\n    \"vsRespiratoryIndicator\": \"0\",\n    \"vsRespiratory\": \"16            \",\n    \"vsTemperatureIndicator\": \"0\",\n    \"vsTemperature\": \"98.6          \",\n    \"vsEndTidalLevel\": \"0\",\n    \"vsEndTidal\": \"\",\n    \"vsOxygenSaturationIndicator\": \"0\",\n    \"vsOxygenSaturation\": \"100\",\n    \"vsPainScaleIndicator\": \"0\",\n    \"vsPainScale\": \"1             \",\n    \"orders\": [\n        {\n            \"id\": 1,\n            \"patientId\": 1,\n            \"addUserId\": 313,\n            \"addDatetime\": \"2020-06-19T17:00:00+05:00\",\n            \"ndc\": null,\n            \"drugId\": \"MED0001\",\n            \"brandName\": \"tylenol\",\n            \"dose\": null,\n            \"doseUnit\": null,\n            \"medicationRouteId\": 3,\n            \"priority\": 3,\n            \"frequencyId\": 456,\n            \"prn\": false,\n            \"pointInTime\": true,\n            \"orderStatus\": \"Pending\",\n            \"beginDatetime\": \"2020-06-19T17:30:00+05:00\",\n            \"endDatetime\": null,\n            \"orderNotes\": \"This is a humongous blob of text!!! Και λίγα Ελληνικά!!!\",\n            \"orderStatusCode\": \"Pending\",\n            \"orderType\": null,\n            \"administrations\": [\n                {\n                    \"id\": 1,\n                    \"orderId\": 1,\n                    \"pointInTime\": false,\n                    \"onHold\": false,\n                    \"missedDose\": false,\n                    \"administrationScheduledDatetime\": \"2020-06-19T17:45:00+05:00\",\n                    \"administrationInputDatetime\": \"2020-06-19T17:44:28+05:00\",\n                    \"administeringUserId\": 123,\n                    \"administrationDatetime\": \"2020-06-19T17:44:30+05:00\",\n                    \"stopScheduledDatetime\": \"2020-06-19T17:59:23+05:00\",\n                    \"stopInputDatetime\": \"2020-06-19T18:00:00+05:00\",\n                    \"stopUserId\": 456,\n                    \"stopDatetime\": \"2020-06-19T18:00:03+05:00\",\n                    \"acknowledgeUserId\": 789,\n                    \"acknowledgeDatetime\": \"2020-06-19T17:44:35+05:00\",\n                    \"events\": [\n                        {\n                            \"id\": 1,\n                            \"orderId\": 1,\n                            \"administrationId\": 1,\n                            \"eventDateTime\": \"2020-06-19T17:02:33+05:00\",\n                            \"addUserId\": 1,\n                            \"addDatetime\": \"2020-06-19T17:02:30+05:00\",\n                            \"actionId\": 1\n                        },\n                        {\n                            \"id\": 3,\n                            \"orderId\": 1,\n                            \"administrationId\": 1,\n                            \"eventDateTime\": \"2020-06-19T17:17:23+05:00\",\n                            \"addUserId\": 1,\n                            \"addDatetime\": \"2020-06-19T17:17:17+05:00\",\n                            \"actionId\": 1\n                        }\n                    ]\n                },\n                {\n                    \"id\": 2,\n                    \"orderId\": 1,\n                    \"pointInTime\": false,\n                    \"onHold\": false,\n                    \"missedDose\": false,\n                    \"administrationScheduledDatetime\": \"2020-06-19T17:45:00+05:00\",\n                    \"administrationInputDatetime\": \"2020-06-19T17:44:28+05:00\",\n                    \"administeringUserId\": 123,\n                    \"administrationDatetime\": \"2020-06-19T17:44:30+05:00\",\n                    \"stopScheduledDatetime\": \"2020-06-19T17:59:23+05:00\",\n                    \"stopInputDatetime\": \"2020-06-19T18:00:00+05:00\",\n                    \"stopUserId\": 456,\n                    \"stopDatetime\": \"2020-06-19T18:00:03+05:00\",\n                    \"acknowledgeUserId\": 789,\n                    \"acknowledgeDatetime\": \"2020-06-19T17:44:35+05:00\",\n                    \"events\": []\n                }\n            ],\n            \"events\": [\n                {\n                    \"id\": 1,\n                    \"orderId\": 1,\n                    \"administrationId\": 1,\n                    \"eventDateTime\": \"2020-06-19T17:02:33+05:00\",\n                    \"addUserId\": 1,\n                    \"addDatetime\": \"2020-06-19T17:02:30+05:00\",\n                    \"actionId\": 1\n                },\n                {\n                    \"id\": 3,\n                    \"orderId\": 1,\n                    \"administrationId\": 1,\n                    \"eventDateTime\": \"2020-06-19T17:17:23+05:00\",\n                    \"addUserId\": 1,\n                    \"addDatetime\": \"2020-06-19T17:17:17+05:00\",\n                    \"actionId\": 1\n                },\n                {\n                    \"id\": 2,\n                    \"orderId\": 1,\n                    \"administrationId\": null,\n                    \"eventDateTime\": \"2020-06-19T17:17:17+05:00\",\n                    \"addUserId\": 1,\n                    \"addDatetime\": \"2020-06-19T17:17:16+05:00\",\n                    \"actionId\": 2\n                }\n            ]\n        },\n        {\n            \"id\": 2,\n            \"patientId\": 1,\n            \"addUserId\": 313,\n            \"addDatetime\": \"2020-06-19T17:10:00+05:00\",\n            \"ndc\": null,\n            \"drugId\": \"MED0002\",\n            \"brandName\": \"tylenol\",\n            \"dose\": null,\n            \"doseUnit\": null,\n            \"medicationRouteId\": 2,\n            \"priority\": 3,\n            \"frequencyId\": 444,\n            \"prn\": true,\n            \"pointInTime\": false,\n            \"orderStatus\": \"Pending\",\n            \"beginDatetime\": \"2020-06-19T17:15:00+05:00\",\n            \"endDatetime\": null,\n            \"orderNotes\": \"More text!!! Κι άλλο κείμενο!!!\",\n            \"orderStatusCode\": \"Pending\",\n            \"orderType\": null,\n            \"administrations\": [],\n            \"events\": []\n        },\n        {\n            \"id\": 3,\n            \"patientId\": 1,\n            \"addUserId\": 342,\n            \"addDatetime\": \"2020-06-19T17:11:20+05:00\",\n            \"ndc\": null,\n            \"drugId\": \"MED4571\",\n            \"brandName\": \"tylenol\",\n            \"dose\": null,\n            \"doseUnit\": null,\n            \"medicationRouteId\": 2,\n            \"priority\": 2,\n            \"frequencyId\": 444,\n            \"prn\": true,\n            \"pointInTime\": true,\n            \"orderStatus\": \"Pending\",\n            \"beginDatetime\": \"2020-06-19T17:11:30+05:00\",\n            \"endDatetime\": null,\n            \"orderNotes\": \"More more text!!! Κι άλλο άλλο κείμενο!!!\",\n            \"orderStatusCode\": \"Pending\",\n            \"orderType\": null,\n            \"administrations\": [],\n            \"events\": []\n        }\n    ],\n    \"site\": {\n        \"id\": 18,\n        \"name\": \"Middle-earth                            \",\n        \"active\": true,\n        \"timeZoneName\": \"Central Standard Time\"\n    },\n    \"siteName\": \"Middle-earth                            \"\n}"
+						}
+					]
+				},
+				{
+					"name": "GET pt/order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a04808bd-4f8e-4e7c-a4c9-838d454297d2",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/patients/1/orders/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"patients",
+								"1",
+								"orders",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "GET pt/order",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json,text/plain",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{URL}}/api/patients/1/orders/1",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"api",
+										"patients",
+										"1",
+										"orders",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Sat, 18 Jul 2020 01:46:08 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Content-Length",
+									"value": "4373"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "public,max-age=60,must-revalidate"
+								},
+								{
+									"key": "Expires",
+									"value": "Sat, 18 Jul 2020 01:47:09 GMT"
+								},
+								{
+									"key": "Last-Modified",
+									"value": "Sat, 18 Jul 2020 01:46:09 GMT"
+								},
+								{
+									"key": "ETag",
+									"value": "\"359912C9638183845FE001D7274E4B1B\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept, Accept-Language, Accept-Encoding"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 1,\n    \"active\": true,\n    \"accountNumber\": \"6544624       \",\n    \"firstName\": \"Jillian\",\n    \"middleName\": \"\",\n    \"lastName\": \"Abbott\",\n    \"nameSuffix\": \"\",\n    \"fullName\": \"Jillian Abbott\",\n    \"gender\": \"F\",\n    \"dateOfBirth\": \"1973-03-11T00:00:00\",\n    \"age\": 47,\n    \"ageUnits\": \"years\",\n    \"chiefComplaint\": \"Irritated throat\",\n    \"heightInCm\": 0,\n    \"weightInKg\": 0,\n    \"siteId\": 18,\n    \"departmentCode\": \"ED  \",\n    \"wardCode\": \"SHIRE   \",\n    \"roomBedCode\": \"            \",\n    \"urgencyColor\": \"0\",\n    \"nameAlert\": false,\n    \"withdrawConsent\": false,\n    \"vsDatetime\": null,\n    \"vsBloodPressureIndicator\": \"0\",\n    \"vsSystolic\": \"120           \",\n    \"vsDiastolic\": \"80            \",\n    \"vsPulseIndicator\": \"0\",\n    \"vsPulse\": \"64            \",\n    \"vsMapLevel\": \"0\",\n    \"vsMap\": \"\",\n    \"vsRespiratoryIndicator\": \"0\",\n    \"vsRespiratory\": \"16            \",\n    \"vsTemperatureIndicator\": \"0\",\n    \"vsTemperature\": \"98.6          \",\n    \"vsEndTidalLevel\": \"0\",\n    \"vsEndTidal\": \"\",\n    \"vsOxygenSaturationIndicator\": \"0\",\n    \"vsOxygenSaturation\": \"100\",\n    \"vsPainScaleIndicator\": \"0\",\n    \"vsPainScale\": \"1             \",\n    \"orders\": [\n        {\n            \"id\": 1,\n            \"patientId\": 1,\n            \"addUserId\": 313,\n            \"addDatetime\": \"2020-06-19T17:00:00+05:00\",\n            \"ndc\": null,\n            \"drugId\": \"MED0001\",\n            \"brandName\": \"tylenol\",\n            \"dose\": null,\n            \"doseUnit\": null,\n            \"medicationRouteId\": 3,\n            \"priority\": 3,\n            \"frequencyId\": 456,\n            \"prn\": false,\n            \"pointInTime\": true,\n            \"orderStatus\": \"Pending\",\n            \"beginDatetime\": \"2020-06-19T17:30:00+05:00\",\n            \"endDatetime\": null,\n            \"orderNotes\": \"This is a humongous blob of text!!! Και λίγα Ελληνικά!!!\",\n            \"orderStatusCode\": \"Pending\",\n            \"orderType\": null,\n            \"administrations\": [\n                {\n                    \"id\": 1,\n                    \"orderId\": 1,\n                    \"pointInTime\": false,\n                    \"onHold\": false,\n                    \"missedDose\": false,\n                    \"administrationScheduledDatetime\": \"2020-06-19T17:45:00+05:00\",\n                    \"administrationInputDatetime\": \"2020-06-19T17:44:28+05:00\",\n                    \"administeringUserId\": 123,\n                    \"administrationDatetime\": \"2020-06-19T17:44:30+05:00\",\n                    \"stopScheduledDatetime\": \"2020-06-19T17:59:23+05:00\",\n                    \"stopInputDatetime\": \"2020-06-19T18:00:00+05:00\",\n                    \"stopUserId\": 456,\n                    \"stopDatetime\": \"2020-06-19T18:00:03+05:00\",\n                    \"acknowledgeUserId\": 789,\n                    \"acknowledgeDatetime\": \"2020-06-19T17:44:35+05:00\",\n                    \"events\": [\n                        {\n                            \"id\": 1,\n                            \"orderId\": 1,\n                            \"administrationId\": 1,\n                            \"eventDateTime\": \"2020-06-19T17:02:33+05:00\",\n                            \"addUserId\": 1,\n                            \"addDatetime\": \"2020-06-19T17:02:30+05:00\",\n                            \"actionId\": 1\n                        },\n                        {\n                            \"id\": 3,\n                            \"orderId\": 1,\n                            \"administrationId\": 1,\n                            \"eventDateTime\": \"2020-06-19T17:17:23+05:00\",\n                            \"addUserId\": 1,\n                            \"addDatetime\": \"2020-06-19T17:17:17+05:00\",\n                            \"actionId\": 1\n                        }\n                    ]\n                },\n                {\n                    \"id\": 2,\n                    \"orderId\": 1,\n                    \"pointInTime\": false,\n                    \"onHold\": false,\n                    \"missedDose\": false,\n                    \"administrationScheduledDatetime\": \"2020-06-19T17:45:00+05:00\",\n                    \"administrationInputDatetime\": \"2020-06-19T17:44:28+05:00\",\n                    \"administeringUserId\": 123,\n                    \"administrationDatetime\": \"2020-06-19T17:44:30+05:00\",\n                    \"stopScheduledDatetime\": \"2020-06-19T17:59:23+05:00\",\n                    \"stopInputDatetime\": \"2020-06-19T18:00:00+05:00\",\n                    \"stopUserId\": 456,\n                    \"stopDatetime\": \"2020-06-19T18:00:03+05:00\",\n                    \"acknowledgeUserId\": 789,\n                    \"acknowledgeDatetime\": \"2020-06-19T17:44:35+05:00\",\n                    \"events\": []\n                }\n            ],\n            \"events\": [\n                {\n                    \"id\": 1,\n                    \"orderId\": 1,\n                    \"administrationId\": 1,\n                    \"eventDateTime\": \"2020-06-19T17:02:33+05:00\",\n                    \"addUserId\": 1,\n                    \"addDatetime\": \"2020-06-19T17:02:30+05:00\",\n                    \"actionId\": 1\n                },\n                {\n                    \"id\": 3,\n                    \"orderId\": 1,\n                    \"administrationId\": 1,\n                    \"eventDateTime\": \"2020-06-19T17:17:23+05:00\",\n                    \"addUserId\": 1,\n                    \"addDatetime\": \"2020-06-19T17:17:17+05:00\",\n                    \"actionId\": 1\n                },\n                {\n                    \"id\": 2,\n                    \"orderId\": 1,\n                    \"administrationId\": null,\n                    \"eventDateTime\": \"2020-06-19T17:17:17+05:00\",\n                    \"addUserId\": 1,\n                    \"addDatetime\": \"2020-06-19T17:17:16+05:00\",\n                    \"actionId\": 2\n                }\n            ]\n        },\n        {\n            \"id\": 2,\n            \"patientId\": 1,\n            \"addUserId\": 313,\n            \"addDatetime\": \"2020-06-19T17:10:00+05:00\",\n            \"ndc\": null,\n            \"drugId\": \"MED0002\",\n            \"brandName\": \"tylenol\",\n            \"dose\": null,\n            \"doseUnit\": null,\n            \"medicationRouteId\": 2,\n            \"priority\": 3,\n            \"frequencyId\": 444,\n            \"prn\": true,\n            \"pointInTime\": false,\n            \"orderStatus\": \"Pending\",\n            \"beginDatetime\": \"2020-06-19T17:15:00+05:00\",\n            \"endDatetime\": null,\n            \"orderNotes\": \"More text!!! Κι άλλο κείμενο!!!\",\n            \"orderStatusCode\": \"Pending\",\n            \"orderType\": null,\n            \"administrations\": [],\n            \"events\": []\n        },\n        {\n            \"id\": 3,\n            \"patientId\": 1,\n            \"addUserId\": 342,\n            \"addDatetime\": \"2020-06-19T17:11:20+05:00\",\n            \"ndc\": null,\n            \"drugId\": \"MED4571\",\n            \"brandName\": \"tylenol\",\n            \"dose\": null,\n            \"doseUnit\": null,\n            \"medicationRouteId\": 2,\n            \"priority\": 2,\n            \"frequencyId\": 444,\n            \"prn\": true,\n            \"pointInTime\": true,\n            \"orderStatus\": \"Pending\",\n            \"beginDatetime\": \"2020-06-19T17:11:30+05:00\",\n            \"endDatetime\": null,\n            \"orderNotes\": \"More more text!!! Κι άλλο άλλο κείμενο!!!\",\n            \"orderStatusCode\": \"Pending\",\n            \"orderType\": null,\n            \"administrations\": [],\n            \"events\": []\n        }\n    ],\n    \"site\": {\n        \"id\": 18,\n        \"name\": \"Middle-earth                            \",\n        \"active\": true,\n        \"timeZoneName\": \"Central Standard Time\"\n    },\n    \"siteName\": \"Middle-earth                            \"\n}"
+						}
+					]
+				},
+				{
+					"name": "GET pt/orders (patient doesn't exist)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b6b3ea80-6355-4658-a6ef-49d2e15b384e",
+								"exec": [
+									"pm.test(\"Patient was not found\", function () {\r",
+									"    let expectedStrings = ['Patient with id', 'was not found'];\r",
+									"    var textData = pm.response.text();\r",
+									"    expectedStrings.forEach(str => pm.expect(textData).to.include(str));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/patients/999/orders",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"patients",
+								"999",
+								"orders"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "GET pt/orders (patient doesn't exist)",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json,text/plain",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{URL}}/api/patients/999/orders",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"api",
+										"patients",
+										"999",
+										"orders"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Sat, 18 Jul 2020 01:46:52 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Content-Length",
+									"value": "36"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "public,max-age=60,must-revalidate"
+								},
+								{
+									"key": "Expires",
+									"value": "Sat, 18 Jul 2020 01:47:53 GMT"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept, Accept-Language, Accept-Encoding"
+								}
+							],
+							"cookie": [],
+							"body": "\"Patient with id 999 was not found.\""
+						}
+					]
+				},
+				{
+					"name": "GET pt/order (order doesn't exist)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7495322b-5a8a-4080-8a07-469d248f4bc4",
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"let skipTest = false;\r",
+									"\r",
+									"(skipTest ? pm.test.skip : pm.test)(\"Orders property exists\", () => {\r",
+									"  skipTest = !pm.expect(jsonData).to.have.property('orders');\r",
+									"});\r",
+									"\r",
+									"(skipTest ? pm.test.skip : pm.test)(\"No orders returned (null)\", () => {\r",
+									"  skipTest = pm.expect(jsonData).to.have.property('orders');\r",
+									"});\r",
+									"\r",
+									"(skipTest ? pm.test.skip : pm.test)(\"No orders returned (empty)\", () => {\r",
+									"  pm.expect(jsonData.orders.length).to.eql(0);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/patients/123/orders/99",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"patients",
+								"123",
+								"orders",
+								"99"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "GET pt/order (order doesn't exist)",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json,text/plain",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{URL}}/api/patients/123/orders/99",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"api",
+										"patients",
+										"123",
+										"orders",
+										"99"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Sat, 18 Jul 2020 01:47:26 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1113"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "public,max-age=60,must-revalidate"
+								},
+								{
+									"key": "Expires",
+									"value": "Sat, 18 Jul 2020 01:48:27 GMT"
+								},
+								{
+									"key": "Last-Modified",
+									"value": "Sat, 18 Jul 2020 01:47:27 GMT"
+								},
+								{
+									"key": "ETag",
+									"value": "\"D5927191497BF992E938D98031600AB8\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept, Accept-Language, Accept-Encoding"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 123,\n    \"active\": true,\n    \"accountNumber\": \"acctZks4nXV34F\",\n    \"firstName\": \"Jacquline\",\n    \"middleName\": \"\",\n    \"lastName\": \"Buis\",\n    \"nameSuffix\": \"\",\n    \"fullName\": \"Jacquline Buis\",\n    \"gender\": \"F\",\n    \"dateOfBirth\": \"1978-12-12T00:00:00\",\n    \"age\": 41,\n    \"ageUnits\": \"years\",\n    \"chiefComplaint\": \"mRCKmufBGBDDvZS\",\n    \"heightInCm\": 0,\n    \"weightInKg\": 0,\n    \"siteId\": 12,\n    \"departmentCode\": \"ED  \",\n    \"wardCode\": \"HOLDING \",\n    \"roomBedCode\": \"            \",\n    \"urgencyColor\": \" \",\n    \"nameAlert\": false,\n    \"withdrawConsent\": false,\n    \"vsDatetime\": null,\n    \"vsBloodPressureIndicator\": \" \",\n    \"vsSystolic\": \"              \",\n    \"vsDiastolic\": \"              \",\n    \"vsPulseIndicator\": \" \",\n    \"vsPulse\": \"              \",\n    \"vsMapLevel\": null,\n    \"vsMap\": null,\n    \"vsRespiratoryIndicator\": \" \",\n    \"vsRespiratory\": \"              \",\n    \"vsTemperatureIndicator\": \" \",\n    \"vsTemperature\": \"              \",\n    \"vsEndTidalLevel\": null,\n    \"vsEndTidal\": null,\n    \"vsOxygenSaturationIndicator\": \" \",\n    \"vsOxygenSaturation\": \"\",\n    \"vsPainScaleIndicator\": \" \",\n    \"vsPainScale\": \"              \",\n    \"orders\": [],\n    \"site\": {\n        \"id\": 12,\n        \"name\": \"Automation Test_Multum                  \",\n        \"active\": true,\n        \"timeZoneName\": \"Central Standard Time\"\n    },\n    \"siteName\": \"Automation Test_Multum                  \"\n}"
+						}
+					]
+				},
+				{
+					"name": "GET pt/orders (HATEOS Accept header)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "490cce0b-9ae8-42a6-a062-69a02fb28368",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//Per UI team's request, we do not support vendor JSON accept header anymore.\r",
+									"//pm.test(\"Correct Format (application/vnd.pcemar.hateoas+json)\", function () {\r",
+									"//    pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/vnd.pcemar.hateoas+json\");\r",
+									"//});\r",
+									"pm.test(\"Correct Format (application/json)\", function () {\r",
+									"    pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/json\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"description": "Per UI team's request, we do not support vendor JSON accept header anymore.",
+								"key": "Accept",
+								"type": "text",
+								"value": "application/vnd.pcemar.hateoas+json",
+								"disabled": true
+							},
+							{
+								"key": "Accept",
+								"value": "application/json,text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/patients/1/orders",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"patients",
+								"1",
+								"orders"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "GET pt/orders (HATEOS Accept header)",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Per UI team's request, we do not support vendor JSON accept header anymore.",
+										"key": "Accept",
+										"type": "text",
+										"value": "application/vnd.pcemar.hateoas+json",
+										"disabled": true
+									},
+									{
+										"key": "Accept",
+										"value": "application/json,text/plain",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{URL}}/api/patients/1/orders",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"api",
+										"patients",
+										"1",
+										"orders"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Sat, 18 Jul 2020 01:47:59 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Content-Length",
+									"value": "4373"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "public,max-age=60,must-revalidate"
+								},
+								{
+									"key": "Expires",
+									"value": "Sat, 18 Jul 2020 01:48:59 GMT"
+								},
+								{
+									"key": "Last-Modified",
+									"value": "Sat, 18 Jul 2020 01:47:59 GMT"
+								},
+								{
+									"key": "ETag",
+									"value": "\"B5BA69BD8EF2464DE5FA5133E89045D5\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept, Accept-Language, Accept-Encoding"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 1,\n    \"active\": true,\n    \"accountNumber\": \"6544624       \",\n    \"firstName\": \"Jillian\",\n    \"middleName\": \"\",\n    \"lastName\": \"Abbott\",\n    \"nameSuffix\": \"\",\n    \"fullName\": \"Jillian Abbott\",\n    \"gender\": \"F\",\n    \"dateOfBirth\": \"1973-03-11T00:00:00\",\n    \"age\": 47,\n    \"ageUnits\": \"years\",\n    \"chiefComplaint\": \"Irritated throat\",\n    \"heightInCm\": 0,\n    \"weightInKg\": 0,\n    \"siteId\": 18,\n    \"departmentCode\": \"ED  \",\n    \"wardCode\": \"SHIRE   \",\n    \"roomBedCode\": \"            \",\n    \"urgencyColor\": \"0\",\n    \"nameAlert\": false,\n    \"withdrawConsent\": false,\n    \"vsDatetime\": null,\n    \"vsBloodPressureIndicator\": \"0\",\n    \"vsSystolic\": \"120           \",\n    \"vsDiastolic\": \"80            \",\n    \"vsPulseIndicator\": \"0\",\n    \"vsPulse\": \"64            \",\n    \"vsMapLevel\": \"0\",\n    \"vsMap\": \"\",\n    \"vsRespiratoryIndicator\": \"0\",\n    \"vsRespiratory\": \"16            \",\n    \"vsTemperatureIndicator\": \"0\",\n    \"vsTemperature\": \"98.6          \",\n    \"vsEndTidalLevel\": \"0\",\n    \"vsEndTidal\": \"\",\n    \"vsOxygenSaturationIndicator\": \"0\",\n    \"vsOxygenSaturation\": \"100\",\n    \"vsPainScaleIndicator\": \"0\",\n    \"vsPainScale\": \"1             \",\n    \"orders\": [\n        {\n            \"id\": 1,\n            \"patientId\": 1,\n            \"addUserId\": 313,\n            \"addDatetime\": \"2020-06-19T17:00:00+05:00\",\n            \"ndc\": null,\n            \"drugId\": \"MED0001\",\n            \"brandName\": \"tylenol\",\n            \"dose\": null,\n            \"doseUnit\": null,\n            \"medicationRouteId\": 3,\n            \"priority\": 3,\n            \"frequencyId\": 456,\n            \"prn\": false,\n            \"pointInTime\": true,\n            \"orderStatus\": \"Pending\",\n            \"beginDatetime\": \"2020-06-19T17:30:00+05:00\",\n            \"endDatetime\": null,\n            \"orderNotes\": \"This is a humongous blob of text!!! Και λίγα Ελληνικά!!!\",\n            \"orderStatusCode\": \"Pending\",\n            \"orderType\": null,\n            \"administrations\": [\n                {\n                    \"id\": 1,\n                    \"orderId\": 1,\n                    \"pointInTime\": false,\n                    \"onHold\": false,\n                    \"missedDose\": false,\n                    \"administrationScheduledDatetime\": \"2020-06-19T17:45:00+05:00\",\n                    \"administrationInputDatetime\": \"2020-06-19T17:44:28+05:00\",\n                    \"administeringUserId\": 123,\n                    \"administrationDatetime\": \"2020-06-19T17:44:30+05:00\",\n                    \"stopScheduledDatetime\": \"2020-06-19T17:59:23+05:00\",\n                    \"stopInputDatetime\": \"2020-06-19T18:00:00+05:00\",\n                    \"stopUserId\": 456,\n                    \"stopDatetime\": \"2020-06-19T18:00:03+05:00\",\n                    \"acknowledgeUserId\": 789,\n                    \"acknowledgeDatetime\": \"2020-06-19T17:44:35+05:00\",\n                    \"events\": [\n                        {\n                            \"id\": 1,\n                            \"orderId\": 1,\n                            \"administrationId\": 1,\n                            \"eventDateTime\": \"2020-06-19T17:02:33+05:00\",\n                            \"addUserId\": 1,\n                            \"addDatetime\": \"2020-06-19T17:02:30+05:00\",\n                            \"actionId\": 1\n                        },\n                        {\n                            \"id\": 3,\n                            \"orderId\": 1,\n                            \"administrationId\": 1,\n                            \"eventDateTime\": \"2020-06-19T17:17:23+05:00\",\n                            \"addUserId\": 1,\n                            \"addDatetime\": \"2020-06-19T17:17:17+05:00\",\n                            \"actionId\": 1\n                        }\n                    ]\n                },\n                {\n                    \"id\": 2,\n                    \"orderId\": 1,\n                    \"pointInTime\": false,\n                    \"onHold\": false,\n                    \"missedDose\": false,\n                    \"administrationScheduledDatetime\": \"2020-06-19T17:45:00+05:00\",\n                    \"administrationInputDatetime\": \"2020-06-19T17:44:28+05:00\",\n                    \"administeringUserId\": 123,\n                    \"administrationDatetime\": \"2020-06-19T17:44:30+05:00\",\n                    \"stopScheduledDatetime\": \"2020-06-19T17:59:23+05:00\",\n                    \"stopInputDatetime\": \"2020-06-19T18:00:00+05:00\",\n                    \"stopUserId\": 456,\n                    \"stopDatetime\": \"2020-06-19T18:00:03+05:00\",\n                    \"acknowledgeUserId\": 789,\n                    \"acknowledgeDatetime\": \"2020-06-19T17:44:35+05:00\",\n                    \"events\": []\n                }\n            ],\n            \"events\": [\n                {\n                    \"id\": 1,\n                    \"orderId\": 1,\n                    \"administrationId\": 1,\n                    \"eventDateTime\": \"2020-06-19T17:02:33+05:00\",\n                    \"addUserId\": 1,\n                    \"addDatetime\": \"2020-06-19T17:02:30+05:00\",\n                    \"actionId\": 1\n                },\n                {\n                    \"id\": 3,\n                    \"orderId\": 1,\n                    \"administrationId\": 1,\n                    \"eventDateTime\": \"2020-06-19T17:17:23+05:00\",\n                    \"addUserId\": 1,\n                    \"addDatetime\": \"2020-06-19T17:17:17+05:00\",\n                    \"actionId\": 1\n                },\n                {\n                    \"id\": 2,\n                    \"orderId\": 1,\n                    \"administrationId\": null,\n                    \"eventDateTime\": \"2020-06-19T17:17:17+05:00\",\n                    \"addUserId\": 1,\n                    \"addDatetime\": \"2020-06-19T17:17:16+05:00\",\n                    \"actionId\": 2\n                }\n            ]\n        },\n        {\n            \"id\": 2,\n            \"patientId\": 1,\n            \"addUserId\": 313,\n            \"addDatetime\": \"2020-06-19T17:10:00+05:00\",\n            \"ndc\": null,\n            \"drugId\": \"MED0002\",\n            \"brandName\": \"tylenol\",\n            \"dose\": null,\n            \"doseUnit\": null,\n            \"medicationRouteId\": 2,\n            \"priority\": 3,\n            \"frequencyId\": 444,\n            \"prn\": true,\n            \"pointInTime\": false,\n            \"orderStatus\": \"Pending\",\n            \"beginDatetime\": \"2020-06-19T17:15:00+05:00\",\n            \"endDatetime\": null,\n            \"orderNotes\": \"More text!!! Κι άλλο κείμενο!!!\",\n            \"orderStatusCode\": \"Pending\",\n            \"orderType\": null,\n            \"administrations\": [],\n            \"events\": []\n        },\n        {\n            \"id\": 3,\n            \"patientId\": 1,\n            \"addUserId\": 342,\n            \"addDatetime\": \"2020-06-19T17:11:20+05:00\",\n            \"ndc\": null,\n            \"drugId\": \"MED4571\",\n            \"brandName\": \"tylenol\",\n            \"dose\": null,\n            \"doseUnit\": null,\n            \"medicationRouteId\": 2,\n            \"priority\": 2,\n            \"frequencyId\": 444,\n            \"prn\": true,\n            \"pointInTime\": true,\n            \"orderStatus\": \"Pending\",\n            \"beginDatetime\": \"2020-06-19T17:11:30+05:00\",\n            \"endDatetime\": null,\n            \"orderNotes\": \"More more text!!! Κι άλλο άλλο κείμενο!!!\",\n            \"orderStatusCode\": \"Pending\",\n            \"orderType\": null,\n            \"administrations\": [],\n            \"events\": []\n        }\n    ],\n    \"site\": {\n        \"id\": 18,\n        \"name\": \"Middle-earth                            \",\n        \"active\": true,\n        \"timeZoneName\": \"Central Standard Time\"\n    },\n    \"siteName\": \"Middle-earth                            \"\n}"
+						}
+					]
+				},
+				{
+					"name": "GET pt/orders (JSON Accept header)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b4b16b78-e9d8-407b-836b-cc9bb63e1b92",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Correct Format (application/json)\", function () {\r",
+									"    pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/json\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json,text/plain"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.pcemar.hateoas+json",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/patients/1/orders",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"patients",
+								"1",
+								"orders"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "GET pt/orders (JSON Accept header)",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "application/json,text/plain"
+									},
+									{
+										"key": "Accept",
+										"value": "application/vnd.pcemar.hateoas+json",
+										"type": "text",
+										"disabled": true
+									},
+									{
+										"key": "Accept",
+										"value": "application/xml",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "{{URL}}/api/patients/1/orders",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"api",
+										"patients",
+										"1",
+										"orders"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Sat, 18 Jul 2020 01:48:34 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Content-Length",
+									"value": "4373"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "public,max-age=60,must-revalidate"
+								},
+								{
+									"key": "Expires",
+									"value": "Sat, 18 Jul 2020 01:49:35 GMT"
+								},
+								{
+									"key": "Last-Modified",
+									"value": "Sat, 18 Jul 2020 01:48:35 GMT"
+								},
+								{
+									"key": "ETag",
+									"value": "\"B5BA69BD8EF2464DE5FA5133E89045D5\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept, Accept-Language, Accept-Encoding"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 1,\n    \"active\": true,\n    \"accountNumber\": \"6544624       \",\n    \"firstName\": \"Jillian\",\n    \"middleName\": \"\",\n    \"lastName\": \"Abbott\",\n    \"nameSuffix\": \"\",\n    \"fullName\": \"Jillian Abbott\",\n    \"gender\": \"F\",\n    \"dateOfBirth\": \"1973-03-11T00:00:00\",\n    \"age\": 47,\n    \"ageUnits\": \"years\",\n    \"chiefComplaint\": \"Irritated throat\",\n    \"heightInCm\": 0,\n    \"weightInKg\": 0,\n    \"siteId\": 18,\n    \"departmentCode\": \"ED  \",\n    \"wardCode\": \"SHIRE   \",\n    \"roomBedCode\": \"            \",\n    \"urgencyColor\": \"0\",\n    \"nameAlert\": false,\n    \"withdrawConsent\": false,\n    \"vsDatetime\": null,\n    \"vsBloodPressureIndicator\": \"0\",\n    \"vsSystolic\": \"120           \",\n    \"vsDiastolic\": \"80            \",\n    \"vsPulseIndicator\": \"0\",\n    \"vsPulse\": \"64            \",\n    \"vsMapLevel\": \"0\",\n    \"vsMap\": \"\",\n    \"vsRespiratoryIndicator\": \"0\",\n    \"vsRespiratory\": \"16            \",\n    \"vsTemperatureIndicator\": \"0\",\n    \"vsTemperature\": \"98.6          \",\n    \"vsEndTidalLevel\": \"0\",\n    \"vsEndTidal\": \"\",\n    \"vsOxygenSaturationIndicator\": \"0\",\n    \"vsOxygenSaturation\": \"100\",\n    \"vsPainScaleIndicator\": \"0\",\n    \"vsPainScale\": \"1             \",\n    \"orders\": [\n        {\n            \"id\": 1,\n            \"patientId\": 1,\n            \"addUserId\": 313,\n            \"addDatetime\": \"2020-06-19T17:00:00+05:00\",\n            \"ndc\": null,\n            \"drugId\": \"MED0001\",\n            \"brandName\": \"tylenol\",\n            \"dose\": null,\n            \"doseUnit\": null,\n            \"medicationRouteId\": 3,\n            \"priority\": 3,\n            \"frequencyId\": 456,\n            \"prn\": false,\n            \"pointInTime\": true,\n            \"orderStatus\": \"Pending\",\n            \"beginDatetime\": \"2020-06-19T17:30:00+05:00\",\n            \"endDatetime\": null,\n            \"orderNotes\": \"This is a humongous blob of text!!! Και λίγα Ελληνικά!!!\",\n            \"orderStatusCode\": \"Pending\",\n            \"orderType\": null,\n            \"administrations\": [\n                {\n                    \"id\": 1,\n                    \"orderId\": 1,\n                    \"pointInTime\": false,\n                    \"onHold\": false,\n                    \"missedDose\": false,\n                    \"administrationScheduledDatetime\": \"2020-06-19T17:45:00+05:00\",\n                    \"administrationInputDatetime\": \"2020-06-19T17:44:28+05:00\",\n                    \"administeringUserId\": 123,\n                    \"administrationDatetime\": \"2020-06-19T17:44:30+05:00\",\n                    \"stopScheduledDatetime\": \"2020-06-19T17:59:23+05:00\",\n                    \"stopInputDatetime\": \"2020-06-19T18:00:00+05:00\",\n                    \"stopUserId\": 456,\n                    \"stopDatetime\": \"2020-06-19T18:00:03+05:00\",\n                    \"acknowledgeUserId\": 789,\n                    \"acknowledgeDatetime\": \"2020-06-19T17:44:35+05:00\",\n                    \"events\": [\n                        {\n                            \"id\": 1,\n                            \"orderId\": 1,\n                            \"administrationId\": 1,\n                            \"eventDateTime\": \"2020-06-19T17:02:33+05:00\",\n                            \"addUserId\": 1,\n                            \"addDatetime\": \"2020-06-19T17:02:30+05:00\",\n                            \"actionId\": 1\n                        },\n                        {\n                            \"id\": 3,\n                            \"orderId\": 1,\n                            \"administrationId\": 1,\n                            \"eventDateTime\": \"2020-06-19T17:17:23+05:00\",\n                            \"addUserId\": 1,\n                            \"addDatetime\": \"2020-06-19T17:17:17+05:00\",\n                            \"actionId\": 1\n                        }\n                    ]\n                },\n                {\n                    \"id\": 2,\n                    \"orderId\": 1,\n                    \"pointInTime\": false,\n                    \"onHold\": false,\n                    \"missedDose\": false,\n                    \"administrationScheduledDatetime\": \"2020-06-19T17:45:00+05:00\",\n                    \"administrationInputDatetime\": \"2020-06-19T17:44:28+05:00\",\n                    \"administeringUserId\": 123,\n                    \"administrationDatetime\": \"2020-06-19T17:44:30+05:00\",\n                    \"stopScheduledDatetime\": \"2020-06-19T17:59:23+05:00\",\n                    \"stopInputDatetime\": \"2020-06-19T18:00:00+05:00\",\n                    \"stopUserId\": 456,\n                    \"stopDatetime\": \"2020-06-19T18:00:03+05:00\",\n                    \"acknowledgeUserId\": 789,\n                    \"acknowledgeDatetime\": \"2020-06-19T17:44:35+05:00\",\n                    \"events\": []\n                }\n            ],\n            \"events\": [\n                {\n                    \"id\": 1,\n                    \"orderId\": 1,\n                    \"administrationId\": 1,\n                    \"eventDateTime\": \"2020-06-19T17:02:33+05:00\",\n                    \"addUserId\": 1,\n                    \"addDatetime\": \"2020-06-19T17:02:30+05:00\",\n                    \"actionId\": 1\n                },\n                {\n                    \"id\": 3,\n                    \"orderId\": 1,\n                    \"administrationId\": 1,\n                    \"eventDateTime\": \"2020-06-19T17:17:23+05:00\",\n                    \"addUserId\": 1,\n                    \"addDatetime\": \"2020-06-19T17:17:17+05:00\",\n                    \"actionId\": 1\n                },\n                {\n                    \"id\": 2,\n                    \"orderId\": 1,\n                    \"administrationId\": null,\n                    \"eventDateTime\": \"2020-06-19T17:17:17+05:00\",\n                    \"addUserId\": 1,\n                    \"addDatetime\": \"2020-06-19T17:17:16+05:00\",\n                    \"actionId\": 2\n                }\n            ]\n        },\n        {\n            \"id\": 2,\n            \"patientId\": 1,\n            \"addUserId\": 313,\n            \"addDatetime\": \"2020-06-19T17:10:00+05:00\",\n            \"ndc\": null,\n            \"drugId\": \"MED0002\",\n            \"brandName\": \"tylenol\",\n            \"dose\": null,\n            \"doseUnit\": null,\n            \"medicationRouteId\": 2,\n            \"priority\": 3,\n            \"frequencyId\": 444,\n            \"prn\": true,\n            \"pointInTime\": false,\n            \"orderStatus\": \"Pending\",\n            \"beginDatetime\": \"2020-06-19T17:15:00+05:00\",\n            \"endDatetime\": null,\n            \"orderNotes\": \"More text!!! Κι άλλο κείμενο!!!\",\n            \"orderStatusCode\": \"Pending\",\n            \"orderType\": null,\n            \"administrations\": [],\n            \"events\": []\n        },\n        {\n            \"id\": 3,\n            \"patientId\": 1,\n            \"addUserId\": 342,\n            \"addDatetime\": \"2020-06-19T17:11:20+05:00\",\n            \"ndc\": null,\n            \"drugId\": \"MED4571\",\n            \"brandName\": \"tylenol\",\n            \"dose\": null,\n            \"doseUnit\": null,\n            \"medicationRouteId\": 2,\n            \"priority\": 2,\n            \"frequencyId\": 444,\n            \"prn\": true,\n            \"pointInTime\": true,\n            \"orderStatus\": \"Pending\",\n            \"beginDatetime\": \"2020-06-19T17:11:30+05:00\",\n            \"endDatetime\": null,\n            \"orderNotes\": \"More more text!!! Κι άλλο άλλο κείμενο!!!\",\n            \"orderStatusCode\": \"Pending\",\n            \"orderType\": null,\n            \"administrations\": [],\n            \"events\": []\n        }\n    ],\n    \"site\": {\n        \"id\": 18,\n        \"name\": \"Middle-earth                            \",\n        \"active\": true,\n        \"timeZoneName\": \"Central Standard Time\"\n    },\n    \"siteName\": \"Middle-earth                            \"\n}"
+						}
+					]
+				},
+				{
+					"name": "GET pt/orders (incorrect Accept header)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "770bc06b-a5a3-4ec1-97e0-537c2e9dd5ce",
+								"exec": [
+									"//pm.test(\"Not Acceptable returned\", function() {\r",
+									"//    var jsonData = pm.response.json();\r",
+									"//   pm.expect(jsonData.title).to.eql(\"Not Acceptable\");\r",
+									"//});\r",
+									"\r",
+									"pm.test(\"Status code is 406\", function () {\r",
+									"    pm.response.to.have.status(406);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/patients/1/orders",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"patients",
+								"1",
+								"orders"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "GET pt/orders (incorrect Accept header)",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/xml",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{URL}}/api/patients/1/orders",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"api",
+										"patients",
+										"1",
+										"orders"
+									]
+								}
+							},
+							"status": "Not Acceptable",
+							"code": 406,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Sat, 18 Jul 2020 01:48:54 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Content-Length",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "public,max-age=60,must-revalidate"
+								},
+								{
+									"key": "Expires",
+									"value": "Sat, 18 Jul 2020 01:49:54 GMT"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept, Accept-Language, Accept-Encoding"
+								}
+							],
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "GET pt/orders (unspecified Accept header)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "83176351-04b1-40c2-99f6-946791ecb7bd",
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Correct Format (application/json)\", function () {\r",
+									"    pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/json\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/api/patients/1/orders",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"patients",
+								"1",
+								"orders"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "GET pt/orders (unspecified Accept header)",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/api/patients/1/orders",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"api",
+										"patients",
+										"1",
+										"orders"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Sat, 18 Jul 2020 01:49:16 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Content-Length",
+									"value": "41"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "public,max-age=60,must-revalidate"
+								},
+								{
+									"key": "Expires",
+									"value": "Sat, 18 Jul 2020 01:50:16 GMT"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept, Accept-Language, Accept-Encoding"
+								}
+							],
+							"cookie": [],
+							"body": "\"Unsupported media type header provided.\""
+						}
+					]
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "GET orders",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "40e3366e-d7a4-42e9-8e4c-312856f90da5",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json,text/plain",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/orders?patientId=1",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"orders"
+					],
+					"query": [
+						{
+							"key": "patientId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "GET orders",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/orders",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"orders"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 18 Jul 2020 01:50:05 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "4075"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Sat, 18 Jul 2020 01:51:05 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Sat, 18 Jul 2020 01:50:05 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"B5946EB46369A437D5654F532E3E3AC6\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						},
+						{
+							"key": "X-Pagination",
+							"value": "{\"totalCount\":4,\"pageSize\":10,\"currentPage\":1,\"totalPages\":1}"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"orders\": [\n        {\n            \"patientId\": 1,\n            \"createdDateTime\": \"2020-06-19T17:00:00+05:00\",\n            \"beginDateTime\": \"2020-06-19T17:30:00+05:00\",\n            \"endDateTime\": null,\n            \"priority\": 0,\n            \"prn\": false,\n            \"orderStatusCode\": 1,\n            \"orderStatus\": \"Pending\",\n            \"orderType\": \"Scheduled\",\n            \"orderingProviderId\": 313,\n            \"orderAdministrations\": [\n                {\n                    \"id\": 1,\n                    \"orderId\": 1,\n                    \"pointInTime\": false,\n                    \"onHold\": false,\n                    \"missedDose\": false,\n                    \"administrationScheduledDatetime\": \"2020-06-19T17:45:00+05:00\",\n                    \"administrationInputDatetime\": \"2020-06-19T17:44:28+05:00\",\n                    \"administeringUserId\": 123,\n                    \"administrationDatetime\": \"2020-06-19T17:44:30+05:00\",\n                    \"stopScheduledDatetime\": \"2020-06-19T17:59:23+05:00\",\n                    \"stopInputDatetime\": \"2020-06-19T18:00:00+05:00\",\n                    \"stopUserId\": 456,\n                    \"stopDatetime\": \"2020-06-19T18:00:03+05:00\",\n                    \"acknowledgeUserId\": 789,\n                    \"acknowledgeDatetime\": \"2020-06-19T17:44:35+05:00\",\n                    \"events\": [\n                        {\n                            \"id\": 1,\n                            \"orderId\": 1,\n                            \"administrationId\": 1,\n                            \"eventDateTime\": \"2020-06-19T17:02:33+05:00\",\n                            \"addUserId\": 1,\n                            \"addDatetime\": \"2020-06-19T17:02:30+05:00\",\n                            \"actionId\": 1\n                        },\n                        {\n                            \"id\": 3,\n                            \"orderId\": 1,\n                            \"administrationId\": 1,\n                            \"eventDateTime\": \"2020-06-19T17:17:23+05:00\",\n                            \"addUserId\": 1,\n                            \"addDatetime\": \"2020-06-19T17:17:17+05:00\",\n                            \"actionId\": 1\n                        }\n                    ]\n                },\n                {\n                    \"id\": 2,\n                    \"orderId\": 1,\n                    \"pointInTime\": false,\n                    \"onHold\": false,\n                    \"missedDose\": false,\n                    \"administrationScheduledDatetime\": \"2020-06-19T17:45:00+05:00\",\n                    \"administrationInputDatetime\": \"2020-06-19T17:44:28+05:00\",\n                    \"administeringUserId\": 123,\n                    \"administrationDatetime\": \"2020-06-19T17:44:30+05:00\",\n                    \"stopScheduledDatetime\": \"2020-06-19T17:59:23+05:00\",\n                    \"stopInputDatetime\": \"2020-06-19T18:00:00+05:00\",\n                    \"stopUserId\": 456,\n                    \"stopDatetime\": \"2020-06-19T18:00:03+05:00\",\n                    \"acknowledgeUserId\": 789,\n                    \"acknowledgeDatetime\": \"2020-06-19T17:44:35+05:00\",\n                    \"events\": []\n                }\n            ],\n            \"orderEvents\": [\n                {\n                    \"id\": 2,\n                    \"orderId\": 1,\n                    \"administrationId\": null,\n                    \"eventDateTime\": \"2020-06-19T17:17:17+05:00\",\n                    \"addUserId\": 1,\n                    \"addDatetime\": \"2020-06-19T17:17:16+05:00\",\n                    \"actionId\": 2\n                }\n            ],\n            \"id\": 1,\n            \"ndc\": null,\n            \"drugId\": \"MED0001\",\n            \"brandName\": \"tylenol\",\n            \"dose\": null,\n            \"doseUnit\": null,\n            \"medicationRouteId\": 3,\n            \"medicationRoute\": null,\n            \"frequencyId\": 456,\n            \"pointInTime\": true,\n            \"orderNotes\": \"This is a humongous blob of text!!! Και λίγα Ελληνικά!!!\",\n            \"links\": [\n                {\n                    \"href\": \"http://localhost:51044/api/orders/1\",\n                    \"rel\": \"self\",\n                    \"method\": \"GET\"\n                }\n            ]\n        },\n        {\n            \"patientId\": 1,\n            \"createdDateTime\": \"2020-06-19T17:10:00+05:00\",\n            \"beginDateTime\": \"2020-06-19T17:15:00+05:00\",\n            \"endDateTime\": null,\n            \"priority\": 0,\n            \"prn\": true,\n            \"orderStatusCode\": 1,\n            \"orderStatus\": \"Pending\",\n            \"orderType\": \"Prn\",\n            \"orderingProviderId\": 313,\n            \"orderAdministrations\": [],\n            \"orderEvents\": [],\n            \"id\": 2,\n            \"ndc\": null,\n            \"drugId\": \"MED0002\",\n            \"brandName\": \"tylenol\",\n            \"dose\": null,\n            \"doseUnit\": null,\n            \"medicationRouteId\": 2,\n            \"medicationRoute\": null,\n            \"frequencyId\": 444,\n            \"pointInTime\": false,\n            \"orderNotes\": \"More text!!! Κι άλλο κείμενο!!!\",\n            \"links\": [\n                {\n                    \"href\": \"http://localhost:51044/api/orders/2\",\n                    \"rel\": \"self\",\n                    \"method\": \"GET\"\n                }\n            ]\n        },\n        {\n            \"patientId\": 1,\n            \"createdDateTime\": \"2020-06-19T17:11:20+05:00\",\n            \"beginDateTime\": \"2020-06-19T17:11:30+05:00\",\n            \"endDateTime\": null,\n            \"priority\": 0,\n            \"prn\": true,\n            \"orderStatusCode\": 1,\n            \"orderStatus\": \"Pending\",\n            \"orderType\": \"Prn\",\n            \"orderingProviderId\": 342,\n            \"orderAdministrations\": [],\n            \"orderEvents\": [],\n            \"id\": 3,\n            \"ndc\": null,\n            \"drugId\": \"MED4571\",\n            \"brandName\": \"tylenol\",\n            \"dose\": null,\n            \"doseUnit\": null,\n            \"medicationRouteId\": 2,\n            \"medicationRoute\": null,\n            \"frequencyId\": 444,\n            \"pointInTime\": true,\n            \"orderNotes\": \"More more text!!! Κι άλλο άλλο κείμενο!!!\",\n            \"links\": [\n                {\n                    \"href\": \"http://localhost:51044/api/orders/3\",\n                    \"rel\": \"self\",\n                    \"method\": \"GET\"\n                }\n            ]\n        },\n        {\n            \"patientId\": 2,\n            \"createdDateTime\": \"2020-06-20T08:00:00+05:00\",\n            \"beginDateTime\": \"2020-06-20T08:00:23+05:00\",\n            \"endDateTime\": null,\n            \"priority\": 0,\n            \"prn\": false,\n            \"orderStatusCode\": 1,\n            \"orderStatus\": \"Pending\",\n            \"orderType\": \"Continuous\",\n            \"orderingProviderId\": 313,\n            \"orderAdministrations\": [],\n            \"orderEvents\": [],\n            \"id\": 4,\n            \"ndc\": null,\n            \"drugId\": \"MED9524\",\n            \"brandName\": \"aspirin\",\n            \"dose\": null,\n            \"doseUnit\": null,\n            \"medicationRouteId\": 3,\n            \"medicationRoute\": null,\n            \"frequencyId\": 852,\n            \"pointInTime\": false,\n            \"orderNotes\": \"Is this the end? Εδώ είναι το τέλος;\",\n            \"links\": [\n                {\n                    \"href\": \"http://localhost:51044/api/orders/4\",\n                    \"rel\": \"self\",\n                    \"method\": \"GET\"\n                }\n            ]\n        }\n    ],\n    \"links\": [\n        {\n            \"href\": \"http://localhost:51044/api/orders?PatientId=-1&PageSize=10&PageNumber=1\",\n            \"rel\": \"self\",\n            \"method\": \"GET\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "GET order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "99316fe7-fcd3-4809-aec8-7bbc7b170814",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json,text/plain",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/orders/1",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"orders",
+						"1"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "GET order",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/orders/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"orders",
+								"1"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 18 Jul 2020 01:50:37 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "2131"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Sat, 18 Jul 2020 01:51:38 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Sat, 18 Jul 2020 01:50:38 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"D529F193C5B9F2244A5AE877C9B9E45F\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"patientId\": 1,\n    \"createdDateTime\": \"2020-06-19T17:00:00+05:00\",\n    \"beginDateTime\": \"2020-06-19T17:30:00+05:00\",\n    \"endDateTime\": null,\n    \"priority\": 0,\n    \"prn\": false,\n    \"orderStatusCode\": 1,\n    \"orderStatus\": \"Pending\",\n    \"orderType\": \"Scheduled\",\n    \"orderingProviderId\": 313,\n    \"orderAdministrations\": [\n        {\n            \"id\": 1,\n            \"orderId\": 1,\n            \"pointInTime\": false,\n            \"onHold\": false,\n            \"missedDose\": false,\n            \"administrationScheduledDatetime\": \"2020-06-19T17:45:00+05:00\",\n            \"administrationInputDatetime\": \"2020-06-19T17:44:28+05:00\",\n            \"administeringUserId\": 123,\n            \"administrationDatetime\": \"2020-06-19T17:44:30+05:00\",\n            \"stopScheduledDatetime\": \"2020-06-19T17:59:23+05:00\",\n            \"stopInputDatetime\": \"2020-06-19T18:00:00+05:00\",\n            \"stopUserId\": 456,\n            \"stopDatetime\": \"2020-06-19T18:00:03+05:00\",\n            \"acknowledgeUserId\": 789,\n            \"acknowledgeDatetime\": \"2020-06-19T17:44:35+05:00\",\n            \"events\": [\n                {\n                    \"id\": 1,\n                    \"orderId\": 1,\n                    \"administrationId\": 1,\n                    \"eventDateTime\": \"2020-06-19T17:02:33+05:00\",\n                    \"addUserId\": 1,\n                    \"addDatetime\": \"2020-06-19T17:02:30+05:00\",\n                    \"actionId\": 1\n                },\n                {\n                    \"id\": 3,\n                    \"orderId\": 1,\n                    \"administrationId\": 1,\n                    \"eventDateTime\": \"2020-06-19T17:17:23+05:00\",\n                    \"addUserId\": 1,\n                    \"addDatetime\": \"2020-06-19T17:17:17+05:00\",\n                    \"actionId\": 1\n                }\n            ]\n        },\n        {\n            \"id\": 2,\n            \"orderId\": 1,\n            \"pointInTime\": false,\n            \"onHold\": false,\n            \"missedDose\": false,\n            \"administrationScheduledDatetime\": \"2020-06-19T17:45:00+05:00\",\n            \"administrationInputDatetime\": \"2020-06-19T17:44:28+05:00\",\n            \"administeringUserId\": 123,\n            \"administrationDatetime\": \"2020-06-19T17:44:30+05:00\",\n            \"stopScheduledDatetime\": \"2020-06-19T17:59:23+05:00\",\n            \"stopInputDatetime\": \"2020-06-19T18:00:00+05:00\",\n            \"stopUserId\": 456,\n            \"stopDatetime\": \"2020-06-19T18:00:03+05:00\",\n            \"acknowledgeUserId\": 789,\n            \"acknowledgeDatetime\": \"2020-06-19T17:44:35+05:00\",\n            \"events\": []\n        }\n    ],\n    \"orderEvents\": [\n        {\n            \"id\": 2,\n            \"orderId\": 1,\n            \"administrationId\": null,\n            \"eventDateTime\": \"2020-06-19T17:17:17+05:00\",\n            \"addUserId\": 1,\n            \"addDatetime\": \"2020-06-19T17:17:16+05:00\",\n            \"actionId\": 2\n        }\n    ],\n    \"id\": 1,\n    \"ndc\": null,\n    \"drugId\": \"MED0001\",\n    \"brandName\": \"tylenol\",\n    \"dose\": null,\n    \"doseUnit\": null,\n    \"medicationRouteId\": 3,\n    \"medicationRoute\": null,\n    \"frequencyId\": 456,\n    \"pointInTime\": true,\n    \"orderNotes\": \"This is a humongous blob of text!!! Και λίγα Ελληνικά!!!\",\n    \"links\": [\n        {\n            \"href\": \"http://localhost:51044/api/orders/1\",\n            \"rel\": \"self\",\n            \"method\": \"GET\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "GET order (order doesn't exist)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "88d8cf4c-246f-40c1-95f9-ecc3a7162c9c",
+						"exec": [
+							"pm.test(\"Patient order was not found\", function () {\r",
+							"    let expectedStrings = ['Patient order with id', 'was not found'];\r",
+							"    var textData = pm.response.text();\r",
+							"    expectedStrings.forEach(str => pm.expect(textData).to.include(str));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json,text/plain",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/orders/999999",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"orders",
+						"999999"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "GET order (order doesn't exist)",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/orders/999",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"orders",
+								"999"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 18 Jul 2020 01:51:04 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "41"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Sat, 18 Jul 2020 01:52:04 GMT"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "\"Patient order with id 999 was not found\""
+				}
+			]
+		},
+		{
+			"name": "GET orders (HATEOS Accept header)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "91d17cd1-6cda-44a0-b955-52b0a37aa41c",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"//Per UI team's request, we do not support vendor JSON accept header anymore.\r",
+							"//pm.test(\"Correct Format (application/vnd.pcemar.hateoas+json)\", function () {\r",
+							"//    pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/vnd.pcemar.hateoas+json\");\r",
+							"//});\r",
+							"pm.test(\"Correct Format (application/json)\", function () {\r",
+							"    pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/json\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/vnd.pcemar.hateoas+json",
+						"disabled": true
+					},
+					{
+						"key": "Accept",
+						"value": "application/json,text/plain",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/orders/1",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"orders",
+						"1"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "GET orders (HATEOS Accept header)",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/vnd.pcemar.hateoas+json",
+								"disabled": true
+							},
+							{
+								"key": "Accept",
+								"value": "application/json,text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/orders/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"orders",
+								"1"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 18 Jul 2020 01:51:58 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "2131"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Sat, 18 Jul 2020 01:52:59 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Sat, 18 Jul 2020 01:51:59 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"D529F193C5B9F2244A5AE877C9B9E45F\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"patientId\": 1,\n    \"createdDateTime\": \"2020-06-19T17:00:00+05:00\",\n    \"beginDateTime\": \"2020-06-19T17:30:00+05:00\",\n    \"endDateTime\": null,\n    \"priority\": 0,\n    \"prn\": false,\n    \"orderStatusCode\": 1,\n    \"orderStatus\": \"Pending\",\n    \"orderType\": \"Scheduled\",\n    \"orderingProviderId\": 313,\n    \"orderAdministrations\": [\n        {\n            \"id\": 1,\n            \"orderId\": 1,\n            \"pointInTime\": false,\n            \"onHold\": false,\n            \"missedDose\": false,\n            \"administrationScheduledDatetime\": \"2020-06-19T17:45:00+05:00\",\n            \"administrationInputDatetime\": \"2020-06-19T17:44:28+05:00\",\n            \"administeringUserId\": 123,\n            \"administrationDatetime\": \"2020-06-19T17:44:30+05:00\",\n            \"stopScheduledDatetime\": \"2020-06-19T17:59:23+05:00\",\n            \"stopInputDatetime\": \"2020-06-19T18:00:00+05:00\",\n            \"stopUserId\": 456,\n            \"stopDatetime\": \"2020-06-19T18:00:03+05:00\",\n            \"acknowledgeUserId\": 789,\n            \"acknowledgeDatetime\": \"2020-06-19T17:44:35+05:00\",\n            \"events\": [\n                {\n                    \"id\": 1,\n                    \"orderId\": 1,\n                    \"administrationId\": 1,\n                    \"eventDateTime\": \"2020-06-19T17:02:33+05:00\",\n                    \"addUserId\": 1,\n                    \"addDatetime\": \"2020-06-19T17:02:30+05:00\",\n                    \"actionId\": 1\n                },\n                {\n                    \"id\": 3,\n                    \"orderId\": 1,\n                    \"administrationId\": 1,\n                    \"eventDateTime\": \"2020-06-19T17:17:23+05:00\",\n                    \"addUserId\": 1,\n                    \"addDatetime\": \"2020-06-19T17:17:17+05:00\",\n                    \"actionId\": 1\n                }\n            ]\n        },\n        {\n            \"id\": 2,\n            \"orderId\": 1,\n            \"pointInTime\": false,\n            \"onHold\": false,\n            \"missedDose\": false,\n            \"administrationScheduledDatetime\": \"2020-06-19T17:45:00+05:00\",\n            \"administrationInputDatetime\": \"2020-06-19T17:44:28+05:00\",\n            \"administeringUserId\": 123,\n            \"administrationDatetime\": \"2020-06-19T17:44:30+05:00\",\n            \"stopScheduledDatetime\": \"2020-06-19T17:59:23+05:00\",\n            \"stopInputDatetime\": \"2020-06-19T18:00:00+05:00\",\n            \"stopUserId\": 456,\n            \"stopDatetime\": \"2020-06-19T18:00:03+05:00\",\n            \"acknowledgeUserId\": 789,\n            \"acknowledgeDatetime\": \"2020-06-19T17:44:35+05:00\",\n            \"events\": []\n        }\n    ],\n    \"orderEvents\": [\n        {\n            \"id\": 2,\n            \"orderId\": 1,\n            \"administrationId\": null,\n            \"eventDateTime\": \"2020-06-19T17:17:17+05:00\",\n            \"addUserId\": 1,\n            \"addDatetime\": \"2020-06-19T17:17:16+05:00\",\n            \"actionId\": 2\n        }\n    ],\n    \"id\": 1,\n    \"ndc\": null,\n    \"drugId\": \"MED0001\",\n    \"brandName\": \"tylenol\",\n    \"dose\": null,\n    \"doseUnit\": null,\n    \"medicationRouteId\": 3,\n    \"medicationRoute\": null,\n    \"frequencyId\": 456,\n    \"pointInTime\": true,\n    \"orderNotes\": \"This is a humongous blob of text!!! Και λίγα Ελληνικά!!!\",\n    \"links\": [\n        {\n            \"href\": \"http://localhost:51044/api/orders/1\",\n            \"rel\": \"self\",\n            \"method\": \"GET\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "GET orders (JSON Accept header)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7a4aebf6-e0e4-41d5-95c7-b788b5bde3b6",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Correct Format (application/json)\", function () {\r",
+							"    pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/json\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/vnd.pcemar.hateoas+json",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Accept",
+						"value": "application/xml",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/orders/1",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"orders",
+						"1"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "GET orders (JSON Accept header)",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.pcemar.hateoas+json",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/orders/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"orders",
+								"1"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 18 Jul 2020 01:52:40 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "2131"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Sat, 18 Jul 2020 01:53:40 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Sat, 18 Jul 2020 01:52:40 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"EDF09A54A62AECAA1B981A1FBD88BD7A\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"patientId\": 1,\n    \"createdDateTime\": \"2020-06-19T17:00:00+05:00\",\n    \"beginDateTime\": \"2020-06-19T17:30:00+05:00\",\n    \"endDateTime\": null,\n    \"priority\": 0,\n    \"prn\": false,\n    \"orderStatusCode\": 1,\n    \"orderStatus\": \"Pending\",\n    \"orderType\": \"Scheduled\",\n    \"orderingProviderId\": 313,\n    \"orderAdministrations\": [\n        {\n            \"id\": 1,\n            \"orderId\": 1,\n            \"pointInTime\": false,\n            \"onHold\": false,\n            \"missedDose\": false,\n            \"administrationScheduledDatetime\": \"2020-06-19T17:45:00+05:00\",\n            \"administrationInputDatetime\": \"2020-06-19T17:44:28+05:00\",\n            \"administeringUserId\": 123,\n            \"administrationDatetime\": \"2020-06-19T17:44:30+05:00\",\n            \"stopScheduledDatetime\": \"2020-06-19T17:59:23+05:00\",\n            \"stopInputDatetime\": \"2020-06-19T18:00:00+05:00\",\n            \"stopUserId\": 456,\n            \"stopDatetime\": \"2020-06-19T18:00:03+05:00\",\n            \"acknowledgeUserId\": 789,\n            \"acknowledgeDatetime\": \"2020-06-19T17:44:35+05:00\",\n            \"events\": [\n                {\n                    \"id\": 1,\n                    \"orderId\": 1,\n                    \"administrationId\": 1,\n                    \"eventDateTime\": \"2020-06-19T17:02:33+05:00\",\n                    \"addUserId\": 1,\n                    \"addDatetime\": \"2020-06-19T17:02:30+05:00\",\n                    \"actionId\": 1\n                },\n                {\n                    \"id\": 3,\n                    \"orderId\": 1,\n                    \"administrationId\": 1,\n                    \"eventDateTime\": \"2020-06-19T17:17:23+05:00\",\n                    \"addUserId\": 1,\n                    \"addDatetime\": \"2020-06-19T17:17:17+05:00\",\n                    \"actionId\": 1\n                }\n            ]\n        },\n        {\n            \"id\": 2,\n            \"orderId\": 1,\n            \"pointInTime\": false,\n            \"onHold\": false,\n            \"missedDose\": false,\n            \"administrationScheduledDatetime\": \"2020-06-19T17:45:00+05:00\",\n            \"administrationInputDatetime\": \"2020-06-19T17:44:28+05:00\",\n            \"administeringUserId\": 123,\n            \"administrationDatetime\": \"2020-06-19T17:44:30+05:00\",\n            \"stopScheduledDatetime\": \"2020-06-19T17:59:23+05:00\",\n            \"stopInputDatetime\": \"2020-06-19T18:00:00+05:00\",\n            \"stopUserId\": 456,\n            \"stopDatetime\": \"2020-06-19T18:00:03+05:00\",\n            \"acknowledgeUserId\": 789,\n            \"acknowledgeDatetime\": \"2020-06-19T17:44:35+05:00\",\n            \"events\": []\n        }\n    ],\n    \"orderEvents\": [\n        {\n            \"id\": 2,\n            \"orderId\": 1,\n            \"administrationId\": null,\n            \"eventDateTime\": \"2020-06-19T17:17:17+05:00\",\n            \"addUserId\": 1,\n            \"addDatetime\": \"2020-06-19T17:17:16+05:00\",\n            \"actionId\": 2\n        }\n    ],\n    \"id\": 1,\n    \"ndc\": null,\n    \"drugId\": \"MED0001\",\n    \"brandName\": \"tylenol\",\n    \"dose\": null,\n    \"doseUnit\": null,\n    \"medicationRouteId\": 3,\n    \"medicationRoute\": null,\n    \"frequencyId\": 456,\n    \"pointInTime\": true,\n    \"orderNotes\": \"This is a humongous blob of text!!! Και λίγα Ελληνικά!!!\",\n    \"links\": [\n        {\n            \"href\": \"http://localhost:51044/api/orders/1\",\n            \"rel\": \"self\",\n            \"method\": \"GET\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "GET orders (incorrect Accept header)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "dc47107a-7521-4a3a-8d2c-e91aaee4103a",
+						"exec": [
+							"//pm.test(\"Not Acceptable returned\", function() {\r",
+							"//    var jsonData = pm.response.json();\r",
+							"//   pm.expect(jsonData.title).to.eql(\"Not Acceptable\");\r",
+							"//});\r",
+							"\r",
+							"pm.test(\"Status code is 406\", function () {\r",
+							"    pm.response.to.have.status(406);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/xml",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/orders/1",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"orders",
+						"1"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "GET orders (incorrect Accept header)",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/orders/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"orders",
+								"1"
+							]
+						}
+					},
+					"status": "Not Acceptable",
+					"code": 406,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 18 Jul 2020 01:53:56 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Sat, 18 Jul 2020 01:54:56 GMT"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": null
+				}
+			]
+		}
+	],
+	"protocolProfileBehavior": {}
+}

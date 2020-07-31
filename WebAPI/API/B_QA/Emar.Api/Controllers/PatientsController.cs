@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
-using Emar.Core;
+using Emar.Api.Helpers;
+using Emar.Core.Helpers;
 using Emar.Core.Patients.Model;
 using Emar.Core.Patients.Service;
+using Emar.Core.ResourceParameters;
 using Emar.Data.Entities;
 using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Mvc;
@@ -61,6 +63,10 @@ namespace Emar.Api.Controllers
         /// *Optional.* \
         /// Site (facility) identifier to restrict the list of returned patients to.
         /// </param>
+        /// <param name="accountNumber">
+        /// *Optional.* \
+        /// Patient's account number.
+        /// </param>
         /// <param name="departmentCode">
         /// *Optional.* \
         /// Department code to restrict the list of returned patients to.
@@ -91,6 +97,10 @@ namespace Emar.Api.Controllers
         /// </param>
         /// <returns>An IActionResult of IEnumerable of type PatientDto</returns>
         [HttpGet(Name = nameof(GetPatients))]
+        [ProducesResponseType(typeof(IEnumerable<PatientDto>), 200)] // (OK) - the resource is sent in the response
+        [ProducesResponseType(400)] // (bad request) - indicates a bad request (e.g. wrong parameter)
+        [ProducesResponseType(404)] // (not found) - the resource does not exits
+        [ProducesResponseType(406)] // (not acceptable) - the server does not support the required representation
         public ActionResult<IEnumerable<PatientDto>> GetPatients(
             [FromHeader(Name = "Accept")] string mediaType,
             [FromQuery] string orderBy,
@@ -132,7 +142,10 @@ namespace Emar.Api.Controllers
                 {
                     PatientDto pt = _patientService.GetPatient(short.Parse(extId1), extId2);
 
-                    if (pt == null) { return NotFound($"Patient with site: {extId1} and ibex: {extId2} was not found"); }
+                    if (pt == null)
+                    {
+                        return NotFound($"Patient with site: {extId1} and ibex: {extId2} was not found");
+                    }
 
                     return Ok(pt);
                 }
@@ -143,6 +156,7 @@ namespace Emar.Api.Controllers
                 var pt = _patientService.GetPatient(accountNumber);
 
                 if (pt == null) return NotFound($"Patient with Account Number: {accountNumber} was not found");
+
                 return Ok(pt);
             }
 
@@ -158,7 +172,10 @@ namespace Emar.Api.Controllers
 
             PagedList<PatientDto> patients = _patientService.GetPatients(resourceParameters, false);
 
-            if (patients == null) { return NotFound($"No patients found"); }
+            if (patients == null)
+            {
+                return NotFound($"No patients found");
+            }
 
             var paginationMetadata = new
             {
@@ -193,6 +210,10 @@ namespace Emar.Api.Controllers
         }
 
         [HttpGet("{patientId}", Name = nameof(GetPatient))]
+        [ProducesResponseType(200)] // (OK) - the resource is sent in the response
+        [ProducesResponseType(400)] // (bad request) - indicates a bad request (e.g. wrong parameter)
+        [ProducesResponseType(404)] // (not found) - the resource does not exits
+        [ProducesResponseType(406)] // (not acceptable) - the server does not support the required representation
         public ActionResult<PatientDto> GetPatient(
             [FromHeader(Name = "Accept")] string mediaType,
             [FromQuery] PatientsResourceParameters resourceParameters,
@@ -216,7 +237,10 @@ namespace Emar.Api.Controllers
                 return BadRequest();
             }
 
-            if (error.Equals(Errors.PatientNotFound) || (patient == null)) { return NotFound($"Patient with id {patientId} was not found"); }
+            if (error.Equals(Errors.PatientNotFound) || (patient == null))
+            {
+                return NotFound($"Patient with id {patientId} was not found");
+            }
 
             var links = CreateHateOasLinksForPatient(patientId, resourceParameters);
             var linkedResourceToReturn = patient.ShapeData(resourceParameters.Fields) as IDictionary<string, object>;
@@ -227,6 +251,10 @@ namespace Emar.Api.Controllers
         }
 
         [HttpGet("{patientId}/orders", Name = nameof(GetPatientOrders))]
+        [ProducesResponseType(200)] // (OK) - the resource is sent in the response
+        [ProducesResponseType(400)] // (bad request) - indicates a bad request (e.g. wrong parameter)
+        [ProducesResponseType(404)] // (not found) - the resource does not exits
+        [ProducesResponseType(406)] // (not acceptable) - the server does not support the required representation
         public ActionResult<PatientDto> GetPatientOrders(
             [FromHeader(Name = "Accept")] string mediaType,
             [FromQuery] PatientsResourceParameters resourceParameters,
@@ -240,7 +268,10 @@ namespace Emar.Api.Controllers
 
             PatientDto patient = CheckPatient(patientId, null, true);
 
-            if (error.Equals(Errors.BadRequest)) { return BadRequest(); }
+            if (error.Equals(Errors.BadRequest))
+            {
+                return BadRequest();
+            }
 
             if (error.Equals(Errors.PatientNotFound) || (patient == null)) { return NotFound($"Patient with id {patientId} was not found."); }
 
@@ -248,6 +279,10 @@ namespace Emar.Api.Controllers
         }
 
         [HttpGet("{patientId}/orders/{orderId}", Name = nameof(GetPatientOrder))]
+        [ProducesResponseType(200)] // (OK) - the resource is sent in the response
+        [ProducesResponseType(400)] // (bad request) - indicates a bad request (e.g. wrong parameter)
+        [ProducesResponseType(404)] // (not found) - the resource does not exits
+        [ProducesResponseType(406)] // (not acceptable) - the server does not support the required representation
         public IActionResult GetPatientOrder(
             [FromHeader(Name = "Accept")] string mediaType,
             [FromQuery] PatientsResourceParameters resourceParameters,
@@ -262,9 +297,15 @@ namespace Emar.Api.Controllers
 
             PatientDto patient = CheckPatient(patientId, null, true);
 
-            if (error.Equals(Errors.BadRequest)) { return BadRequest(); }
+            if (error.Equals(Errors.BadRequest))
+            {
+                return BadRequest();
+            }
 
-            if (error.Equals(Errors.PatientNotFound) || (patient == null)) { return NotFound($"Patient with id {patientId} was not found"); }
+            if (error.Equals(Errors.PatientNotFound) || (patient == null))
+            {
+                return NotFound($"Patient with id {patientId} was not found");
+            }
 
             return Ok(patient);
         }
@@ -280,7 +321,10 @@ namespace Emar.Api.Controllers
 
             PatientDto patient = _patientService.GetPatient((long)patientId, resourceParameters, includeOrders);
 
-            if (patient == null) { error = Errors.PatientNotFound; }
+            if (patient == null)
+            {
+                error = Errors.PatientNotFound;
+            }
 
             return patient;
         }

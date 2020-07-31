@@ -1,4 +1,4 @@
-﻿namespace Emar.Core
+﻿namespace Emar.Core.ResourceParameters
 {
     public class OrdersResourceParameters : BaseResourceParameters
     {

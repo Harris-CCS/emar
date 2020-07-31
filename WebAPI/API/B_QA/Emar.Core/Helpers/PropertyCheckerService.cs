@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Emar.Core
+namespace Emar.Core.Helpers
 {
     public class PropertyCheckerService : IPropertyCheckerService
     {

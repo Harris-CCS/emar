@@ -1,59 +1,404 @@
 ﻿using Emar.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace Emar.Data
 {
-    public partial class EmarContext : DbContext
+    public class EmarContext : DbContext
     {
-        private readonly DbContextOptions _options;
-
-        public EmarContext(DbContextOptions options) : base(options)
+        public EmarContext()
         {
-            _options = options;
+        }
+
+        public EmarContext(DbContextOptions<EmarContext> options) : base(options)
+        {
+            //ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         public virtual DbSet<Action> Actions { get; set; }
-        public DbSet<ExternalId> ExternalIds { get; set; }
-        public DbSet<PatientOrder> PatientOrders { get; set; }
-        public DbSet<OrderAdministration> PatientOrderAdministrations { get; set; }
-        public DbSet<OrderEvent> PatientOrderEvents { get; set; }
-        public DbSet<Patient> Patients { get; set; }
-        public DbSet<Site> Sites { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<PatientCartOrder> PatientCartOrders { get; set; }
-        public DbSet<CartOrderAdministration> PatientCartOrderAdministrations { get; set; }
+        public virtual DbSet<CartOrderAdministration> CartOrderAdministrations { get; set; }
+        public virtual DbSet<ExternalIdEntity> ExternalIds { get; set; }
+        public virtual DbSet<GroupListItem> GroupListItems { get; set; }
+        public virtual DbSet<MedicationRoute> MedicationRoutes { get; set; }
+        public virtual DbSet<MedicationUnit> MedicationUnits { get; set; }
+        public virtual DbSet<OrderAdministration> OrderAdministrations { get; set; }
+        public virtual DbSet<OrderEvent> OrderEvents { get; set; }
+        public virtual DbSet<PatientCartOrder> PatientCartOrders { get; set; }
+        public virtual DbSet<PatientOrder> PatientOrders { get; set; }
+        public virtual DbSet<Patient> Patients { get; set; }
+        public virtual DbSet<Site> Sites { get; set; }
+        public virtual DbSet<UserQuickListItem> UserQuickListItems { get; set; }
+        public virtual DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Patient>().HasOne(patient => patient.Site).WithMany().HasForeignKey(patient => patient.SiteId);
-            modelBuilder.Entity<Patient>().HasMany(patient => patient.PatientOrders).WithOne().HasForeignKey(order => order.PatientId);
-            modelBuilder.Entity<Patient>().HasMany(patient => patient.PatientCartOrders).WithOne().HasForeignKey(order => order.PatientId);
-            //////modelBuilder.Entity<PatientOrder>().HasOne(order => order.Patient).WithMany(patient => patient.PatientOrders).HasForeignKey(order => order.PatientId);
-            modelBuilder.Entity<PatientOrder>().HasOne(order => order.MedicationRoute).WithMany().HasForeignKey(order => order.MedicationRouteId);
-            modelBuilder.Entity<PatientOrder>().HasOne(order => order.AddUser).WithMany().HasForeignKey(order => order.AddUserId);
-            modelBuilder.Entity<PatientOrder>().HasOne(order => order.OrderPhysicianUser).WithMany().HasForeignKey(order => order.OrderPhysicianUserId);
-            modelBuilder.Entity<PatientOrder>().HasMany(order => order.OrderAdministrations).WithOne().HasForeignKey(administration => administration.PatientOrderId);
-            modelBuilder.Entity<PatientOrder>().HasMany(order => order.OrderEvents).WithOne().HasForeignKey(@event => @event.PatientOrderId);
-            modelBuilder.Entity<OrderAdministration>().HasOne(administration => administration.AcknowledgeUser).WithMany().HasForeignKey(administration => administration.AcknowledgeUserId);
-            modelBuilder.Entity<OrderAdministration>().HasOne(administration => administration.AdministeringUser).WithMany().HasForeignKey(administration => administration.AdministeringUserId);
-            modelBuilder.Entity<OrderAdministration>().HasOne(administration => administration.StopUser).WithMany().HasForeignKey(administration => administration.StopUserId);
-            modelBuilder.Entity<OrderAdministration>().HasMany(administration => administration.OrderEvents).WithOne().HasForeignKey(@event => @event.OrderAdministrationId);
-            //////modelBuilder.Entity<PatientCartOrder>().HasOne(order => order.Patient).WithMany(patient => patient.PatientCartOrders).HasForeignKey(order => order.PatientId);
-            modelBuilder.Entity<PatientCartOrder>().HasOne(order => order.MedicationRoute).WithMany().HasForeignKey(order => order.MedicationRouteId);
-            modelBuilder.Entity<PatientCartOrder>().HasOne(order => order.User).WithMany().HasForeignKey(order => order.UserId);
-            modelBuilder.Entity<PatientCartOrder>().HasMany(order => order.CartOrderAdministrations).WithOne().HasForeignKey(administration => administration.PatientCartOrderId);
-            modelBuilder.Entity<User>().HasOne(user => user.Site).WithMany().HasForeignKey(user => user.SiteId);
-
-            modelBuilder.Entity<Action>(entity =>
+            modelBuilder.Entity<Entities.Action>(entity =>
             {
                 entity.Property(e => e.Description).IsUnicode(false);
 
                 entity.Property(e => e.Title).IsUnicode(false);
             });
 
-            OnModelCreatingPartial(modelBuilder);
+            modelBuilder.Entity<CartOrderAdministration>(entity =>
+            {
+                entity.HasOne(d => d.PatientCartOrder)
+                    .WithMany(p => p.CartOrderAdministrations)
+                    .HasForeignKey(d => d.PatientCartOrderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__cart_order_administrations__patient_cart_orders");
+            });
+
+            modelBuilder.Entity<ExternalIdEntity>(entity =>
+            {
+                entity.HasKey(e => new { e.InternalId, e.Vendor, e.Entity })
+                    .HasName("pk__external_ids");
+
+                entity.HasIndex(e => new { e.InternalId, e.ExternalId, e.Vendor, e.Entity })
+                    .HasName("ui__external_ids__internal_id")
+                    .IsUnique();
+
+                entity.Property(e => e.Vendor).IsUnicode(false);
+
+                entity.Property(e => e.Entity).IsUnicode(false);
+
+                entity.Property(e => e.ExternalId).IsUnicode(false);
+            });
+
+            modelBuilder.Entity<GroupListItem>(entity =>
+            {
+                entity.Property(e => e.DrugId).IsUnicode(false);
+
+                entity.Property(e => e.Ndc).IsUnicode(false);
+
+                entity.HasOne(d => d.MedicationRoute)
+                    .WithMany(p => p.GroupListItems)
+                    .HasForeignKey(d => d.MedicationRouteId)
+                    .HasConstraintName("fk__group_list_items__medication_routes");
+
+                entity.HasOne(d => d.MedicationUnit)
+                    .WithMany(p => p.GroupListItems)
+                    .HasForeignKey(d => d.MedicationUnitId)
+                    .HasConstraintName("fk__group_list_items__medication_units");
+
+                entity.HasOne(d => d.Site)
+                    .WithMany(p => p.GroupListItems)
+                    .HasForeignKey(d => d.SiteId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__group_list_items__sites");
+            });
+
+            modelBuilder.Entity<MedicationRoute>(entity =>
+            {
+                entity.HasOne(d => d.Site)
+                    .WithMany(p => p.MedicationRoutes)
+                    .HasForeignKey(d => d.SiteId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__medication_routes__sites");
+            });
+
+            modelBuilder.Entity<MedicationUnit>(entity =>
+            {
+                entity.Property(e => e.Code).IsUnicode(false);
+
+                entity.Property(e => e.Name).IsUnicode(false);
+
+                entity.Property(e => e.PrintName).IsUnicode(false);
+
+                entity.HasOne(d => d.Site)
+                    .WithMany(p => p.MedicationUnits)
+                    .HasForeignKey(d => d.SiteId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__medication_units__sites");
+            });
+
+            modelBuilder.Entity<OrderAdministration>(entity =>
+            {
+                entity.HasOne(d => d.AcknowledgeUser)
+                    .WithMany(p => p.OrderAdministrationsAcknowledgeUser)
+                    .HasForeignKey(d => d.AcknowledgeUserId)
+                    .HasConstraintName("fk__order_administrations__patient_orders__acknowledge_user_id");
+
+                entity.HasOne(d => d.AdministeringUser)
+                    .WithMany(p => p.OrderAdministrationAdministeringUser)
+                    .HasForeignKey(d => d.AdministeringUserId)
+                    .HasConstraintName("fk__order_administrations__patient_orders__administering_user_id");
+
+                entity.HasOne(d => d.PatientOrder)
+                    .WithMany(p => p.OrderAdministrations)
+                    .HasForeignKey(d => d.PatientOrderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__order_administrations__patient_orders");
+
+                entity.HasOne(d => d.StopUser)
+                    .WithMany(p => p.OrderAdministrationStopUser)
+                    .HasForeignKey(d => d.StopUserId)
+                    .HasConstraintName("fk__order_administrations__patient_orders__stop_user_id");
+            });
+
+            modelBuilder.Entity<OrderEvent>(entity =>
+            {
+                entity.HasOne(d => d.Action)
+                    .WithMany(p => p.OrderEvents)
+                    .HasForeignKey(d => d.ActionId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__order_events__actions");
+
+                entity.HasOne(d => d.OrderAdministration)
+                    .WithMany(p => p.OrderEvents)
+                    .HasForeignKey(d => d.OrderAdministrationId)
+                    .HasConstraintName("fk__order_events__order_administrations");
+
+                entity.HasOne(d => d.PatientOrder)
+                    .WithMany(p => p.OrderEvents)
+                    .HasForeignKey(d => d.PatientOrderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__order_events__patient_orders");
+            });
+
+            modelBuilder.Entity<PatientCartOrder>(entity =>
+            {
+                entity.Property(e => e.DrugId).IsUnicode(false);
+
+                entity.Property(e => e.Ndc).IsUnicode(false);
+
+                entity.HasOne(d => d.MedicationRoute)
+                    .WithMany(p => p.PatientCartOrders)
+                    .HasForeignKey(d => d.MedicationRouteId)
+                    .HasConstraintName("fk__patient_cart_orders__medication_routes");
+
+                entity.HasOne(d => d.MedicationUnit)
+                    .WithMany(p => p.PatientCartOrders)
+                    .HasForeignKey(d => d.MedicationUnitId)
+                    .HasConstraintName("fk__patient_cart_orders__medication_units");
+
+                entity.HasOne(d => d.Patient)
+                    .WithMany(p => p.PatientCartOrders)
+                    .HasForeignKey(d => d.PatientId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__patient_cart_orders__patients");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.PatientCartOrders)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__patient_cart_orders__users");
+
+                entity.HasOne(d => d.UserQuickListItem)
+                    .WithMany(p => p.PatientCartOrders)
+                    .HasForeignKey(d => d.UserQuickListItemId)
+                    .HasConstraintName("fk__patient_cart_orders__user_quick_list_items");
+            });
+
+            modelBuilder.Entity<PatientOrder>(entity =>
+            {
+                entity.Property(e => e.DrugId).IsUnicode(false);
+
+                entity.Property(e => e.Ndc).IsUnicode(false);
+
+                entity.Property(e => e.OrderStatus).IsUnicode(false);
+
+                entity.HasOne(d => d.AddUser)
+                    .WithMany(p => p.PatientOrdersAddUser)
+                    .HasForeignKey(d => d.AddUserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__patient_orders__users__add_user_id");
+
+                entity.HasOne(d => d.MedicationRoute)
+                    .WithMany(p => p.PatientOrders)
+                    .HasForeignKey(d => d.MedicationRouteId)
+                    .HasConstraintName("fk__patient_orders__medication_routes");
+
+                entity.HasOne(d => d.MedicationUnit)
+                    .WithMany(p => p.PatientOrders)
+                    .HasForeignKey(d => d.MedicationUnitId)
+                    .HasConstraintName("fk__patient_orders__medication_units");
+
+                entity.HasOne(d => d.OrderPhysicianUser)
+                    .WithMany(p => p.PatientOrdersOrderPhysicianUser)
+                    .HasForeignKey(d => d.OrderingPhysicianId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__patient_orders__users__order_physician_user_id");
+
+                entity.HasOne(d => d.Patient)
+                    .WithMany(p => p.PatientOrders)
+                    .HasForeignKey(d => d.PatientId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__patient_orders__patients");
+            });
+
+            modelBuilder.Entity<Patient>(entity =>
+            {
+                entity.Property(e => e.AccountNumber).IsUnicode(false);
+
+                entity.Property(e => e.AgeUnits)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Complaint).IsUnicode(false);
+
+                entity.Property(e => e.DepartmentCode).IsUnicode(false);
+
+                entity.Property(e => e.Gender).IsUnicode(false);
+
+                entity.Property(e => e.MedicalRecordNumber).IsUnicode(false);
+
+                entity.Property(e => e.RoomBedCode).IsUnicode(false);
+
+                entity.Property(e => e.Urgency).IsUnicode(false);
+
+                entity.Property(e => e.UrgencyColor).IsUnicode(false);
+
+                entity.Property(e => e.VsBloodPressureIndicator)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.VsDiastolic).IsUnicode(false);
+
+                entity.Property(e => e.VsEndTidal).IsUnicode(false);
+
+                entity.Property(e => e.VsEndTidalLevel)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.VsMap).IsUnicode(false);
+
+                entity.Property(e => e.VsMapLevel)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.VsOxygenSaturation).IsUnicode(false);
+
+                entity.Property(e => e.VsOxygenSaturationIndicator)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.VsPainScale).IsUnicode(false);
+
+                entity.Property(e => e.VsPainScaleIndicator)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.VsPulse).IsUnicode(false);
+
+                entity.Property(e => e.VsPulseIndicator)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.VsRespiratory).IsUnicode(false);
+
+                entity.Property(e => e.VsRespiratoryIndicator)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.VsSystolic).IsUnicode(false);
+
+                entity.Property(e => e.VsTemperature).IsUnicode(false);
+
+                entity.Property(e => e.VsTemperatureIndicator)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.WardCode).IsUnicode(false);
+
+                entity.Property(e => e.CustomNumber).IsUnicode(false);
+
+                entity.Property(e => e.PersonNumber).IsUnicode(false);
+
+                entity.HasOne(d => d.Site)
+                    .WithMany(p => p.Patients)
+                    .HasForeignKey(d => d.SiteId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__patients__sites");
+            });
+
+            modelBuilder.Entity<Site>(entity =>
+            {
+                entity.HasIndex(e => e.Name)
+                    .HasName("uc__sites__name")
+                    .IsUnique();
+            });
+
+            modelBuilder.Entity<UserQuickListItem>(entity =>
+            {
+                entity.Property(e => e.DrugId).IsUnicode(false);
+
+                entity.Property(e => e.Ndc).IsUnicode(false);
+
+                entity.Property(e => e.UsagesThisWeek).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.WeeklyUsageRollingAverage).HasDefaultValueSql("((-1))");
+
+                entity.HasOne(d => d.MedicationRoute)
+                    .WithMany(p => p.UserQuickListItems)
+                    .HasForeignKey(d => d.MedicationRouteId)
+                    .HasConstraintName("fk__user_quick_list_items__medication_routes");
+
+                entity.HasOne(d => d.MedicationUnit)
+                    .WithMany(p => p.UserQuickListItems)
+                    .HasForeignKey(d => d.MedicationUnitId)
+                    .HasConstraintName("FK_user_quick_list_items__medication_unit");
+
+                entity.HasOne(d => d.Site)
+                    .WithMany(p => p.UserQuickListItems)
+                    .HasForeignKey(d => d.SiteId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__user_quick_list_items__sites");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.UserQuickListItems)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__user_quick_list_items__user");
+            });
+
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasIndex(e => new { e.LoginName, e.SiteId })
+                    .HasName("ix_users__login_name_site_id");
+
+                entity.HasIndex(e => new { e.LastName, e.FirstName, e.SiteId })
+                    .HasName("ix_users__last_name_first_name_site_id");
+
+                entity.Property(e => e.LoginName).IsUnicode(false);
+
+                entity.Property(e => e.LoginPassword).IsUnicode(false);
+
+                entity.Property(e => e.DisplayInitialsIndicator).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.OrderingOnlyPhysician).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Salt).IsFixedLength();
+
+                entity.Property(e => e.Type)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.HasOne(d => d.Site)
+                    .WithMany(p => p.Users)
+                    .HasForeignKey(d => d.SiteId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__users__sites");
+            });
+
+            //OnModelCreatingPartial(modelBuilder);
         }
 
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+        //void OnModelCreatingPartial(ModelBuilder modelBuilder);
+    }
+
+    /// <summary>
+    /// Added this factory so that the EF Core Power Tools could figure out what Db Provider we are using
+    /// Shouldn't be used anywhere else, and should remove the hard-coding before shipping
+    /// </summary>
+    // todo: Remove hard-coding.
+    public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<EmarContext>
+    {
+        public EmarContext CreateDbContext(string[] args)
+        {
+            var builder = new DbContextOptionsBuilder<EmarContext>();
+            builder.UseSqlServer("Data Source = localhost\\SQL2016; Initial Catalog = EMAR; Integrated Security=true");
+
+            return new EmarContext(builder.Options);
+        }
     }
 }

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Reflection;
 
-namespace Emar.Core
+namespace Emar.Core.Helpers
 {
     public static class StringExtensions
     {
@@ -308,5 +308,28 @@ namespace Emar.Core
             // return the list
             return dataShapedObject;
         }
+
     }
+
+    public static class NameHelper
+    {
+        public static string GetDisplayName(string firstName, string middleName, string lastName, string suffix)
+        {
+            firstName = (firstName ?? "").Trim();
+            firstName += firstName.Length == 1 ? "." : "";
+
+            middleName = (middleName ?? "").Trim();
+            middleName += middleName.Length == 1 ? "." : "";
+
+            lastName = (lastName ?? "").Trim();
+            lastName += lastName.Length == 1 ? "." : "";
+
+            var ret = firstName + (firstName != "" && middleName != "" ? " " : "") + middleName;
+            ret += (ret != "" && lastName != "" ? " " : "") + lastName;
+            ret += (ret != "" && !string.IsNullOrEmpty(suffix) ? ", " : "") + (suffix ?? "").Trim();
+
+            return ret;
+        }
+    }
+
 }

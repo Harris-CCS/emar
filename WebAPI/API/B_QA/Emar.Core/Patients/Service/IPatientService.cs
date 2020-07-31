@@ -1,4 +1,6 @@
-﻿using Emar.Core.Patients.Model;
+﻿using Emar.Core.Helpers;
+using Emar.Core.Patients.Model;
+using Emar.Core.ResourceParameters;
 
 namespace Emar.Core.Patients.Service
 {

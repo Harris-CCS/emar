@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
-using Emar.Core;
+using Emar.Api.Helpers;
+using Emar.Core.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Emar.Api.Controllers

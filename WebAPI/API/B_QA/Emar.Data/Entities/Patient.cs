@@ -8,7 +8,14 @@ namespace Emar.Data.Entities
     [Table("patients")]
     public class Patient
     {
-        [Column("id", TypeName = "bigint"), Key]
+        public Patient()
+        {
+            PatientCartOrders = new HashSet<PatientCartOrder>();
+            PatientOrders = new HashSet<PatientOrder>();
+        }
+
+        [Key]
+        [Column("id", TypeName = "bigint")]
         public long Id { get; set; }
 
         [Column("site_id", TypeName = "int"), Required]
@@ -20,26 +27,28 @@ namespace Emar.Data.Entities
         [Column("account_number", TypeName = "varchar(25)")]
         public string AccountNumber { get; set; }
 
-        [Column("first_name", TypeName = "nvarchar(35)"), Required]
+        [Column("last_name", TypeName = "nvarchar(35)"), Required]
+        public string LastName { get; set; }
+
+        [Required]
+        [Column("first_name", TypeName = "nvarchar(35)")]
         public string FirstName { get; set; }
 
         [Column("middle_name", TypeName = "nvarchar(35)")]
         public string MiddleName { get; set; }
 
-        [Column("last_name", TypeName = "nvarchar(35)"), Required]
-        public string LastName { get; set; }
-
         [Column("name_suffix", TypeName = "nvarchar(25)")]
         public string NameSuffix { get; set; }
 
-        [Column("gender", TypeName = "varchar(10)"), Required]
+        [Required]
+        [Column("gender", TypeName = "varchar(10)")]
         public string Gender { get; set; }
 
         [Column("date_of_birth", TypeName = "date")]
         public DateTime? DateOfBirth { get; set; }
 
         [Column("age", TypeName = "tinyint")]
-        public short? Age { get; set; }
+        public byte? Age { get; set; }
 
         [Column("age_units", TypeName = "char(1)")]
         public string AgeUnits { get; set; }
@@ -53,14 +62,14 @@ namespace Emar.Data.Entities
         [Column("weight_in_kg", TypeName = "numeric(6,2)")]
         public decimal? WeightInKg { get; set; }
 
-        [Column("department_code", TypeName = "varchar(15)")]
-        public string DepartmentCode { get; set; }
+        [Column("room_bed_code", TypeName = "varchar(15)")]
+        public string RoomBedCode { get; set; }
 
         [Column("ward_code", TypeName = "varchar(15)")]
         public string WardCode { get; set; }
 
-        [Column("room_bed_code", TypeName = "varchar(15)")]
-        public string RoomBedCode { get; set; }
+        [Column("department_code", TypeName = "varchar(15)")]
+        public string DepartmentCode { get; set; }
 
         [Column("urgency", TypeName = "varchar(50)")]
         public string Urgency { get; set; }
@@ -80,16 +89,16 @@ namespace Emar.Data.Entities
         [Column("vs_blood_pressure_indicator", TypeName = "char(1)")]
         public string VsBloodPressureIndicator { get; set; }
 
-        [Column("vs_systolic", TypeName = "char(14)")]
+        [Column("vs_systolic", TypeName = "varchar(14)")]
         public string VsSystolic { get; set; }
 
-        [Column("vs_diastolic", TypeName = "char(14)")]
+        [Column("vs_diastolic", TypeName = "varchar(14)")]
         public string VsDiastolic { get; set; }
 
         [Column("vs_pulse_indicator", TypeName = "char(1)")]
         public string VsPulseIndicator { get; set; }
 
-        [Column("vs_pulse", TypeName = "char(14)")]
+        [Column("vs_pulse", TypeName = "varchar(14)")]
         public string VsPulse { get; set; }
 
         [Column("vs_map_level", TypeName = "char(1)")]
@@ -101,13 +110,13 @@ namespace Emar.Data.Entities
         [Column("vs_respiratory_indicator", TypeName = "char(1)")]
         public string VsRespiratoryIndicator { get; set; }
 
-        [Column("vs_respiratory", TypeName = "char(14)")]
+        [Column("vs_respiratory", TypeName = "varchar(14)")]
         public string VsRespiratory { get; set; }
 
         [Column("vs_temperature_indicator", TypeName = "char(1)")]
         public string VsTemperatureIndicator { get; set; }
 
-        [Column("vs_temperature", TypeName = "char(14)")]
+        [Column("vs_temperature", TypeName = "varchar(14)")]
         public string VsTemperature { get; set; }
 
         [Column("vs_end_tidal_level", TypeName = "char(1)")]
@@ -125,20 +134,26 @@ namespace Emar.Data.Entities
         [Column("vs_pain_scale_indicator", TypeName = "char(1)")]
         public string VsPainScaleIndicator { get; set; }
 
-        [Column("vs_pain_scale", TypeName = "char(14)")]
+        [Column("vs_pain_scale", TypeName = "varchar(14)")]
         public string VsPainScale { get; set; }
 
-        //[Column("is_active", TypeName = "bit")]
-        [NotMapped]
-        public bool IsActive { get; set; } = true;
+        [Column("is_active", TypeName = "bool")]
+        public bool Active { get; set; } = true;
 
-        [NotMapped]
-        public IEnumerable<PatientOrder>? PatientOrders { get; set; }
+        [Column("custom_number", TypeName = "varchar(25)")]
+        public string CustomNumber { get; set; }
 
-        [NotMapped]
-        public IEnumerable<PatientCartOrder>? PatientCartOrders { get; set; }
+        [Column("person_number", TypeName = "varchar(25)")]
+        public string PersonNumber { get; set; }
 
-        [NotMapped]
-        public Site Site { get; set; }
+        [ForeignKey(nameof(SiteId))]
+        [InverseProperty(nameof(Entities.Site.Patients))]
+        public virtual Site Site { get; set; }
+
+        [InverseProperty("Patient")]
+        public virtual ICollection<PatientCartOrder> PatientCartOrders { get; set; }
+
+        [InverseProperty("Patient")]
+        public virtual ICollection<PatientOrder> PatientOrders { get; set; }
     }
 }
