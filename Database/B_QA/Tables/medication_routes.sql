@@ -18,6 +18,11 @@ go
 /***********
  Foreign Key
 ***********/
+
+alter table [dbo].[medication_routes]
+add constraint [fk__medication_routes__sites] foreign key([site_id]) references [dbo].[sites]([id]);
+go
+
 /***************
  Data Dictionary
     Defaults

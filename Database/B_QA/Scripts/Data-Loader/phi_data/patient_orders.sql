@@ -14,7 +14,7 @@ create table [#patient_orders]
     , [drug_id]                 [varchar](32) null
     , [brand_name]              [nvarchar](255) null
     , [dose]                    [varchar](50) null
-    , [dose_unit]               [varchar](20) null
+    , [medication_unit_id]      [varchar](20) null
     , [medication_route_id]     [varchar](50) null
     , [priority]                [tinyint] not null
     , [frequency_id]            [int] null
@@ -43,7 +43,7 @@ if '$(load_data)' = 'live'
            , [drug_id]
            , [brand_name]
            , [dose]
-           , [dose_unit]
+           , [medication_unit_id]
            , [medication_route_id]
            , [priority]
            , [frequency_id]
@@ -90,8 +90,12 @@ if
         set @max_id = isnull(@max_id, 0);
 
         update [source] set    
-              [target_id] = [source].[id] + @max_id
-            , [dose] = case when isnumeric([dose])=0 then null else [dose] end
+            [target_id] = [source].[id] + @max_id
+          , [dose] = case
+                         when isnumeric([dose]) = 0
+                             then null
+                         else [dose]
+                     end
         from   [#patient_orders] as [source];
 
 /*************************************
@@ -111,7 +115,7 @@ if
            , [drug_id]
            , [brand_name]
            , [dose]
-           , [dose_unit]
+           , [medication_unit_id]
            , [medication_route_id]
            , [priority]
            , [frequency_id]
@@ -120,53 +124,38 @@ if
            , [order_status]
            , [order_notes]
             )
-        select isnull([internal_patient_id].[id], -1) as     [patient_id]
-            , isnull([internal_add_user_id].[id], 0) as          [add_user_id]
-            , [dbo].[ibex_date_to_offset_date]([source].[add_datetime], [site].[time_zone_name]) as [add_datetime]
-            , isnull([internal_order_physician_user_id].[id], 0) as          [order_physician_user_id]
-            , [dbo].[ibex_date_to_offset_date]([source].[begin_datetime], [site].[time_zone_name]) as [begin_datetime]
-            , [dbo].[ibex_date_to_offset_date]([source].[end_datetime], [site].[time_zone_name]) as   [end_datetime]
-            , [source].[ndc]
-            , [source].[drug_id]
-            , [source].[brand_name]
-            , [source].[dose]
-            , [source].[dose_unit]
-            , [medication_routes].[id] as                    [medication_routes_id]
-            , [source].[priority]
-            , [source].[frequency_id]
-            , [source].[prn]
-            , [source].[point_in_time]
-            , [source].[order_status]
-            , [source].[order_notes]
-        from [#patient_orders] as [source]
-            outer apply [dbo].[get_internal_id]('pulsecheck', 'patients', [source].[patient_id]) as [internal_patient_id]
-            left join [dbo].[patients] as [patients] on [patients].[id] = [internal_patient_id].[id]
-            left join [dbo].[sites] as [site] on [site].[id] = [patients].[site_id]
-            outer apply [dbo].[get_internal_id]('pulsecheck', 'users', [source].[add_user_id]) as [internal_add_user_id]
-            outer apply [dbo].[get_internal_id]('pulsecheck', 'users', [source].[order_physician_user_id]) as [internal_order_physician_user_id]
-                      outer apply
-        (
-            select top 1 [mr_item].[id]
-            from
-            (
-                select 1 as [type]
-                     , [mr].[id]
-                     , [patients].[site_id]
-                from     [dbo].[medication_routes] as [mr]
-                where      [mr].[name] = [source].[medication_route_id]
-                           and [mr].[site_id] = [patients].[site_id]
-                union
-                select 2 as [type]
-                     , [mr].[id]
-                     , [patients].[site_id]
-                from   [dbo].[medication_routes] as [mr]
-                where  [mr].[name] = [source].[medication_route_id]
-                       and [mr].[site_id] <> [patients].[site_id]
-            ) as [mr_item]
-            order by [mr_item].[type]
-                   , [mr_item].[site_id]
-        ) as [medication_routes]
-        order by [brand_name],[patient_id];
+        select isnull([internal_patient_id].[id], -1) as             [patient_id]
+             , isnull([internal_add_user_id].[id], 0) as             [add_user_id]
+             , [dbo].[ibex_date_to_offset_date]([source].[add_datetime], [site].[time_zone_name]) as    [add_datetime]
+             , isnull([internal_order_physician_user_id].[id], 0) as [order_physician_user_id]
+             , [dbo].[ibex_date_to_offset_date]([source].[begin_datetime], [site].[time_zone_name]) as  [begin_datetime]
+             , [dbo].[ibex_date_to_offset_date]([source].[end_datetime], [site].[time_zone_name]) as    [end_datetime]
+             , [source].[ndc]
+             , [source].[drug_id]
+             , [source].[brand_name]
+             , [source].[dose]
+             , [mu].[id] as                                          [medication_unit_id]
+             , [mr].[id] as                                          [medication_routes_id]
+             , [source].[priority]
+             , [source].[frequency_id]
+             , [source].[prn]
+             , [source].[point_in_time]
+             , [source].[order_status]
+             , [source].[order_notes]
+        from   [#patient_orders] as [source]
+               outer apply [dbo].[get_internal_id]('pulsecheck', 'patients', [source].[patient_id]) as [internal_patient_id]
+               left join [dbo].[patients] as [patients] on [patients].[id] = [internal_patient_id].[id]
+               left join [dbo].[sites] as [site] on [site].[id] = [patients].[site_id]
+               outer apply [dbo].[get_internal_id]('pulsecheck', 'users', [source].[add_user_id]) as [internal_add_user_id]
+               outer apply [dbo].[get_internal_id]('pulsecheck', 'users', [source].[order_physician_user_id]) as [internal_order_physician_user_id]
+               cross apply [dbo].[get_code_share_site]([patients].[site_id], 'medication_units') as [mu_site]
+               cross apply [dbo].[get_code_share_site]([patients].[site_id], 'medication_routes') as [mr_site]
+               left join [dbo].[medication_routes] as [mr] on [mr].[site_id] = [mr_site].[site_id]
+                                                              and [mr].[name] = [source].[medication_route_id]
+               left join [dbo].[medication_units] as [mu] on [mu].[site_id] = [mu_site].[site_id]
+                                                             and [mu].[code] = [source].[medication_unit_id]
+        order by [brand_name]
+               , [patient_id];
 
         -- set identity_insert [dbo].[patient_orders] off;
 

@@ -1,4 +1,4 @@
-Print 'Loading Table: medication_routes'
+print 'Loading Table: medication_routes';
 
 drop table if exists [#medication_routes];
 
@@ -40,44 +40,26 @@ if
 /****************************************
         load temporary tables for staging
 ****************************************/
-
-        alter table [#medication_routes]
-        add [id]        [bigint] identity(1, 1)
-          , [target_id] [bigint];
-
 /********************************
         get max id for seed value
 ********************************/
-
-        set @max_id = null;
-
-        select @max_id = max([id])
-        from   [dbo].[medication_routes];
-
-        set @max_id = isnull(@max_id, 0);
-
-        update [source] set    
-            [target_id] = [source].[id] + @max_id
-        from   [#medication_routes] as [source];
-
 /*************************************
         begin loading permanent tables
 *************************************/
 
-        set identity_insert [dbo].[medication_routes] on;
+        --set identity_insert [dbo].[medication_routes] on;
 
         insert into [dbo].[medication_routes]
-            ([id]
-           , [site_id]
+            ([site_id]
            , [name]
             )
-        select [source].[target_id]
-             , [source].[site_id]
+        select isnull([internal_site].[id], -1) as [site_id]
              , [source].[name]
         from   [#medication_routes] as [source]
-        order by [name];
+               outer apply [dbo].[get_internal_id]
+            ('pulsecheck', 'sites', [source].[site_id]) as [internal_site];
 
-        set identity_insert [dbo].[medication_routes] off;
+        --set identity_insert [dbo].[medication_routes] off;
 
 /***************************************
         loading [external_ids] reference

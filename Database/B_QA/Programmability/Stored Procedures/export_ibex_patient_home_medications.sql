@@ -11,13 +11,13 @@ as
              , ltrim(rtrim([source].[name])) as                               [name]
              , ltrim(rtrim([source].[alt_name])) as                           [alternate__name]
              , ltrim(rtrim([source].[dose])) as                               [dose]
-             , ltrim(rtrim([source].[unit])) as                               [dose_unit]
+             , ltrim(rtrim([source].[unit])) as                               [medication_unit_id]
              , ltrim(rtrim([source].[route])) as                              [medication_route_id]
              , ltrim(rtrim([source].[alg_drug_id])) as                        [medication_drug_id]
              , case
                    when ltrim(rtrim([source].[status])) = 'A'
                        then 1
-                                                       else 0
+                   else 0
                end as                                                         [is_active]
              , ltrim(rtrim([source].[cmt])) as                                [comment]
              , ltrim(rtrim([source].[sched])) as                              [schedule]
@@ -37,7 +37,8 @@ as
         where  [source].[type] = 'M'
         order by [source].[ibex]
                , [source].[dateadd]
-               , [source].[name];
+               , [source].[name]
+               , [source].[parent_name];
     end;
 go
 

@@ -1,4 +1,4 @@
-Print 'Loading Table: patients'
+print 'Loading Table: patients';
 
 drop table if exists [#patients];
 
@@ -43,7 +43,9 @@ create table [#patients]
     , [vs_oxygen_saturation_indicator] [char](1) null
     , [vs_oxygen_saturation]           [varchar](50) null
     , [vs_pain_scale_indicator]        [char](1) null
-    , [vs_pain_scale]                  [char](14) null);
+    , [vs_pain_scale]                  [char](14) null
+    , [custom_number]                  [varchar](25) null
+    , [person_number]                  [varchar](25) null);
 
 if '$(load_data)' = 'live'
    and exists
@@ -95,6 +97,8 @@ if '$(load_data)' = 'live'
            , [vs_oxygen_saturation]
            , [vs_pain_scale_indicator]
            , [vs_pain_scale]
+           , [custom_number]
+           , [person_number]
             )
         execute ('execute dbo.export_ibex_patients');
     end;
@@ -189,6 +193,8 @@ if
            , [vs_pain_scale_indicator]
            , [vs_pain_scale]
            , [is_active]
+           , [custom_number]
+           , [person_number]
             )
         select [source].[target_id]
              , isnull([internal_site].[id], -1) as [site_id]
@@ -212,7 +218,7 @@ if
              , [source].[urgency_color]
              , [source].[name_alert]
              , [source].[withdraw_consent]
-             , dbo.ibex_date_to_offset_date([source].[vs_datetime],[site].[time_zone_name]) 
+             , [dbo].[ibex_date_to_offset_date]([source].[vs_datetime], [site].[time_zone_name])
              , [source].[vs_blood_pressure_indicator]
              , [source].[vs_systolic]
              , [source].[vs_diastolic]
@@ -230,11 +236,12 @@ if
              , [source].[vs_oxygen_saturation]
              , [source].[vs_pain_scale_indicator]
              , [source].[vs_pain_scale]
-             , cast(1 as bit) [is_active]
+             , cast(1 as bit) as                   [is_active]
+             , [source].[custom_number]
+             , [source].[person_number]
         from   [#patients] as [source]
-               outer apply [dbo].[get_internal_id]
-            ('pulsecheck', 'sites', [source].[site_id]) as [internal_site]
-               left join dbo.sites [site] on [site].[id]= [internal_site].[id]
+               outer apply [dbo].[get_internal_id]('pulsecheck', 'sites', [source].[site_id]) as [internal_site]
+               left join [dbo].[sites] as [site] on [site].[id] = [internal_site].[id]
         order by [source].[last_name]
                , [source].[first_name];
 

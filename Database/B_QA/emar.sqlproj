@@ -150,6 +150,23 @@
     <Build Include="Programmability\Functions\Scalar-values Functions\ibex_date_to_offset_date.sql" />
     <Build Include="Programmability\Stored Procedures\export_ibex_patient_orders.sql" />
     <None Include="Scripts\Data-Loader\phi_data\patient_orders.sql" />
+    <Build Include="Tables\fdb_ndc_info.sql" />
+    <Build Include="Tables\fdb_brand_name.sql" />
+    <Build Include="Tables\fdb_allergy_name.sql" />
+    <Build Include="Programmability\Stored Procedures\export_ibex_fdb_ndc_info.sql" />
+    <Build Include="Programmability\Stored Procedures\export_ibex_fdb_allergy.sql" />
+    <Build Include="Programmability\Stored Procedures\export_ibex_fdb_brand_name.sql" />
+    <None Include="Scripts\Data-Loader\global_data\fdb_allergy_name.sql" />
+    <None Include="Scripts\Data-Loader\global_data\fdb_brand_name.sql" />
+    <None Include="Scripts\Data-Loader\global_data\fdb_ndc_info.sql" />
+    <Build Include="Programmability\Stored Procedures\export_ibex_patient_indicators.sql" />
+    <None Include="Scripts\Data-Loader\phi_data\patient_indicators.sql" />
+    <Build Include="Programmability\Stored Procedures\export_ibex_medication_units.sql" />
+    <None Include="Scripts\Data-Loader\site_data\medication_units.sql" />
+    <Build Include="Tables\medication_units.sql" />
+    <Build Include="Programmability\Stored Procedures\export_ibex_site_code_shares.sql" />
+    <None Include="Scripts\Data-Loader\site_data\site_code_shares.sql" />
+    <Build Include="Programmability\Functions\Table-values Functions\get_code_share_site.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />
@@ -185,6 +202,24 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Scripts\Data-Loader\sample_data\patient_orders.bcp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Data-Loader\sample_data\fdb_allergy_name.bcp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Data-Loader\sample_data\fdb_brand_name.bcp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Data-Loader\sample_data\fdb_ndc_info.bcp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Data-Loader\sample_data\patient_indicators.bcp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Data-Loader\sample_data\medication_units.bcp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Data-Loader\sample_data\site_code_shares.bcp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
