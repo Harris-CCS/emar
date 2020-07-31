@@ -13,7 +13,7 @@
         /// Medication route name.
         /// </summary>
         string name;
-        public string Name
+        public string RouteName
         {
             get => name?.Trim();
             set => name = value?.Trim();

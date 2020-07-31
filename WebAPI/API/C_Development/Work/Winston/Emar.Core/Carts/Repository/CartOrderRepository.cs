@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Emar.Core.Carts.Model;
+using Emar.Core.Helpers;
 using Emar.Core.Orders.Model;
 using Emar.Data;
 using Emar.Data.Entities;
@@ -59,7 +60,7 @@ namespace Emar.Core.Carts.Repository
                             PointInTime = cartOrder.PointInTime,
                             OrderStatus = OrderStatuses.Pending.ToString(),
                             BeginDatetime = cartOrder.BeginDatetime,
-                            EndDatetime = cartOrder.EndDatetime,
+                            EndDateTime = cartOrder.EndDatetime,
                             OrderNotes = cartOrder.OrderNotes
                         };
 
@@ -96,14 +97,14 @@ namespace Emar.Core.Carts.Repository
 
         public IEnumerable<CartOrderAdministration> GetAdministrations(long orderId)
         {
-            return _context.PatientCartOrderAdministrations
+            return _context.CartOrderAdministrations
                     .Where(administration => administration.PatientCartOrderId == orderId)
                     .AsEnumerable();
         }
 
         public CartOrderAdministration GetAdministration(long administrationId)
         {
-            return _context.PatientCartOrderAdministrations
+            return _context.CartOrderAdministrations
                     .FirstOrDefault(administration => administration.Id == administrationId);
         }
     }

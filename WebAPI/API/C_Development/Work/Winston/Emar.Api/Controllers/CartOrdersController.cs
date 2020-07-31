@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
+using Emar.Api.Helpers;
 using Emar.Core;
-using Emar.Core.Carts.Model;
 using Emar.Core.Carts.Service;
+using Emar.Core.Helpers;
 using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Mvc;
 

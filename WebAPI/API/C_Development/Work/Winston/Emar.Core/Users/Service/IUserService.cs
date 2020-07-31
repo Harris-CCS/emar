@@ -1,0 +1,11 @@
+﻿using Emar.Core.Users.Model;
+
+namespace Emar.Core.Users.Service
+{
+    public interface IUserService
+    {
+        UserDto GetUser(int userId);
+        UserMinimalDto GetUserMinimal(int userId);
+        UserDto GetUser(string loginName);
+    }
+}
