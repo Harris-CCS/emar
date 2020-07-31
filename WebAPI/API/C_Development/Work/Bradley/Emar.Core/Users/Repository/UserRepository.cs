@@ -33,7 +33,6 @@ namespace Emar.Core.Users.Repository
             var user = _context.Users
                         .Include(u => u.Site)
                         .FirstOrDefault(u => u.Id == userId);
-            //.FirstOrDefault(u => u.Site.Id == u.SiteId);
 
             return user;
         }

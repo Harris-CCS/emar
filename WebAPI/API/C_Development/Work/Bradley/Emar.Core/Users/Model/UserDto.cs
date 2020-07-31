@@ -1,5 +1,4 @@
-﻿using System;
-using Emar.Core.Helpers;
+﻿using Emar.Core.Helpers;
 using Emar.Core.Sites.Model;
 
 namespace Emar.Core.Users.Model
@@ -78,6 +77,8 @@ namespace Emar.Core.Users.Model
 
         public bool DisplayInitialsIndicator { get; set; }
 
+        /* Commenting out the following so that sensitive information is not
+         * sent over the wire needlessly */
         //string _loginName;
         //public string LoginName
         //{
@@ -85,8 +86,6 @@ namespace Emar.Core.Users.Model
         //    set => _loginName = value?.Trim();
         //}
 
-        /* Commenting out the following so that sensitive information is not
-         * sent over the wire needlessly */
         //string _loginPassword;
         //public string LoginPassword
         //{
@@ -101,5 +100,5 @@ namespace Emar.Core.Users.Model
         //public int FailedLoginAttempts { get; set; }
 
         public SiteDto Site { get; set; }
-   }
+    }
 }

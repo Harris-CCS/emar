@@ -89,11 +89,14 @@ namespace Emar.Core.Patients.Repository
         IEnumerable<Patient> GetPatientsWithOrders()
         {
             return _context.Patients
-                    //.Include(patient => patient.PatientOrders)
-                    //    .ThenInclude(order => order.OrderEvents)
                     .Include(patient => patient.PatientOrders)
                         .ThenInclude(order => order.OrderAdministrations)
-                        //.ThenInclude(administration => administration.OrderEvents)
+                    .Include(patient => patient.PatientOrders)
+                        .ThenInclude(order => order.MedicationRoute)
+                    .Include(patient => patient.PatientOrders)
+                        .ThenInclude(order => order.AddUser)
+                    .Include(patient => patient.PatientOrders)
+                        .ThenInclude(order => order.OrderPhysicianUser)
                     .Include(patient => patient.Site)
                     .ToList();
         }
@@ -109,17 +112,12 @@ namespace Emar.Core.Patients.Repository
         {
             patientId = (long)GetPatientId(patientId, resourceParameters);
 
-            //var patient = _context.Patients.Find(patientId);
-
             Patient patient;
             if (((resourceParameters != null) && resourceParameters.IncludeOrders) || includeOrders)
             {
                 patient = _context.Patients
-                    //.Include(p => p.PatientOrders)
-                    //.ThenInclude(order => order.OrderEvents)
                     .Include(p => p.PatientOrders)
-                    .ThenInclude(order => order.OrderAdministrations)
-                    //.ThenInclude(administration => administration.OrderEvents)
+                        .ThenInclude(order => order.OrderAdministrations)
                     .Include(s => s.Site)
                     .FirstOrDefault(p => p.Id == patientId);
             }
@@ -154,10 +152,10 @@ namespace Emar.Core.Patients.Repository
         public long GetInternalPatientId(short extId1, string extId2)
         {
             var ptId = from e in _context.ExternalIds
-                where e.ExternalId == extId1 + "|" + extId2
-                      && e.Entity == "patients"
-                      && e.Vendor == "pulsecheck"
-                select e.InternalId;
+                       where e.ExternalId == extId1 + "|" + extId2
+                             && e.Entity == "patients"
+                             && e.Vendor == "pulsecheck"
+                       select e.InternalId;
 
             return ptId.FirstOrDefault();
         }

@@ -31,13 +31,10 @@ namespace Emar.Core.Orders.Repository
             patientId ??= resourceParameters.PatientId;
 
             var orders = _context.PatientOrders
-                .Include(order => order.OrderEvents)
                 .Include(order => order.OrderAdministrations)
-                    .ThenInclude(administration => administration.OrderEvents)
                 .Include(order => order.MedicationRoute)
                 .Include(order => order.AddUser)
                 .Include(order => order.OrderPhysicianUser)
-                .Include(order => order.MedicationRoute)
                 .AsEnumerable();
 
             if ((patientId != null) &&
@@ -61,9 +58,7 @@ namespace Emar.Core.Orders.Repository
         public PatientOrder GetOrder(long orderId, OrdersResourceParameters resourceParameters)
         {
             return _context.PatientOrders
-                    .Include(order => order.OrderEvents)
                     .Include(order => order.OrderAdministrations)
-                        .ThenInclude(administration => administration.OrderEvents)
                     .Include(order => order.MedicationRoute)
                     .Include(order => order.AddUser)
                     .Include(order => order.OrderPhysicianUser)
@@ -74,14 +69,12 @@ namespace Emar.Core.Orders.Repository
         {
             return _context.OrderAdministrations
                     .Where(administration => administration.PatientOrderId == orderId)
-                    .Include(administration => administration.OrderEvents)
                     .AsEnumerable();
         }
 
         public OrderAdministration GetAdministration(long administrationId)
         {
             return _context.OrderAdministrations
-                    .Include(administration => administration.OrderEvents)
                     .FirstOrDefault(administration => administration.Id == administrationId);
         }
 
@@ -115,7 +108,7 @@ namespace Emar.Core.Orders.Repository
         /// <returns></returns>
         public IEnumerable<UserQuickListItem> GetUserQuickListMostUsed(int userId, int? siteId)
         {
-            if(siteId == null)
+            if (siteId == null)
                 return _context.UserQuickListItems
                     .Where(i => i.UserId == userId && i.WeeklyUsageRollingAverage > -1)
                     .Include(i => i.MedicationRoute)
@@ -159,7 +152,7 @@ namespace Emar.Core.Orders.Repository
                         .Where(i => !char.IsLetter(i.BrandName.Substring(0, 1).ToCharArray()[0]));
 
                 return _context.UserQuickListItems
-                    .Where(i => i.UserId == userId 
+                    .Where(i => i.UserId == userId
                                 && i.SiteId == siteId)
                     .Include(i => i.MedicationRoute)
                     .ToList()
@@ -168,14 +161,14 @@ namespace Emar.Core.Orders.Repository
 
             if (siteId == null)
                 return _context.UserQuickListItems
-                    .Where(i => i.UserId == userId 
+                    .Where(i => i.UserId == userId
                                 && i.BrandName.Substring(0, 1).ToUpper() == tab)
                     .Include(i => i.MedicationRoute)
                     .ToList();
 
             return _context.UserQuickListItems
-                .Where(i => i.UserId == userId 
-                            && i.SiteId == siteId 
+                .Where(i => i.UserId == userId
+                            && i.SiteId == siteId
                             && i.BrandName.Substring(0, 1).ToUpper() == tab)
                 .Include(i => i.MedicationRoute)
                 .ToList();

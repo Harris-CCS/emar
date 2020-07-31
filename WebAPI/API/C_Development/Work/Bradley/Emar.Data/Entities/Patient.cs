@@ -146,12 +146,11 @@ namespace Emar.Data.Entities
         [Column("person_number", TypeName = "varchar(25)")]
         public string PersonNumber { get; set; }
 
-        
         [ForeignKey(nameof(SiteId))]
         [InverseProperty(nameof(Entities.Site.Patients))]
         public virtual Site Site { get; set; }
 
-		[InverseProperty("Patient")]
+        [InverseProperty("Patient")]
         public virtual ICollection<PatientCartOrder> PatientCartOrders { get; set; }
 
         [InverseProperty("Patient")]

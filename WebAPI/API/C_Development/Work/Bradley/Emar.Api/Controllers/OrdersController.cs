@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using Emar.Api.Helpers;
-using Emar.Core;
 using Emar.Core.Helpers;
 using Emar.Core.Orders.Model;
 using Emar.Core.Orders.Service;
@@ -74,6 +73,10 @@ namespace Emar.Api.Controllers
         /// <remarks>
         /// </remarks>
         [HttpGet(Name = nameof(GetOrders))]
+        [ProducesResponseType(typeof(IEnumerable<PatientOrderDto>), 200)] // (OK) - the resource is sent in the response
+        [ProducesResponseType(400)] // (bad request) - indicates a bad request (e.g. wrong parameter)
+        [ProducesResponseType(404)] // (not found) - the resource does not exits
+        [ProducesResponseType(406)] // (not acceptable) - the server does not support the required representation
         public ActionResult<IEnumerable<PatientOrderDto>> GetOrders(
             [FromHeader(Name = "Accept")] string mediaType,
             [FromQuery] string patientId,
@@ -105,7 +108,10 @@ namespace Emar.Api.Controllers
 
             PagedList<PatientOrderDto> orders = _orderService.GetOrders(null, resourceParameters);
 
-            if (orders == null) { return NotFound($"No orders found."); }
+            if (orders == null)
+            {
+                return NotFound($"No orders found.");
+            }
 
             var paginationMetadata = new
             {
@@ -155,6 +161,10 @@ namespace Emar.Api.Controllers
         /// <remarks>
         /// </remarks>
         [HttpGet("{orderId}", Name = nameof(GetOrder))]
+        [ProducesResponseType(200)] // (OK) - the resource is sent in the response
+        [ProducesResponseType(400)] // (bad request) - indicates a bad request (e.g. wrong parameter)
+        [ProducesResponseType(404)] // (not found) - the resource does not exits
+        [ProducesResponseType(406)] // (not acceptable) - the server does not support the required representation
         public ActionResult<PatientOrderDto> GetOrder(
             [FromHeader(Name = "Accept")] string mediaType,
             [FromQuery] string fields,
@@ -178,7 +188,10 @@ namespace Emar.Api.Controllers
 
             var order = _orderService.GetOrder(orderId, resourceParameters);
 
-            if (order == null) { return NotFound($"Patient order with id {orderId} was not found."); }
+            if (order == null)
+            {
+                return NotFound($"Patient order with id {orderId} was not found.");
+            }
 
             var links = CreateHateOasLinksForOrder(orderId, resourceParameters);
             var linkedResourceToReturn = order.ShapeData(fields) as IDictionary<string, object>;
@@ -201,6 +214,10 @@ namespace Emar.Api.Controllers
         /// <remarks>
         /// </remarks>
         [HttpGet("{orderId}/administrations", Name = nameof(GetAdministrations))]
+        [ProducesResponseType(200)] // (OK) - the resource is sent in the response
+        [ProducesResponseType(400)] // (bad request) - indicates a bad request (e.g. wrong parameter)
+        [ProducesResponseType(404)] // (not found) - the resource does not exits
+        [ProducesResponseType(406)] // (not acceptable) - the server does not support the required representation
         public ActionResult<IEnumerable<OrderAdministrationDto>> GetAdministrations(
             [FromHeader(Name = "Accept")] string mediaType,
             int orderId
@@ -237,6 +254,10 @@ namespace Emar.Api.Controllers
         /// <remarks>
         /// </remarks>
         [HttpGet("{orderId}/administrations/{administrationId}", Name = nameof(GetAdministration))]
+        [ProducesResponseType(200)] // (OK) - the resource is sent in the response
+        [ProducesResponseType(400)] // (bad request) - indicates a bad request (e.g. wrong parameter)
+        [ProducesResponseType(404)] // (not found) - the resource does not exits
+        [ProducesResponseType(406)] // (not acceptable) - the server does not support the required representation
         public ActionResult<OrderAdministrationDto> GetAdministration(
             [FromHeader(Name = "Accept")] string mediaType,
             int orderId,
@@ -279,6 +300,10 @@ namespace Emar.Api.Controllers
         /// <remarks>
         /// </remarks>
         [HttpGet("{orderId}/administrations/{administrationId}/events", Name = nameof(GetAdministrationEvents))]
+        [ProducesResponseType(200)] // (OK) - the resource is sent in the response
+        [ProducesResponseType(400)] // (bad request) - indicates a bad request (e.g. wrong parameter)
+        [ProducesResponseType(404)] // (not found) - the resource does not exits
+        [ProducesResponseType(406)] // (not acceptable) - the server does not support the required representation
         public ActionResult<IEnumerable<OrderEventDto>> GetAdministrationEvents(
             [FromHeader(Name = "Accept")] string mediaType,
             int orderId,
@@ -313,6 +338,10 @@ namespace Emar.Api.Controllers
         /// <remarks>
         /// </remarks>
         [HttpGet("{orderId}/events", Name = nameof(GetEvents))]
+        [ProducesResponseType(200)] // (OK) - the resource is sent in the response
+        [ProducesResponseType(400)] // (bad request) - indicates a bad request (e.g. wrong parameter)
+        [ProducesResponseType(404)] // (not found) - the resource does not exits
+        [ProducesResponseType(406)] // (not acceptable) - the server does not support the required representation
         public ActionResult<IEnumerable<OrderEventDto>> GetEvents(
             [FromHeader(Name = "Accept")] string mediaType,
             int orderId
@@ -351,6 +380,10 @@ namespace Emar.Api.Controllers
         /// <remarks>
         /// </remarks>
         [HttpGet("{orderId}/events/{eventId}", Name = nameof(GetEvent))]
+        [ProducesResponseType(200)] // (OK) - the resource is sent in the response
+        [ProducesResponseType(400)] // (bad request) - indicates a bad request (e.g. wrong parameter)
+        [ProducesResponseType(404)] // (not found) - the resource does not exits
+        [ProducesResponseType(406)] // (not acceptable) - the server does not support the required representation
         public ActionResult<OrderEventDto> GetEvent(
             [FromHeader(Name = "Accept")] string mediaType,
             int orderId,
@@ -391,6 +424,7 @@ namespace Emar.Api.Controllers
                         resourceParameters.PageNumber += 1;
                         return Url.Link(nameof(GetOrders), resourceParameters);
                     }
+                case ResourceUriType.Current:
                 default:
                     {
                         return Url.Link(nameof(GetOrders), resourceParameters);

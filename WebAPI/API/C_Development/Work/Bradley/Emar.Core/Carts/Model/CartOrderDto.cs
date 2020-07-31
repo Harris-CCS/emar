@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using Emar.Core.Medications.Model;
 using Emar.Core.Orders.Model;
 using Emar.Core.Users.Model;
 

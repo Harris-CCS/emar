@@ -23,7 +23,7 @@ namespace Emar.Core.Carts.Model.Mappings
                 DrugId = order.DrugId,
                 BrandName = order.BrandName,
                 Dose = order.Dose,
-                
+
                 DoseUnit = MedicationMapper.MapMedicationUnit(order.MedicationUnit),
                 MedicationRoute = MedicationMapper.MapMedicationRoute(order.MedicationRoute),
                 //Priority = (OrderPriorities)Enum.Parse(typeof(OrderPriorities), order.Priority),
@@ -35,7 +35,7 @@ namespace Emar.Core.Carts.Model.Mappings
                 OrderNotes = order.OrderNotes,
                 CartOrderAdministrations = order.CartOrderAdministrations.Select(MapCartOrderAdministration).ToList()
             };
-            
+
             return orderDto;
         }
 
@@ -54,7 +54,7 @@ namespace Emar.Core.Carts.Model.Mappings
                 DrugId = orderDto.DrugId,
                 BrandName = orderDto.BrandName,
                 Dose = orderDto.Dose,
-                MedicationUnitId = orderDto.DoseUnit.Id,
+                MedicationUnitId = orderDto.DoseUnit?.Id,
                 MedicationRouteId = orderDto.MedicationRoute?.Id,
                 //MedicationRoute = orderDto.MedicationRoute,
                 ////Priority = (OrderPriorities)Enum.Parse(typeof(OrderPriorities), order.Priority),
@@ -86,7 +86,7 @@ namespace Emar.Core.Carts.Model.Mappings
 
             return administrationDto;
         }
-    
+
         private static CartOrderAdministration MapCartOrderAdministrationToDto(CartOrderAdministrationDto adminDto)
         {
             if (adminDto == null)

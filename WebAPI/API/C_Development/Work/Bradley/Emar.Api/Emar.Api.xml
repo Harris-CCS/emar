@@ -9,7 +9,7 @@
             Patient Cart Orders Controller
             </summary>
         </member>
-        <member name="M:Emar.Api.Controllers.CartOrdersController.#ctor(Emar.Core.Carts.Service.ICartOrderService,Emar.Core.IPropertyMappingService,Emar.Core.IPropertyCheckerService)">
+        <member name="M:Emar.Api.Controllers.CartOrdersController.#ctor(Emar.Core.Carts.Service.ICartOrderService,Emar.Core.Helpers.IPropertyMappingService,Emar.Core.Helpers.IPropertyCheckerService)">
             <summary>
             Constructor
             </summary>
@@ -37,7 +37,7 @@
             Patient Orders Controller
             </summary>
         </member>
-        <member name="M:Emar.Api.Controllers.OrdersController.#ctor(Emar.Core.Orders.Service.IOrderService,Emar.Core.IPropertyMappingService,Emar.Core.IPropertyCheckerService)">
+        <member name="M:Emar.Api.Controllers.OrdersController.#ctor(Emar.Core.Orders.Service.IOrderService,Emar.Core.Helpers.IPropertyMappingService,Emar.Core.Helpers.IPropertyCheckerService)">
             <summary>
             Constructor
             </summary>
