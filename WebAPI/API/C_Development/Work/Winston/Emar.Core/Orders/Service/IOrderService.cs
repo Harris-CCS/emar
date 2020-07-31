@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Emar.Core.Helpers;
-using Emar.Core.Medications.Model;
 using Emar.Core.Orders.Model;
 using Emar.Core.ResourceParameters;
 
@@ -17,7 +16,7 @@ namespace Emar.Core.Orders.Service
         IEnumerable<OrderEventDto> GetAdministrationEvents(long administrationId);
         UserQuickListFrameworkDto GetInitialUserQuickList(in int userId, int? siteId);
         IEnumerable<UserQuickListItemDto> GetQuickListTab(in int userId, int? siteId, string tab);
-        
+
         // Mock Methods
         ComposerOptionsDto GetComposerSetupData(string brandName);
         IEnumerable<FrequencyDto> GetFrequencies(int siteId);

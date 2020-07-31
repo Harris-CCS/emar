@@ -1,6 +1,5 @@
 ﻿using Emar.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Design;
 
 namespace Emar.Data
@@ -30,15 +29,6 @@ namespace Emar.Data
         public virtual DbSet<Site> Sites { get; set; }
         public virtual DbSet<UserQuickListItem> UserQuickListItems { get; set; }
         public virtual DbSet<User> Users { get; set; }
-
-//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//        {
-//            if (!optionsBuilder.IsConfigured)
-//            {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-//                optionsBuilder.UseSqlServer("Server=HNML6S2\\SQL2016;Database=EMAR;Trusted_Connection=True;");
-//            }
-//        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -309,6 +299,10 @@ namespace Emar.Data
                     .IsFixedLength();
 
                 entity.Property(e => e.WardCode).IsUnicode(false);
+
+                entity.Property(e => e.CustomNumber).IsUnicode(false);
+
+                entity.Property(e => e.PersonNumber).IsUnicode(false);
 
                 entity.HasOne(d => d.Site)
                     .WithMany(p => p.Patients)

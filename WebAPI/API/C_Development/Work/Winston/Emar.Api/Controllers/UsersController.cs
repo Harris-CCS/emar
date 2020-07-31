@@ -1,6 +1,5 @@
 ﻿using System;
 using Emar.Api.Helpers;
-using Emar.Core;
 using Emar.Core.Helpers;
 using Emar.Core.Users.Model;
 using Emar.Core.Users.Repository;
@@ -35,6 +34,10 @@ namespace Emar.Api.Controllers
         }
 
         [HttpGet(Name = nameof(GetUsers))]
+        [ProducesResponseType(200)] // (OK) - the resource is sent in the response
+        [ProducesResponseType(400)] // (bad request) - indicates a bad request (e.g. wrong parameter)
+        [ProducesResponseType(404)] // (not found) - the resource does not exits
+        [ProducesResponseType(406)] // (not acceptable) - the server does not support the required representation
         public ActionResult<UserDto> GetUsers(
             [FromHeader(Name = "Accept")] string mediaType,
             [FromQuery] string fields,
@@ -67,6 +70,10 @@ namespace Emar.Api.Controllers
         }
 
         [HttpGet("{userId}", Name = nameof(GetUser))]
+        [ProducesResponseType(200)] // (OK) - the resource is sent in the response
+        [ProducesResponseType(400)] // (bad request) - indicates a bad request (e.g. wrong parameter)
+        [ProducesResponseType(404)] // (not found) - the resource does not exits
+        [ProducesResponseType(406)] // (not acceptable) - the server does not support the required representation
         public ActionResult<UserDto> GetUser(
             [FromHeader(Name = "Accept")] string mediaType,
             [FromQuery] string fields,
@@ -85,21 +92,10 @@ namespace Emar.Api.Controllers
 
             var user = _userService.GetUser(userId);
 
-            if (user == null) { return NotFound($"User with id '{userId}' was not found."); }
-
-            //if (String.IsNullOrEmpty(fields))
-            //{
-            //    fields =
-            //        nameof(user.Id) + "," +
-            //        nameof(user.DisplayName) + "," +
-            //        (!user.NameDisplayInitials ? nameof(user.FirstName) + "," +
-            //                                     nameof(user.MiddleName) + "," +
-            //                                     nameof(user.LastName) + "," +
-            //                                     nameof(user.NameSuffix) + ","
-            //                                   : "") +
-            //        nameof(user.SiteId) + "," +
-            //        nameof(user.Site) + "." + nameof(user.Site.Name);
-            //}
+            if (user == null)
+            {
+                return NotFound($"User with id '{userId}' was not found.");
+            }
 
             return Ok(user.ShapeData(fields));
         }

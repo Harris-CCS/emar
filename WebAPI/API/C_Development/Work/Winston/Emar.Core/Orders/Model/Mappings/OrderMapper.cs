@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Emar.Core.Medications.Model;
 using Emar.Core.Medications.Model.Mappings;
@@ -31,7 +30,7 @@ namespace Emar.Core.Orders.Model.Mappings
                 BrandName = patientOrder.BrandName,
                 Dose = patientOrder.Dose,
                 DoseUnit = MedicationMapper.MapMedicationUnit(patientOrder.MedicationUnit),
-                MedicationRoute = OrderMapper.MapMedicationRoute(patientOrder.MedicationRoute),
+                MedicationRoute = MedicationMapper.MapMedicationRoute(patientOrder.MedicationRoute),
                 ////Priority = (OrderPriorities)Enum.Parse(typeof(OrderPriorities), patientOrder.Priority),
                 FrequencyId = patientOrder.FrequencyId,
                 Prn = patientOrder.Prn,
@@ -41,9 +40,9 @@ namespace Emar.Core.Orders.Model.Mappings
                 BeginDatetime = patientOrder.BeginDatetime,
                 EndDatetime = patientOrder.EndDateTime,
                 OrderNotes = patientOrder.OrderNotes,
-                OrderAdministrations = patientOrder.OrderAdministrations?.Select(admin => MapOrderAdministration(admin))
-                    .ToList(),
-                OrderEvents = patientOrder.OrderEvents?.Select(ev => OrderMapper.MapOrderEvent(ev)).ToList()
+                OrderAdministrations = patientOrder.OrderAdministrations?.Select(admin => MapOrderAdministration(admin)).ToList()
+                ////OrderEvents = patientOrder.OrderEvents?.Select(OrderMapper.MapOrderEvent).Where(@event => @event.AdministrationId == null).ToList()
+                ////OrderEvents = patientOrder.OrderEvents?.Select(ev => OrderMapper.MapOrderEvent(ev)).ToList()
             };
 
             return patientOrderDto;
@@ -72,8 +71,9 @@ namespace Emar.Core.Orders.Model.Mappings
                 AcknowledgeDatetime = administration.AcknowledgeDatetime,
                 PointInTime = administration.PointInTime,
                 OnHold = administration.OnHold,
-                MissedDose = administration.MissedDose,
-                AdministrationEvents = administration.OrderEvents?.Select(MapOrderEvent).ToList()
+                MissedDose = administration.MissedDose
+                ////AdministrationEvents = administration.OrderEvents?.Select(OrderMapper.MapOrderEvent).Where(@event => @event.AdministrationId == null).ToList()
+                ////AdministrationEvents = administration.OrderEvents?.Select(MapOrderEvent).ToList()
             };
 
             return administrationDto;
@@ -115,61 +115,13 @@ namespace Emar.Core.Orders.Model.Mappings
                 BrandName = dbObj.BrandName,
                 Dose = dbObj.Dose,
                 DoseUnit = MedicationMapper.MapMedicationUnit(dbObj.MedicationUnit),
-                MedicationRoute = MapMedicationRoute(dbObj.MedicationRoute),
+                MedicationRoute = MedicationMapper.MapMedicationRoute(dbObj.MedicationRoute),
                 FrequencyId = dbObj.FrequencyId,
                 OrderNotes = dbObj.OrderNotes
             };
 
             ret.PointInTime = ret.MedicationRoute?.PointInTime ?? true;
             return ret;
-        }
-
-        public static MedicationRouteDto MapMedicationRoute(MedicationRoute dbObj)
-        {
-            if (dbObj == null)
-                return null;
-
-            var ret = new MedicationRouteDto
-            {
-                Id = dbObj.Id,
-                RouteName = dbObj.Name,
-                SiteId = dbObj.SiteId
-            };
-
-            return ret;
-        }
-
-        public static PatientOrderCreationDto MapOrderForCreation(PatientOrder patientOrder)
-        {
-            if (patientOrder == null)
-            {
-                return null;
-            }
-
-            PatientOrderCreationDto patientOrderCreationDto = new PatientOrderCreationDto
-            {
-                PatientId = patientOrder.PatientId,
-                AddUserId = patientOrder.AddUserId,
-                AddDatetime = patientOrder.AddDatetime,
-                Ndc = patientOrder.Ndc,
-                DrugId = patientOrder.DrugId,
-                BrandName = patientOrder.BrandName,
-                Dose = patientOrder.Dose,
-                DoseUnit = MedicationMapper.MapMedicationUnit(patientOrder.MedicationUnit),
-                MedicationRouteId = patientOrder.MedicationRoute.Id,
-                Priority = patientOrder.Priority,
-                FrequencyId = patientOrder.FrequencyId,
-                Prn = patientOrder.Prn,
-                PointInTime = patientOrder.PointInTime,
-                OrderStatus = patientOrder.OrderStatus,
-                BeginDatetime = patientOrder.BeginDatetime,
-                EndDatetime = patientOrder.EndDateTime,
-                OrderNotes = patientOrder.OrderNotes,
-                OrderAdministrations = patientOrder.OrderAdministrations.Select(MapOrderAdministration).ToList(),
-                OrderEvents = patientOrder.OrderEvents.Select(MapOrderEvent).ToList()
-            };
-
-            return patientOrderCreationDto;
         }
     }
 }

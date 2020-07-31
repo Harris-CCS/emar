@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -23,11 +22,11 @@ namespace Emar.Data.Entities
 
         [Column("user_id", TypeName = "int"), Required]
         public int UserId { get; set; }
-        
+
         [Column("ndc")]
         [StringLength(32)]
         public string Ndc { get; set; }
-        
+
         [Column("drug_id")]
         [StringLength(32)]
         public string DrugId { get; set; }

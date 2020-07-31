@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Emar.Data.Entities;
 
 namespace Emar.Data.Entities
 {
-    [Table("medication_unit")]
+    [Table("medication_units")]
     public partial class MedicationUnit
     {
         public MedicationUnit()
@@ -20,10 +19,11 @@ namespace Emar.Data.Entities
         [Column("id")]
         public int Id { get; set; }
 
+        [Required]
         [Column("site_id")]
         public int SiteId { get; set; }
-        [Required]
 
+        [Required]
         [Column("code")]
         [StringLength(50)]
         public string Code { get; set; }
@@ -38,6 +38,7 @@ namespace Emar.Data.Entities
         [StringLength(50)]
         public string PrintName { get; set; }
 
+        [Required]
         [Column("is_active")]
         public bool IsActive { get; set; }
 

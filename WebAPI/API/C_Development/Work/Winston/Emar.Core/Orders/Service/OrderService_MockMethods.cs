@@ -20,8 +20,8 @@ namespace Emar.Core.Orders.Service
             // Temporary for showing the shape
             var setupOptions = new ComposerOptionsDto
             {
-                BrandName = "Ondansetron Hydrochloride", 
-                AvailableFormStrength = new []
+                BrandName = "Ondansetron Hydrochloride",
+                AvailableFormStrength = new[]
                 {
                     new FormStrengthDto
                     {
@@ -58,7 +58,7 @@ namespace Emar.Core.Orders.Service
                         {
                             new PreferredDoseDto {DoseName = "8 mg", Dose = new decimal(8.0), DoseUnit = new UnitDto{Id = 40, UnitName = "mg"}},
                             new PreferredDoseDto {DoseName = "16 mg", Dose = new decimal(16.0), DoseUnit = new UnitDto{Id = 40, UnitName = "mg"}}
-                        }, 
+                        },
                         PreferredRoutes = new[] { new MedicationRouteDto {Id = 5, RouteName = "sublingual", SiteId = -1} },
                         PreferredFrequencies = new[]
                         {
@@ -69,7 +69,7 @@ namespace Emar.Core.Orders.Service
                     }
                 }
             };
-            
+
             return setupOptions;
         }
 

@@ -1,6 +1,6 @@
 ﻿namespace Emar.Core.Medications.Model
 {
-    public class MedicationUnitDto    
+    public class MedicationUnitDto
     {
         public int Id { get; set; }
         public int SiteId { get; set; }

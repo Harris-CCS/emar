@@ -30,7 +30,7 @@ namespace Emar.Core.Orders.Model
             set => _drugId = value?.Trim() != null ? Regex.Replace(value, "( : ){2,}", " : ") : null;
         }
 
-        private string _brandName;
+        string _brandName;
         /// <summary>
         /// Brand name of the medication
         /// </summary>
@@ -109,5 +109,4 @@ namespace Emar.Core.Orders.Model
     }
 
     #endregion
-
 }

@@ -43,7 +43,7 @@ namespace Emar.Data.Entities
         [ForeignKey(nameof(MedicationRouteId))]
         [InverseProperty(nameof(Entities.MedicationRoute.GroupListItems))]
         public virtual MedicationRoute MedicationRoute { get; set; }
- 
+
         [ForeignKey(nameof(MedicationUnitId))]
         [InverseProperty(nameof(Entities.MedicationUnit.GroupListItems))]
         public virtual MedicationUnit MedicationUnit { get; set; }
