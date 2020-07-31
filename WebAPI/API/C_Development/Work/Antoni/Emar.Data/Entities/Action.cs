@@ -1,11 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Emar.Data.Entities
 {
     [Table("actions")]
-    public partial class Action
+    public class Action
     {
+        public Action()
+        {
+            OrderEvents = new HashSet<OrderEvent>();
+        }
+
         [Key]
         [Column("id")]
         public int Id { get; set; }
@@ -21,5 +27,8 @@ namespace Emar.Data.Entities
         public int SiteId { get; set; }
         [Column("is_active")]
         public bool IsActive { get; set; }
+
+        [InverseProperty("Action")]
+        public virtual ICollection<OrderEvent> OrderEvents { get; set; }
     }
 }

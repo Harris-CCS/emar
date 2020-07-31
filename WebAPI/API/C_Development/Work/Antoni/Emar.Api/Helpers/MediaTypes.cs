@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Net.Http.Headers;
 
-namespace Emar.Api
+namespace Emar.Api.Helpers
 {
 #pragma warning disable CS1591
     public class MediaTypes

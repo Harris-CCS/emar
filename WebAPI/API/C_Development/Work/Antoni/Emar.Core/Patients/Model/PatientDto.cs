@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Emar.Data.Entities;
+using Emar.Core.Helpers;
+using Emar.Core.Orders.Model;
+using Emar.Core.Sites.Model;
 
 namespace Emar.Core.Patients.Model
 {
@@ -10,26 +12,27 @@ namespace Emar.Core.Patients.Model
 
         public bool Active { get; set; }
 
-        string accountNumber;
+        private string _accountNumber;
         public string AccountNumber
         {
-            get => accountNumber?.Trim();
-            set => accountNumber = value?.Trim();
+            get => _accountNumber?.Trim();
+            set => _accountNumber = value?.Trim();
         }
 
-        string medicalRecordNumber;
+        string _medicalRecordNumber;
         public string MedicalRecordNumber
         {
-            get => medicalRecordNumber?.Trim();
-            set => medicalRecordNumber = value?.Trim();
+            get => _medicalRecordNumber?.Trim();
+            set => _medicalRecordNumber = value?.Trim();
         }
+
         #region name
 
-        string firstName;
+        string _firstName;
         public string FirstName
         {
-            get => firstName?.Trim();
-            set => firstName = value?.Trim();
+            get => _firstName?.Trim();
+            set => _firstName = value?.Trim();
         }
 
         string middleName;
@@ -54,28 +57,8 @@ namespace Emar.Core.Patients.Model
             set => nameSuffix = value?.Trim();
         }
 
-        public string FullName
-        {
-            get
-            {
-                var firstName = (FirstName ?? "").Trim();
-                if (firstName.Length == 1)
-                    firstName += ".";
+        public string FullName => NameHelper.GetDisplayName(_firstName, middleName, lastName, nameSuffix);
 
-                var middleName = (MiddleName ?? "").Trim();
-                if (middleName.Length == 1)
-                    middleName += ".";
-
-                var ret = firstName;
-                ret += (ret != "" && !string.IsNullOrWhiteSpace(middleName)) ? " " : "";
-                ret += middleName;
-                ret += (ret != "" && !string.IsNullOrWhiteSpace(LastName)) ? " " : "";
-                ret += (LastName ?? "");
-                ret += ((!string.IsNullOrWhiteSpace(ret) && !string.IsNullOrWhiteSpace(NameSuffix)) ? ", " : "") +
-                    (NameSuffix ?? "");
-                return ret;
-            }
-        }
         #endregion
 
         string gender;
@@ -275,8 +258,8 @@ namespace Emar.Core.Patients.Model
 
         //private List<Allergy> Allergies { get; set; }
         //private List<CurrentMedication> HomeMedications { get; set; }
-        public IEnumerable<PatientOrder>? Orders { get; set; }
+        public IEnumerable<PatientOrderDto>? Orders { get; set; }
 
-        public Site Site { get; set; }
+        public SiteDto Site { get; set; }
     }
 }

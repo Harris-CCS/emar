@@ -6,7 +6,7 @@ using Emar.Core.Orders.Model;
 using Emar.Core.Patients.Model;
 using Emar.Data.Entities;
 
-namespace Emar.Core
+namespace Emar.Core.Helpers
 {
     public class PropertyMappingService : IPropertyMappingService
     {

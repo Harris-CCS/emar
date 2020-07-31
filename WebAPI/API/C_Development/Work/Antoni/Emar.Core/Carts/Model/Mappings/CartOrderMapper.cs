@@ -1,4 +1,6 @@
 ﻿using System.Linq;
+using Emar.Core.Medications.Model.Mappings;
+using Emar.Core.Users.Model.Mappings;
 using Emar.Data.Entities;
 
 namespace Emar.Core.Carts.Model.Mappings
@@ -8,32 +10,30 @@ namespace Emar.Core.Carts.Model.Mappings
         public static CartOrderDto MapCartOrder(PatientCartOrder order)
         {
             if (order == null)
-            {
                 return null;
-            }
 
             CartOrderDto orderDto = new CartOrderDto
             {
                 Id = order.Id,
                 PatientId = order.PatientId,
                 UserId = order.UserId,
-                User = order.User,
+                User = UserMapper.MapUser(order.User),
                 AddDatetime = order.AddDatetime,
                 Ndc = order.Ndc,
                 DrugId = order.DrugId,
                 BrandName = order.BrandName,
                 Dose = order.Dose,
-                DoseUnit = order.DoseUnit,
-                MedicationRouteId = order.MedicationRouteId,
-                MedicationRoute = order.MedicationRoute,
-                ////Priority = (OrderPriorities)Enum.Parse(typeof(OrderPriorities), order.Priority),
+
+                DoseUnit = MedicationMapper.MapMedicationUnit(order.MedicationUnit),
+                MedicationRoute = MedicationMapper.MapMedicationRoute(order.MedicationRoute),
+                //Priority = (OrderPriorities)Enum.Parse(typeof(OrderPriorities), order.Priority),
                 FrequencyId = order.FrequencyId,
                 Prn = order.Prn,
                 PointInTime = order.PointInTime,
                 BeginDatetime = order.BeginDatetime,
                 EndDatetime = order.EndDatetime,
                 OrderNotes = order.OrderNotes,
-                CartOrderAdministrations = order.CartOrderAdministrations
+                CartOrderAdministrations = order.CartOrderAdministrations.Select(MapCartOrderAdministration).ToList()
             };
 
             return orderDto;
@@ -42,9 +42,7 @@ namespace Emar.Core.Carts.Model.Mappings
         public static PatientCartOrder MapCartOrderDto(CartOrderDto orderDto)
         {
             if (orderDto == null)
-            {
                 return null;
-            }
 
             PatientCartOrder order = new PatientCartOrder
             {
@@ -56,9 +54,9 @@ namespace Emar.Core.Carts.Model.Mappings
                 DrugId = orderDto.DrugId,
                 BrandName = orderDto.BrandName,
                 Dose = orderDto.Dose,
-                DoseUnit = orderDto.DoseUnit,
-                MedicationRouteId = orderDto.MedicationRouteId,
-                MedicationRoute = orderDto.MedicationRoute,
+                MedicationUnitId = orderDto.DoseUnit?.Id,
+                MedicationRouteId = orderDto.MedicationRoute?.Id,
+                //MedicationRoute = orderDto.MedicationRoute,
                 ////Priority = (OrderPriorities)Enum.Parse(typeof(OrderPriorities), order.Priority),
                 FrequencyId = orderDto.FrequencyId,
                 Prn = orderDto.Prn,
@@ -66,7 +64,7 @@ namespace Emar.Core.Carts.Model.Mappings
                 BeginDatetime = orderDto.BeginDatetime,
                 EndDatetime = orderDto.EndDatetime,
                 OrderNotes = orderDto.OrderNotes,
-                CartOrderAdministrations = orderDto.CartOrderAdministrations.ToList()
+                CartOrderAdministrations = orderDto.CartOrderAdministrations?.Select(MapCartOrderAdministrationToDto).ToList()
             };
 
             return order;
@@ -75,9 +73,7 @@ namespace Emar.Core.Carts.Model.Mappings
         public static CartOrderAdministrationDto MapCartOrderAdministration(CartOrderAdministration administration)
         {
             if (administration == null)
-            {
                 return null;
-            }
 
             CartOrderAdministrationDto administrationDto = new CartOrderAdministrationDto
             {
@@ -89,6 +85,23 @@ namespace Emar.Core.Carts.Model.Mappings
             };
 
             return administrationDto;
+        }
+
+        private static CartOrderAdministration MapCartOrderAdministrationToDto(CartOrderAdministrationDto adminDto)
+        {
+            if (adminDto == null)
+                return null;
+
+            CartOrderAdministration admin = new CartOrderAdministration
+            {
+                Id = adminDto.Id,
+                PatientCartOrderId = adminDto.PatientCartOrderId,
+                AdministrationScheduledDatetime = adminDto.AdministrationScheduledDatetime,
+                StopScheduledDatetime = adminDto.StopScheduledDatetime,
+                PointInTime = adminDto.PointInTime
+            };
+
+            return admin;
         }
     }
 }

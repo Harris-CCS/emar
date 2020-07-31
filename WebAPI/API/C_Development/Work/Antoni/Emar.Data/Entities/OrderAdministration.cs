@@ -8,7 +8,13 @@ namespace Emar.Data.Entities
     [Table("order_administrations")]
     public class OrderAdministration
     {
-        [Column("id", TypeName = "bigint"), Key]
+        public OrderAdministration()
+        {
+            OrderEvents = new HashSet<OrderEvent>();
+        }
+
+        [Key]
+        [Column("id", TypeName = "bigint")]
         public long Id { get; set; }
 
         [Column("patient_order_id", TypeName = "bigint"), Required]
@@ -53,16 +59,23 @@ namespace Emar.Data.Entities
         [Column("acknowledge_datetime", TypeName = "datetimeoffset")]
         public DateTimeOffset? AcknowledgeDatetime { get; set; }
 
-        [NotMapped]
-        public User? AcknowledgeUser { get; set; }
+        [ForeignKey(nameof(AcknowledgeUserId))]
+        [InverseProperty(nameof(User.OrderAdministrationsAcknowledgeUser))]
+        public virtual User AcknowledgeUser { get; set; }
 
-        [NotMapped]
-        public User? AdministeringUser { get; set; }
+        [ForeignKey(nameof(AdministeringUserId))]
+        [InverseProperty(nameof(User.OrderAdministrationAdministeringUser))]
+        public virtual User AdministeringUser { get; set; }
 
-        [NotMapped]
-        public User? StopUser { get; set; }
+        [ForeignKey(nameof(PatientOrderId))]
+        [InverseProperty(nameof(Entities.PatientOrder.OrderAdministrations))]
+        public virtual PatientOrder PatientOrder { get; set; }
 
-        [NotMapped]
-        public IEnumerable<OrderEvent>? OrderEvents { get; set; }
+        [ForeignKey(nameof(StopUserId))]
+        [InverseProperty(nameof(User.OrderAdministrationStopUser))]
+        public virtual User StopUser { get; set; }
+
+        [InverseProperty("OrderAdministration")]
+        public virtual ICollection<OrderEvent> OrderEvents { get; set; }
     }
 }

@@ -38,18 +38,23 @@ namespace Emar.Core.Users.Service
             return userDto;
         }
 
-        public UserMinimalDto GetUserMinimal(int userId)
+        //public UserMinimalDto GetUserMinimal(int userId)
+        //{
+        //    var user = _userRepository.GetUser(userId);
+
+        //    if (user == null)
+        //    {
+        //        return null;
+        //    }
+
+        //    var userMinimalDto = UserMapper.MapUserMinimal(user);
+
+        //    return userMinimalDto;
+        //}
+
+        public UserDto GetUser(string loginName)
         {
-            var user = _userRepository.GetUser(userId);
-
-            if (user == null)
-            {
-                return null;
-            }
-
-            var userMinimalDto = UserMapper.MapUserMinimal(user);
-
-            return userMinimalDto;
+            return UserMapper.MapUser(_userRepository.GetUser(loginName));
         }
     }
 }
