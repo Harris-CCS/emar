@@ -57,7 +57,9 @@ namespace Emar.Core.Patients.Model.Mappings
                 VsPainScaleIndicator = pt.VsPainScaleIndicator,
                 VsPainScale = pt.VsPainScale,
                 Orders = pt.PatientOrders?.Select(OrderMapper.MapOrder).ToList(),
-                Site = SiteMapper.MapSite(pt.Site)
+                Site = SiteMapper.MapSite(pt.Site),
+                CustomNumber = pt.CustomNumber,
+                PersonNumber = pt.PersonNumber
             };
 
             // Calculate the age if the date-of-birth is present

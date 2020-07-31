@@ -140,7 +140,13 @@ namespace Emar.Data.Entities
         [Column("is_active", TypeName = "bool")]
         public bool Active { get; set; } = true;
 
+        [Column("custom_number", TypeName = "varchar(25)")]
+        public string CustomNumber { get; set; }
 
+        [Column("person_number", TypeName = "varchar(25)")]
+        public string PersonNumber { get; set; }
+
+        
         [ForeignKey(nameof(SiteId))]
         [InverseProperty(nameof(Entities.Site.Patients))]
         public virtual Site Site { get; set; }

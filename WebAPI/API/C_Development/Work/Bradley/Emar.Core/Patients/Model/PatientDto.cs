@@ -133,6 +133,10 @@ namespace Emar.Core.Patients.Model
 
         public bool? WithdrawConsent { get; set; }
 
+        public string CustomNumber { get; set; }
+
+        public string PersonNumber { get; set; }
+
         #region vital signs
         public DateTimeOffset? VsDatetime { get; set; }
 
