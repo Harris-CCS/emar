@@ -28,7 +28,7 @@ namespace Emar.Core.Patients.Model.Mappings
                 DateOfBirth = pt.DateOfBirth,
                 Age = pt.Age,
                 AgeUnits = pt.AgeUnits,
-                ChiefComplaint = pt.ChiefComplaint,
+                Complaint = pt.Complaint,
                 HeightInCm = pt.HeightInCm,
                 WeightInKg = pt.WeightInKg,
                 DepartmentCode = pt.DepartmentCode,

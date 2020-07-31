@@ -11,6 +11,8 @@ namespace Emar.Data.Entities
         public Site()
         {
             GroupListItems = new HashSet<GroupListItem>();
+            MedicationRoutes = new HashSet<MedicationRoute>();
+            MedicationUnits = new HashSet<MedicationUnit>();
             Patients = new HashSet<Patient>();
             UserQuickListItems = new HashSet<UserQuickListItem>();
             Users = new HashSet<User>();
@@ -32,12 +34,17 @@ namespace Emar.Data.Entities
         [StringLength(128)]
         public string TimeZoneName { get; set; }
 
+        [InverseProperty("Site")]
+        public virtual ICollection<GroupListItem> GroupListItems { get; set; }
+
+        [InverseProperty("Site")]
+        public virtual ICollection<MedicationRoute> MedicationRoutes { get; set; }
+
+        [InverseProperty("Site")]
+        public virtual ICollection<MedicationUnit> MedicationUnits { get; set; }
 
         [InverseProperty("Site")]
         public virtual ICollection<Patient> Patients { get; set; }
-
-        [InverseProperty("Site")]
-        public virtual ICollection<GroupListItem> GroupListItems { get; set; }
 
         [InverseProperty("Site")]
         public virtual ICollection<UserQuickListItem> UserQuickListItems { get; set; }

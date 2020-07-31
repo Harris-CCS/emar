@@ -41,11 +41,9 @@ namespace Emar.Data.Entities
         [StringLength(32)]
         public string Ndc { get; set; }
 
-        [Required]
         [Column("drug_id", TypeName = "varchar(32)")]
         public string DrugId { get; set; }
 
-        [Required]
         [Column("brand_name")]
         [StringLength(255)]
         public string BrandName { get; set; }
@@ -53,9 +51,8 @@ namespace Emar.Data.Entities
         [Column("dose", TypeName = "decimal(11,2)")]
         public decimal? Dose { get; set; }
 
-        [Column("dose_unit")]
-        [StringLength(20)]
-        public string DoseUnit { get; set; }
+        [Column("medication_unit_id")]
+        public int? MedicationUnitId { get; set; }
 
         [Column("medication_route_id", TypeName = "int")]
         public int? MedicationRouteId { get; set; }
@@ -85,13 +82,17 @@ namespace Emar.Data.Entities
         [InverseProperty(nameof(User.PatientOrdersAddUser))]
         public virtual User AddUser { get; set; }
 
-        [ForeignKey(nameof(OrderingPhysicianId))]
-        [InverseProperty(nameof(User.PatientOrdersOrderPhysicianUser))]
-        public virtual User OrderPhysicianUser { get; set; }
-
         [ForeignKey(nameof(MedicationRouteId))]
         [InverseProperty(nameof(Entities.MedicationRoute.PatientOrders))]
         public virtual MedicationRoute MedicationRoute { get; set; }
+
+        [ForeignKey(nameof(MedicationUnitId))]
+        [InverseProperty(nameof(Entities.MedicationUnit.PatientOrders))]
+        public virtual MedicationUnit MedicationUnit { get; set; }
+
+        [ForeignKey(nameof(OrderingPhysicianId))]
+        [InverseProperty(nameof(User.PatientOrdersOrderPhysicianUser))]
+        public virtual User OrderPhysicianUser { get; set; }
 
         [ForeignKey(nameof(PatientId))]
         [InverseProperty(nameof(Entities.Patient.PatientOrders))]

@@ -2,7 +2,6 @@
 using Emar.Api.Helpers;
 using Emar.Core;
 using Emar.Core.Helpers;
-using Emar.Core.Orders.Service;
 using Emar.Core.Users.Model;
 using Emar.Core.Users.Repository;
 using Emar.Core.Users.Service;
@@ -84,7 +83,7 @@ namespace Emar.Api.Controllers
                 return BadRequest();
             }
 
-            var user = _userService.GetUserMinimal(userId);
+            var user = _userService.GetUser(userId);
 
             if (user == null) { return NotFound($"User with id '{userId}' was not found."); }
 

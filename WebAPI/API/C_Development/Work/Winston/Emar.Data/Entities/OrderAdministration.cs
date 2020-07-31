@@ -64,12 +64,16 @@ namespace Emar.Data.Entities
         public virtual User AcknowledgeUser { get; set; }
 
         [ForeignKey(nameof(AdministeringUserId))]
-        [InverseProperty(nameof(User.OrderAdministrationsAdministeringUser))]
+        [InverseProperty(nameof(User.OrderAdministrationAdministeringUser))]
         public virtual User AdministeringUser { get; set; }
 
         [ForeignKey(nameof(PatientOrderId))]
         [InverseProperty(nameof(Entities.PatientOrder.OrderAdministrations))]
         public virtual PatientOrder PatientOrder { get; set; }
+
+        [ForeignKey(nameof(StopUserId))]
+        [InverseProperty(nameof(User.OrderAdministrationStopUser))]
+        public virtual User StopUser { get; set; }
 
         [InverseProperty("OrderAdministration")]
         public virtual ICollection<OrderEvent> OrderEvents { get; set; }

@@ -9,6 +9,11 @@ namespace Emar.Data.Entities
     [Table("user_quick_list_items")]
     public class UserQuickListItem
     {
+        public UserQuickListItem()
+        {
+            PatientCartOrders = new HashSet<PatientCartOrder>();
+        }
+
         [Key]
         [Column("id")]
         public int Id { get; set; }
@@ -33,9 +38,8 @@ namespace Emar.Data.Entities
         [Column("dose", TypeName = "decimal(11, 2)")]
         public decimal? Dose { get; set; }
 
-        [Column("dose_unit")]
-        [StringLength(20)]
-        public string DoseUnit { get; set; }
+        [Column("medication_unit_id")]
+        public int? MedicationUnitId { get; set; }
 
         [Column("medication_route_id", TypeName = "int")]
         public int? MedicationRouteId { get; set; }
@@ -56,6 +60,10 @@ namespace Emar.Data.Entities
         [InverseProperty(nameof(Entities.MedicationRoute.UserQuickListItems))]
         public virtual MedicationRoute MedicationRoute { get; set; }
 
+        [ForeignKey(nameof(MedicationUnitId))]
+        [InverseProperty(nameof(Entities.MedicationUnit.UserQuickListItems))]
+        public virtual MedicationUnit MedicationUnit { get; set; }
+
         [ForeignKey(nameof(SiteId))]
         [InverseProperty(nameof(Entities.Site.UserQuickListItems))]
         public virtual Site Site { get; set; }
@@ -63,5 +71,8 @@ namespace Emar.Data.Entities
         [ForeignKey(nameof(UserId))]
         [InverseProperty(nameof(Entities.User.UserQuickListItems))]
         public virtual User User { get; set; }
+
+        [InverseProperty("UserQuickListItem")]
+        public virtual ICollection<PatientCartOrder> PatientCartOrders { get; set; }
     }
 }
