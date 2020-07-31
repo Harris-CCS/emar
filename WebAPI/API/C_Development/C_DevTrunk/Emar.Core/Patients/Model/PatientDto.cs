@@ -57,7 +57,7 @@ namespace Emar.Core.Patients.Model
             set => nameSuffix = value?.Trim();
         }
 
-        public string FullName => NameHelper.GetDisplayName(_firstName,middleName,lastName, nameSuffix);
+        public string FullName => NameHelper.GetDisplayName(_firstName, middleName, lastName, nameSuffix);
 
         #endregion
 
@@ -80,7 +80,7 @@ namespace Emar.Core.Patients.Model
         }
 
         string complaint;
-        public string Complaint 
+        public string Complaint
         {
             get => complaint?.Trim();
             set => complaint = value?.Trim();
@@ -261,10 +261,5 @@ namespace Emar.Core.Patients.Model
         public IEnumerable<PatientOrderDto>? Orders { get; set; }
 
         public SiteDto Site { get; set; }
-
-        public string SiteName
-        {
-            get => Site?.Name;
-        }
     }
 }

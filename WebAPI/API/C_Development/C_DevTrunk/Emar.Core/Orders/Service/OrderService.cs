@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Emar.Core.Helpers;
-using Emar.Core.Medications.Model;
 using Emar.Core.Orders.Model;
 using Emar.Core.Orders.Model.Mappings;
 using Emar.Core.Orders.Repository;
@@ -122,7 +121,7 @@ namespace Emar.Core.Orders.Service
                     tabList.RemoveAt(i);
                 }
             }
-            if(foundNonAlpha)
+            if (foundNonAlpha)
                 tabList.Add("#");
 
             var mostUsedItems = _orderRepository.GetUserQuickListMostUsed(userId, siteId).ToList();

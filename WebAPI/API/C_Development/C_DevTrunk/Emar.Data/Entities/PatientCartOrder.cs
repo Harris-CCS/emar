@@ -13,7 +13,8 @@ namespace Emar.Data.Entities
             CartOrderAdministrations = new HashSet<CartOrderAdministration>();
         }
 
-        [Column("id", TypeName = "bigint"), Key]
+        [Key]
+        [Column("id", TypeName = "bigint")]
         public long Id { get; set; }
 
         [Column("patient_id", TypeName = "bigint"), Required]
@@ -25,13 +26,14 @@ namespace Emar.Data.Entities
         [Column("add_datetime", TypeName = "datetimeoffset"), Required]
         public DateTimeOffset AddDatetime { get; set; }
 
-        [Column("ndc", TypeName = "varchar(32)")]
+        [Column("ndc")]
+        [StringLength(32)]
         public string Ndc { get; set; }
 
-        [Column("drug_id", TypeName = "varchar(32)"), Required]
+        [Column("drug_id", TypeName = "varchar(32)")]
         public string DrugId { get; set; }
 
-        [Column("brand_name", TypeName = "nvarchar(255)"), Required]
+        [Column("brand_name", TypeName = "nvarchar(255)")]
         public string BrandName { get; set; }
 
         [Column("dose", TypeName = "decimal(11,2)")]

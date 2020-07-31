@@ -9,13 +9,112 @@
             Patient Cart Orders Controller
             </summary>
         </member>
-        <member name="M:Emar.Api.Controllers.CartOrdersController.#ctor(Emar.Core.Carts.Service.ICartOrderService,Emar.Core.IPropertyMappingService,Emar.Core.IPropertyCheckerService)">
+        <member name="M:Emar.Api.Controllers.CartOrdersController.#ctor(Emar.Core.Carts.Service.ICartOrderService,Emar.Core.Helpers.IPropertyMappingService,Emar.Core.Helpers.IPropertyCheckerService)">
             <summary>
             Constructor
             </summary>
             <param name="cartOrderService"></param>
             <param name="propertyMappingService"></param>
             <param name="propertyCheckerService"></param>
+        </member>
+        <member name="M:Emar.Api.Controllers.CartOrdersController.GetCartOrders(System.String,System.Nullable{System.Int32},System.Nullable{System.Int64})">
+            <summary>
+            Get all cart orders for a patient the user entered.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="userId">
+            Unique user identifier from Accept header.
+            </param>
+            <param name="patientId">
+            Unique patient identifier.
+            </param>
+            <returns>An ActionResult of type CartOrderDto</returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.CartOrdersController.GetCartOrder(System.String,System.Nullable{System.Int32},System.Int64)">
+            <summary>
+            Get a cart order for a patient the user entered.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="userId">
+            Unique user identifier from Accept header.
+            </param>
+            <param name="cartOrderId">
+            Unique cart order identifier.
+            </param>
+            <returns>An ActionResult of type CartOrderDto</returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.CartOrdersController.AddCartOrder(System.String,System.Nullable{System.Int32},Emar.Core.Carts.Model.CartOrderDto,System.Nullable{System.Int64})">
+            <summary>
+            Add a cart order for a patient the user entered.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="userId">
+            Unique user identifier from Accept header.
+            </param>
+            <param name="patientId">
+            Unique patient identifier.
+            </param>
+            <param name="cartOrderBody">
+            Body of the order to be added in the cart.
+            </param>
+            <returns>An ActionResult of type CartOrderDto</returns>
+            <remarks>
+            The JSON in the request body can **NOT** have Order and Administrations Ids set **OR** they **MUST** be set to 0.
+            </remarks>
+        </member>
+        <member name="M:Emar.Api.Controllers.CartOrdersController.UpdateCartOrder(System.String,System.Nullable{System.Int32},Emar.Core.Carts.Model.CartOrderDto,System.Int64)">
+            <summary>
+            Update a cart order.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="userId">
+            Unique user identifier from Accept header.
+            </param>
+            <param name="cartOrderId">
+            Unique cart order identifier.
+            </param>
+            <param name="cartOrderBody">
+            Body of the order to be added in the cart.
+            </param>
+            <returns>An ActionResult of type CartOrderDto</returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.CartOrdersController.DeleteCartOrder(System.String,System.Nullable{System.Int32},System.Nullable{System.Int64})">
+            <summary>
+            Delete a cart order.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="userId">
+            Unique user identifier from Accept header.
+            </param>
+            <param name="cartOrderId">
+            Unique cart order identifier.
+            </param>
+            <returns>An ActionResult of type CartOrderDto</returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.CartOrdersController.DeleteCart(System.String,System.Nullable{System.Int32},System.Nullable{System.Int64})">
+            <summary>
+            Delete the cart.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="userId">
+            Unique user identifier from Accept header.
+            </param>
+            <param name="patientId">
+            Unique patient identifier.
+            </param>
+            <returns>An ActionResult of type CartOrderDto</returns>
         </member>
         <member name="M:Emar.Api.Controllers.CartOrdersController.CheckoutCart(System.String,System.Nullable{System.Int32},System.Nullable{System.Int64})">
             <summary>
@@ -37,7 +136,7 @@
             Patient Orders Controller
             </summary>
         </member>
-        <member name="M:Emar.Api.Controllers.OrdersController.#ctor(Emar.Core.Orders.Service.IOrderService,Emar.Core.IPropertyMappingService,Emar.Core.IPropertyCheckerService)">
+        <member name="M:Emar.Api.Controllers.OrdersController.#ctor(Emar.Core.Orders.Service.IOrderService,Emar.Core.Helpers.IPropertyMappingService,Emar.Core.Helpers.IPropertyCheckerService)">
             <summary>
             Constructor
             </summary>
@@ -202,6 +301,10 @@
             *Optional.* \
             Site (facility) identifier to restrict the list of returned patients to.
             </param>
+            <param name="accountNumber">
+            *Optional.* \
+            Patient's account number.
+            </param>
             <param name="departmentCode">
             *Optional.* \
             Department code to restrict the list of returned patients to.
@@ -231,6 +334,25 @@
             Second key of the external patient Id. In PulseCheck, it is the Ibex number.
             </param>
             <returns>An IActionResult of IEnumerable of type PatientDto</returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.UserQuickListsController.GetUserQuickListInitial(System.Int32,System.Nullable{System.Int32})">
+            <summary>
+            Return initial information about a User's Quick List:
+            will return the name and contents of the first Quick List tab,
+            and a list of all the tabs that will return remembered orders
+            </summary>
+            <param name="userId">The user to retrieve the quick list for (provided in the header)</param>
+            <param name="siteId">(Optional) The Site to retrieve the user's quick list for (if omitted, return the user's quick list for all sites)</param>
+            <returns></returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.UserQuickListsController.GetUserQuickListTab(System.Int32,System.Nullable{System.Int32},System.String)">
+            <summary>
+            Return the contents for one tab of a User's Quick List
+            </summary>
+            <param name="userId">The user to retrieve the quick list for (provided in the header)</param>
+            <param name="siteId">(Optional) The Site to retrieve the user's quick list for (if omitted, return the user's quick list for all sites)</param>
+            <param name="tabTitle">the tab to retrieve remembered orders for</param>
+            <returns></returns>
         </member>
     </members>
 </doc>
