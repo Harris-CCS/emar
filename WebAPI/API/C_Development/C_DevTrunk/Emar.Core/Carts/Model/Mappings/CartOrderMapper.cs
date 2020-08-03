@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Emar.Core.Helpers;
 using Emar.Core.Medications.Model.Mappings;
 using Emar.Core.Users.Model.Mappings;
 using Emar.Data.Entities;
@@ -12,6 +13,8 @@ namespace Emar.Core.Carts.Model.Mappings
             if (order == null)
                 return null;
 
+            var dateFormat = order.Patient.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == @"LONG_DATE_FORMAT").OptionValue;
+
             CartOrderDto orderDto = new CartOrderDto
             {
                 Id = order.Id,
@@ -19,11 +22,12 @@ namespace Emar.Core.Carts.Model.Mappings
                 UserId = order.UserId,
                 User = UserMapper.MapUser(order.User),
                 AddDatetime = order.AddDatetime,
+                AddDate = DateTimeHelper.GetDate(order.AddDatetime, dateFormat),
+                AddTime = DateTimeHelper.GetTime(order.AddDatetime),
                 Ndc = order.Ndc,
                 DrugId = order.DrugId,
                 BrandName = order.BrandName,
                 Dose = order.Dose,
-
                 DoseUnit = MedicationMapper.MapMedicationUnit(order.MedicationUnit),
                 MedicationRoute = MedicationMapper.MapMedicationRoute(order.MedicationRoute),
                 //Priority = (OrderPriorities)Enum.Parse(typeof(OrderPriorities), order.Priority),
@@ -31,7 +35,11 @@ namespace Emar.Core.Carts.Model.Mappings
                 Prn = order.Prn,
                 PointInTime = order.PointInTime,
                 BeginDatetime = order.BeginDatetime,
+                BeginDate = DateTimeHelper.GetDate(order.BeginDatetime, dateFormat),
+                BeginTime = DateTimeHelper.GetTime(order.BeginDatetime),
                 EndDatetime = order.EndDatetime,
+                EndDate = DateTimeHelper.GetDate(order.EndDatetime, dateFormat),
+                EndTime = DateTimeHelper.GetTime(order.EndDatetime),
                 OrderNotes = order.OrderNotes,
                 CartOrderAdministrations = order.CartOrderAdministrations.Select(MapCartOrderAdministration).ToList()
             };
@@ -75,12 +83,18 @@ namespace Emar.Core.Carts.Model.Mappings
             if (administration == null)
                 return null;
 
+            var dateFormat = administration.PatientCartOrder.Patient.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == @"LONG_DATE_FORMAT").OptionValue;
+
             CartOrderAdministrationDto administrationDto = new CartOrderAdministrationDto
             {
                 Id = administration.Id,
                 PatientCartOrderId = administration.PatientCartOrderId,
                 AdministrationScheduledDatetime = administration.AdministrationScheduledDatetime,
+                AdministrationScheduledDate = DateTimeHelper.GetDate(administration.AdministrationScheduledDatetime, dateFormat),
+                AdministrationScheduledTime = DateTimeHelper.GetTime(administration.AdministrationScheduledDatetime),
                 StopScheduledDatetime = administration.StopScheduledDatetime,
+                StopScheduledDate = DateTimeHelper.GetDate(administration.StopScheduledDatetime, dateFormat),
+                StopScheduledTime = DateTimeHelper.GetTime(administration.StopScheduledDatetime),
                 PointInTime = administration.PointInTime
             };
 

@@ -8,6 +8,7 @@ using Emar.Core.ResourceParameters;
 using Emar.Data;
 using Emar.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using static Emar.Core.Patients.Model.Constants;
 
 namespace Emar.Core.Patients.Repository
 {
@@ -29,17 +30,7 @@ namespace Emar.Core.Patients.Repository
 
         public PagedList<Patient> GetPatients(PatientsResourceParameters resourceParameters, bool includeOrders)
         {
-            IEnumerable<Patient> patients;
-
-            if ((includeOrders) ||
-                (resourceParameters.IncludeOrders))
-            {
-                patients = GetPatientsWithOrders();
-            }
-            else
-            {
-                patients = GetPatientsWithoutOrders();
-            }
+            IEnumerable<Patient> patients = GetPatients(((resourceParameters != null) && resourceParameters.IncludeOrders) || includeOrders);
 
             if (!resourceParameters.IncludeInactive)
             {
@@ -82,53 +73,41 @@ namespace Emar.Core.Patients.Repository
                     .AsQueryable().ApplySort(resourceParameters.OrderBy, propertyMappingDictionary);
             }
 
-
             return PagedList<Patient>.Create(patients.AsQueryable(), resourceParameters.PageNumber, resourceParameters.PageSize);
         }
 
-        IEnumerable<Patient> GetPatientsWithOrders()
+        IEnumerable<Patient> GetPatients(bool includeOrders = true)
         {
-            return _context.Patients
-                    .Include(patient => patient.PatientOrders)
-                        .ThenInclude(order => order.OrderAdministrations)
-                    .Include(patient => patient.PatientOrders)
-                        .ThenInclude(order => order.MedicationRoute)
-                    .Include(patient => patient.PatientOrders)
-                        .ThenInclude(order => order.AddUser)
-                    .Include(patient => patient.PatientOrders)
-                        .ThenInclude(order => order.OrderPhysicianUser)
-                    .Include(patient => patient.Site)
-                    .ToList();
-        }
+            if (includeOrders)
+            {
+                return _context.Patients
+                        .Include(patient => patient.PatientOrders)
+                            .ThenInclude(order => order.OrderAdministrations)
+                        .Include(patient => patient.PatientOrders)
+                            .ThenInclude(order => order.MedicationRoute)
+                        .Include(patient => patient.PatientOrders)
+                            .ThenInclude(order => order.MedicationUnit)
+                        .Include(patient => patient.PatientOrders)
+                            .ThenInclude(order => order.AddUser)
+                        .Include(patient => patient.PatientOrders)
+                            .ThenInclude(order => order.OrderPhysicianUser)
+                        .Include(patient => patient.Site)
+                                .ThenInclude(site => site.SiteOptions)
+                                    .ThenInclude(siteOptions => siteOptions.Option)
+                        .ToList();
+            }
 
-        IEnumerable<Patient> GetPatientsWithoutOrders()
-        {
             return _context.Patients
                     .Include(patient => patient.Site)
+                        .ThenInclude(site => site.SiteOptions)
+                            .ThenInclude(siteOptions => siteOptions.Option)
                     .ToList();
         }
 
         public Patient GetPatient(long? patientId, PatientsResourceParameters resourceParameters, bool includeOrders)
         {
-            patientId = (long)GetPatientId(patientId, resourceParameters);
-
-            Patient patient;
-            if (((resourceParameters != null) && resourceParameters.IncludeOrders) || includeOrders)
-            {
-                patient = _context.Patients
-                    .Include(p => p.PatientOrders)
-                        .ThenInclude(order => order.OrderAdministrations)
-                    .Include(s => s.Site)
-                    .FirstOrDefault(p => p.Id == patientId);
-            }
-            else
-            {
-                patient = _context.Patients
-                    .Include(s => s.Site)
-                    .FirstOrDefault(p => p.Id == patientId);
-            }
-
-            return patient;
+            return GetPatients(((resourceParameters != null) && resourceParameters.IncludeOrders) || includeOrders)
+                    .FirstOrDefault(patient => patient.Id == patientId);
         }
 
         public long? GetPatientId(long? patientId, PatientsResourceParameters resourceParameters)
@@ -160,12 +139,22 @@ namespace Emar.Core.Patients.Repository
             return ptId.FirstOrDefault();
         }
 
-        public Patient GetPatientByAccountNumber(string accountNumber)
+        public Patient GetPatientByNumber(string number, GetPatientBy getPatientBy)
         {
-            var query = _context.Patients
-                .Where(p => p.AccountNumber == accountNumber)
-                .Include(s => s.Site);
-            return query.FirstOrDefault();
+            switch (getPatientBy)
+            {
+                case GetPatientBy.AccountNumber:
+                    return GetPatients()
+                            .FirstOrDefault(p => p.AccountNumber == number);
+                case GetPatientBy.CustomNumber:
+                    return GetPatients()
+                            .FirstOrDefault(p => p.CustomNumber == number);
+                case GetPatientBy.PersonNumber:
+                    return GetPatients()
+                            .FirstOrDefault(p => p.PersonNumber == number);
+            }
+
+            return null;
         }
     }
 }
