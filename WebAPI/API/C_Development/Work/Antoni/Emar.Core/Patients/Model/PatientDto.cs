@@ -69,6 +69,7 @@ namespace Emar.Core.Patients.Model
         }
 
         public DateTime? DateOfBirth { get; set; }
+        public string BirthDate { get; set; }
 
         public int? Age { get; set; }
 
@@ -135,6 +136,8 @@ namespace Emar.Core.Patients.Model
 
         #region vital signs
         public DateTimeOffset? VsDatetime { get; set; }
+        public string VsDatetimeDate { get; set; }
+        public string VsDatetimeTime { get; set; }
 
         string vsBloodPressureIndicator;
         public string VsBloodPressureIndicator
@@ -253,6 +256,21 @@ namespace Emar.Core.Patients.Model
         {
             get => vsPainScale?.Trim();
             set => vsPainScale = value?.Trim();
+        }
+
+        string customNumber;
+
+        public string CustomNumber
+        {
+            get => customNumber?.Trim();
+            set => customNumber = value?.Trim();
+        }
+
+        string personNumber;
+        public string PersonNumber
+        {
+            get => personNumber?.Trim();
+            set => personNumber = value?.Trim();
         }
         #endregion
 

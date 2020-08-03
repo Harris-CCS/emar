@@ -308,7 +308,6 @@ namespace Emar.Core.Helpers
             // return the list
             return dataShapedObject;
         }
-
     }
 
     public static class NameHelper
@@ -332,4 +331,33 @@ namespace Emar.Core.Helpers
         }
     }
 
+    public static class DateTimeHelper
+    {
+        static string defaultDateFormat = @"yyyy-MM-dd";
+        static string defaultTimeFormat = @"HH:mm:ss";
+
+        public static string GetDateTime(DateTimeOffset? dateTime, string dateFormat = null, string timeFormat = null, bool includeTime = true)
+        {
+            dateFormat = (dateFormat ?? defaultDateFormat)
+                // Ensure that the date format returned is properly capitalized.
+                .Replace(@"YYYY", @"yyyy")
+                .Replace(@"YY", @"yy")
+                .Replace(@"mm", @"MM")
+                .Replace(@"DD", @"dd");
+
+            timeFormat ??= defaultTimeFormat;
+
+            return dateFormat != null ? dateTime?.ToString(dateFormat + (includeTime ? @" " + timeFormat : @"")) : dateTime?.ToString();
+        }
+
+        public static string GetDate(DateTimeOffset? dateTime, string dateFormat)
+        {
+            return GetDateTime(dateTime, dateFormat, null, false);
+        }
+
+        public static string GetTime(DateTimeOffset? dateTime, string timeFormat = null)
+        {
+            return dateTime?.ToString(timeFormat ?? defaultTimeFormat);
+        }
+    }
 }
