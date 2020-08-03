@@ -6,6 +6,7 @@ using Emar.Core.Patients.Model.Mappings;
 using Emar.Core.Patients.Repository;
 using Emar.Core.ResourceParameters;
 using Emar.Data.Entities;
+using static Emar.Core.Patients.Model.Constants;
 
 namespace Emar.Core.Patients.Service
 {
@@ -71,13 +72,13 @@ namespace Emar.Core.Patients.Service
         }
 
         /// <summary>
-        /// Implemented to retrieve a patient by Account Number instead of the Internal Id
+        /// Implemented to retrieve a patient by Account Number, Custom Number or Person Number instead of the Internal Id
         /// </summary>
         /// <param name="accountNumber"></param>
         /// <returns></returns>
-        public PatientDto GetPatient(string accountNumber)
+        public PatientDto GetPatientByNumber(string number, GetPatientBy getPatientBy)
         {
-            Patient patient = _patientRepository.GetPatientByAccountNumber(accountNumber);
+            Patient patient = _patientRepository.GetPatientByNumber(number, getPatientBy);
             PatientDto patientDto = PatientMapper.MapPatient(patient);
 
             return patientDto;

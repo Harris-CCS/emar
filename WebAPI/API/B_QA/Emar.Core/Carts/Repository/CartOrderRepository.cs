@@ -30,20 +30,16 @@ namespace Emar.Core.Carts.Repository
 
         public PagedList<PatientCartOrder> GetOrders(long? patientId, OrdersResourceParameters resourceParameters)
         {
-            patientId ??= resourceParameters.PatientId;
+            long userId = resourceParameters.UserId ?? -1;
+            long ptId = (patientId ?? resourceParameters.PatientId) ?? -1;
 
-            var orders = _context.PatientCartOrders
-                .Include(order => order.CartOrderAdministrations)
-                .Include(order => order.MedicationRoute)
-                .Include(order => order.User)
-                .AsEnumerable();
-
-            if ((patientId != null) &&
-                (patientId != -1))
+            if ((userId == -1) ||
+                (ptId == -1))
             {
-                orders = orders
-                    .Where(order => order.PatientId == patientId);
+                return null;
             }
+
+            var orders = GetCartOrders(userId, ptId);
 
             if (resourceParameters.OrderBy != null)
             {
@@ -56,12 +52,36 @@ namespace Emar.Core.Carts.Repository
             return PagedList<PatientCartOrder>.Create(orders.AsQueryable(), resourceParameters.PageNumber, resourceParameters.PageSize);
         }
 
+        IEnumerable<PatientCartOrder> GetCartOrders(long userId = -1, long patientId = -1)
+        {
+            var orders = _context.PatientCartOrders
+                .Include(order => order.CartOrderAdministrations)
+                .Include(order => order.MedicationRoute)
+                .Include(order => order.User)
+                .Include(order => order.Patient)
+                    .ThenInclude(patient => patient.Site)
+                        .ThenInclude(site => site.SiteOptions)
+                            .ThenInclude(siteOptions => siteOptions.Option)
+                .AsEnumerable();
+
+            if (userId != -1)
+            {
+                orders = orders
+                    .Where(order => order.UserId == userId);
+            }
+
+            if (patientId != -1)
+            {
+                orders = orders
+                    .Where(order => order.PatientId == patientId);
+            }
+
+            return orders;
+        }
+
         public PatientCartOrder GetOrder(long orderId, OrdersResourceParameters resourceParameters)
         {
-            return _context.PatientCartOrders
-                    .Include(order => order.CartOrderAdministrations)
-                    .Include(order => order.MedicationRoute)
-                    .Include(order => order.User)
+            return GetCartOrders()
                     .FirstOrDefault(order => order.Id == orderId);
         }
 
@@ -80,9 +100,7 @@ namespace Emar.Core.Carts.Repository
                     transaction.Rollback();
                 }
 
-                return _context.PatientCartOrders
-                            .Include(order => order.CartOrderAdministrations)
-                            .FirstOrDefault(order => order.Id == cartOrder.Id);
+                return GetOrder(cartOrder.Id, null);
             }
         }
 

@@ -15,19 +15,18 @@ namespace Emar.Data.Entities
             Patients = new HashSet<Patient>();
             UserQuickListItems = new HashSet<UserQuickListItem>();
             Users = new HashSet<User>();
+            SiteOptions = new HashSet<SiteOption>();
         }
 
         [Key]
-        [Column("id", TypeName = "int")]
+        [Column("id")]
         public int Id { get; set; }
-
         [Required]
-        [Column("name", TypeName = "nvarchar(40)")]
+        [Column("name")]
+        [StringLength(40)]
         public string Name { get; set; }
-
-        [Column("is_active", TypeName = "bit"), Required]
+        [Column("is_active")]
         public bool IsActive { get; set; }
-
         [Required]
         [Column("time_zone_name")]
         [StringLength(128)]
@@ -50,5 +49,8 @@ namespace Emar.Data.Entities
 
         [InverseProperty("Site")]
         public virtual ICollection<User> Users { get; set; }
+
+        [InverseProperty("Site")]
+        public virtual ICollection<SiteOption> SiteOptions { get; set; }
     }
 }

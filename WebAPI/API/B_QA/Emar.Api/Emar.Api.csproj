@@ -23,8 +23,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Properties\PublishProfiles\**" />
+    <Content Remove="Properties\PublishProfiles\**" />
+    <EmbeddedResource Remove="Properties\PublishProfiles\**" />
+    <None Remove="Properties\PublishProfiles\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="appsettings.Development.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Emar.Api.xml" />
-    <None Remove="Properties\PublishProfiles\FolderProfile.pubxml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,10 +52,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Emar.Core\Emar.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
 
 

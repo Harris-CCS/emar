@@ -23,11 +23,15 @@ namespace Emar.Core.Orders.Model
         /// Date and time the order event took place.  Includes the local time timezone offset from UTC.
         /// </summary>
         public DateTimeOffset EventDateTime { get; set; }
+        public string EventDate { get; set; }
+        public string EventTime { get; set; }
 
         /// <summary>
         /// Date and time the order event was entered in the system.  Includes the local time timezone offset from UTC.
         /// </summary>
         public DateTimeOffset SystemDateTime { get; set; }
+        public string SystemDate { get; set; }
+        public string SystemTime { get; set; }
 
         /// <summary>
         /// Unique user identifier

@@ -18,11 +18,15 @@ namespace Emar.Core.Carts.Model
         /// Date and time the order administration is scheduled to start.  Includes the local time timezone offset from UTC.
         /// </summary>
         public DateTimeOffset AdministrationScheduledDatetime { get; set; }
+        public string AdministrationScheduledDate { get; set; }
+        public string AdministrationScheduledTime { get; set; }
 
         /// <summary>
         /// Date and time the order administration is scheduled to end.  Includes the local time timezone offset from UTC.
         /// </summary>
         public DateTimeOffset? StopScheduledDatetime { get; set; }
+        public string StopScheduledDate { get; set; }
+        public string StopScheduledTime { get; set; }
 
         // <summary>
         // Indicates whether the order administration is point-in-time.
