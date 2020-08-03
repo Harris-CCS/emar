@@ -1,13 +1,16 @@
 /* You can add global styles to this file, and also import other style files */
+@import "./variables.scss";
+@import "~bootstrap/scss/bootstrap";
 
 html {
   position: relative;
   min-height: 100%;
+  font-size: $font-size-root;
 }
 
 body {
   background: url("/assets/img/background_2.svg");
-  background-color: #ededed !important;
+  background-color: $e-body-background-color !important;
   background-size: cover;
   background-repeat: no-repeat;
   font-family: "Open Sans", "Roboto", sans-serif !important;
