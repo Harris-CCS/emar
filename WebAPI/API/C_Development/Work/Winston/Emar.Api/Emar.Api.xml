@@ -272,7 +272,7 @@
             <remarks>
             </remarks>
         </member>
-        <member name="M:Emar.Api.Controllers.PatientsController.GetPatients(System.String,System.String,System.String,System.Nullable{System.Int32},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+        <member name="M:Emar.Api.Controllers.PatientsController.GetPatients(System.String,System.String,System.String,System.Nullable{System.Int32},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
             <summary>
             Get a list of patients in the system.
             </summary>
@@ -304,6 +304,14 @@
             <param name="accountNumber">
             *Optional.* \
             Patient's account number.
+            </param>
+            <param name="customNumber">
+            *Optional.* \
+            Patient's custom number.
+            </param>
+            <param name="personNumber">
+            *Optional.* \
+            Patient's person number.
             </param>
             <param name="departmentCode">
             *Optional.* \

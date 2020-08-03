@@ -15,135 +15,127 @@ namespace Emar.Data.Entities
         }
 
         [Key]
-        [Column("id", TypeName = "bigint")]
+        [Column("id")]
         public long Id { get; set; }
-
-        [Column("site_id", TypeName = "int"), Required]
+        [Column("site_id")]
         public int SiteId { get; set; }
-
-        [Column("medical_record_number", TypeName = "varchar(25)")]
+        [Column("medical_record_number")]
+        [StringLength(25)]
         public string MedicalRecordNumber { get; set; }
-
-        [Column("account_number", TypeName = "varchar(25)")]
+        [Column("account_number")]
+        [StringLength(25)]
         public string AccountNumber { get; set; }
-
-        [Column("last_name", TypeName = "nvarchar(35)"), Required]
+        [Required]
+        [Column("last_name")]
+        [StringLength(35)]
         public string LastName { get; set; }
-
         [Required]
-        [Column("first_name", TypeName = "nvarchar(35)")]
+        [Column("first_name")]
+        [StringLength(35)]
         public string FirstName { get; set; }
-
-        [Column("middle_name", TypeName = "nvarchar(35)")]
+        [Column("middle_name")]
+        [StringLength(35)]
         public string MiddleName { get; set; }
-
-        [Column("name_suffix", TypeName = "nvarchar(25)")]
+        [Column("name_suffix")]
+        [StringLength(25)]
         public string NameSuffix { get; set; }
-
         [Required]
-        [Column("gender", TypeName = "varchar(10)")]
+        [Column("gender")]
+        [StringLength(10)]
         public string Gender { get; set; }
-
         [Column("date_of_birth", TypeName = "date")]
         public DateTime? DateOfBirth { get; set; }
-
-        [Column("age", TypeName = "tinyint")]
+        [Column("age")]
         public byte? Age { get; set; }
-
-        [Column("age_units", TypeName = "char(1)")]
+        [Column("age_units")]
+        [StringLength(1)]
         public string AgeUnits { get; set; }
-
-        [Column("complaint", TypeName = "varchar(80)")]
+        [Column("complaint")]
+        [StringLength(80)]
         public string Complaint { get; set; }
-
-        [Column("height_in_cm", TypeName = "numeric(6,2")]
+        [Column("height_in_cm", TypeName = "numeric(6, 2)")]
         public decimal? HeightInCm { get; set; }
-
-        [Column("weight_in_kg", TypeName = "numeric(6,2)")]
+        [Column("weight_in_kg", TypeName = "numeric(6, 2)")]
         public decimal? WeightInKg { get; set; }
-
-        [Column("room_bed_code", TypeName = "varchar(15)")]
+        [Column("room_bed_code")]
+        [StringLength(15)]
         public string RoomBedCode { get; set; }
-
-        [Column("ward_code", TypeName = "varchar(15)")]
+        [Column("ward_code")]
+        [StringLength(15)]
         public string WardCode { get; set; }
-
-        [Column("department_code", TypeName = "varchar(15)")]
+        [Column("department_code")]
+        [StringLength(15)]
         public string DepartmentCode { get; set; }
-
-        [Column("urgency", TypeName = "varchar(50)")]
+        [Column("urgency")]
+        [StringLength(50)]
         public string Urgency { get; set; }
-
-        [Column("urgency_color", TypeName = "varchar(25)")]
+        [Column("urgency_color")]
+        [StringLength(25)]
         public string UrgencyColor { get; set; }
-
-        [Column("name_alert", TypeName = "bit"), Required]
+        [Column("name_alert")]
         public bool NameAlert { get; set; }
-
-        [Column("withdraw_consent", TypeName = "bit"), Required]
+        [Column("withdraw_consent")]
         public bool WithdrawConsent { get; set; }
-
-        [Column("vs_datetime", TypeName = "datetimeoffset")]
+        [Column("vs_datetime")]
         public DateTimeOffset? VsDatetime { get; set; }
-
-        [Column("vs_blood_pressure_indicator", TypeName = "char(1)")]
+        [Column("vs_blood_pressure_indicator")]
+        [StringLength(1)]
         public string VsBloodPressureIndicator { get; set; }
-
-        [Column("vs_systolic", TypeName = "varchar(14)")]
+        [Column("vs_systolic")]
+        [StringLength(14)]
         public string VsSystolic { get; set; }
-
-        [Column("vs_diastolic", TypeName = "varchar(14)")]
+        [Column("vs_diastolic")]
+        [StringLength(14)]
         public string VsDiastolic { get; set; }
-
-        [Column("vs_pulse_indicator", TypeName = "char(1)")]
+        [Column("vs_pulse_indicator")]
+        [StringLength(1)]
         public string VsPulseIndicator { get; set; }
-
-        [Column("vs_pulse", TypeName = "varchar(14)")]
+        [Column("vs_pulse")]
+        [StringLength(14)]
         public string VsPulse { get; set; }
-
-        [Column("vs_map_level", TypeName = "char(1)")]
+        [Column("vs_map_level")]
+        [StringLength(1)]
         public string VsMapLevel { get; set; }
-
-        [Column("vs_map", TypeName = "varchar(14)")]
+        [Column("vs_map")]
+        [StringLength(14)]
         public string VsMap { get; set; }
-
-        [Column("vs_respiratory_indicator", TypeName = "char(1)")]
+        [Column("vs_respiratory_indicator")]
+        [StringLength(1)]
         public string VsRespiratoryIndicator { get; set; }
-
-        [Column("vs_respiratory", TypeName = "varchar(14)")]
+        [Column("vs_respiratory")]
+        [StringLength(14)]
         public string VsRespiratory { get; set; }
-
-        [Column("vs_temperature_indicator", TypeName = "char(1)")]
+        [Column("vs_temperature_indicator")]
+        [StringLength(1)]
         public string VsTemperatureIndicator { get; set; }
-
-        [Column("vs_temperature", TypeName = "varchar(14)")]
+        [Column("vs_temperature")]
+        [StringLength(14)]
         public string VsTemperature { get; set; }
-
-        [Column("vs_end_tidal_level", TypeName = "char(1)")]
+        [Column("vs_end_tidal_level")]
+        [StringLength(1)]
         public string VsEndTidalLevel { get; set; }
-
-        [Column("vs_end_tidal", TypeName = "varchar(14)")]
+        [Column("vs_end_tidal")]
+        [StringLength(14)]
         public string VsEndTidal { get; set; }
-
-        [Column("vs_oxygen_saturation_indicator", TypeName = "char(1)")]
+        [Column("vs_oxygen_saturation_indicator")]
+        [StringLength(1)]
         public string VsOxygenSaturationIndicator { get; set; }
-
-        [Column("vs_oxygen_saturation", TypeName = "varchar(50)")]
+        [Column("vs_oxygen_saturation")]
+        [StringLength(50)]
         public string VsOxygenSaturation { get; set; }
-
-        [Column("vs_pain_scale_indicator", TypeName = "char(1)")]
+        [Column("vs_pain_scale_indicator")]
+        [StringLength(1)]
         public string VsPainScaleIndicator { get; set; }
-
-        [Column("vs_pain_scale", TypeName = "varchar(14)")]
+        [Column("vs_pain_scale")]
+        [StringLength(14)]
         public string VsPainScale { get; set; }
-
-        [Column("is_active", TypeName = "bool")]
-        public bool Active { get; set; } = true;
-
-        [Column("custom_number", TypeName = "varchar(25)")]
+        [Column("is_active")]
+        public bool Active { get; set; }
+        [Column("custom_number")]
+        [StringLength(25)]
         public string CustomNumber { get; set; }
-
-        [Column("person_number", TypeName = "varchar(25)")]
+        [Column("person_number")]
+        [StringLength(25)]
         public string PersonNumber { get; set; }
 
         [ForeignKey(nameof(SiteId))]

@@ -30,12 +30,7 @@ namespace Emar.Core.Orders.Repository
         {
             patientId ??= resourceParameters.PatientId;
 
-            var orders = _context.PatientOrders
-                .Include(order => order.OrderAdministrations)
-                .Include(order => order.MedicationRoute)
-                .Include(order => order.AddUser)
-                .Include(order => order.OrderPhysicianUser)
-                .AsEnumerable();
+            var orders = GetOrders();
 
             if ((patientId != null) &&
                 (patientId != -1))
@@ -55,13 +50,24 @@ namespace Emar.Core.Orders.Repository
             return PagedList<PatientOrder>.Create(orders.AsQueryable(), resourceParameters.PageNumber, resourceParameters.PageSize);
         }
 
-        public PatientOrder GetOrder(long orderId, OrdersResourceParameters resourceParameters)
+        IEnumerable<PatientOrder> GetOrders()
         {
             return _context.PatientOrders
                     .Include(order => order.OrderAdministrations)
                     .Include(order => order.MedicationRoute)
+                    .Include(order => order.MedicationUnit)
                     .Include(order => order.AddUser)
                     .Include(order => order.OrderPhysicianUser)
+                    .Include(order => order.Patient)
+                        .ThenInclude(patient => patient.Site)
+                            .ThenInclude(site => site.SiteOptions)
+                                .ThenInclude(siteOptions => siteOptions.Option)
+                    .AsEnumerable();
+        }
+
+        public PatientOrder GetOrder(long orderId, OrdersResourceParameters resourceParameters)
+        {
+            return GetOrders()
                     .FirstOrDefault(order => order.Id == orderId);
         }
 

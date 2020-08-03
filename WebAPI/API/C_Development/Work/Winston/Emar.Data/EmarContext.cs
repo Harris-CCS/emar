@@ -1,6 +1,8 @@
-﻿using Emar.Data.Entities;
+﻿using System.IO;
+using Emar.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
 
 namespace Emar.Data
 {
@@ -21,12 +23,14 @@ namespace Emar.Data
         public virtual DbSet<GroupListItem> GroupListItems { get; set; }
         public virtual DbSet<MedicationRoute> MedicationRoutes { get; set; }
         public virtual DbSet<MedicationUnit> MedicationUnits { get; set; }
+        public virtual DbSet<Option> Options { get; set; }
         public virtual DbSet<OrderAdministration> OrderAdministrations { get; set; }
         public virtual DbSet<OrderEvent> OrderEvents { get; set; }
         public virtual DbSet<PatientCartOrder> PatientCartOrders { get; set; }
         public virtual DbSet<PatientOrder> PatientOrders { get; set; }
         public virtual DbSet<Patient> Patients { get; set; }
         public virtual DbSet<Site> Sites { get; set; }
+        public virtual DbSet<SiteOption> SiteOptions { get; set; }
         public virtual DbSet<UserQuickListItem> UserQuickListItems { get; set; }
         public virtual DbSet<User> Users { get; set; }
 
@@ -109,6 +113,15 @@ namespace Emar.Data
                     .HasForeignKey(d => d.SiteId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk__medication_units__sites");
+            });
+
+            modelBuilder.Entity<Option>(entity =>
+            {
+                entity.Property(e => e.Id)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Description)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<OrderAdministration>(entity =>
@@ -228,81 +241,101 @@ namespace Emar.Data
 
             modelBuilder.Entity<Patient>(entity =>
             {
-                entity.Property(e => e.AccountNumber).IsUnicode(false);
+                entity.Property(e => e.AccountNumber)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.AgeUnits)
                     .IsUnicode(false)
                     .IsFixedLength();
 
-                entity.Property(e => e.Complaint).IsUnicode(false);
+                entity.Property(e => e.Complaint)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.DepartmentCode).IsUnicode(false);
+                entity.Property(e => e.CustomNumber)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.Gender).IsUnicode(false);
+                entity.Property(e => e.DepartmentCode)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.MedicalRecordNumber).IsUnicode(false);
+                entity.Property(e => e.Gender)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.RoomBedCode).IsUnicode(false);
+                entity.Property(e => e.MedicalRecordNumber)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.Urgency).IsUnicode(false);
+                entity.Property(e => e.PersonNumber)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.UrgencyColor).IsUnicode(false);
+                entity.Property(e => e.RoomBedCode)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Urgency)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.UrgencyColor)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.VsBloodPressureIndicator)
                     .IsUnicode(false)
                     .IsFixedLength();
 
-                entity.Property(e => e.VsDiastolic).IsUnicode(false);
+                entity.Property(e => e.VsDiastolic)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.VsEndTidal).IsUnicode(false);
+                entity.Property(e => e.VsEndTidal)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.VsEndTidalLevel)
                     .IsUnicode(false)
                     .IsFixedLength();
 
-                entity.Property(e => e.VsMap).IsUnicode(false);
+                entity.Property(e => e.VsMap)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.VsMapLevel)
                     .IsUnicode(false)
                     .IsFixedLength();
 
-                entity.Property(e => e.VsOxygenSaturation).IsUnicode(false);
+                entity.Property(e => e.VsOxygenSaturation)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.VsOxygenSaturationIndicator)
                     .IsUnicode(false)
                     .IsFixedLength();
 
-                entity.Property(e => e.VsPainScale).IsUnicode(false);
+                entity.Property(e => e.VsPainScale)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.VsPainScaleIndicator)
                     .IsUnicode(false)
                     .IsFixedLength();
 
-                entity.Property(e => e.VsPulse).IsUnicode(false);
+                entity.Property(e => e.VsPulse)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.VsPulseIndicator)
                     .IsUnicode(false)
                     .IsFixedLength();
 
-                entity.Property(e => e.VsRespiratory).IsUnicode(false);
+                entity.Property(e => e.VsRespiratory)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.VsRespiratoryIndicator)
                     .IsUnicode(false)
                     .IsFixedLength();
 
-                entity.Property(e => e.VsSystolic).IsUnicode(false);
+                entity.Property(e => e.VsSystolic)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.VsTemperature).IsUnicode(false);
+                entity.Property(e => e.VsTemperature)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.VsTemperatureIndicator)
                     .IsUnicode(false)
                     .IsFixedLength();
 
-                entity.Property(e => e.WardCode).IsUnicode(false);
-
-                entity.Property(e => e.CustomNumber).IsUnicode(false);
-
-                entity.Property(e => e.PersonNumber).IsUnicode(false);
+                entity.Property(e => e.WardCode)
+                    .IsUnicode(false);
 
                 entity.HasOne(d => d.Site)
                     .WithMany(p => p.Patients)
@@ -316,6 +349,27 @@ namespace Emar.Data
                 entity.HasIndex(e => e.Name)
                     .HasName("uc__sites__name")
                     .IsUnique();
+            });
+
+            modelBuilder.Entity<SiteOption>(entity =>
+            {
+                entity.HasIndex(e => new { e.OptionValue, e.OptionId, e.SiteId })
+                    .HasName("site_options__option_id_site_id");
+
+                entity.Property(e => e.OptionValue)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.Option)
+                    .WithMany(p => p.SiteOptions)
+                    .HasForeignKey(d => d.OptionId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__site_options__options");
+
+                entity.HasOne(d => d.Site)
+                    .WithMany(p => p.SiteOptions)
+                    .HasForeignKey(d => d.SiteId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__site_options__sites");
             });
 
             modelBuilder.Entity<UserQuickListItem>(entity =>
@@ -401,4 +455,23 @@ namespace Emar.Data
             return new EmarContext(builder.Options);
         }
     }
+    ///////////// <summary>
+    ///////////// Added this factory so that the EF Core Power Tools could figure out what Db Provider we are using
+    ///////////// Shouldn't be used anywhere else, and should remove the hard-coding before shipping
+    ///////////// </summary>
+    //////////public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<EmarContext>
+    //////////{
+    //////////    public EmarContext CreateDbContext(string[] args)
+    //////////    {
+    //////////        IConfigurationRoot configuration = new ConfigurationBuilder()
+    //////////            .SetBasePath(Directory.GetCurrentDirectory())
+    //////////            .AddJsonFile(@"appsettings.json")
+    //////////            .Build();
+
+    //////////        var builder = new DbContextOptionsBuilder<EmarContext>();
+
+    //////////        builder.UseSqlServer(ConfigurationExtensions.GetConnectionString(configuration, @"SqlConnection"));
+    //////////        return new EmarContext(builder.Options);
+    //////////    }
+    //////////}
 }

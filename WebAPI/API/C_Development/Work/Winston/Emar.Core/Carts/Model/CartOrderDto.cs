@@ -8,11 +8,6 @@ namespace Emar.Core.Carts.Model
     public class CartOrderDto : OrderBase
     {
         /// <summary>
-        /// Unique cart order identifier
-        /// </summary>
-        public long Id { get; set; }
-
-        /// <summary>
         /// Unique patient identifier
         /// </summary>
         public long PatientId { get; set; }
@@ -26,6 +21,8 @@ namespace Emar.Core.Carts.Model
         /// Date and time the order was entered in the cart.  Includes the local time timezone offset from UTC.
         /// </summary>
         public DateTimeOffset AddDatetime { get; set; }
+        public string AddDate { get; set; }
+        public string AddTime { get; set; }
 
         /// <summary>
         /// Indicates the order priority (STAT, Routine).
@@ -42,11 +39,15 @@ namespace Emar.Core.Carts.Model
         /// Date/time that the non-point-in-time administration started
         /// </summary>
         public DateTimeOffset BeginDatetime { get; set; }
+        public string BeginDate { get; set; }
+        public string BeginTime { get; set; }
 
         /// <summary>
         /// Date and time the order ended.  Includes the local time timezone offset from UTC.
         /// </summary>
         public DateTimeOffset? EndDatetime { get; set; }
+        public string EndDate { get; set; }
+        public string EndTime { get; set; }
 
         /// <summary>
         /// 

@@ -5,6 +5,8 @@ using System.Reflection;
 using Emar.Core.Carts.Repository;
 using Emar.Core.Carts.Service;
 using Emar.Core.Helpers;
+using Emar.Core.Options.Repository;
+using Emar.Core.Options.Service;
 using Emar.Core.Orders.Repository;
 using Emar.Core.Orders.Service;
 using Emar.Core.Patients.Repository;
@@ -137,6 +139,9 @@ namespace Emar.Api
             services.AddDbContext<EmarContext>(options =>
                 options.UseSqlServer(ConfigurationExtensions.GetConnectionString(Configuration, "SqlConnection"))
                     .EnableSensitiveDataLogging());
+
+            services.AddScoped<IOptionService, OptionService>();
+            services.AddScoped<IOptionRepository, OptionRepository>();
 
             services.AddTransient<IPropertyMappingService, PropertyMappingService>();
             services.AddTransient<IPropertyCheckerService, PropertyCheckerService>();
