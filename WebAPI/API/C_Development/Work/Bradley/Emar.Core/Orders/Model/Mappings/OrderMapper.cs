@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Emar.Core.Medications.Model;
+using Emar.Core.Helpers;
 using Emar.Core.Medications.Model.Mappings;
 using Emar.Core.Users.Model.Mappings;
 using Emar.Data.Entities;
@@ -16,6 +16,8 @@ namespace Emar.Core.Orders.Model.Mappings
                 return null;
             }
 
+            var dateFormat = patientOrder.Patient.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == @"LONG_DATE_FORMAT").OptionValue;
+
             PatientOrderDto patientOrderDto = new PatientOrderDto
             {
                 Id = patientOrder.Id,
@@ -23,6 +25,8 @@ namespace Emar.Core.Orders.Model.Mappings
                 AddUserId = patientOrder.AddUserId,
                 AddUser = UserMapper.MapUser(patientOrder.AddUser),
                 AddDatetime = patientOrder.AddDatetime,
+                AddDate = DateTimeHelper.GetDate(patientOrder.AddDatetime, dateFormat),
+                AddTime = DateTimeHelper.GetTime(patientOrder.AddDatetime),
                 OrderingPhysicianId = patientOrder.OrderingPhysicianId,
                 OrderingPhysicianUser = UserMapper.MapUser(patientOrder.OrderPhysicianUser),
                 Ndc = patientOrder.Ndc,
@@ -38,7 +42,11 @@ namespace Emar.Core.Orders.Model.Mappings
                 OrderStatus = patientOrder.OrderStatus,
                 OrderStatusCode = (OrderStatuses)Enum.Parse(typeof(OrderStatuses), patientOrder.OrderStatusCode),
                 BeginDatetime = patientOrder.BeginDatetime,
+                BeginDate = DateTimeHelper.GetDate(patientOrder.BeginDatetime, dateFormat),
+                BeginTime = DateTimeHelper.GetTime(patientOrder.BeginDatetime),
                 EndDatetime = patientOrder.EndDateTime,
+                EndDate = DateTimeHelper.GetDate(patientOrder.EndDateTime, dateFormat),
+                EndTime = DateTimeHelper.GetTime(patientOrder.EndDateTime),
                 OrderNotes = patientOrder.OrderNotes,
                 OrderAdministrations = patientOrder.OrderAdministrations?.Select(admin => MapOrderAdministration(admin)).ToList()
                 ////OrderEvents = patientOrder.OrderEvents?.Select(OrderMapper.MapOrderEvent).Where(@event => @event.AdministrationId == null).ToList()
@@ -55,20 +63,36 @@ namespace Emar.Core.Orders.Model.Mappings
                 return null;
             }
 
+            var dateFormat = administration.PatientOrder.Patient.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == @"LONG_DATE_FORMAT").OptionValue;
+
             OrderAdministrationDto administrationDto = new OrderAdministrationDto
             {
                 Id = administration.Id,
                 OrderId = administration.PatientOrderId,
                 AdministrationScheduledDatetime = administration.AdministrationScheduledDatetime,
+                AdministrationScheduledDate = DateTimeHelper.GetDate(administration.AdministrationScheduledDatetime, dateFormat),
+                AdministrationScheduledTime = DateTimeHelper.GetTime(administration.AdministrationScheduledDatetime),
                 AdministrationInputDatetime = administration.AdministrationInputDatetime,
+                AdministrationInputDate = DateTimeHelper.GetDate(administration.AdministrationInputDatetime, dateFormat),
+                AdministrationInputTime = DateTimeHelper.GetTime(administration.AdministrationInputDatetime),
                 AdministrationDatetime = administration.AdministrationDatetime,
+                AdministrationDate = DateTimeHelper.GetDate(administration.AdministrationDatetime, dateFormat),
+                AdministrationTime = DateTimeHelper.GetTime(administration.AdministrationDatetime),
                 AdministeringUserId = administration.AdministeringUserId,
                 StopScheduledDatetime = administration.StopScheduledDatetime,
+                StopScheduledDate = DateTimeHelper.GetDate(administration.StopScheduledDatetime, dateFormat),
+                StopScheduledTime = DateTimeHelper.GetTime(administration.StopScheduledDatetime),
                 StopInputDatetime = administration.StopInputDatetime,
+                StopInputDate = DateTimeHelper.GetDate(administration.StopInputDatetime, dateFormat),
+                StopInputTime = DateTimeHelper.GetTime(administration.StopInputDatetime),
                 StopDatetime = administration.StopDatetime,
+                StopDate = DateTimeHelper.GetDate(administration.StopDatetime, dateFormat),
+                StopTime = DateTimeHelper.GetTime(administration.StopDatetime),
                 StopUserId = administration.StopUserId,
                 AcknowledgeUserId = administration.AcknowledgeUserId,
                 AcknowledgeDatetime = administration.AcknowledgeDatetime,
+                AcknowledgeDate = DateTimeHelper.GetDate(administration.AcknowledgeDatetime, dateFormat),
+                AcknowledgeTime = DateTimeHelper.GetTime(administration.AcknowledgeDatetime),
                 PointInTime = administration.PointInTime,
                 OnHold = administration.OnHold,
                 MissedDose = administration.MissedDose
@@ -86,13 +110,19 @@ namespace Emar.Core.Orders.Model.Mappings
                 return null;
             }
 
+            var dateFormat = @event.PatientOrder.Patient.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == @"LONG_DATE_FORMAT").OptionValue;
+
             OrderEventDto eventDto = new OrderEventDto
             {
                 Id = @event.Id,
                 OrderId = @event.PatientOrderId,
                 AdministrationId = @event.OrderAdministrationId,
                 EventDateTime = @event.EventDateTime,
+                EventDate = DateTimeHelper.GetDate(@event.EventDateTime, dateFormat),
+                EventTime = DateTimeHelper.GetTime(@event.EventDateTime),
                 SystemDateTime = @event.AddDatetime,
+                SystemDate = DateTimeHelper.GetDate(@event.AddDatetime, dateFormat),
+                SystemTime = DateTimeHelper.GetTime(@event.AddDatetime),
                 UserId = @event.AddUserId,
                 ActionId = @event.ActionId
             };

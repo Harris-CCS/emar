@@ -10,6 +10,7 @@ using Emar.Core.ResourceParameters;
 using Emar.Data.Entities;
 using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Mvc;
+using static Emar.Core.Patients.Model.Constants;
 
 namespace Emar.Api.Controllers
 {
@@ -67,6 +68,14 @@ namespace Emar.Api.Controllers
         /// *Optional.* \
         /// Patient's account number.
         /// </param>
+        /// <param name="customNumber">
+        /// *Optional.* \
+        /// Patient's custom number.
+        /// </param>
+        /// <param name="personNumber">
+        /// *Optional.* \
+        /// Patient's person number.
+        /// </param>
         /// <param name="departmentCode">
         /// *Optional.* \
         /// Department code to restrict the list of returned patients to.
@@ -107,6 +116,8 @@ namespace Emar.Api.Controllers
             [FromQuery] string fields,
             [FromQuery] int? siteId,
             [FromQuery] string accountNumber,
+            [FromQuery] string customNumber,
+            [FromQuery] string personNumber,
             [FromQuery] string departmentCode,
             [FromQuery] string wardCodes,
             [FromQuery] string roomBedCode,
@@ -127,6 +138,8 @@ namespace Emar.Api.Controllers
                 Fields = fields,
                 SiteId = siteId,
                 AccountNumber = accountNumber,
+                CustomNumber = customNumber,
+                PersonNumber = personNumber,
                 DepartmentCode = departmentCode,
                 WardCodes = wardCodes,
                 RoomBedCode = roomBedCode,
@@ -144,7 +157,7 @@ namespace Emar.Api.Controllers
 
                     if (pt == null)
                     {
-                        return NotFound($"Patient with site: {extId1} and ibex: {extId2} was not found");
+                        return NotFound($"Patient with site '{extId1}' and ibex '{extId2}' was not found.");
                     }
 
                     return Ok(pt);
@@ -153,9 +166,36 @@ namespace Emar.Api.Controllers
 
             if (resourceParameters.AskingForPatientByAccountNumber())
             {
-                var pt = _patientService.GetPatient(accountNumber);
+                var pt = _patientService.GetPatientByNumber(accountNumber, GetPatientBy.AccountNumber);
 
-                if (pt == null) return NotFound($"Patient with Account Number: {accountNumber} was not found");
+                if (pt == null)
+                {
+                    return NotFound($"Patient with Account Number '{accountNumber}' was not found.");
+                }
+
+                return Ok(pt);
+            }
+
+            if (resourceParameters.AskingForPatientByCustomNumber())
+            {
+                var pt = _patientService.GetPatientByNumber(customNumber, GetPatientBy.CustomNumber);
+
+                if (pt == null)
+                {
+                    return NotFound($"Patient with Custom Number '{customNumber}' was not found.");
+                }
+
+                return Ok(pt);
+            }
+
+            if (resourceParameters.AskingForPatientByPersonNumber())
+            {
+                var pt = _patientService.GetPatientByNumber(personNumber, GetPatientBy.PersonNumber);
+
+                if (pt == null)
+                {
+                    return NotFound($"Patient with Person Number '{personNumber}' was not found");
+                }
 
                 return Ok(pt);
             }
@@ -174,7 +214,7 @@ namespace Emar.Api.Controllers
 
             if (patients == null)
             {
-                return NotFound($"No patients found");
+                return NotFound($"No patients found.");
             }
 
             var paginationMetadata = new
@@ -239,7 +279,7 @@ namespace Emar.Api.Controllers
 
             if (error.Equals(Errors.PatientNotFound) || (patient == null))
             {
-                return NotFound($"Patient with id {patientId} was not found");
+                return NotFound($"Patient with id '{patientId}' was not found.");
             }
 
             var links = CreateHateOasLinksForPatient(patientId, resourceParameters);
@@ -273,7 +313,10 @@ namespace Emar.Api.Controllers
                 return BadRequest();
             }
 
-            if (error.Equals(Errors.PatientNotFound) || (patient == null)) { return NotFound($"Patient with id {patientId} was not found."); }
+            if (error.Equals(Errors.PatientNotFound) || (patient == null)) 
+            {
+                return NotFound($"Patient with id '{patientId}' was not found.");
+            }
 
             return Ok(patient);
         }
@@ -304,7 +347,7 @@ namespace Emar.Api.Controllers
 
             if (error.Equals(Errors.PatientNotFound) || (patient == null))
             {
-                return NotFound($"Patient with id {patientId} was not found");
+                return NotFound($"Patient with id '{patientId}' was not found");
             }
 
             return Ok(patient);

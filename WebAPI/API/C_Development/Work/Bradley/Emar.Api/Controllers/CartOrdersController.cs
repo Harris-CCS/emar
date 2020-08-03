@@ -229,7 +229,7 @@ namespace Emar.Api.Controllers
                 return BadRequest("Patient id is missing.");
             }
 
-            ///  cartOrderAddDto can NOT have Order & Administrations Ids set OR they MUST be set to 0 
+            ///  cartOrderAddDto can NOT have Order and Administrations Ids set OR they MUST be set to 0 
             var order = _cartOrderService.AddCartOrder(cartOrderBody);
 
             if (order == null)

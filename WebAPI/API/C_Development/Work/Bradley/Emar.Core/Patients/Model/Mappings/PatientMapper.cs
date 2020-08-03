@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Emar.Core.Helpers;
 using Emar.Core.Orders.Model.Mappings;
 using Emar.Core.Sites.Model.Mappings;
 using Emar.Data.Entities;
@@ -12,6 +13,8 @@ namespace Emar.Core.Patients.Model.Mappings
         {
             if (pt == null)
                 return null;
+
+            var dateFormat = pt.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == @"LONG_DATE_FORMAT").OptionValue;
 
             PatientDto patientDto = new PatientDto
             {
@@ -26,6 +29,7 @@ namespace Emar.Core.Patients.Model.Mappings
                 MedicalRecordNumber = pt.MedicalRecordNumber,
                 Gender = pt.Gender,
                 DateOfBirth = pt.DateOfBirth,
+                BirthDate = DateTimeHelper.GetDate(pt.DateOfBirth, dateFormat),
                 Age = pt.Age,
                 AgeUnits = pt.AgeUnits,
                 Complaint = pt.Complaint,
@@ -39,6 +43,8 @@ namespace Emar.Core.Patients.Model.Mappings
                 NameAlert = pt.NameAlert,
                 WithdrawConsent = pt.WithdrawConsent,
                 VsDatetime = pt.VsDatetime,
+                VsDatetimeDate = DateTimeHelper.GetDate(pt.VsDatetime, dateFormat),
+                VsDatetimeTime = DateTimeHelper.GetTime(pt.VsDatetime),
                 VsBloodPressureIndicator = pt.VsBloodPressureIndicator,
                 VsSystolic = pt.VsSystolic,
                 VsDiastolic = pt.VsDiastolic,
@@ -56,6 +62,8 @@ namespace Emar.Core.Patients.Model.Mappings
                 VsOxygenSaturation = pt.VsOxygenSaturation,
                 VsPainScaleIndicator = pt.VsPainScaleIndicator,
                 VsPainScale = pt.VsPainScale,
+                CustomNumber = pt.CustomNumber,
+                PersonNumber = pt.PersonNumber,
                 Orders = pt.PatientOrders?.Select(OrderMapper.MapOrder).ToList(),
                 Site = SiteMapper.MapSite(pt.Site),
                 CustomNumber = pt.CustomNumber,

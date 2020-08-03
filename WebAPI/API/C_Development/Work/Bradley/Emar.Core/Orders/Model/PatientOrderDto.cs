@@ -15,17 +15,23 @@ namespace Emar.Core.Orders.Model
         /// Date and time the order was created.  Includes the local time timezone offset from UTC.
         /// </summary>
         public DateTimeOffset AddDatetime { get; set; }
+        public string AddDate { get; set; }
+        public string AddTime { get; set; }
 
         /// <summary>
         /// Date/time that the point-in-time administration was give, or
         /// Date/time that the non-point-in-time administration started
         /// </summary>
         public DateTimeOffset BeginDatetime { get; set; }
+        public string BeginDate { get; set; }
+        public string BeginTime { get; set; }
 
         /// <summary>
         /// Date and time the order ended.  Includes the local time timezone offset from UTC.
         /// </summary>
         public DateTimeOffset? EndDatetime { get; set; }
+        public string EndDate { get; set; }
+        public string EndTime { get; set; }
 
         /// <summary>
         /// Indicates the order priority (STAT, Routine).
