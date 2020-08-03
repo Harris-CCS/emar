@@ -34,6 +34,11 @@
             </div>
         </form>
         <div class="dialog-footer">
+            <ng-template #tipInvalid>
+                <div *ngIf="composerMedForm.get('detail').invalid">Other details section</div>
+                <div *ngIf="composerMedForm.get('frequency').invalid">Frequency section</div>
+            </ng-template>
+            <div class="requirement requirement-global" *ngIf="!composerMedForm.valid" [ngbTooltip]="tipInvalid">Invalid Form</div>
             <button class="button-secondary button-raised" title="Add to Quick List">&#10025;</button>&nbsp;
             <button class="button-secondary button-raised" title="Continue">Continue</button>&nbsp;
             <button 
@@ -44,6 +49,6 @@
                 {{getActionText()}}
             </button>
         </div>
-        <div><small><i>{{ composerMedForm.valid? 'Valid': 'Invalid' }} {{ composerMedForm.value | json }}</i></small></div>
+        <div><small><i>{{ composerMedForm.value | json }}</i></small></div>
     </div>
 </div>

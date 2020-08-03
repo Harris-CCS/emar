@@ -1,3 +1,5 @@
+@import "../../variables.scss";
+
 .dialog-title span {
     opacity: 0.6;
 }
@@ -58,7 +60,7 @@
 
 .item {
     display: block;
-    font-size: 14px;
+    // font-size: 14px;
     padding: 5px 20px;
 }
 
@@ -71,7 +73,7 @@
     border-radius: 6px;
 }
 
-.form-group, #partialDiv {
+#partialDiv {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
@@ -109,6 +111,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    position: relative;
 }
 
 .dialog-footer .button {
@@ -122,6 +125,7 @@
     padding-bottom: 20px;
 }
 
+// dropdown-select: drop down that behaves like a select
 .item .dropdown-select input {
     margin-left: 1.5rem;
 }
@@ -138,7 +142,22 @@
     color: #C2C7CC;
 }
 .requirement {
-    color: red;
+    color: $e-red;
     font-style: italic;
     font-size: smaller;
+}
+.requirement-global {
+    position: absolute;
+    bottom: 0;
+}
+.preferred {
+    margin-left: 2px;
+    margin-right: 2px;
+}
+.spaced {
+    margin-left: 5px;
+}
+label {
+    font-weight: bold;
+    font-size: 12px;
 }
