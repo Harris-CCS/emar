@@ -1,4 +1,7 @@
-﻿namespace Emar.Core.Orders.Model
+﻿using System.Collections.Generic;
+using Emar.Core.Helpers;
+
+namespace Emar.Core.Orders.Model
 {
     public class UserQuickListItemDto : OrderBase
     {
@@ -11,5 +14,7 @@
         /// User Quick Lists are site-specific
         /// </summary>
         public int SiteId { get; set; }
+
+        public IEnumerable<HateOasLinkDto> Links;
     }
 }

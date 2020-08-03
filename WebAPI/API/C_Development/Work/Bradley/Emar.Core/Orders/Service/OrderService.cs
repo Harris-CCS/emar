@@ -103,10 +103,8 @@ namespace Emar.Core.Orders.Service
             return eventsList;
         }
 
-        public UserQuickListFrameworkDto GetInitialUserQuickList(in int userId, int? siteId)
+        public UserQuickListFrameworkDto GetInitialUserQuickList(in int userId, int? siteId, string linkBase)
         {
-            var ret = new UserQuickListFrameworkDto();
-
             List<string> tabList = _orderRepository.GetUserQuickListTabs(userId, siteId).OrderBy(i => i).ToList();
             // Compress all non-alpha values into "#"
             if (!tabList.Any())
@@ -115,7 +113,7 @@ namespace Emar.Core.Orders.Service
             var foundNonAlpha = false;
             for (int i = tabList.Count - 1; i >= 0; i--)
             {
-                if (!Char.IsLetter(Convert.ToChar(tabList[i])))
+                if (!char.IsLetter(Convert.ToChar(tabList[i])))
                 {
                     foundNonAlpha = true;
                     tabList.RemoveAt(i);
@@ -125,23 +123,22 @@ namespace Emar.Core.Orders.Service
                 tabList.Add("#");
 
             var mostUsedItems = _orderRepository.GetUserQuickListMostUsed(userId, siteId).ToList();
+            List<UserQuickListItemDto> firstTabContents;
             if (mostUsedItems.Any())
             {
-                ret.CurrentTabName = Constants.MostUsedTabTitle;
-                ret.CurrentTabContents = mostUsedItems.Select(item => OrderMapper.MapUserQuickListItem(item))
+                firstTabContents = mostUsedItems.Select(item => OrderMapper.MapUserQuickListItem(item))
                     .OrderBy(i => i.BrandName).ToList();
                 tabList.Insert(0, Constants.MostUsedTabTitle);
             }
             else
             {
-                ret.CurrentTabName = tabList[0];
                 var items = _orderRepository.GetUserQuickListTabItems(userId, siteId, tabList[0]).ToList();
 
-                ret.CurrentTabContents = items.Select(OrderMapper.MapUserQuickListItem)
+                firstTabContents = items.Select(dbObj => OrderMapper.MapUserQuickListItem(dbObj))
                     .OrderBy(i => i.BrandName).ToList();
             }
+            var ret = new UserQuickListFrameworkDto(firstTabContents, tabList, linkBase);
 
-            ret.TabListing = tabList;
             return ret;
         }
 

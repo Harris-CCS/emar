@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Emar.Api.Helpers;
+using Emar.Core.Helpers;
 using Emar.Core.Orders.Model;
 using Emar.Core.Orders.Service;
+using Emar.Core.ResourceParameters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Emar.Api.Controllers
@@ -37,10 +39,16 @@ namespace Emar.Api.Controllers
             [FromHeader(Name = "X-User")] int userId,
             [FromQuery] int? siteId)
         {
-            UserQuickListFrameworkDto ret = _orderService.GetInitialUserQuickList(userId, siteId);
+            var tabLinkBase = Url.Link(nameof(GetUserQuickListTab), "");
+            tabLinkBase = tabLinkBase.Substring(0, tabLinkBase.LastIndexOf('?'));
+
+            //            var link = CreateOrdersResourceUri(resourceParameters: resourceParameters, ResourceUriType.TabPage);
+            UserQuickListFrameworkDto ret = _orderService.GetInitialUserQuickList(userId, siteId, tabLinkBase);
 
             if (ret == null)
                 return NotFound($"User with id {userId} does not exist");
+
+            //var links = CreateHateOasLinksForQuickListFramework(ret);
 
             return Ok(ret);
         }

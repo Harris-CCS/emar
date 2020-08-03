@@ -14,7 +14,7 @@ namespace Emar.Core.Orders.Service
         IEnumerable<OrderEventDto> GetEvents(long orderId);
         OrderEventDto GetEvent(long eventId);
         IEnumerable<OrderEventDto> GetAdministrationEvents(long administrationId);
-        UserQuickListFrameworkDto GetInitialUserQuickList(in int userId, int? siteId);
+        UserQuickListFrameworkDto GetInitialUserQuickList(in int userId, int? siteId, string linkBase);
         IEnumerable<UserQuickListItemDto> GetQuickListTab(in int userId, int? siteId, string tab);
 
         // Mock Methods
