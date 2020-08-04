@@ -6,8 +6,12 @@ create table [dbo].[fdb_ndc_info]
     , [medid]         [numeric](8, 0) not null
     , [packaging]     [varchar](26) null
     , [strength]      [varchar](91) null
-    , [days_obsolete] [int] null);
+    , [days_obsolete] [int] null
+    , [GCN_SEQNO]     [numeric](6, 0) null
+    , [HICL_SEQNO]    [numeric](6, 0) null
+    , [ROUTED_GEN_ID] [numeric](8, 0) null);
 go
+
 /********
  Defaults
 ********/
@@ -152,4 +156,53 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'fdb_ndc_info'
   , @level2type = N'COLUMN'
   , @level2name = N'days_obsolete';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'FDB: RMIID1_MED.GCN_SEQNO
+ Clinical Formulation ID
+ a six-character numeric column that represents a drug formulation identifier that groups together drug products by the following criteria and is stored in the following columns:
+  - Ingredient List Identifier (HICL_SEQNO)—(formerly called the Hierarchical Ingredient Code List Sequence Number) represents the list or set of ingredients in a drug formulation. The HICL_SEQNO includes active ingredients.
+  - Route of Administration (GCRT)—The Route of Administration Code represents a common or representative site or method by which the drug is administered, such as oral, injection, or topical.
+  - Dosage Form (GCDF)—The Dosage Form Code represents a dosage form of the clinical formulation, such as tablet or capsule.
+  - Strength of Drug (STR)—The Drug Strength Description describes the drug potency in metric units.
+ A unique Clinical Formulation ID (GCN_SEQNO) is assigned to each different combination of ingredient(s), strength, dosage form, and route of administration for a drug formulation. The Clinical Formulation ID (GCN_SEQNO) aggregates drug products that share like ingredient sets, route of administration, dosage form, and strength of drug but are marketed by multiple manufacturers.'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'fdb_ndc_info'
+  , @level2type = N'COLUMN'
+  , @level2name = N'GCN_SEQNO';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'FDB: RGCNSEQ4_GCNSEQNO_MSTR.HICL_SEQNO
+ Ingredient List Identifier (formerly the Hierarchical Ingredient Code List Sequence Number)
+ a six-character numeric column that identifies a unique combination of active ingredients, irrespective of the manufacturer, package size, dosage form, route of administration, or strength. For example, HICL_SEQNO 000222 identifies the following set of active ingredients:
+  - Guaifenesin
+  - Dextromethorphan HBr
+  - Pseudoephedrine HCl
+ The HICL_SEQNO is associated to one (or many) Clinical Formulation ID (GCN_SEQNO) to identify the active ingredients of the clinical formulation.'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'fdb_ndc_info'
+  , @level2type = N'COLUMN'
+  , @level2name = N'HICL_SEQNO';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'FDB: RRTGNGC0_RTD_GEN_GCNSEQNO_LNK.ROUTED_GEN_ID
+ Routed Generic Identifier
+ an eight-character numeric column that identifies a combination of the product ingredient set and route of administration. It is a numeric identifier that is used for the navigational purposes of directly accessing screening functions from less specific clinical concepts than clinical formulations and product identifiers.
+ One ROUTED_GEN_ID is linked to one-to-many Clinical Formulation IDs (GCN_SEQNO) and zero-to-many National Drug Codes (NDC).'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'fdb_ndc_info'
+  , @level2type = N'COLUMN'
+  , @level2name = N'ROUTED_GEN_ID';
 go

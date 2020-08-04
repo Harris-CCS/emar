@@ -9,6 +9,9 @@ as
              , rtrim(ltrim([source].[packaging])) as [packaging]
              , rtrim(ltrim([source].[strength])) as  [strength]
              , [source].[days_obsolete]
+             , [source].[GCN_SEQNO]
+             , [source].[HICL_SEQNO]
+             , [source].[ROUTED_GEN_ID]
         from   [ibex].[dbo].[fdb_ndc_info] as [source]
         order by [source].[ndc];
     end;
