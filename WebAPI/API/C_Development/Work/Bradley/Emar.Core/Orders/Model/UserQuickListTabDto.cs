@@ -11,18 +11,17 @@ namespace Emar.Core.Orders.Model
         {
             TabName = tabName;
 
-            string linkHref = linkBase + "/tabs/";
             switch (tabName)
             {
                 case "#":
-                    linkHref += "%23";
+                    linkBase += "%23";
                     break;
                 default:
-                    linkHref += tabName;
+                    linkBase += tabName;
                     break;
             }
 
-            Link = new HateOasLinkDto(linkHref, "TabContentRetrieve", "GET");
+            Link = new HateOasLinkDto(linkBase, "retrieve_tab_content", "GET");
         }
     }
 }

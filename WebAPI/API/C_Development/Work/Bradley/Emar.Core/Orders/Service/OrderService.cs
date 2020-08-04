@@ -103,7 +103,8 @@ namespace Emar.Core.Orders.Service
             return eventsList;
         }
 
-        public UserQuickListFrameworkDto GetInitialUserQuickList(in int userId, int? siteId, string linkBase)
+        public UserQuickListFrameworkDto GetInitialUserQuickList(in int userId, int? siteId, 
+            string tabLinkBase, string orderLinkBase)
         {
             List<string> tabList = _orderRepository.GetUserQuickListTabs(userId, siteId).OrderBy(i => i).ToList();
             // Compress all non-alpha values into "#"
@@ -126,7 +127,7 @@ namespace Emar.Core.Orders.Service
             List<UserQuickListItemDto> firstTabContents;
             if (mostUsedItems.Any())
             {
-                firstTabContents = mostUsedItems.Select(item => OrderMapper.MapUserQuickListItem(item))
+                firstTabContents = mostUsedItems.Select(item => OrderMapper.MapUserQuickListItem(item, orderLinkBase))
                     .OrderBy(i => i.BrandName).ToList();
                 tabList.Insert(0, Constants.MostUsedTabTitle);
             }
@@ -134,15 +135,15 @@ namespace Emar.Core.Orders.Service
             {
                 var items = _orderRepository.GetUserQuickListTabItems(userId, siteId, tabList[0]).ToList();
 
-                firstTabContents = items.Select(dbObj => OrderMapper.MapUserQuickListItem(dbObj))
+                firstTabContents = items.Select(dbObj => OrderMapper.MapUserQuickListItem(dbObj, orderLinkBase))
                     .OrderBy(i => i.BrandName).ToList();
             }
-            var ret = new UserQuickListFrameworkDto(firstTabContents, tabList, linkBase);
+            var ret = new UserQuickListFrameworkDto(firstTabContents, tabList, tabLinkBase);
 
             return ret;
         }
 
-        public IEnumerable<UserQuickListItemDto> GetQuickListTab(in int userId, int? siteId, string tab)
+        public IEnumerable<UserQuickListItemDto> GetQuickListTab(in int userId, int? siteId, string orderLinkBase, string tab)
         {
             List<UserQuickListItem> tabItems;
             if (tab == Constants.MostUsedTabTitle)
@@ -153,7 +154,7 @@ namespace Emar.Core.Orders.Service
             if (!tabItems.Any())
                 return null;
 
-            return tabItems.Select(item => OrderMapper.MapUserQuickListItem(item))
+            return tabItems.Select(item => OrderMapper.MapUserQuickListItem(item, orderLinkBase))
                 .OrderBy(i => i.BrandName);
         }
     }

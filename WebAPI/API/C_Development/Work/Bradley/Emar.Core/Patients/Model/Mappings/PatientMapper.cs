@@ -65,9 +65,7 @@ namespace Emar.Core.Patients.Model.Mappings
                 CustomNumber = pt.CustomNumber,
                 PersonNumber = pt.PersonNumber,
                 Orders = pt.PatientOrders?.Select(OrderMapper.MapOrder).ToList(),
-                Site = SiteMapper.MapSite(pt.Site),
-                CustomNumber = pt.CustomNumber,
-                PersonNumber = pt.PersonNumber
+                Site = SiteMapper.MapSite(pt.Site)
             };
 
             // Calculate the age if the date-of-birth is present
