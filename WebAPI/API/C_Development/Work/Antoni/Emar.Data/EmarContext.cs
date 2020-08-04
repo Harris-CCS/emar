@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Reflection;
 using Emar.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
@@ -17,7 +19,7 @@ namespace Emar.Data
             //ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
-        public virtual DbSet<Action> Actions { get; set; }
+        public virtual DbSet<Entities.Action> Actions { get; set; }
         public virtual DbSet<CartOrderAdministration> CartOrderAdministrations { get; set; }
         public virtual DbSet<ExternalIdEntity> ExternalIds { get; set; }
         public virtual DbSet<GroupListItem> GroupListItems { get; set; }
@@ -442,36 +444,22 @@ namespace Emar.Data
 
     /// <summary>
     /// Added this factory so that the EF Core Power Tools could figure out what Db Provider we are using
-    /// Shouldn't be used anywhere else, and should remove the hard-coding before shipping
     /// </summary>
-    // todo: Remove hard-coding.
     public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<EmarContext>
     {
         public EmarContext CreateDbContext(string[] args)
         {
-            var builder = new DbContextOptionsBuilder<EmarContext>();
-            builder.UseSqlServer("Data Source = localhost\\SQL2016; Initial Catalog = EMAR; Integrated Security=true");
+            var jsonFilename = File.Exists(Path.Combine(Directory.GetCurrentDirectory(), @"appsettings.development.json")) ? @"appsettings.development.json" : @"appsettings.json";
 
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory().Replace(@"Emar.Data", @"Emar.Api"))
+                .AddJsonFile(jsonFilename)
+                .Build();
+
+            var builder = new DbContextOptionsBuilder<EmarContext>();
+
+            builder.UseSqlServer(ConfigurationExtensions.GetConnectionString(configuration, @"SqlConnection"));
             return new EmarContext(builder.Options);
         }
     }
-    ///////////// <summary>
-    ///////////// Added this factory so that the EF Core Power Tools could figure out what Db Provider we are using
-    ///////////// Shouldn't be used anywhere else, and should remove the hard-coding before shipping
-    ///////////// </summary>
-    //////////public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<EmarContext>
-    //////////{
-    //////////    public EmarContext CreateDbContext(string[] args)
-    //////////    {
-    //////////        IConfigurationRoot configuration = new ConfigurationBuilder()
-    //////////            .SetBasePath(Directory.GetCurrentDirectory())
-    //////////            .AddJsonFile(@"appsettings.json")
-    //////////            .Build();
-
-    //////////        var builder = new DbContextOptionsBuilder<EmarContext>();
-
-    //////////        builder.UseSqlServer(ConfigurationExtensions.GetConnectionString(configuration, @"SqlConnection"));
-    //////////        return new EmarContext(builder.Options);
-    //////////    }
-    //////////}
 }

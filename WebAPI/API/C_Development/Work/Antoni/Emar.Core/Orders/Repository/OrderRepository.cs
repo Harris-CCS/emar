@@ -28,16 +28,7 @@ namespace Emar.Core.Orders.Repository
 
         public PagedList<PatientOrder> GetOrders(long? patientId, OrdersResourceParameters resourceParameters)
         {
-            patientId ??= resourceParameters.PatientId;
-
-            var orders = GetOrders();
-
-            if ((patientId != null) &&
-                (patientId != -1))
-            {
-                orders = orders
-                    .Where(order => order.PatientId == patientId);
-            }
+            var orders = GetOrders(order => order.PatientId == ((patientId ?? resourceParameters.PatientId) ?? -1));
 
             if (resourceParameters.OrderBy != null)
             {
@@ -50,7 +41,13 @@ namespace Emar.Core.Orders.Repository
             return PagedList<PatientOrder>.Create(orders.AsQueryable(), resourceParameters.PageNumber, resourceParameters.PageSize);
         }
 
-        IEnumerable<PatientOrder> GetOrders()
+        public PatientOrder GetOrder(long orderId, OrdersResourceParameters resourceParameters)
+        {
+            return GetOrders(order => order.Id == orderId)
+                    .FirstOrDefault();
+        }
+
+        IEnumerable<PatientOrder> GetOrders(Func<PatientOrder, bool> wherePredicate)
         {
             return _context.PatientOrders
                     .Include(order => order.OrderAdministrations)
@@ -62,13 +59,8 @@ namespace Emar.Core.Orders.Repository
                         .ThenInclude(patient => patient.Site)
                             .ThenInclude(site => site.SiteOptions)
                                 .ThenInclude(siteOptions => siteOptions.Option)
+                    .Where(wherePredicate)
                     .AsEnumerable();
-        }
-
-        public PatientOrder GetOrder(long orderId, OrdersResourceParameters resourceParameters)
-        {
-            return GetOrders()
-                    .FirstOrDefault(order => order.Id == orderId);
         }
 
         public IEnumerable<OrderAdministration> GetAdministrations(long orderId)
@@ -103,9 +95,7 @@ namespace Emar.Core.Orders.Repository
                     .AsEnumerable();
         }
 
-
         #region UserQuickList Section
-
         /// <summary>
         /// 
         /// </summary>
