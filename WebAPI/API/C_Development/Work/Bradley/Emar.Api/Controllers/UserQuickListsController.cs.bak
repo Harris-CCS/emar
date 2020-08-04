@@ -92,7 +92,7 @@ namespace Emar.Api.Controllers
         }
 
         /// <summary>
-        /// Create an order in the user/patient's cart as a copy of the quicklist order
+        /// Return the contents for one tab of a User's Quick List
         /// </summary>
         /// <param name="userId">The user who owns the Cart</param>
         /// <param name="quickListItemId">The QuickList Item to move into the cart</param>
