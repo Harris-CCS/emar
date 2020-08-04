@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using System.Linq.Expressions;
 using Emar.Core.Helpers;
 using Emar.Core.Patients.Model;
 using Emar.Core.ResourceParameters;
@@ -30,39 +31,36 @@ namespace Emar.Core.Patients.Repository
 
         public PagedList<Patient> GetPatients(PatientsResourceParameters resourceParameters, bool includeOrders)
         {
-            IEnumerable<Patient> patients = GetPatients(((resourceParameters != null) && resourceParameters.IncludeOrders) || includeOrders);
+            Expression<Func<Patient, bool>> _whereLambda = null;
 
             if (!resourceParameters.IncludeInactive)
             {
-                patients = patients
-                    .Where(pt => pt.Active == true);
+                _whereLambda = _whereLambda.And(pt => pt.Active == true);
             }
 
             if (resourceParameters.SiteId != null)
             {
-                patients = patients
-                    .Where(pt => pt.SiteId == resourceParameters.SiteId);
+                _whereLambda = _whereLambda.And(pt => pt.SiteId == resourceParameters.SiteId);
             }
 
             if (resourceParameters.DepartmentCode != null)
             {
-                patients = patients
-                    .Where(pt => pt.DepartmentCode == resourceParameters.DepartmentCode);
+                _whereLambda = _whereLambda.And(pt => pt.DepartmentCode == resourceParameters.DepartmentCode);
             }
 
             if (resourceParameters.WardCodes != null)
             {
                 var wardCodes = resourceParameters.WardCodes.Split(",");
 
-                patients = patients
-                    .Where(pt => wardCodes.Contains(pt.WardCode));
+                _whereLambda = _whereLambda.And(pt => wardCodes.Contains(pt.WardCode));
             }
 
             if (resourceParameters.RoomBedCode != null)
             {
-                patients = patients
-                    .Where(pt => pt.RoomBedCode == resourceParameters.RoomBedCode);
+                _whereLambda = _whereLambda.And(pt => pt.RoomBedCode == resourceParameters.RoomBedCode);
             }
+
+            IEnumerable<Patient> patients = GetPatients(_whereLambda.Compile(), ((resourceParameters != null) && resourceParameters.IncludeOrders) || includeOrders);
 
             if (resourceParameters.OrderBy != null)
             {
@@ -76,7 +74,13 @@ namespace Emar.Core.Patients.Repository
             return PagedList<Patient>.Create(patients.AsQueryable(), resourceParameters.PageNumber, resourceParameters.PageSize);
         }
 
-        IEnumerable<Patient> GetPatients(bool includeOrders = true)
+        public Patient GetPatient(long? patientId, PatientsResourceParameters resourceParameters, bool includeOrders)
+        {
+            return GetPatients(patient => patient.Id == patientId, ((resourceParameters != null) && resourceParameters.IncludeOrders) || includeOrders)
+                    .FirstOrDefault();
+        }
+
+        IEnumerable<Patient> GetPatients(Func<Patient, bool> wherePredicate, bool includeOrders = true)
         {
             if (includeOrders)
             {
@@ -92,8 +96,9 @@ namespace Emar.Core.Patients.Repository
                         .Include(patient => patient.PatientOrders)
                             .ThenInclude(order => order.OrderPhysicianUser)
                         .Include(patient => patient.Site)
-                                .ThenInclude(site => site.SiteOptions)
-                                    .ThenInclude(siteOptions => siteOptions.Option)
+                            .ThenInclude(site => site.SiteOptions)
+                                .ThenInclude(siteOptions => siteOptions.Option)
+                        .Where(wherePredicate)
                         .ToList();
             }
 
@@ -101,13 +106,8 @@ namespace Emar.Core.Patients.Repository
                     .Include(patient => patient.Site)
                         .ThenInclude(site => site.SiteOptions)
                             .ThenInclude(siteOptions => siteOptions.Option)
-                    .ToList();
-        }
-
-        public Patient GetPatient(long? patientId, PatientsResourceParameters resourceParameters, bool includeOrders)
-        {
-            return GetPatients(((resourceParameters != null) && resourceParameters.IncludeOrders) || includeOrders)
-                    .FirstOrDefault(patient => patient.Id == patientId);
+                        .Where(wherePredicate)
+                        .ToList();
         }
 
         public long? GetPatientId(long? patientId, PatientsResourceParameters resourceParameters)
@@ -144,14 +144,14 @@ namespace Emar.Core.Patients.Repository
             switch (getPatientBy)
             {
                 case GetPatientBy.AccountNumber:
-                    return GetPatients()
-                            .FirstOrDefault(p => p.AccountNumber == number);
+                    return GetPatients(p => p.AccountNumber == number)
+                            .FirstOrDefault();
                 case GetPatientBy.CustomNumber:
-                    return GetPatients()
-                            .FirstOrDefault(p => p.CustomNumber == number);
+                    return GetPatients(p => p.CustomNumber == number)
+                            .FirstOrDefault();
                 case GetPatientBy.PersonNumber:
-                    return GetPatients()
-                            .FirstOrDefault(p => p.PersonNumber == number);
+                    return GetPatients(p => p.PersonNumber == number)
+                            .FirstOrDefault();
             }
 
             return null;
