@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
@@ -30,11 +31,8 @@ namespace Emar.Core.Users.Repository
 
         public User GetUser(int userId)
         {
-            var user = _context.Users
-                        .Include(u => u.Site)
-                        .FirstOrDefault(u => u.Id == userId);
-
-            return user;
+            return GetUsers(u => u.Id == userId)
+                    .FirstOrDefault();
         }
 
         public long? GetInternalUserId(string extId)
@@ -50,9 +48,15 @@ namespace Emar.Core.Users.Repository
 
         public User GetUser(string loginName)
         {
+            return GetUsers(u => u.LoginName == loginName)
+                    .FirstOrDefault();
+        }
+
+        public IEnumerable<User> GetUsers(Func<User, bool> wherePredicate)
+        {
             return _context.Users
-                .Include(u => u.Site)
-                .FirstOrDefault(u => u.LoginName == loginName);
+                    .Include(u => u.Site)
+                    .Where(wherePredicate);
         }
     }
 }
