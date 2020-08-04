@@ -61,3 +61,128 @@ insert into [dbo].[order_events]([patient_order_id], [order_administration_id], 
 values(1, 1, '2020-06-19T17:17:23+05:00', '2020-06-19T17:17:17+05:00', 1, 1);
 
 end;
+
+
+
+
+
+print 'Loading Table: antoni_data part II';
+begin
+
+DECLARE @IdentityOutput TABLE (ID INT) 
+
+--------------------------------------------------------------------------------------------------------------------
+
+INSERT INTO [dbo].[patient_cart_orders]
+([patient_id],[user_id],[add_datetime],[ndc],[drug_id],[brand_name],[dose],[medication_unit_id],[medication_route_id],[priority],[frequency_id],[prn],[point_in_time],[begin_datetime],[end_datetime],[order_notes],[user_quick_list_item_id])
+OUTPUT inserted.id INTO @IdentityOutput
+VALUES 
+(56,1,'2020-09-22',NULL,'drug01','brandname01',NULL,NULL,NULL,3,NULL,1,1,'2020-09-22',NULL,NULL,NULL)
+
+INSERT INTO [dbo].[cart_order_administrations]
+([patient_cart_order_id],[point_in_time],[administration_scheduled_datetime],[stop_scheduled_datetime])
+VALUES
+((SELECT ID FROM @IdentityOutput),1,'2020-09-22 16:45:00',NULL)
+
+DELETE @IdentityOutput
+
+--------------------------------------------------------------------------------------------------------------------
+
+INSERT INTO [dbo].[patient_cart_orders]
+([patient_id],[user_id],[add_datetime],[ndc],[drug_id],[brand_name],[dose],[medication_unit_id],[medication_route_id],[priority],[frequency_id],[prn],[point_in_time],[begin_datetime],[end_datetime],[order_notes],[user_quick_list_item_id])
+OUTPUT inserted.id INTO @IdentityOutput
+VALUES
+(56,1,'2020-09-22',NULL,'drug01','brandname01',NULL,NULL,NULL,3,NULL,1,1,'2020-09-22',NULL,NULL,NULL)
+
+INSERT INTO [dbo].[cart_order_administrations]
+([patient_cart_order_id],[point_in_time],[administration_scheduled_datetime],[stop_scheduled_datetime])
+VALUES
+((SELECT ID FROM @IdentityOutput),1,'2020-09-22 00:00:00',NULL)
+
+INSERT INTO [dbo].[cart_order_administrations]
+([patient_cart_order_id],[point_in_time],[administration_scheduled_datetime],[stop_scheduled_datetime])
+VALUES
+((SELECT ID FROM @IdentityOutput),1,'2020-09-22 02:00:00',NULL)
+
+INSERT INTO [dbo].[cart_order_administrations]
+([patient_cart_order_id],[point_in_time],[administration_scheduled_datetime],[stop_scheduled_datetime])
+VALUES
+((SELECT ID FROM @IdentityOutput),1,'2020-09-22 04:00:00',NULL)
+
+INSERT INTO [dbo].[cart_order_administrations]
+([patient_cart_order_id],[point_in_time],[administration_scheduled_datetime],[stop_scheduled_datetime])
+VALUES
+((SELECT ID FROM @IdentityOutput),1,'2020-09-22 06:00:00',NULL)
+
+INSERT INTO [dbo].[cart_order_administrations]
+([patient_cart_order_id],[point_in_time],[administration_scheduled_datetime],[stop_scheduled_datetime])
+VALUES
+((SELECT ID FROM @IdentityOutput),1,'2020-09-22 08:00:00',NULL)
+
+INSERT INTO [dbo].[cart_order_administrations]
+([patient_cart_order_id],[point_in_time],[administration_scheduled_datetime],[stop_scheduled_datetime])
+VALUES
+((SELECT ID FROM @IdentityOutput),1,'2020-09-22 10:00:00',NULL)
+
+INSERT INTO [dbo].[cart_order_administrations]
+([patient_cart_order_id],[point_in_time],[administration_scheduled_datetime],[stop_scheduled_datetime])
+VALUES
+((SELECT ID FROM @IdentityOutput),1,'2020-09-22 12:00:00',NULL)
+
+DELETE @IdentityOutput
+
+--------------------------------------------------------------------------------------------------------------------
+
+INSERT INTO [dbo].[patient_cart_orders]
+([patient_id],[user_id],[add_datetime],[ndc],[drug_id],[brand_name],[dose],[medication_unit_id],[medication_route_id],[priority],[frequency_id],[prn],[point_in_time],[begin_datetime],[end_datetime],[order_notes],[user_quick_list_item_id])
+OUTPUT inserted.id INTO @IdentityOutput
+VALUES
+(56,1,'2020-09-22',NULL,'drug02','brandname02',NULL,NULL,NULL,3,NULL,1,1,'2020-09-22',NULL,NULL,NULL)
+
+INSERT INTO [dbo].[cart_order_administrations]
+([patient_cart_order_id],[point_in_time],[administration_scheduled_datetime],[stop_scheduled_datetime])
+VALUES
+((SELECT ID FROM @IdentityOutput),1,'2020-09-22 17:00:00',NULL)
+
+INSERT INTO [dbo].[cart_order_administrations]
+([patient_cart_order_id],[point_in_time],[administration_scheduled_datetime],[stop_scheduled_datetime])
+VALUES
+((SELECT ID FROM @IdentityOutput),1,'2020-09-22 17:15:00',NULL)
+
+DELETE @IdentityOutput
+
+--------------------------------------------------------------------------------------------------------------------
+
+INSERT INTO [dbo].[patient_cart_orders]
+([patient_id],[user_id],[add_datetime],[ndc],[drug_id],[brand_name],[dose],[medication_unit_id],[medication_route_id],[priority],[frequency_id],[prn],[point_in_time],[begin_datetime],[end_datetime],[order_notes],[user_quick_list_item_id])
+VALUES
+(163,240,'2020-09-23',NULL,'drug03','brandname03',NULL,NULL,NULL,3,NULL,1,0,'2020-09-23',NULL,NULL,NULL)
+
+--------------------------------------------------------------------------------------------------------------------
+
+INSERT INTO [dbo].[patient_cart_orders]
+([patient_id],[user_id],[add_datetime],[ndc],[drug_id],[brand_name],[dose],[medication_unit_id],[medication_route_id],[priority],[frequency_id],[prn],[point_in_time],[begin_datetime],[end_datetime],[order_notes],[user_quick_list_item_id])
+OUTPUT inserted.id INTO @IdentityOutput
+VALUES
+(56,1,'2020-09-21',NULL,'drug04','brandname04',NULL,NULL,NULL,2,NULL,0,1,'2020-09-21',NULL,NULL,NULL)
+
+INSERT INTO [dbo].[cart_order_administrations]
+([patient_cart_order_id],[point_in_time],[administration_scheduled_datetime],[stop_scheduled_datetime])
+VALUES
+((SELECT ID FROM @IdentityOutput),0,'2020-09-20 12:30:00',NULL)
+
+INSERT INTO [dbo].[cart_order_administrations]
+([patient_cart_order_id],[point_in_time],[administration_scheduled_datetime],[stop_scheduled_datetime])
+VALUES
+((SELECT ID FROM @IdentityOutput),0,'2020-09-20 13:00:00',NULL)
+
+DELETE @IdentityOutput
+
+--------------------------------------------------------------------------------------------------------------------
+
+INSERT INTO [dbo].[patient_cart_orders]
+([patient_id],[user_id],[add_datetime],[ndc],[drug_id],[brand_name],[dose],[medication_unit_id],[medication_route_id],[priority],[frequency_id],[prn],[point_in_time],[begin_datetime],[end_datetime],[order_notes],[user_quick_list_item_id])
+VALUES
+(163,240,'2020-09-20',NULL,'drug05','brandname05',NULL,NULL,NULL,1,NULL,0,0,'2020-09-20',NULL,NULL,NULL)
+
+end;
