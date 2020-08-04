@@ -6,15 +6,6 @@ namespace Emar.Core.Orders.Service
 {
     public partial class OrderService : IOrderService
     {
-        //private readonly IOrderRepository _orderRepository;
-
-        //public OrderService(IOrderRepository orderRepository)
-        //{
-        //    _orderRepository = orderRepository;
-        //}
-
-
-
         public ComposerOptionsDto GetComposerSetupData(string brandName)
         {
             // Temporary for showing the shape
