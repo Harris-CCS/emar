@@ -167,6 +167,8 @@
     <Build Include="Programmability\Stored Procedures\export_ibex_site_code_shares.sql" />
     <None Include="Scripts\Data-Loader\site_data\site_code_shares.sql" />
     <Build Include="Programmability\Functions\Table-values Functions\get_code_share_site.sql" />
+    <Build Include="Programmability\Stored Procedures\pc_fdb_get_drc_info.sql" />
+    <Build Include="Programmability\Stored Procedures\create_FDB_search.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />
@@ -240,6 +242,10 @@
     <SqlCmdVariable Include="current_path">
       <DefaultValue>$(ProjectDir)$(OutputPath)</DefaultValue>
       <Value>$(SqlCmdVar__2)</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="is_bacpac_build">
+      <DefaultValue>false</DefaultValue>
+      <Value>$(SqlCmdVar__3)</Value>
     </SqlCmdVariable>
     <SqlCmdVariable Include="load_data">
       <DefaultValue>none</DefaultValue>
