@@ -9,6 +9,7 @@ namespace Emar.Data.Entities
     {
         public Site()
         {
+            DepartmentPreferredListItems = new HashSet<DepartmentPreferredListItem>();
             GroupListItems = new HashSet<GroupListItem>();
             MedicationRoutes = new HashSet<MedicationRoute>();
             MedicationUnits = new HashSet<MedicationUnit>();
@@ -31,6 +32,9 @@ namespace Emar.Data.Entities
         [Column("time_zone_name")]
         [StringLength(128)]
         public string TimeZoneName { get; set; }
+
+        [InverseProperty("Site")]
+        public virtual ICollection<DepartmentPreferredListItem> DepartmentPreferredListItems { get; set; }
 
         [InverseProperty("Site")]
         public virtual ICollection<GroupListItem> GroupListItems { get; set; }
