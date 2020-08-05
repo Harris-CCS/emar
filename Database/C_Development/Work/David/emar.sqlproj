@@ -169,6 +169,12 @@
     <Build Include="Programmability\Functions\Table-values Functions\get_code_share_site.sql" />
     <Build Include="Programmability\Stored Procedures\pc_fdb_get_drc_info.sql" />
     <Build Include="Programmability\Stored Procedures\create_FDB_search.sql" />
+    <Build Include="Tables\antimicrobial_indication_items.sql" />
+    <Build Include="Tables\antimicrobial_indications.sql" />
+    <Build Include="Programmability\Stored Procedures\export_ibex_antimicrobial_indication_items.sql" />
+    <Build Include="Programmability\Stored Procedures\export_ibex_antimicrobial_indications.sql" />
+    <None Include="Scripts\Data-Loader\site_data\antimicrobial_indication_items.sql" />
+    <None Include="Scripts\Data-Loader\site_data\antimicrobial_indications.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />
@@ -222,6 +228,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Scripts\Data-Loader\sample_data\site_code_shares.bcp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Data-Loader\sample_data\antimicrobial_indication_items.bcp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Data-Loader\sample_data\antimicrobial_indications.bcp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

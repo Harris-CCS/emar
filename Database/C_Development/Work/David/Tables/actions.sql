@@ -94,7 +94,7 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'site_id'
+  , @value = N'Hospital identifier foriegn key to site table'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'

@@ -42,6 +42,8 @@ insert into [#table_order] values
     ('dbo','patient_orders','phi_data'),
     ('dbo','patients','phi_data'),
 
+    ('dbo','antimicrobial_indication_items','site_data'),
+    ('dbo','antimicrobial_indications','site_data'),
     ('dbo','group_list_items','site_data'),
     ('dbo','medication_routes','site_data'),
     ('dbo','medication_units','site_data'),
@@ -224,7 +226,7 @@ order by [load_level] asc
        , [table_name];
 
 --- export bcp data into sample_data folder
-select 'call :ek "execute emar.dbo.export_ibex_'+[table_name]+'"'+space(30-len([table_name]))+';'+[table_name]+''+space(30-len([table_name]))+';"|~"'
+select 'call :ek "execute emar_clean.dbo.export_ibex_'+[table_name]+'"'+space(30-len([table_name]))+';'+[table_name]+''+space(30-len([table_name]))+';"|~"'
 as [commands for 09_bcp.cmd]
 from
 (

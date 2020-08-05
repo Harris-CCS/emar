@@ -13,11 +13,13 @@ for /f "delims=" %%x in (emar_dacpac.ini) do (set "%%x")
 @echo server_name    = %server_name%
 @echo source_database_name = %source_database_name%
 @echo target_database_name = %target_database_name%
-set script_count=17
+set script_count=19
 set bcp_log=bcp_log.txt
 @echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 echo ~~~~~~~~~~~~~begin~~~~~~~~~~~~~ > %bcp_log%
+call :ek "execute emar_clean.dbo.export_ibex_antimicrobial_indication_items";antimicrobial_indication_items;"|~"
+call :ek "execute emar_clean.dbo.export_ibex_antimicrobial_indications"     ;antimicrobial_indications     ;"|~"
 call :ek "execute emar_clean.dbo.export_ibex_fdb_allergy_name"              ;fdb_allergy_name              ;"|~"
 call :ek "execute emar_clean.dbo.export_ibex_fdb_brand_name"                ;fdb_brand_name                ;"|~"
 call :ek "execute emar_clean.dbo.export_ibex_fdb_ndc_info"                  ;fdb_ndc_info                  ;"|~"
@@ -40,7 +42,7 @@ exit /b
 :ek
 echo. >> %bcp_log%
 set /A Counter+=1
-set title_val=Processing %Counter% of %script_count%
+set title_val= %current_script% :: Processing %Counter% of %script_count%
 title %title_val%
 rem  %1 Table to Load
 rem  %2 Text File To Import

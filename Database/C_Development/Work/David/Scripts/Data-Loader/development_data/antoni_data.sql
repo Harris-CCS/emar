@@ -60,14 +60,9 @@ values(1, null, '2020-06-19T17:17:17+05:00', '2020-06-19T17:17:16+05:00', 1, 2);
 insert into [dbo].[order_events]([patient_order_id], [order_administration_id], [event_datetime], [add_datetime], [add_user_id], [action_id])
 values(1, 1, '2020-06-19T17:17:23+05:00', '2020-06-19T17:17:17+05:00', 1, 1);
 
-end;
-
-
-
 
 
 print 'Loading Table: antoni_data part II';
-begin
 
 DECLARE @IdentityOutput TABLE (ID INT) 
 
@@ -184,5 +179,6 @@ INSERT INTO [dbo].[patient_cart_orders]
 ([patient_id],[user_id],[add_datetime],[ndc],[drug_id],[brand_name],[dose],[medication_unit_id],[medication_route_id],[priority],[frequency_id],[prn],[point_in_time],[begin_datetime],[end_datetime],[order_notes],[user_quick_list_item_id])
 VALUES
 (163,240,'2020-09-20',NULL,'drug05','brandname05',NULL,NULL,NULL,1,NULL,0,0,'2020-09-20',NULL,NULL,NULL)
+
 
 end;
