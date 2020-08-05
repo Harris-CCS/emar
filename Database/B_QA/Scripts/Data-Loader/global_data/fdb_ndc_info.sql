@@ -10,10 +10,7 @@ create table [#fdb_ndc_info]
     , [medid]         [numeric](8, 0) not null
     , [packaging]     [varchar](26) null
     , [strength]      [varchar](91) null
-    , [days_obsolete] [int] null
-    , [GCN_SEQNO]     [numeric](6, 0) null
-    , [HICL_SEQNO]    [numeric](6, 0) null
-    , [ROUTED_GEN_ID] [numeric](8, 0) null);
+    , [days_obsolete] [int] null);
 
 /****************************************
         load temporary tables for staging
@@ -36,9 +33,6 @@ if '$(load_data)' = 'live'
            , [packaging]
            , [strength]
            , [days_obsolete]
-           , [GCN_SEQNO]
-           , [HICL_SEQNO]
-           , [ROUTED_GEN_ID]
             )
         execute ('execute dbo.export_ibex_fdb_ndc_info');
     end;
@@ -76,9 +70,6 @@ if
            , [packaging]
            , [strength]
            , [days_obsolete]
-           , [GCN_SEQNO]
-           , [HICL_SEQNO]
-           , [ROUTED_GEN_ID]
             )
         select [source].[ndc]
              , [source].[base_ndc]
@@ -87,9 +78,6 @@ if
              , [source].[packaging]
              , [source].[strength]
              , [source].[days_obsolete]
-             , [source].[GCN_SEQNO]
-             , [source].[HICL_SEQNO]
-             , [source].[ROUTED_GEN_ID]
         from   [#fdb_ndc_info] as [source];
 
 /***************************************
