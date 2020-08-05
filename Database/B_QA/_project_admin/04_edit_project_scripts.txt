@@ -1,7 +1,0 @@
-
-
-File: build_table_hierarchy.txt
-
-Contains the commands needed to delete and build the table data in the correct order
-Edit : Script.PostDeployment.sql
-Edit : delete_emar_data.sql
