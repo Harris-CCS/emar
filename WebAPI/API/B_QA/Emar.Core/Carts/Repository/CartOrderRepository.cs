@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Emar.Core.Carts.Model;
 using Emar.Core.Helpers;
 using Emar.Core.Orders.Model;
@@ -30,16 +31,11 @@ namespace Emar.Core.Carts.Repository
 
         public PagedList<PatientCartOrder> GetOrders(long? patientId, OrdersResourceParameters resourceParameters)
         {
-            long userId = resourceParameters.UserId ?? -1;
-            long ptId = (patientId ?? resourceParameters.PatientId) ?? -1;
+            Expression<Func<PatientCartOrder, bool>> _whereLambda = null;
+            _whereLambda = _whereLambda.And(order => order.UserId == resourceParameters.UserId);
+            _whereLambda = _whereLambda.And(order => order.PatientId == (patientId ?? resourceParameters.PatientId));
 
-            if ((userId == -1) ||
-                (ptId == -1))
-            {
-                return null;
-            }
-
-            var orders = GetCartOrders(userId, ptId);
+            var orders = GetCartOrders(_whereLambda.Compile());
 
             if (resourceParameters.OrderBy != null)
             {
@@ -52,7 +48,7 @@ namespace Emar.Core.Carts.Repository
             return PagedList<PatientCartOrder>.Create(orders.AsQueryable(), resourceParameters.PageNumber, resourceParameters.PageSize);
         }
 
-        IEnumerable<PatientCartOrder> GetCartOrders(long userId = -1, long patientId = -1)
+        IEnumerable<PatientCartOrder> GetCartOrders(Func<PatientCartOrder, bool> wherePredicate = null)
         {
             var orders = _context.PatientCartOrders
                 .Include(order => order.CartOrderAdministrations)
@@ -62,27 +58,16 @@ namespace Emar.Core.Carts.Repository
                     .ThenInclude(patient => patient.Site)
                         .ThenInclude(site => site.SiteOptions)
                             .ThenInclude(siteOptions => siteOptions.Option)
+                .Where(wherePredicate)
                 .AsEnumerable();
-
-            if (userId != -1)
-            {
-                orders = orders
-                    .Where(order => order.UserId == userId);
-            }
-
-            if (patientId != -1)
-            {
-                orders = orders
-                    .Where(order => order.PatientId == patientId);
-            }
 
             return orders;
         }
 
         public PatientCartOrder GetOrder(long orderId, OrdersResourceParameters resourceParameters)
         {
-            return GetCartOrders()
-                    .FirstOrDefault(order => order.Id == orderId);
+            return GetCartOrders(order => order.Id == orderId)
+                    .FirstOrDefault();
         }
 
         public PatientCartOrder AddCartOrder(PatientCartOrder cartOrder)

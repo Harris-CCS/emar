@@ -130,7 +130,7 @@ namespace Emar.Core.Orders.Model.Mappings
             return eventDto;
         }
 
-        public static UserQuickListItemDto MapUserQuickListItem(UserQuickListItem dbObj)
+        public static UserQuickListItemDto MapUserQuickListItem(UserQuickListItem dbObj, string orderLinkBase)
         {
             if (dbObj == null)
                 return null;
@@ -151,6 +151,14 @@ namespace Emar.Core.Orders.Model.Mappings
             };
 
             ret.PointInTime = ret.MedicationRoute?.PointInTime ?? true;
+
+            if (!string.IsNullOrEmpty(orderLinkBase))
+                ret.Links = new[]
+                {
+                    new HateOasLinkDto(orderLinkBase.Replace("/-99/", string.Concat("/", dbObj.Id, "/")),
+                        "add_quicklist_order_to_cart",
+                        "POST")
+                };
             return ret;
         }
     }
