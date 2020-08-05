@@ -11,6 +11,8 @@ using Emar.Core.Orders.Repository;
 using Emar.Core.Orders.Service;
 using Emar.Core.Patients.Repository;
 using Emar.Core.Patients.Service;
+using Emar.Core.Sites.Service;
+using Emar.Core.Sites.Repository;
 using Emar.Core.Users.Repository;
 using Emar.Core.Users.Service;
 using Emar.Data;
@@ -140,20 +142,23 @@ namespace Emar.Api
                 options.UseSqlServer(ConfigurationExtensions.GetConnectionString(Configuration, "SqlConnection"))
                     .EnableSensitiveDataLogging());
 
-            services.AddScoped<IOptionService, OptionService>();
-            services.AddScoped<IOptionRepository, OptionRepository>();
-
-            services.AddTransient<IPropertyMappingService, PropertyMappingService>();
-            services.AddTransient<IPropertyCheckerService, PropertyCheckerService>();
-
             services.AddScoped<ICartOrderService, CartOrderService>();
             services.AddScoped<ICartOrderRepository, CartOrderRepository>();
+
+            services.AddScoped<IOptionService, OptionService>();
+            services.AddScoped<IOptionRepository, OptionRepository>();
 
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IOrderRepository, OrderRepository>();
 
             services.AddScoped<IPatientService, PatientService>();
             services.AddScoped<IPatientRepository, PatientRepository>();
+
+            services.AddTransient<IPropertyMappingService, PropertyMappingService>();
+            services.AddTransient<IPropertyCheckerService, PropertyCheckerService>();
+
+            services.AddScoped<ISiteService, SiteService>();
+            services.AddScoped<ISiteRepository, SiteRepository>();
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();

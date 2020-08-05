@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Emar.Core.Helpers;
 using Emar.Core.Orders.Model;
 using Emar.Core.ResourceParameters;
@@ -169,6 +170,16 @@ namespace Emar.Core.Orders.Repository
                 .Include(i => i.MedicationRoute)
                 .ToList();
         }
+
+        public List<DepartmentPreferredListItem> GetDepartmentPreferredList(int siteId, string departmentCode, string linkBase)
+        {
+            Expression<Func<DepartmentPreferredListItem, bool>> whereLambda = s => s.SiteId == siteId;
+            if(!string.IsNullOrWhiteSpace(departmentCode))
+                whereLambda = whereLambda.And(s => s.DepartmentCode == departmentCode);
+
+            return _context.DepartmentPreferredListItems.Where(whereLambda).ToList();
+        }
+
         #endregion
     }
 }

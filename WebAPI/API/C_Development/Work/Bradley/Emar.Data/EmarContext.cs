@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Reflection;
+﻿using System.IO;
 using Emar.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
@@ -19,6 +17,7 @@ namespace Emar.Data
             //ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
+        public virtual DbSet<DepartmentPreferredListItem> DepartmentPreferredListItems { get; set; }
         public virtual DbSet<Entities.Action> Actions { get; set; }
         public virtual DbSet<CartOrderAdministration> CartOrderAdministrations { get; set; }
         public virtual DbSet<ExternalIdEntity> ExternalIds { get; set; }
@@ -52,6 +51,31 @@ namespace Emar.Data
                     .HasForeignKey(d => d.PatientCartOrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk__cart_order_administrations__patient_cart_orders");
+            });
+
+            modelBuilder.Entity<DepartmentPreferredListItem>(entity =>
+            {
+                entity.Property(e => e.DepartmentCode).IsUnicode(false);
+
+                entity.Property(e => e.DrugId).IsUnicode(false);
+
+                entity.Property(e => e.Ndc).IsUnicode(false);
+
+                entity.HasOne(d => d.MedicationRoute)
+                    .WithMany(p => p.DepartmentPreferredListItems)
+                    .HasForeignKey(d => d.MedicationRouteId)
+                    .HasConstraintName("fk__department_preferred_list_items__medication_routes");
+
+                entity.HasOne(d => d.MedicationUnit)
+                    .WithMany(p => p.DepartmentPreferredListItems)
+                    .HasForeignKey(d => d.MedicationUnitId)
+                    .HasConstraintName("fk__department_preferred_list_items__medication_units");
+
+                entity.HasOne(d => d.Site)
+                    .WithMany(p => p.DepartmentPreferredListItems)
+                    .HasForeignKey(d => d.SiteId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__department_preferred_list_items__sites");
             });
 
             modelBuilder.Entity<ExternalIdEntity>(entity =>

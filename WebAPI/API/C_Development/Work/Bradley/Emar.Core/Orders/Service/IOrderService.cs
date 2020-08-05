@@ -14,9 +14,13 @@ namespace Emar.Core.Orders.Service
         IEnumerable<OrderEventDto> GetEvents(long orderId);
         OrderEventDto GetEvent(long eventId);
         IEnumerable<OrderEventDto> GetAdministrationEvents(long administrationId);
+
+        // User Quick List services
         UserQuickListFrameworkDto GetInitialUserQuickList(in int userId, int? siteId, string tabLinkBase, string orderLinkBase);
         IEnumerable<UserQuickListItemDto> GetQuickListTab(in int userId, int? siteId, string orderLinkBase, string tab);
 
+        // Department Preferred List services
+        IEnumerable<DepartmentPreferredItemDto> GetDepartmentPreferredList(in int siteId, string departmentCode, string linkBase);
 
         // Mock Methods
         ComposerOptionsDto GetComposerSetupData(string brandName);
