@@ -1,0 +1,234 @@
+{
+	"info": {
+		"_postman_id": "3e1b913c-2e19-47ad-8dc1-c820148e4446",
+		"name": "DepartmentPreferredList API Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "List for Site (no Department no Pt)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2072b3ad-9f8e-43a5-ad77-23cfd6530539",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Returns 5 records\", function() {\r",
+							"    pm.expect(jsonData.length).to.eql(5);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"No Links returned\", function() {\r",
+							"    pm.expect(jsonData[0].links).to.eql(null);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/api/sites/9/departmentPreferredLists",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"sites",
+						"9",
+						"departmentPreferredLists"
+					],
+					"query": [
+						{
+							"key": "patientId",
+							"value": "23456",
+							"disabled": true
+						},
+						{
+							"key": "departmentCode",
+							"value": "Main%20ED",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List for Site (no Department yes Pt)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "428e11aa-9e85-43d4-b17c-8edb6d36e80a",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Returns 5 records\", function() {\r",
+							"    pm.expect(jsonData.length).to.eql(5);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Links returned\", function() {\r",
+							"    pm.expect(jsonData[0].links).to.not.eql(null);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/api/sites/9/departmentPreferredLists?patientId=23456",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"sites",
+						"9",
+						"departmentPreferredLists"
+					],
+					"query": [
+						{
+							"key": "patientId",
+							"value": "23456"
+						},
+						{
+							"key": "departmentCode",
+							"value": "Main%20ED",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List for Site (yes Department no Pt)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8f832032-dc3a-431a-bb7c-4a3166b80a6e",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Returns 2 records\", function() {\r",
+							"    pm.expect(jsonData.length).to.eql(2);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"No Links returned\", function() {\r",
+							"    pm.expect(jsonData[0].links).to.eql(null);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/api/sites/9/departmentPreferredLists?departmentCode=Main%20ED",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"sites",
+						"9",
+						"departmentPreferredLists"
+					],
+					"query": [
+						{
+							"key": "patientId",
+							"value": "23456",
+							"disabled": true
+						},
+						{
+							"key": "departmentCode",
+							"value": "Main%20ED"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List for Site (yes Department yes Pt)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "15b6680c-b715-4e56-a2c2-7571e8183ebd",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Returns 2 records\", function() {\r",
+							"    pm.expect(jsonData.length).to.eql(2);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Links returned\", function() {\r",
+							"    pm.expect(jsonData[0].links).to.not.eql(null);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/api/sites/9/departmentPreferredLists?patientId=23456&departmentCode=Main%20ED",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"sites",
+						"9",
+						"departmentPreferredLists"
+					],
+					"query": [
+						{
+							"key": "patientId",
+							"value": "23456"
+						},
+						{
+							"key": "departmentCode",
+							"value": "Main%20ED"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
