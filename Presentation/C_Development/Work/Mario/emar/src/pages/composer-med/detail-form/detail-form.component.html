@@ -53,7 +53,7 @@
                     <button ngbDropdownItem *ngFor="let indication of indications" (click)="changeSelectedIndication(indication)">
                         {{ indication }}
                     </button>
-                    <div class="input-group mb-3">
+                    <div class="input-group flex-nowrap">
                         <input type="text"
                             id="otherIndication"
                             placeholder="Other, please describe"
@@ -70,7 +70,7 @@
                     </div>
                 </div>
             </div>
-            <div class="requirement" *ngIf="selectedIndication==''">Mandatory</div>
+            <div class="requirement" *ngIf="selectedIndication==''">Required</div>
         </div>
     </span>
 </span>

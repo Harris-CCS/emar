@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { SharedComponentsModule } from '../../shared/shared.components.module';
 import { ComposerMedModule } from '../composer-med/composer-med.module';
 import { ComposerMedSelfComponent } from './composer-med-self.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -12,7 +13,8 @@ import { ComposerMedSelfComponent } from './composer-med-self.component';
   imports: [
     CommonModule,
     SharedComponentsModule,
-    ComposerMedModule
+    ComposerMedModule,
+    ReactiveFormsModule
   ],
   exports: [
   ]

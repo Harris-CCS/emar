@@ -1,0 +1,17 @@
+<app-modal modalId="date-time-modal" blocking="true" closebtn="true">
+    <form [formGroup]="dateTimeForm" (ngSubmit)="onSubmit()" class="m-2">
+        <div class="d-flex justify-content-center">
+            <div>
+                <ngb-timepicker formControlName="time"></ngb-timepicker>
+            </div>
+            <div class="d-flex flex-column">
+                <button class="btn btn-secondary btn-sm m-1" (click)="onCancel()" type="button">Cancel</button>
+                <button class="btn btn-secondary btn-sm m-1" (click)="onNow()" type="button">Now</button>
+                <button class="btn btn-danger btn-sm m-1" type="submit">Select</button>
+            </div>
+        </div>
+
+        <ngb-datepicker formControlName="date"></ngb-datepicker>
+            
+    </form>
+</app-modal>

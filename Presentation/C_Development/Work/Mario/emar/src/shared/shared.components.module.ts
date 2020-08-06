@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { HeaderUserComponent } from './component/header-user/header-user.component';
 import { HeaderPatientComponent } from './component/header-patient/header-patient.component';
@@ -10,6 +10,7 @@ import { ModalComponent } from './component/modal/modal.component';
 import { MedSearchComponent } from './component/med-search/med-search.component';
 import { PipesModule } from './pipes/pipes.module';
 import { SimpleTableComponent } from './component/simple-table/simple-table.component';
+import { DateTimeModalComponent } from './component/date-time-modal/date-time-modal.component';
 
 @NgModule({
   declarations: [
@@ -19,8 +20,15 @@ import { SimpleTableComponent } from './component/simple-table/simple-table.comp
     ModalComponent,
     MedSearchComponent,
     SimpleTableComponent,
+    DateTimeModalComponent
   ],
-  imports: [CommonModule, NgbModule, FormsModule, PipesModule],
+  imports: [
+    CommonModule,
+    NgbModule,
+    FormsModule,
+    PipesModule,
+    ReactiveFormsModule
+  ],
   exports: [
     HeaderUserComponent,
     HeaderPatientComponent,
@@ -28,6 +36,7 @@ import { SimpleTableComponent } from './component/simple-table/simple-table.comp
     ModalComponent,
     MedSearchComponent,
     SimpleTableComponent,
+    DateTimeModalComponent
   ],
   bootstrap: [MedSearchComponent],
 })
