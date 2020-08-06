@@ -8,6 +8,7 @@ import { FrequencyFormComponent } from './frequency-form/frequency-form.componen
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CalendarFormComponent } from './calendar-form/calendar-form.component';
 import { SharedComponentsModule } from 'src/shared/shared.components.module';
+import { MedFormComponent } from './med-form/med-form.component';
 
 @NgModule({
   declarations: [
@@ -15,16 +16,15 @@ import { SharedComponentsModule } from 'src/shared/shared.components.module';
     DetailFormComponent,
     FrequencyFormComponent,
     CalendarFormComponent,
+    MedFormComponent,
   ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
     NgbModule,
     FormsModule,
-    SharedComponentsModule
+    SharedComponentsModule,
   ],
-  exports: [
-    ComposerMedComponent,
-  ]
+  exports: [ComposerMedComponent],
 })
-export class ComposerMedModule { }
+export class ComposerMedModule {}
