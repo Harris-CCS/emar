@@ -58,7 +58,19 @@ export const COMPOSER_OPTIONS: ComposerOptions[] =[
                         {
                             "id": 1,
                             "frequencyName": "ONCE"
-                        }
+                        },
+                        {
+                            "id": 8,
+                            frequencyName: "3 TIMES DAILY"
+                        },
+                        {
+                            "id": 9,
+                            frequencyName: "4 TIMES DAILY"
+                        },
+                        {
+                            "id": 11,
+                            frequencyName: "8 TIMES DAILY"
+                        },
                     ]
                 },
                 {

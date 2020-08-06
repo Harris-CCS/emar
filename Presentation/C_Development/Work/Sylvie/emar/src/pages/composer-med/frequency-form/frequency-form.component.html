@@ -3,71 +3,93 @@
         <span>Frequency</span>
     </span>
     <span class="item">
-        <div class="form-group">
-            <input type="text" 
-                [ngbTypeahead]="lookupFrequency"
-                [inputFormatter]="formatFrequency"
-                [resultFormatter]="formatFrequency"
-                [editable]='false'
-                [ngClass]="{'border-danger': frequencyForm.get('frequency').invalid}"
-                formControlName="frequency">
-            <!--
-            <div ngbDropdown class="d-inline-block">
-                <button class="btn btn-outline-dark" id="diagnosis" ngbDropdownToggle>
-                    {{ selectedFrequency? selectedFrequency.frequencyName: "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;" }}
-                </button>
-                <div ngbDropdownMenu aria-labelledby="diagnosis">
-                    <button ngbDropdownItem *ngFor="let frequency of frequencies" (click)="changeSelectedFrequency(frequency)">
-                        {{ frequency.frequencyName }}
+        <div class="d-flex form-group">
+            <div>
+                <input type="text" 
+                    [ngbTypeahead]="lookupFrequency"
+                    [inputFormatter]="formatFrequency"
+                    [resultFormatter]="formatFrequency"
+                    [editable]='false'
+                    [ngClass]="{'border-danger': frequencyForm.get('frequency').invalid}"
+                    formControlName="frequency">
+                <!--
+                <div ngbDropdown class="d-inline-block">
+                    <button class="btn btn-outline-dark" id="diagnosis" ngbDropdownToggle>
+                        {{ selectedFrequency? selectedFrequency.frequencyName: "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;" }}
                     </button>
+                    <div ngbDropdownMenu aria-labelledby="diagnosis">
+                        <button ngbDropdownItem *ngFor="let frequency of frequencies" (click)="changeSelectedFrequency(frequency)">
+                            {{ frequency.frequencyName }}
+                        </button>
+                    </div>
                 </div>
+                -->
+                <div class="requirement" *ngIf="frequencyForm.get('frequency').invalid">Required</div>
             </div>
-            -->
-            <button class="btn btn-outline-warning btn-sm preferred"
-                *ngFor="let frequency of preferredFrequencies"
-                required
-                (click)="usePreferredFrequency(frequency)">
-                {{ frequency.frequencyName }}
-            </button>
-            <div class="requirement" *ngIf="frequencyForm.get('frequency').invalid">Mandatory</div>
+            <div class="spaced">
+                <button class="btn btn-outline-warning btn-sm m-1"
+                    *ngFor="let frequency of preferredFrequencies"
+                    required
+                    (click)="usePreferredFrequency(frequency)">
+                    {{ frequency.frequencyName }}
+                </button>
+            </div>
         </div>
         
-        <div class="form-group">
-            <label for id="duration">Duration</label><br>
-            <input type="text"
-                id="duration"
-                size="5"
-                formControlName="duration">
-            <button class="btn btn-sm preferred"
-                [ngClass]="{'btn-outline-warning':frequencyForm.get('durationUnit').value!==unit, 'btn-warning':frequencyForm.get('durationUnit').value===unit}"
-                *ngFor="let unit of preferredDurationUnits"
-                (click)="onDurationUnit(unit)">
-                {{ unit }}
-            </button>
+        <label for id="duration">Duration</label>
+        <div class="d-flex form-group">
+            <div>
+                <input type="text"
+                    id="duration"
+                    size="5"
+                    formControlName="duration">
+            </div>
+            <div class="spaced">
+                <button class="btn btn-sm m-1"
+                    [ngClass]="{'btn-outline-warning':frequencyForm.get('durationUnit').value!==unit, 'btn-warning':frequencyForm.get('durationUnit').value===unit}"
+                    *ngFor="let unit of preferredDurationUnits"
+                    (click)="onDurationUnit(unit)">
+                    {{ unit }}
+                </button>
+            </div>
         </div>
         <div class="d-flex form-group">
             <div>
                 <label for="starTime">Start Time</label><br>
-                <div class="input-group mb-3">
+                <div class="input-group flex-nowrap">
+                    <!--
                     <input type="text"
-                        id="startTime"
+                        id="startDate"
                         ngbDatepicker
                         #ds="ngbDatepicker"
-                        formControlName="startTime"
-                        aria-describedby="startTimeButton">
+                        formControlName="startDate"
+                        aria-describedby="startDateButton">
                     <div class="input-group-append">
-                        <span class="input-group-text" id="startTimeButton" (click)="ds.toggle()">
+                        <span class="input-group-text" id="startDateButton" (click)="ds.toggle()">
                             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-calendar3" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857V3.857z"/>
                                 <path fill-rule="evenodd" d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
                             </svg>
                         </span>
                     </div>
+                    -->
+                    <input type="text"
+                        id="startTime"
+                        formControlName="startTime"
+                        aria-describedby="startTimeButton">
+                    <div class="input-group-append">
+                        <button class="input-group-text" id="startTimeButton" (click)="onSelectTime('Start Time')">
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-alarm" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M8 15A6 6 0 1 0 8 3a6 6 0 0 0 0 12zm0 1A7 7 0 1 0 8 2a7 7 0 0 0 0 14z"/>
+                                <path fill-rule="evenodd" d="M8 4.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.053.224l-1.5 3a.5.5 0 1 1-.894-.448L7.5 8.882V5a.5.5 0 0 1 .5-.5z"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="spaced">
                 <label>End Time</label><br>
-                <div class="input-group mb-3">
+                <div class="input-group flex-nowrap">
                     <input type="text"
                         id="endTime"
                         ngbDatepicker
@@ -75,12 +97,13 @@
                         formControlName="endTime"
                         aria-describedby="endTimeButton">
                     <div class="input-group-append">
-                        <span class="input-group-text" id="endTimeButton" (click)="de.toggle()">
-                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-calendar3" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857V3.857z"/>
-                                <path fill-rule="evenodd" d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                        <!-- <span class="input-group-text" id="endTimeButton" (click)="de.toggle()"> -->
+                        <button class="input-group-text" id="endTime" (click)="onSelectTime('End Time')">
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-alarm" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M8 15A6 6 0 1 0 8 3a6 6 0 0 0 0 12zm0 1A7 7 0 1 0 8 2a7 7 0 0 0 0 14z"/>
+                                <path fill-rule="evenodd" d="M8 4.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.053.224l-1.5 3a.5.5 0 1 1-.894-.448L7.5 8.882V5a.5.5 0 0 1 .5-.5z"/>
                             </svg>
-                        </span>
+                        </button>
                     </div>
                </div>
             </div>

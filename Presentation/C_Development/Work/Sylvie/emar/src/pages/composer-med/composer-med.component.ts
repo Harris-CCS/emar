@@ -28,7 +28,6 @@ export class ComposerMedComponent implements OnInit {
     this.composerMedForm = this.fb.group({
       orderNotes: null // this is here for test 
     });
-    console.log('OPTIONS',this.options)
   }
   
   formInitialized(name: string, form: FormGroup) {

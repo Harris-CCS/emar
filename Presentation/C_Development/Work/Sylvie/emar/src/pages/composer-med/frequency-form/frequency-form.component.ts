@@ -1,12 +1,13 @@
-import { Component, Output, EventEmitter, OnInit, Input } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit, Input, ɵisDefaultChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, bufferTime } from 'rxjs/operators';
+import { NgbTimeStruct, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
 import { Frequency } from '../../../app/interfaces/frequency';
 import { FREQUENCIES } from '../../../app/mockup/frequencies';
-const DURATION_UNITS: string[] = ["Doses", "Hours", "Days"]
-
+import { ModalService } from 'src/services/modal.service';
+const DURATION_UNITS: string[] = ["Doses", "Hours", "Days"];
 
 @Component({
     selector: 'frequency-form',
@@ -22,8 +23,13 @@ export class FrequencyFormComponent implements OnInit {
     frequencies: Frequency[] = FREQUENCIES; // TODO API
     selectedDuration: string = ''; // TODO come from composer
     preferredDurationUnits: string[] = DURATION_UNITS;
+    selectedStartTime: string = ''; // TODO come from composer
+    selectedStartDate: string = ''; // TODO come from composer
+    selectedEndTime: string = ''; // TODO come from composer
+    selectedEndDate: string = ''; // TODO come from composer
 
-    constructor(private fb: FormBuilder) {}
+    constructor(private fb: FormBuilder,
+        private modalService: ModalService) {}
 
     ngOnInit() {
         this.frequencyForm = this.fb.group({
@@ -32,7 +38,7 @@ export class FrequencyFormComponent implements OnInit {
             'durationUnit': new FormControl(null),
             'startTime': new FormControl(null),
             'endTime': new FormControl(null)
-        });
+       });
         this.formReady.emit(this.frequencyForm);
     }
 
@@ -40,7 +46,7 @@ export class FrequencyFormComponent implements OnInit {
         return text$.pipe(
             debounceTime(200),
             distinctUntilChanged(),
-            map(term => term.length < 1 ? []
+            map(term => term.length < 0 ? []
             : FREQUENCIES.filter(f => new RegExp(term, 'mi').test(f.frequencyName)).slice(0, 10))
             // TODO this.frequencies but this is undefined
         )
@@ -54,5 +60,40 @@ export class FrequencyFormComponent implements OnInit {
 
     onDurationUnit(unit: string) {
         this.frequencyForm.patchValue({'durationUnit': unit});
+    }
+
+    onSelectTime(title: string, time?: string, date?: string) {
+        // TODO pretty sure a better way to set the now
+        const now: Date = new Date;
+        let defaultTime: NgbTimeStruct;
+        let defaultDate: NgbDateStruct;
+        let arr;
+        if (typeof time !== 'undefined' && time !== '') {
+            arr = time.split(':');
+            defaultTime = {
+                hour: +arr[0],
+                minute: +arr[1],
+                second: 0
+            };
+        } else {
+            defaultTime = {
+                hour: now.getHours(),
+                minute: now.getMinutes(),
+                second: 0
+            };
+        }
+        if (typeof date !== 'undefined' && date !== '') {
+            arr = date.split('/');
+            defaultDate = {
+                year: +arr[2],
+                month: +arr[0],
+                day: +arr[1]};
+        } else {
+            defaultDate = {
+                year: now.getFullYear(),
+                month: now.getMonth()+1,
+                day: now.getDate()};
+        }
+        this.modalService.open('date-time-modal', {time: defaultTime, date: defaultDate}, title);
     }
 }
