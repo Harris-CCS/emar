@@ -28,6 +28,8 @@
                             <frequency-form (formReady)="formInitialized('frequency', $event)"
                                 [preferredFrequencies]="options.availableFormStrength[selectedFormStrength].preferredFrequencies">
                             </frequency-form>
+                            <calendar-form></calendar-form>
+                            <date-time-modal></date-time-modal>
                         </div>
                     </div> 
                 </div>
@@ -49,6 +51,6 @@
                 {{getActionText()}}
             </button>
         </div>
-        <div><small><i>{{ composerMedForm.value | json }}</i></small></div>
+        <!-- <div><small><i>{{ composerMedForm.value | json }}</i></small></div> -->
     </div>
 </div>
