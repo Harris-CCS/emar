@@ -83,5 +83,10 @@ namespace Emar.Core.Patients.Service
 
             return patientDto;
         }
+
+        public Dictionary<string, string> GetExternalRootSitePatientId(string number, GetPatientBy getPatientBy)
+        {
+            return _patientRepository.GetExternalRootSitePatientId(number, getPatientBy);
+        }
     }
 }

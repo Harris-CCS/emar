@@ -17,8 +17,8 @@ namespace Emar.Data.Entities
         [Key]
         [Column("id")]
         public long Id { get; set; }
-        [Column("site_id")]
-        public int SiteId { get; set; }
+        [Column("site_id", TypeName = "int")]
+        public long SiteId { get; set; }
         [Column("medical_record_number")]
         [StringLength(25)]
         public string MedicalRecordNumber { get; set; }
@@ -147,5 +147,8 @@ namespace Emar.Data.Entities
 
         [InverseProperty("Patient")]
         public virtual ICollection<PatientOrder> PatientOrders { get; set; }
+
+        [InverseProperty("Patient")]
+        public virtual ExternalIdEntity ExternalIds { get; set; }
     }
 }

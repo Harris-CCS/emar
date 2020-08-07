@@ -14,12 +14,13 @@ namespace Emar.Core.Orders.Service
         IEnumerable<OrderEventDto> GetEvents(long orderId);
         OrderEventDto GetEvent(long eventId);
         IEnumerable<OrderEventDto> GetAdministrationEvents(long administrationId);
-        UserQuickListFrameworkDto GetInitialUserQuickList(in int userId, int? siteId);
-        IEnumerable<UserQuickListItemDto> GetQuickListTab(in int userId, int? siteId, string tab);
+        UserQuickListFrameworkDto GetInitialUserQuickList(in int userId, long? siteId, string tabLinkBase, string orderLinkBase);
+        IEnumerable<UserQuickListItemDto> GetQuickListTab(in int userId, long? siteId, string orderLinkBase, string tab);
+
 
         // Mock Methods
         ComposerOptionsDto GetComposerSetupData(string brandName);
-        IEnumerable<FrequencyDto> GetFrequencies(int siteId);
-        IEnumerable<UnitDto> GetUnits(in int siteId);
+        IEnumerable<FrequencyDto> GetFrequencies(long siteId);
+        IEnumerable<UnitDto> GetUnits(in long siteId);
     }
 }

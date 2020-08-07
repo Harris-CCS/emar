@@ -6,15 +6,6 @@ namespace Emar.Core.Orders.Service
 {
     public partial class OrderService : IOrderService
     {
-        //private readonly IOrderRepository _orderRepository;
-
-        //public OrderService(IOrderRepository orderRepository)
-        //{
-        //    _orderRepository = orderRepository;
-        //}
-
-
-
         public ComposerOptionsDto GetComposerSetupData(string brandName)
         {
             // Temporary for showing the shape
@@ -73,7 +64,7 @@ namespace Emar.Core.Orders.Service
             return setupOptions;
         }
 
-        public IEnumerable<FrequencyDto> GetFrequencies(int siteId)
+        public IEnumerable<FrequencyDto> GetFrequencies(long siteId)
         {
             return new[]
             {
@@ -96,7 +87,7 @@ namespace Emar.Core.Orders.Service
             };
         }
 
-        public IEnumerable<UnitDto> GetUnits(in int siteId)
+        public IEnumerable<UnitDto> GetUnits(in long siteId)
         {
             return new[]
             {

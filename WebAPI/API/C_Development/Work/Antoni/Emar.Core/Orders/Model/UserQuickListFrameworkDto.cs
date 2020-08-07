@@ -4,8 +4,22 @@ namespace Emar.Core.Orders.Model
 {
     public class UserQuickListFrameworkDto
     {
-        public string CurrentTabName { get; set; }
-        public List<UserQuickListItemDto> CurrentTabContents = new List<UserQuickListItemDto>();
-        public List<string> TabListing = new List<string>();
+        public UserQuickListTabDto CurrentTab { get; set; }
+        public IEnumerable<UserQuickListItemDto> CurrentTabContents;
+        public List<UserQuickListTabDto> TabListing;
+
+        public UserQuickListFrameworkDto(IEnumerable<UserQuickListItemDto> firstTabOrders, List<string> tabListing,
+            string linkBase)
+        {
+            CurrentTabContents = firstTabOrders;
+            CurrentTab = new UserQuickListTabDto(tabListing[0], linkBase);
+
+            TabListing = new List<UserQuickListTabDto>();
+
+            foreach (var tab in tabListing)
+            {
+                TabListing.Add(new UserQuickListTabDto(tab, linkBase));
+            }
+        }
     }
 }

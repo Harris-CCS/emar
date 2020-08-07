@@ -102,7 +102,7 @@ namespace Emar.Core.Orders.Repository
         /// <param name="userId"></param>
         /// <param name="siteId"></param>
         /// <returns></returns>
-        public IEnumerable<UserQuickListItem> GetUserQuickListMostUsed(int userId, int? siteId)
+        public IEnumerable<UserQuickListItem> GetUserQuickListMostUsed(int userId, long? siteId)
         {
             if (siteId == null)
                 return _context.UserQuickListItems
@@ -120,7 +120,7 @@ namespace Emar.Core.Orders.Repository
                 .ToList();
         }
 
-        public List<string> GetUserQuickListTabs(int userId, int? siteId)
+        public List<string> GetUserQuickListTabs(int userId, long? siteId)
         {
             if (siteId == null)
                 return _context.UserQuickListItems
@@ -136,7 +136,7 @@ namespace Emar.Core.Orders.Repository
                 .ToList();
         }
 
-        IEnumerable<UserQuickListItem> IOrderRepository.GetUserQuickListTabItems(int userId, int? siteId, string tab)
+        IEnumerable<UserQuickListItem> IOrderRepository.GetUserQuickListTabItems(int userId, long? siteId, string tab)
         {
             if (tab == "#")
             {
