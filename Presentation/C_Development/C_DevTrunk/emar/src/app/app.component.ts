@@ -45,14 +45,14 @@ export class AppComponent implements OnInit {
 
   loginUser() {
     // this.user = USER;
-    const userId: number = 28;
+    const userId: number = 27;
     // Mock Data
-    this.user = this.userService.getUser(userId);
+    // this.user = this.userService.getUser(userId);
 
     // API
-    // this.userService.getUser(userId).subscribe((user) => {
-    //   this.user = user;
-    // });
+    this.userService.getUser(userId).subscribe((user) => {
+      this.user = user;
+    });
 
     /* this.userService.fetchUser(244).subscribe(user => {
       console.log('USER');console.log(user)
