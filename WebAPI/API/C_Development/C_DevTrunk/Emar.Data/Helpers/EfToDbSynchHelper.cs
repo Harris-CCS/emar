@@ -42,7 +42,7 @@ namespace Emar.Data.Helpers
                             else
                                 ConfirmColumnProperties(tbl.TableName, reader, col, report);
                         }
-                    }   
+                    }
                 }
             }
 
@@ -62,7 +62,7 @@ namespace Emar.Data.Helpers
                     Errors = "Annotation SQL datatype doesn't match the CLR datatype and properties",
                 };
             }
-            else if ((col.KeyColumn ? 1 : 0) != (int) reader["KeyColumn"])
+            else if ((col.KeyColumn ? 1 : 0) != (int)reader["KeyColumn"])
             {
                 rptColumn = new EfDiscrepancyColumnDto
                 {
@@ -86,7 +86,7 @@ namespace Emar.Data.Helpers
 
             var clrType = SqlToClrDataType(dataType, out bool unicode);
 
-            var propertyName = columnName.Substring(0,1).ToUpper() + columnName.Substring(1).ToLower();
+            var propertyName = columnName.Substring(0, 1).ToUpper() + columnName.Substring(1).ToLower();
             var idx = propertyName.IndexOf('_');
             while (idx > -1)
             {
@@ -101,7 +101,7 @@ namespace Emar.Data.Helpers
             {
                 ColumnName = columnName,
                 Errors = "Column Missing",
-                CorrectionCode = $"[Column(\"{reader["columnName"]}\", TypeName = \"{dataType}\"){nullable}{keyColumn}]" 
+                CorrectionCode = $"[Column(\"{reader["columnName"]}\", TypeName = \"{dataType}\"){nullable}{keyColumn}]"
                                  + Environment.NewLine
                                  + $"public long {propertyName} {{ get; set; }}"
             };
@@ -121,7 +121,7 @@ namespace Emar.Data.Helpers
 
         private string SqlToClrDataType(string dataType, out bool unicode)
         {
-            var dtParts = dataType.Split(new[] {'(', ')', ','});
+            var dtParts = dataType.Split(new[] { '(', ')', ',' });
             switch (dtParts[0])
             {
                 case "varchar":
@@ -245,12 +245,12 @@ namespace Emar.Data.Helpers
 
         private class ColumnAttributes
         {
-            
+
             private bool _isKey;
             internal bool KeyColumn => _isKey;
-        
+
             internal int MaxStringLength { get; set; }
-            
+
             internal string Name { get; set; }
 
             internal Type DataType { get; set; }
@@ -329,7 +329,7 @@ namespace Emar.Data.Helpers
             //}
             public bool AnnotationDoesntMatchDataType(SqlDataReader reader)
             {
-                throw new NotImplementedException();    
+                throw new NotImplementedException();
             }
         }
 

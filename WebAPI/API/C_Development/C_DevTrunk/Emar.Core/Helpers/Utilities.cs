@@ -8,6 +8,11 @@ using System.Reflection;
 
 namespace Emar.Core.Helpers
 {
+    public static class AppConstants
+    {
+        public const string ImagesRoute = "api/images";
+    }
+
     public static class StringExtensions
     {
         /// <summary>
@@ -18,6 +23,14 @@ namespace Emar.Core.Helpers
         public static string ToTitleCase(this string value)
         {
             return (!String.IsNullOrEmpty(value) ? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(value.ToLowerInvariant()) : String.Empty);
+        }
+
+        public static string RemoveFirst(this string source, string remove)
+        {
+            int index = source.IndexOf(remove, StringComparison.Ordinal);
+            return (index < 0)
+                ? source
+                : source.Remove(index, remove.Length);
         }
     }
 

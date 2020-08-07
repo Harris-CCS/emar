@@ -105,7 +105,7 @@ namespace Emar.Core.Orders.Service
 
         #region User Quick List Services
 
-        public UserQuickListFrameworkDto GetInitialUserQuickList(in int userId, int? siteId, 
+        public UserQuickListFrameworkDto GetInitialUserQuickList(in int userId, long? siteId, 
             string tabLinkBase, string orderLinkBase)
         {
             List<string> tabList = _orderRepository.GetUserQuickListTabs(userId, siteId).OrderBy(i => i).ToList();
@@ -145,8 +145,7 @@ namespace Emar.Core.Orders.Service
             return ret;
         }
 
-        public IEnumerable<UserQuickListItemDto> GetQuickListTab(in int userId, int? siteId, string orderLinkBase,
-            string tab)
+        public IEnumerable<UserQuickListItemDto> GetQuickListTab(in int userId, long? siteId, string orderLinkBase, string tab)
         {
             List<UserQuickListItem> tabItems;
             if (tab == Constants.MostUsedTabTitle)
@@ -165,7 +164,7 @@ namespace Emar.Core.Orders.Service
 
         #region Department Preferred List Services
 
-        public IEnumerable<DepartmentPreferredItemDto> GetDepartmentPreferredList(in int siteId, string departmentCode,
+        public IEnumerable<DepartmentPreferredItemDto> GetDepartmentPreferredList(in long siteId, string departmentCode,
             string linkBase)
         {
             List<DepartmentPreferredListItem> orders = _orderRepository.GetDepartmentPreferredList(siteId,

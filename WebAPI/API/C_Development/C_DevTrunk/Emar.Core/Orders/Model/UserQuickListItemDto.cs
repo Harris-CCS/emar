@@ -13,7 +13,7 @@ namespace Emar.Core.Orders.Model
         /// <summary>
         /// User Quick Lists are site-specific
         /// </summary>
-        public int SiteId { get; set; }
+        public long SiteId { get; set; }
 
         public IEnumerable<HateOasLinkDto> Links;
     }
