@@ -1,6 +1,7 @@
 export interface Patient {
   id: number;
   active: boolean; // not in patients table, but in API returned data
+  medicalRecordNumber?: string;
   accountNumber?: string;
   firstName: string;
   middleName?: string;
@@ -40,13 +41,11 @@ export interface Patient {
   vsOxygenSaturation?: string;
   vsPainScaleIndicator?: string;
   vsPainScale?: string;
-  // Missing fields
-  personId?: string;
-  medicalRecordNumber?: string;
-  customPatientId?: string;
-  patientImage?: string;
-  //
+  personNumber?: string;
+  customNumber?: string;
   site: { id: number; name: string; active: boolean; timeZoneName: string };
+  // Missing fields
+  patientImage?: string;
   customIndicators?: Array<IIndicators>;
   allergies?: Array<IAllergies>;
   homeMeds?: Array<IHomeMeds>;

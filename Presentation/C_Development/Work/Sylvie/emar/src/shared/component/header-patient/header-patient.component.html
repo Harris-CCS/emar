@@ -92,9 +92,9 @@
                         ngbTooltip="Medical Record Number">{{patient.medicalRecordNumber}}</span>
                     <span *ngIf="patient.accountNumber" [innerText]="appendDisplayValue('accountNumber')"
                         placement="bottom" ngbTooltip="Account Number"></span>
-                    <span *ngIf="patient.personId" [innerText]="appendDisplayValue('personId')" placement="bottom"
-                        ngbTooltip="Person Number"></span>
-                    <span *ngIf="patient.customPatientId" [innerText]="appendDisplayValue('customId')"
+                    <span *ngIf="patient.personNumber" [innerText]="appendDisplayValue('personNumber')"
+                        placement="bottom" ngbTooltip="Person Number"></span>
+                    <span *ngIf="patient.customNumber" [innerText]="appendDisplayValue('customNumber')"
                         placement="bottom" ngbTooltip="Custom Number"></span>
                 </div>
             </div>

@@ -46,8 +46,9 @@ export class OrderEntryComponent implements OnInit {
     this.orders = this.patientService.getPatientOrders(this.patientId);
     this.currentListOrders();
 
-    // this.patientService.getPatient(this.patientId)
-    //   .subscribe(patient => this.patient = patient);
+    // this.patientService
+    //   .getPatient(this.patientId)
+    //   .subscribe((patient) => (this.patient = patient));
   }
 
   //currentUser() {
