@@ -106,22 +106,22 @@ export class HeaderPatientComponent implements OnInit {
           return `${this.patient.accountNumber}`;
         }
       }
-      case 'personId': {
+      case 'personNumber': {
         if (this.patient.medicalRecordNumber || this.patient.accountNumber) {
-          return ` / ${this.patient.personId}`;
+          return ` / ${this.patient.personNumber}`;
         } else {
-          return `${this.patient.personId}`;
+          return `${this.patient.personNumber}`;
         }
       }
-      case 'customId': {
+      case 'customNumber': {
         if (
           this.patient.medicalRecordNumber ||
           this.patient.accountNumber ||
-          this.patient.personId
+          this.patient.personNumber
         ) {
-          return ` / ${this.patient.customPatientId}`;
+          return ` / ${this.patient.customNumber}`;
         } else {
-          return `${this.patient.customPatientId}`;
+          return `${this.patient.customNumber}`;
         }
       }
     }
