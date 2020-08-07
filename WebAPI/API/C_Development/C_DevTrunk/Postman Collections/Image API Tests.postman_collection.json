@@ -1,0 +1,140 @@
+{
+	"info": {
+		"_postman_id": "ac21124d-a7b7-4b89-9603-cb8876d1a1ec",
+		"name": "Image API Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET patient image (by id)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "44b29897-cf08-4faa-8a2a-c31f144d4d5b",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "image/jpeg",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/images/patients/67",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"images",
+						"patients",
+						"67"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "GET image (by patient id)",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "image/jpeg",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:51044/api/images/67",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "51044",
+							"path": [
+								"api",
+								"images",
+								"67"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "GET patient image (by custom number)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ab40cc67-b3c4-46fe-b192-7f82bc02b717",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "image/jpeg",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/images/patients?getPatientBy=customNumber&number=C190517055504",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"images",
+						"patients"
+					],
+					"query": [
+						{
+							"key": "getPatientBy",
+							"value": "customNumber"
+						},
+						{
+							"key": "number",
+							"value": "C190517055504"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

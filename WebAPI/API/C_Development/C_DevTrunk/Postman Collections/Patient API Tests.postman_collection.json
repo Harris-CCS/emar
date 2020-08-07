@@ -119,15 +119,21 @@
 			]
 		},
 		{
-			"name": "Get ConneryId",
+			"name": "Get 'Beau Zelle Bamme' (by custom number)",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
-						"id": "c0581c31-60c8-429f-a2be-54f8310da4d1",
+						"id": "47080a22-35ec-4705-a959-439e2f288102",
 						"exec": [
-							"var jsonData = pm.response.json();\r",
-							"pm.environment.set(\"ConneryId\", jsonData.id);"
+							"pm.test(\"Correct Id returned\", function() {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.id).to.eql(67);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -143,12 +149,12 @@
 				"header": [
 					{
 						"key": "Accept",
-						"value": "application/json,text/plain",
-						"type": "text"
+						"type": "text",
+						"value": "application/json,text/plain"
 					}
 				],
 				"url": {
-					"raw": "{{URL}}/api/patients?AccountNumber=150422085236",
+					"raw": "{{URL}}/api/patients?customNumber=C190517055504",
 					"host": [
 						"{{URL}}"
 					],
@@ -158,7 +164,259 @@
 					],
 					"query": [
 						{
-							"key": "AccountNumber",
+							"key": "customNumber",
+							"value": "C190517055504"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get ConneryId",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/patients?accountnumber=150422085236",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"patients"
+							],
+							"query": [
+								{
+									"key": "accountnumber",
+									"value": "150422085236"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 18 Jul 2020 01:55:54 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "966"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Sat, 18 Jul 2020 01:56:55 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Sat, 18 Jul 2020 01:55:55 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"AA3834261BC3E906C8348AC966056F8E\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 163,\n    \"active\": true,\n    \"accountNumber\": \"150422085236  \",\n    \"firstName\": \"Rowe\",\n    \"middleName\": \"\",\n    \"lastName\": \"Connery\",\n    \"nameSuffix\": \"\",\n    \"fullName\": \"Rowe Connery\",\n    \"gender\": \"M\",\n    \"dateOfBirth\": \"1933-03-03T00:00:00\",\n    \"age\": 87,\n    \"ageUnits\": \"years\",\n    \"chiefComplaint\": \"Syncopal Episode\",\n    \"heightInCm\": 0,\n    \"weightInKg\": 0,\n    \"siteId\": 28,\n    \"departmentCode\": \"ICU \",\n    \"wardCode\": \"ICUH    \",\n    \"roomBedCode\": \"            \",\n    \"urgencyColor\": \" \",\n    \"nameAlert\": false,\n    \"withdrawConsent\": false,\n    \"vsDatetime\": null,\n    \"vsBloodPressureIndicator\": \" \",\n    \"vsSystolic\": \"              \",\n    \"vsDiastolic\": \"              \",\n    \"vsPulseIndicator\": \" \",\n    \"vsPulse\": \"              \",\n    \"vsMapLevel\": null,\n    \"vsMap\": null,\n    \"vsRespiratoryIndicator\": \" \",\n    \"vsRespiratory\": \"              \",\n    \"vsTemperatureIndicator\": \" \",\n    \"vsTemperature\": \"              \",\n    \"vsEndTidalLevel\": null,\n    \"vsEndTidal\": null,\n    \"vsOxygenSaturationIndicator\": \" \",\n    \"vsOxygenSaturation\": \"\",\n    \"vsPainScaleIndicator\": \" \",\n    \"vsPainScale\": \"              \",\n    \"orders\": null,\n    \"site\": null,\n    \"siteName\": null\n}"
+				}
+			]
+		},
+		{
+			"name": "Get 'Beau Zelle Bamme' (by person number)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "346494d4-5086-4a94-a44e-4586e8a31aae",
+						"exec": [
+							"pm.test(\"Correct Id returned\", function() {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.id).to.eql(67);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json,text/plain"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/patients?personNumber=P190517055504",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"patients"
+					],
+					"query": [
+						{
+							"key": "personNumber",
+							"value": "P190517055504"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get ConneryId",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/patients?accountnumber=150422085236",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"patients"
+							],
+							"query": [
+								{
+									"key": "accountnumber",
+									"value": "150422085236"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 18 Jul 2020 01:55:54 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "966"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Sat, 18 Jul 2020 01:56:55 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Sat, 18 Jul 2020 01:55:55 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"AA3834261BC3E906C8348AC966056F8E\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 163,\n    \"active\": true,\n    \"accountNumber\": \"150422085236  \",\n    \"firstName\": \"Rowe\",\n    \"middleName\": \"\",\n    \"lastName\": \"Connery\",\n    \"nameSuffix\": \"\",\n    \"fullName\": \"Rowe Connery\",\n    \"gender\": \"M\",\n    \"dateOfBirth\": \"1933-03-03T00:00:00\",\n    \"age\": 87,\n    \"ageUnits\": \"years\",\n    \"chiefComplaint\": \"Syncopal Episode\",\n    \"heightInCm\": 0,\n    \"weightInKg\": 0,\n    \"siteId\": 28,\n    \"departmentCode\": \"ICU \",\n    \"wardCode\": \"ICUH    \",\n    \"roomBedCode\": \"            \",\n    \"urgencyColor\": \" \",\n    \"nameAlert\": false,\n    \"withdrawConsent\": false,\n    \"vsDatetime\": null,\n    \"vsBloodPressureIndicator\": \" \",\n    \"vsSystolic\": \"              \",\n    \"vsDiastolic\": \"              \",\n    \"vsPulseIndicator\": \" \",\n    \"vsPulse\": \"              \",\n    \"vsMapLevel\": null,\n    \"vsMap\": null,\n    \"vsRespiratoryIndicator\": \" \",\n    \"vsRespiratory\": \"              \",\n    \"vsTemperatureIndicator\": \" \",\n    \"vsTemperature\": \"              \",\n    \"vsEndTidalLevel\": null,\n    \"vsEndTidal\": null,\n    \"vsOxygenSaturationIndicator\": \" \",\n    \"vsOxygenSaturation\": \"\",\n    \"vsPainScaleIndicator\": \" \",\n    \"vsPainScale\": \"              \",\n    \"orders\": null,\n    \"site\": null,\n    \"siteName\": null\n}"
+				}
+			]
+		},
+		{
+			"name": "Get ConneryId (by account number)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c0581c31-60c8-429f-a2be-54f8310da4d1",
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.environment.set(\"ConneryId\", jsonData.id);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json,text/plain"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/patients?accountNumber=150422085236",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"patients"
+					],
+					"query": [
+						{
+							"key": "accountNumber",
 							"value": "150422085236"
 						}
 					]
