@@ -1,0 +1,480 @@
+{
+	"info": {
+		"_postman_id": "9edbdb3b-aa1d-44e9-b9ea-99f4e76c6621",
+		"name": "UserQuickList API Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get user (external id)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6f66ee9d-9630-4587-9ddb-e8d2c41c0d76",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Correct Name returned\", function() {\r",
+							"    pm.expect(jsonData.displayName).to.eql(\"Michele Eyre, LPN\");\r",
+							"});\r",
+							"\r",
+							"pm.environment.set(\"QuickListUserId\", jsonData.id);\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json,text/plain",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/users?extId=36",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"users"
+					],
+					"query": [
+						{
+							"key": "extId",
+							"value": "36"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get user (external id)",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.pcemar.hateoas+json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/users?extId=10087",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"users"
+							],
+							"query": [
+								{
+									"key": "extId",
+									"value": "10087"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Tue, 14 Jul 2020 19:45:21 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/vnd.pcemar.hateoas+json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "69"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Tue, 14 Jul 2020 19:46:21 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Tue, 14 Jul 2020 19:45:21 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"A554A289C47FA1ED1AA601C37457C06E\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 240,\n    \"name\": \"HLAB\",\n    \"siteId\": 28,\n    \"siteName\": \"Pulsecheck Hospital\"\n}"
+				}
+			]
+		},
+		{
+			"name": "GET quicklist (Initial Call: >80 Most Used)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "87d2ff8d-02b6-41f4-9e76-16b85f71c9a0",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Returns 80 records\", function() {\r",
+							"    pm.expect(jsonData.currentTabContents.length).to.eql(80);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Returns 27 tabs\", function() {\r",
+							"    pm.expect(jsonData.tabListing.length).to.eql(27);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Correct Tab Name returned\", function() {\r",
+							"    pm.expect(jsonData.currentTab.tabName).to.eql(\"MostUsed\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json,text/plain",
+						"type": "text"
+					},
+					{
+						"key": "X-User",
+						"type": "text",
+						"value": "{{QuickListUserId}}"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/userquicklists?patientId=1234",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"userquicklists"
+					],
+					"query": [
+						{
+							"key": "SiteId",
+							"value": "10",
+							"disabled": true
+						},
+						{
+							"key": "patientId",
+							"value": "1234"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET quicklist (Subsequent: \"#\" - good site)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "94227b59-e6f5-4a15-b0ee-2c383f82ec3a",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Returns 1 record\", function() {\r",
+							"    pm.expect(jsonData.length).to.eql(1);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json,text/plain",
+						"type": "text"
+					},
+					{
+						"key": "X-User",
+						"type": "text",
+						"value": "{{QuickListUserId}}"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/userquicklists/tabs/%23?SiteId=16",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"userquicklists",
+						"tabs",
+						"%23"
+					],
+					"query": [
+						{
+							"key": "SiteId",
+							"value": "16"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET quicklist (Subsequent: \"C\" good site)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4c49175d-20e4-45df-8953-dea18729e994",
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Returns 91 records\", function () {\r",
+							"    pm.expect(jsonData.length).to.eql(91);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Has correct HATEOAS links\", function () {\r",
+							"    var expectedLink = pm.environment.get(\"URL\") + \"/api/userquicklists/40096/cartOrders/12345\";\r",
+							"    pm.expect(jsonData[0].links[0].href).to.eql(expectedLink);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json,text/plain",
+						"type": "text"
+					},
+					{
+						"key": "X-User",
+						"type": "text",
+						"value": "{{QuickListUserId}}"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/userquicklists/tabs/C?SiteId=16&patientId=12345",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"userquicklists",
+						"tabs",
+						"C"
+					],
+					"query": [
+						{
+							"key": "SiteId",
+							"value": "16"
+						},
+						{
+							"key": "patientId",
+							"value": "12345"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET quicklist (Subsequent: \"C\" no site)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "91945fe0-f009-4c08-9944-0d816f01a070",
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Returns 91 records\", function() {\r",
+							"    pm.expect(jsonData.length).to.eql(91);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json,text/plain",
+						"type": "text"
+					},
+					{
+						"key": "X-User",
+						"type": "text",
+						"value": "{{QuickListUserId}}"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/userquicklists/tabs/C",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"userquicklists",
+						"tabs",
+						"C"
+					],
+					"query": [
+						{
+							"key": "SiteId",
+							"value": "16",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET quicklist (Subsequent: \"C\" bad site)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5a221ef3-60e1-4f98-8307-a63c6d3febe9",
+						"exec": [
+							"// pm.test(\"Returns 91 records\", function() {\r",
+							"//     pm.expect(jsonData.length).to.eql(91);\r",
+							"// });\r",
+							"\r",
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"User does not have any Quick List Orders\", function () {\r",
+							"    let expectedStrings = ['User with id', 'does not have any Quick List Orders for the ', 'C', 'tab for Site 17'];\r",
+							"    var textData = pm.response.text();\r",
+							"    expectedStrings.forEach(str => pm.expect(textData).to.include(str));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json,text/plain",
+						"type": "text"
+					},
+					{
+						"key": "X-User",
+						"type": "text",
+						"value": "{{QuickListUserId}}"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/userquicklists/tabs/C?SiteId=17",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"userquicklists",
+						"tabs",
+						"C"
+					],
+					"query": [
+						{
+							"key": "SiteId",
+							"value": "17"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

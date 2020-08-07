@@ -1,0 +1,86 @@
+{
+	"info": {
+		"_postman_id": "91178a6a-c60a-42a2-8d5f-42e164d3ce79",
+		"name": "Composer API Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET All Choices/Preferences for one Drug",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/api/orders/composerOptions/Ondansetron%20Hydrochloride",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"orders",
+						"composerOptions",
+						"Ondansetron%20Hydrochloride"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Frequencies",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/orders/composerOptions/frequencies/1",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"orders",
+						"composerOptions",
+						"frequencies",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Units",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/orders/composerOptions/units/1",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"orders",
+						"composerOptions",
+						"units",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

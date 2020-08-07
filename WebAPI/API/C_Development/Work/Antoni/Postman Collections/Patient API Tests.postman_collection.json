@@ -1,0 +1,1864 @@
+{
+	"info": {
+		"_postman_id": "ffaf1c3d-f45c-4b53-ac6e-5c705a769e82",
+		"name": "Patient API Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET patient (Pt doesn't exist)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f6e57dfe-4e30-45f9-8b1b-b35c962b7835",
+						"exec": [
+							"//pm.test(\"Not Found returned\", function() {\r",
+							"//    var jsonData = pm.response.json();\r",
+							"//   pm.expect(jsonData).to.eql(\"Patient with id 999999999 was not found\");\r",
+							"//});\r",
+							"\r",
+							"pm.test(\"Patient was not found\", function () {\r",
+							"    let expectedStrings = ['Patient with id', 'was not found'];\r",
+							"    var textData = pm.response.text();\r",
+							"    expectedStrings.forEach(str => pm.expect(textData).to.include(str));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json,text/plain",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/patients/999999999",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"patients",
+						"999999999"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "GET patient (Pt doesn't exist)",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/patients/999999999",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"patients",
+								"999999999"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 18 Jul 2020 01:55:20 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "41"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Sat, 18 Jul 2020 01:56:20 GMT"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "\"Patient with id 999999999 was not found\""
+				}
+			]
+		},
+		{
+			"name": "Get 'Beau Zelle Bamme' (by custom number)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "47080a22-35ec-4705-a959-439e2f288102",
+						"exec": [
+							"pm.test(\"Correct Id returned\", function() {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.id).to.eql(67);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json,text/plain"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/patients?customNumber=C190517055504",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"patients"
+					],
+					"query": [
+						{
+							"key": "customNumber",
+							"value": "C190517055504"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get ConneryId",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/patients?accountnumber=150422085236",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"patients"
+							],
+							"query": [
+								{
+									"key": "accountnumber",
+									"value": "150422085236"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 18 Jul 2020 01:55:54 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "966"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Sat, 18 Jul 2020 01:56:55 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Sat, 18 Jul 2020 01:55:55 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"AA3834261BC3E906C8348AC966056F8E\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 163,\n    \"active\": true,\n    \"accountNumber\": \"150422085236  \",\n    \"firstName\": \"Rowe\",\n    \"middleName\": \"\",\n    \"lastName\": \"Connery\",\n    \"nameSuffix\": \"\",\n    \"fullName\": \"Rowe Connery\",\n    \"gender\": \"M\",\n    \"dateOfBirth\": \"1933-03-03T00:00:00\",\n    \"age\": 87,\n    \"ageUnits\": \"years\",\n    \"chiefComplaint\": \"Syncopal Episode\",\n    \"heightInCm\": 0,\n    \"weightInKg\": 0,\n    \"siteId\": 28,\n    \"departmentCode\": \"ICU \",\n    \"wardCode\": \"ICUH    \",\n    \"roomBedCode\": \"            \",\n    \"urgencyColor\": \" \",\n    \"nameAlert\": false,\n    \"withdrawConsent\": false,\n    \"vsDatetime\": null,\n    \"vsBloodPressureIndicator\": \" \",\n    \"vsSystolic\": \"              \",\n    \"vsDiastolic\": \"              \",\n    \"vsPulseIndicator\": \" \",\n    \"vsPulse\": \"              \",\n    \"vsMapLevel\": null,\n    \"vsMap\": null,\n    \"vsRespiratoryIndicator\": \" \",\n    \"vsRespiratory\": \"              \",\n    \"vsTemperatureIndicator\": \" \",\n    \"vsTemperature\": \"              \",\n    \"vsEndTidalLevel\": null,\n    \"vsEndTidal\": null,\n    \"vsOxygenSaturationIndicator\": \" \",\n    \"vsOxygenSaturation\": \"\",\n    \"vsPainScaleIndicator\": \" \",\n    \"vsPainScale\": \"              \",\n    \"orders\": null,\n    \"site\": null,\n    \"siteName\": null\n}"
+				}
+			]
+		},
+		{
+			"name": "Get 'Beau Zelle Bamme' (by person number)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "346494d4-5086-4a94-a44e-4586e8a31aae",
+						"exec": [
+							"pm.test(\"Correct Id returned\", function() {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.id).to.eql(67);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json,text/plain"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/patients?personNumber=P190517055504",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"patients"
+					],
+					"query": [
+						{
+							"key": "personNumber",
+							"value": "P190517055504"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get ConneryId",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/patients?accountnumber=150422085236",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"patients"
+							],
+							"query": [
+								{
+									"key": "accountnumber",
+									"value": "150422085236"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 18 Jul 2020 01:55:54 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "966"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Sat, 18 Jul 2020 01:56:55 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Sat, 18 Jul 2020 01:55:55 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"AA3834261BC3E906C8348AC966056F8E\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 163,\n    \"active\": true,\n    \"accountNumber\": \"150422085236  \",\n    \"firstName\": \"Rowe\",\n    \"middleName\": \"\",\n    \"lastName\": \"Connery\",\n    \"nameSuffix\": \"\",\n    \"fullName\": \"Rowe Connery\",\n    \"gender\": \"M\",\n    \"dateOfBirth\": \"1933-03-03T00:00:00\",\n    \"age\": 87,\n    \"ageUnits\": \"years\",\n    \"chiefComplaint\": \"Syncopal Episode\",\n    \"heightInCm\": 0,\n    \"weightInKg\": 0,\n    \"siteId\": 28,\n    \"departmentCode\": \"ICU \",\n    \"wardCode\": \"ICUH    \",\n    \"roomBedCode\": \"            \",\n    \"urgencyColor\": \" \",\n    \"nameAlert\": false,\n    \"withdrawConsent\": false,\n    \"vsDatetime\": null,\n    \"vsBloodPressureIndicator\": \" \",\n    \"vsSystolic\": \"              \",\n    \"vsDiastolic\": \"              \",\n    \"vsPulseIndicator\": \" \",\n    \"vsPulse\": \"              \",\n    \"vsMapLevel\": null,\n    \"vsMap\": null,\n    \"vsRespiratoryIndicator\": \" \",\n    \"vsRespiratory\": \"              \",\n    \"vsTemperatureIndicator\": \" \",\n    \"vsTemperature\": \"              \",\n    \"vsEndTidalLevel\": null,\n    \"vsEndTidal\": null,\n    \"vsOxygenSaturationIndicator\": \" \",\n    \"vsOxygenSaturation\": \"\",\n    \"vsPainScaleIndicator\": \" \",\n    \"vsPainScale\": \"              \",\n    \"orders\": null,\n    \"site\": null,\n    \"siteName\": null\n}"
+				}
+			]
+		},
+		{
+			"name": "Get ConneryId (by account number)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c0581c31-60c8-429f-a2be-54f8310da4d1",
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.environment.set(\"ConneryId\", jsonData.id);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json,text/plain"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/patients?accountNumber=150422085236",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"patients"
+					],
+					"query": [
+						{
+							"key": "accountNumber",
+							"value": "150422085236"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get ConneryId",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/patients?accountnumber=150422085236",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"patients"
+							],
+							"query": [
+								{
+									"key": "accountnumber",
+									"value": "150422085236"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 18 Jul 2020 01:55:54 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "966"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Sat, 18 Jul 2020 01:56:55 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Sat, 18 Jul 2020 01:55:55 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"AA3834261BC3E906C8348AC966056F8E\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 163,\n    \"active\": true,\n    \"accountNumber\": \"150422085236  \",\n    \"firstName\": \"Rowe\",\n    \"middleName\": \"\",\n    \"lastName\": \"Connery\",\n    \"nameSuffix\": \"\",\n    \"fullName\": \"Rowe Connery\",\n    \"gender\": \"M\",\n    \"dateOfBirth\": \"1933-03-03T00:00:00\",\n    \"age\": 87,\n    \"ageUnits\": \"years\",\n    \"chiefComplaint\": \"Syncopal Episode\",\n    \"heightInCm\": 0,\n    \"weightInKg\": 0,\n    \"siteId\": 28,\n    \"departmentCode\": \"ICU \",\n    \"wardCode\": \"ICUH    \",\n    \"roomBedCode\": \"            \",\n    \"urgencyColor\": \" \",\n    \"nameAlert\": false,\n    \"withdrawConsent\": false,\n    \"vsDatetime\": null,\n    \"vsBloodPressureIndicator\": \" \",\n    \"vsSystolic\": \"              \",\n    \"vsDiastolic\": \"              \",\n    \"vsPulseIndicator\": \" \",\n    \"vsPulse\": \"              \",\n    \"vsMapLevel\": null,\n    \"vsMap\": null,\n    \"vsRespiratoryIndicator\": \" \",\n    \"vsRespiratory\": \"              \",\n    \"vsTemperatureIndicator\": \" \",\n    \"vsTemperature\": \"              \",\n    \"vsEndTidalLevel\": null,\n    \"vsEndTidal\": null,\n    \"vsOxygenSaturationIndicator\": \" \",\n    \"vsOxygenSaturation\": \"\",\n    \"vsPainScaleIndicator\": \" \",\n    \"vsPainScale\": \"              \",\n    \"orders\": null,\n    \"site\": null,\n    \"siteName\": null\n}"
+				}
+			]
+		},
+		{
+			"name": "GET patient (first and last name)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f6e57dfe-4e30-45f9-8b1b-b35c962b7835",
+						"exec": [
+							"pm.test(\"Correct Name returned\", function() {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(\"Rowe Connery\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json,text/plain",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/patients/{{ConneryId}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"patients",
+						"{{ConneryId}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "GET patient (first and last name)",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/patients/{{ConneryId}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"patients",
+								"{{ConneryId}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 18 Jul 2020 01:56:24 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1199"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Sat, 18 Jul 2020 01:57:25 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Sat, 18 Jul 2020 01:56:25 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"2BDDFB9F6DCC6FB5688B5082D0627118\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 163,\n    \"active\": true,\n    \"accountNumber\": \"150422085236  \",\n    \"firstName\": \"Rowe\",\n    \"middleName\": \"\",\n    \"lastName\": \"Connery\",\n    \"nameSuffix\": \"\",\n    \"fullName\": \"Rowe Connery\",\n    \"gender\": \"M\",\n    \"dateOfBirth\": \"1933-03-03T00:00:00\",\n    \"age\": 87,\n    \"ageUnits\": \"years\",\n    \"chiefComplaint\": \"Syncopal Episode\",\n    \"heightInCm\": 0,\n    \"weightInKg\": 0,\n    \"siteId\": 28,\n    \"departmentCode\": \"ICU \",\n    \"wardCode\": \"ICUH    \",\n    \"roomBedCode\": \"            \",\n    \"urgencyColor\": \" \",\n    \"nameAlert\": false,\n    \"withdrawConsent\": false,\n    \"vsDatetime\": null,\n    \"vsBloodPressureIndicator\": \" \",\n    \"vsSystolic\": \"              \",\n    \"vsDiastolic\": \"              \",\n    \"vsPulseIndicator\": \" \",\n    \"vsPulse\": \"              \",\n    \"vsMapLevel\": null,\n    \"vsMap\": null,\n    \"vsRespiratoryIndicator\": \" \",\n    \"vsRespiratory\": \"              \",\n    \"vsTemperatureIndicator\": \" \",\n    \"vsTemperature\": \"              \",\n    \"vsEndTidalLevel\": null,\n    \"vsEndTidal\": null,\n    \"vsOxygenSaturationIndicator\": \" \",\n    \"vsOxygenSaturation\": \"\",\n    \"vsPainScaleIndicator\": \" \",\n    \"vsPainScale\": \"              \",\n    \"orders\": [],\n    \"site\": {\n        \"id\": 28,\n        \"name\": \"Pulsecheck Hospital                     \",\n        \"active\": true,\n        \"timeZoneName\": \"Central Standard Time\"\n    },\n    \"siteName\": \"Pulsecheck Hospital                     \",\n    \"links\": [\n        {\n            \"href\": \"http://localhost:51044/api/patients/163\",\n            \"rel\": \"self\",\n            \"method\": \"GET\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "GET patient - Incorrect Accept Header",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ed32ce9c-c60e-4b8d-a7c2-96bcc765f77c",
+						"exec": [
+							"pm.test(\"Status code is 406\", function () {\r",
+							"    pm.response.to.have.status(406);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/xml",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/patients/1",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"patients",
+						"1"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "GET patient - Incorrect Accept Header",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/patients/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"patients",
+								"1"
+							]
+						}
+					},
+					"status": "Not Acceptable",
+					"code": 406,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 18 Jul 2020 01:56:51 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Sat, 18 Jul 2020 01:57:52 GMT"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "GET patient - Specific Accept Header",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "935c9ac8-8894-4704-976a-2a944847cc42",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Correct Format (Json)\", function () {\r",
+							"    pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/json\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json,text/plain"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/patients/163",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"patients",
+						"163"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "GET patient - Specific Accept Header",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/patients/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"patients",
+								"1"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 18 Jul 2020 01:57:11 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "4460"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Sat, 18 Jul 2020 01:58:11 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Sat, 18 Jul 2020 01:57:11 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"A303CAF4BEE8CEB1F2C6F889A6B1CBEC\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 1,\n    \"active\": true,\n    \"accountNumber\": \"6544624       \",\n    \"firstName\": \"Jillian\",\n    \"middleName\": \"\",\n    \"lastName\": \"Abbott\",\n    \"nameSuffix\": \"\",\n    \"fullName\": \"Jillian Abbott\",\n    \"gender\": \"F\",\n    \"dateOfBirth\": \"1973-03-11T00:00:00\",\n    \"age\": 47,\n    \"ageUnits\": \"years\",\n    \"chiefComplaint\": \"Irritated throat\",\n    \"heightInCm\": 0,\n    \"weightInKg\": 0,\n    \"siteId\": 18,\n    \"departmentCode\": \"ED  \",\n    \"wardCode\": \"SHIRE   \",\n    \"roomBedCode\": \"            \",\n    \"urgencyColor\": \"0\",\n    \"nameAlert\": false,\n    \"withdrawConsent\": false,\n    \"vsDatetime\": null,\n    \"vsBloodPressureIndicator\": \"0\",\n    \"vsSystolic\": \"120           \",\n    \"vsDiastolic\": \"80            \",\n    \"vsPulseIndicator\": \"0\",\n    \"vsPulse\": \"64            \",\n    \"vsMapLevel\": \"0\",\n    \"vsMap\": \"\",\n    \"vsRespiratoryIndicator\": \"0\",\n    \"vsRespiratory\": \"16            \",\n    \"vsTemperatureIndicator\": \"0\",\n    \"vsTemperature\": \"98.6          \",\n    \"vsEndTidalLevel\": \"0\",\n    \"vsEndTidal\": \"\",\n    \"vsOxygenSaturationIndicator\": \"0\",\n    \"vsOxygenSaturation\": \"100\",\n    \"vsPainScaleIndicator\": \"0\",\n    \"vsPainScale\": \"1             \",\n    \"orders\": [\n        {\n            \"id\": 1,\n            \"patientId\": 1,\n            \"addUserId\": 313,\n            \"addDatetime\": \"2020-06-19T17:00:00+05:00\",\n            \"ndc\": null,\n            \"drugId\": \"MED0001\",\n            \"brandName\": \"tylenol\",\n            \"dose\": null,\n            \"doseUnit\": null,\n            \"medicationRouteId\": 3,\n            \"priority\": 3,\n            \"frequencyId\": 456,\n            \"prn\": false,\n            \"pointInTime\": true,\n            \"orderStatus\": \"Pending\",\n            \"beginDatetime\": \"2020-06-19T17:30:00+05:00\",\n            \"endDatetime\": null,\n            \"orderNotes\": \"This is a humongous blob of text!!! Και λίγα Ελληνικά!!!\",\n            \"orderStatusCode\": \"Pending\",\n            \"orderType\": null,\n            \"administrations\": [\n                {\n                    \"id\": 1,\n                    \"orderId\": 1,\n                    \"pointInTime\": false,\n                    \"onHold\": false,\n                    \"missedDose\": false,\n                    \"administrationScheduledDatetime\": \"2020-06-19T17:45:00+05:00\",\n                    \"administrationInputDatetime\": \"2020-06-19T17:44:28+05:00\",\n                    \"administeringUserId\": 123,\n                    \"administrationDatetime\": \"2020-06-19T17:44:30+05:00\",\n                    \"stopScheduledDatetime\": \"2020-06-19T17:59:23+05:00\",\n                    \"stopInputDatetime\": \"2020-06-19T18:00:00+05:00\",\n                    \"stopUserId\": 456,\n                    \"stopDatetime\": \"2020-06-19T18:00:03+05:00\",\n                    \"acknowledgeUserId\": 789,\n                    \"acknowledgeDatetime\": \"2020-06-19T17:44:35+05:00\",\n                    \"events\": [\n                        {\n                            \"id\": 1,\n                            \"orderId\": 1,\n                            \"administrationId\": 1,\n                            \"eventDateTime\": \"2020-06-19T17:02:33+05:00\",\n                            \"addUserId\": 1,\n                            \"addDatetime\": \"2020-06-19T17:02:30+05:00\",\n                            \"actionId\": 1\n                        },\n                        {\n                            \"id\": 3,\n                            \"orderId\": 1,\n                            \"administrationId\": 1,\n                            \"eventDateTime\": \"2020-06-19T17:17:23+05:00\",\n                            \"addUserId\": 1,\n                            \"addDatetime\": \"2020-06-19T17:17:17+05:00\",\n                            \"actionId\": 1\n                        }\n                    ]\n                },\n                {\n                    \"id\": 2,\n                    \"orderId\": 1,\n                    \"pointInTime\": false,\n                    \"onHold\": false,\n                    \"missedDose\": false,\n                    \"administrationScheduledDatetime\": \"2020-06-19T17:45:00+05:00\",\n                    \"administrationInputDatetime\": \"2020-06-19T17:44:28+05:00\",\n                    \"administeringUserId\": 123,\n                    \"administrationDatetime\": \"2020-06-19T17:44:30+05:00\",\n                    \"stopScheduledDatetime\": \"2020-06-19T17:59:23+05:00\",\n                    \"stopInputDatetime\": \"2020-06-19T18:00:00+05:00\",\n                    \"stopUserId\": 456,\n                    \"stopDatetime\": \"2020-06-19T18:00:03+05:00\",\n                    \"acknowledgeUserId\": 789,\n                    \"acknowledgeDatetime\": \"2020-06-19T17:44:35+05:00\",\n                    \"events\": []\n                }\n            ],\n            \"events\": [\n                {\n                    \"id\": 1,\n                    \"orderId\": 1,\n                    \"administrationId\": 1,\n                    \"eventDateTime\": \"2020-06-19T17:02:33+05:00\",\n                    \"addUserId\": 1,\n                    \"addDatetime\": \"2020-06-19T17:02:30+05:00\",\n                    \"actionId\": 1\n                },\n                {\n                    \"id\": 3,\n                    \"orderId\": 1,\n                    \"administrationId\": 1,\n                    \"eventDateTime\": \"2020-06-19T17:17:23+05:00\",\n                    \"addUserId\": 1,\n                    \"addDatetime\": \"2020-06-19T17:17:17+05:00\",\n                    \"actionId\": 1\n                },\n                {\n                    \"id\": 2,\n                    \"orderId\": 1,\n                    \"administrationId\": null,\n                    \"eventDateTime\": \"2020-06-19T17:17:17+05:00\",\n                    \"addUserId\": 1,\n                    \"addDatetime\": \"2020-06-19T17:17:16+05:00\",\n                    \"actionId\": 2\n                }\n            ]\n        },\n        {\n            \"id\": 2,\n            \"patientId\": 1,\n            \"addUserId\": 313,\n            \"addDatetime\": \"2020-06-19T17:10:00+05:00\",\n            \"ndc\": null,\n            \"drugId\": \"MED0002\",\n            \"brandName\": \"tylenol\",\n            \"dose\": null,\n            \"doseUnit\": null,\n            \"medicationRouteId\": 2,\n            \"priority\": 3,\n            \"frequencyId\": 444,\n            \"prn\": true,\n            \"pointInTime\": false,\n            \"orderStatus\": \"Pending\",\n            \"beginDatetime\": \"2020-06-19T17:15:00+05:00\",\n            \"endDatetime\": null,\n            \"orderNotes\": \"More text!!! Κι άλλο κείμενο!!!\",\n            \"orderStatusCode\": \"Pending\",\n            \"orderType\": null,\n            \"administrations\": [],\n            \"events\": []\n        },\n        {\n            \"id\": 3,\n            \"patientId\": 1,\n            \"addUserId\": 342,\n            \"addDatetime\": \"2020-06-19T17:11:20+05:00\",\n            \"ndc\": null,\n            \"drugId\": \"MED4571\",\n            \"brandName\": \"tylenol\",\n            \"dose\": null,\n            \"doseUnit\": null,\n            \"medicationRouteId\": 2,\n            \"priority\": 2,\n            \"frequencyId\": 444,\n            \"prn\": true,\n            \"pointInTime\": true,\n            \"orderStatus\": \"Pending\",\n            \"beginDatetime\": \"2020-06-19T17:11:30+05:00\",\n            \"endDatetime\": null,\n            \"orderNotes\": \"More more text!!! Κι άλλο άλλο κείμενο!!!\",\n            \"orderStatusCode\": \"Pending\",\n            \"orderType\": null,\n            \"administrations\": [],\n            \"events\": []\n        }\n    ],\n    \"site\": {\n        \"id\": 18,\n        \"name\": \"Middle-earth                            \",\n        \"active\": true,\n        \"timeZoneName\": \"Central Standard Time\"\n    },\n    \"siteName\": \"Middle-earth                            \",\n    \"links\": [\n        {\n            \"href\": \"http://localhost:51044/api/patients/1\",\n            \"rel\": \"self\",\n            \"method\": \"GET\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "GET patient - Accept Header Not Specified",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "23c21c29-fb46-4d9c-a93d-5132d9c9996d",
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Correct Format (application/json)\", function () {\r",
+							"    pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/json\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/patients/1",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"patients",
+						"1"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "GET patient - Accept Header Not Specified",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/patients/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"patients",
+								"1"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 18 Jul 2020 02:04:24 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "41"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Sat, 18 Jul 2020 02:05:25 GMT"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "\"Unsupported media type header provided.\""
+				}
+			]
+		},
+		{
+			"name": "Get InfobuttonId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "dd58ec52-51f1-4f4e-8120-9e8c10ca0206",
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.environment.set(\"InfobuttonId\", jsonData.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json,text/plain",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/patients?AccountNumber=ACCT6009811",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"patients"
+					],
+					"query": [
+						{
+							"key": "AccountNumber",
+							"value": "ACCT6009811"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get InfobuttonId",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/patients?accountnumber=ACCT6009811",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"patients"
+							],
+							"query": [
+								{
+									"key": "accountnumber",
+									"value": "ACCT6009811"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 18 Jul 2020 01:58:02 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "994"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Sat, 18 Jul 2020 01:59:03 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Sat, 18 Jul 2020 01:58:03 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"9464615A598C158880DF8F48DFBDB4B1\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 379,\n    \"active\": true,\n    \"accountNumber\": \"ACCT6009811   \",\n    \"firstName\": \"Lillian\",\n    \"middleName\": \"A\",\n    \"lastName\": \"Infobutton\",\n    \"nameSuffix\": \"\",\n    \"fullName\": \"Lillian A. Infobutton\",\n    \"gender\": \"F\",\n    \"dateOfBirth\": \"1919-06-18T00:00:00\",\n    \"age\": 101,\n    \"ageUnits\": \"years\",\n    \"chiefComplaint\": \"Ataxia-double vision-nausea\",\n    \"heightInCm\": 198,\n    \"weightInKg\": 50,\n    \"siteId\": 28,\n    \"departmentCode\": \"ICU \",\n    \"wardCode\": \"ICUW    \",\n    \"roomBedCode\": \"            \",\n    \"urgencyColor\": \"0\",\n    \"nameAlert\": false,\n    \"withdrawConsent\": false,\n    \"vsDatetime\": null,\n    \"vsBloodPressureIndicator\": \"0\",\n    \"vsSystolic\": \"120           \",\n    \"vsDiastolic\": \"80            \",\n    \"vsPulseIndicator\": \"0\",\n    \"vsPulse\": \"64            \",\n    \"vsMapLevel\": \"0\",\n    \"vsMap\": \"\",\n    \"vsRespiratoryIndicator\": \"0\",\n    \"vsRespiratory\": \"16            \",\n    \"vsTemperatureIndicator\": \"0\",\n    \"vsTemperature\": \"98.6          \",\n    \"vsEndTidalLevel\": \"0\",\n    \"vsEndTidal\": \"\",\n    \"vsOxygenSaturationIndicator\": \"0\",\n    \"vsOxygenSaturation\": \"100\",\n    \"vsPainScaleIndicator\": \"0\",\n    \"vsPainScale\": \"1             \",\n    \"orders\": null,\n    \"site\": null,\n    \"siteName\": null\n}"
+				}
+			]
+		},
+		{
+			"name": "GET patient (suffix and middle name no dot)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7c32683a-296a-452e-b657-d3bc93e3ba53",
+						"exec": [
+							"pm.test(\"Correct Name returned\", function() {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(\"Lillian A. Infobutton, MD\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Extra space trimmed - First Name\", function() {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.firstName).to.eql(\"Lillian\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Extra space trimmed - Middle Name\", function() {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.middleName).to.eql(\"A\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Extra space trimmed - Last  Name\", function() {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.lastName).to.eql(\"Infobutton\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Extra space trimmed - Suffix\", function() {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.nameSuffix).to.eql(\"MD\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json,text/plain",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/patients/{{InfobuttonId}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"patients",
+						"{{InfobuttonId}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "GET patient (suffix and middle name no dot)",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/patients/{{InfobuttonId}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"patients",
+								"{{InfobuttonId}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 18 Jul 2020 01:58:29 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1227"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Sat, 18 Jul 2020 01:59:30 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Sat, 18 Jul 2020 01:58:30 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"5CCB6A4C2DABFE9F628650E58D9312B2\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 379,\n    \"active\": true,\n    \"accountNumber\": \"ACCT6009811   \",\n    \"firstName\": \"Lillian\",\n    \"middleName\": \"A\",\n    \"lastName\": \"Infobutton\",\n    \"nameSuffix\": \"\",\n    \"fullName\": \"Lillian A. Infobutton\",\n    \"gender\": \"F\",\n    \"dateOfBirth\": \"1919-06-18T00:00:00\",\n    \"age\": 101,\n    \"ageUnits\": \"years\",\n    \"chiefComplaint\": \"Ataxia-double vision-nausea\",\n    \"heightInCm\": 198,\n    \"weightInKg\": 50,\n    \"siteId\": 28,\n    \"departmentCode\": \"ICU \",\n    \"wardCode\": \"ICUW    \",\n    \"roomBedCode\": \"            \",\n    \"urgencyColor\": \"0\",\n    \"nameAlert\": false,\n    \"withdrawConsent\": false,\n    \"vsDatetime\": null,\n    \"vsBloodPressureIndicator\": \"0\",\n    \"vsSystolic\": \"120           \",\n    \"vsDiastolic\": \"80            \",\n    \"vsPulseIndicator\": \"0\",\n    \"vsPulse\": \"64            \",\n    \"vsMapLevel\": \"0\",\n    \"vsMap\": \"\",\n    \"vsRespiratoryIndicator\": \"0\",\n    \"vsRespiratory\": \"16            \",\n    \"vsTemperatureIndicator\": \"0\",\n    \"vsTemperature\": \"98.6          \",\n    \"vsEndTidalLevel\": \"0\",\n    \"vsEndTidal\": \"\",\n    \"vsOxygenSaturationIndicator\": \"0\",\n    \"vsOxygenSaturation\": \"100\",\n    \"vsPainScaleIndicator\": \"0\",\n    \"vsPainScale\": \"1             \",\n    \"orders\": [],\n    \"site\": {\n        \"id\": 28,\n        \"name\": \"Pulsecheck Hospital                     \",\n        \"active\": true,\n        \"timeZoneName\": \"Central Standard Time\"\n    },\n    \"siteName\": \"Pulsecheck Hospital                     \",\n    \"links\": [\n        {\n            \"href\": \"http://localhost:51044/api/patients/379\",\n            \"rel\": \"self\",\n            \"method\": \"GET\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Get ArthurId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5e8b5cfc-82ce-482d-a618-9e869eea0aa4",
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.environment.set(\"ArthurId\", jsonData.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json,text/plain",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/patients?AccountNumber=aarthur1",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"patients"
+					],
+					"query": [
+						{
+							"key": "AccountNumber",
+							"value": "aarthur1"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get ArthurId",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/patients?accountnumber=aarthur1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"patients"
+							],
+							"query": [
+								{
+									"key": "accountnumber",
+									"value": "aarthur1"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 18 Jul 2020 01:58:53 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "951"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Sat, 18 Jul 2020 01:59:53 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Sat, 18 Jul 2020 01:58:53 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"71BA59670B00D50600722E7B5F4D8397\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 56,\n    \"active\": true,\n    \"accountNumber\": \"aarthur1      \",\n    \"firstName\": \"Chester\",\n    \"middleName\": \"A\",\n    \"lastName\": \"Arthur\",\n    \"nameSuffix\": \"\",\n    \"fullName\": \"Chester A. Arthur\",\n    \"gender\": \"M\",\n    \"dateOfBirth\": \"1981-03-01T00:00:00\",\n    \"age\": 39,\n    \"ageUnits\": \"years\",\n    \"chiefComplaint\": \"\",\n    \"heightInCm\": 0,\n    \"weightInKg\": 0,\n    \"siteId\": 17,\n    \"departmentCode\": \"ED  \",\n    \"wardCode\": \"HOLDING \",\n    \"roomBedCode\": \"            \",\n    \"urgencyColor\": \" \",\n    \"nameAlert\": false,\n    \"withdrawConsent\": false,\n    \"vsDatetime\": null,\n    \"vsBloodPressureIndicator\": \" \",\n    \"vsSystolic\": \"              \",\n    \"vsDiastolic\": \"              \",\n    \"vsPulseIndicator\": \" \",\n    \"vsPulse\": \"              \",\n    \"vsMapLevel\": \" \",\n    \"vsMap\": \"\",\n    \"vsRespiratoryIndicator\": \" \",\n    \"vsRespiratory\": \"              \",\n    \"vsTemperatureIndicator\": \" \",\n    \"vsTemperature\": \"              \",\n    \"vsEndTidalLevel\": \" \",\n    \"vsEndTidal\": \"\",\n    \"vsOxygenSaturationIndicator\": \" \",\n    \"vsOxygenSaturation\": \"\",\n    \"vsPainScaleIndicator\": \" \",\n    \"vsPainScale\": \"              \",\n    \"orders\": null,\n    \"site\": null,\n    \"siteName\": null\n}"
+				}
+			]
+		},
+		{
+			"name": "GET patient (middle name w/ dot)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f59e3765-08fd-430c-b240-943ba22f2a29",
+						"exec": [
+							"pm.test(\"Correct Name returned\", function() {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(\"Chester A. Arthur\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json,text/plain",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/patients/56",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"patients",
+						"56"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "GET patient (middle name w/ dot)",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/patients/56",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"patients",
+								"56"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 18 Jul 2020 01:59:32 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1183"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Sat, 18 Jul 2020 02:00:32 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Sat, 18 Jul 2020 01:59:32 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"335EA8294783A913B9A54FD58E13E886\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 56,\n    \"active\": true,\n    \"accountNumber\": \"aarthur1      \",\n    \"firstName\": \"Chester\",\n    \"middleName\": \"A\",\n    \"lastName\": \"Arthur\",\n    \"nameSuffix\": \"\",\n    \"fullName\": \"Chester A. Arthur\",\n    \"gender\": \"M\",\n    \"dateOfBirth\": \"1981-03-01T00:00:00\",\n    \"age\": 39,\n    \"ageUnits\": \"years\",\n    \"chiefComplaint\": \"\",\n    \"heightInCm\": 0,\n    \"weightInKg\": 0,\n    \"siteId\": 17,\n    \"departmentCode\": \"ED  \",\n    \"wardCode\": \"HOLDING \",\n    \"roomBedCode\": \"            \",\n    \"urgencyColor\": \" \",\n    \"nameAlert\": false,\n    \"withdrawConsent\": false,\n    \"vsDatetime\": null,\n    \"vsBloodPressureIndicator\": \" \",\n    \"vsSystolic\": \"              \",\n    \"vsDiastolic\": \"              \",\n    \"vsPulseIndicator\": \" \",\n    \"vsPulse\": \"              \",\n    \"vsMapLevel\": \" \",\n    \"vsMap\": \"\",\n    \"vsRespiratoryIndicator\": \" \",\n    \"vsRespiratory\": \"              \",\n    \"vsTemperatureIndicator\": \" \",\n    \"vsTemperature\": \"              \",\n    \"vsEndTidalLevel\": \" \",\n    \"vsEndTidal\": \"\",\n    \"vsOxygenSaturationIndicator\": \" \",\n    \"vsOxygenSaturation\": \"\",\n    \"vsPainScaleIndicator\": \" \",\n    \"vsPainScale\": \"              \",\n    \"orders\": [],\n    \"site\": {\n        \"id\": 17,\n        \"name\": \"Medispan (40)                           \",\n        \"active\": true,\n        \"timeZoneName\": \"Central Standard Time\"\n    },\n    \"siteName\": \"Medispan (40)                           \",\n    \"links\": [\n        {\n            \"href\": \"http://localhost:51044/api/patients/56\",\n            \"rel\": \"self\",\n            \"method\": \"GET\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "GET patient (site / ibex) exists",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e28c29a3-c9b3-4d1d-8dab-784d6ee4d28b",
+						"exec": [
+							"pm.test(\"Correct account number returned\", function() {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.accountNumber).to.eql(\"a483578578537\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json,text/plain",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/patients?extId1=1&extId2=20190524094230",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"patients"
+					],
+					"query": [
+						{
+							"key": "extId1",
+							"value": "1"
+						},
+						{
+							"key": "extId2",
+							"value": "20190524094230"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "GET patient (site / ibex) exists",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/patients?extId1=1&extId2=20190524094230",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"patients"
+							],
+							"query": [
+								{
+									"key": "extId1",
+									"value": "1"
+								},
+								{
+									"key": "extId2",
+									"value": "20190524094230"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 18 Jul 2020 02:00:03 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1098"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Sat, 18 Jul 2020 02:01:03 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Sat, 18 Jul 2020 02:00:03 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"90A1AE9FE2E495931A87CC635063E98C\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 7,\n    \"active\": true,\n    \"accountNumber\": \"a483578578537 \",\n    \"firstName\": \"Perseus\",\n    \"middleName\": \"\",\n    \"lastName\": \"Abingdon\",\n    \"nameSuffix\": \"\",\n    \"fullName\": \"Perseus Abingdon\",\n    \"gender\": \"M\",\n    \"dateOfBirth\": \"2012-09-01T00:00:00\",\n    \"age\": 7,\n    \"ageUnits\": \"years\",\n    \"chiefComplaint\": \"\",\n    \"heightInCm\": 116.84,\n    \"weightInKg\": 27.22,\n    \"siteId\": 28,\n    \"departmentCode\": \"ED  \",\n    \"wardCode\": \"HOLD    \",\n    \"roomBedCode\": \"            \",\n    \"urgencyColor\": \" \",\n    \"nameAlert\": false,\n    \"withdrawConsent\": false,\n    \"vsDatetime\": null,\n    \"vsBloodPressureIndicator\": \" \",\n    \"vsSystolic\": \"              \",\n    \"vsDiastolic\": \"              \",\n    \"vsPulseIndicator\": \" \",\n    \"vsPulse\": \"              \",\n    \"vsMapLevel\": \" \",\n    \"vsMap\": \"\",\n    \"vsRespiratoryIndicator\": \" \",\n    \"vsRespiratory\": \"              \",\n    \"vsTemperatureIndicator\": \" \",\n    \"vsTemperature\": \"              \",\n    \"vsEndTidalLevel\": \" \",\n    \"vsEndTidal\": \"\",\n    \"vsOxygenSaturationIndicator\": \" \",\n    \"vsOxygenSaturation\": \"\",\n    \"vsPainScaleIndicator\": \" \",\n    \"vsPainScale\": \"              \",\n    \"orders\": null,\n    \"site\": {\n        \"id\": 28,\n        \"name\": \"Pulsecheck Hospital                     \",\n        \"active\": true,\n        \"timeZoneName\": \"Central Standard Time\"\n    },\n    \"siteName\": \"Pulsecheck Hospital                     \"\n}"
+				}
+			]
+		},
+		{
+			"name": "GET patient (site / ibex) doesn't exist",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b2e077eb-c280-40fb-ac20-4443b4388a2b",
+						"exec": [
+							"pm.test(\"Patient was not found\", function () {\r",
+							"    let expectedStrings = ['Patient ', 'was not found'];\r",
+							"    var textData = pm.response.text();\r",
+							"    expectedStrings.forEach(str => pm.expect(textData).to.include(str));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json,text/plain",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/patients?extId1=10&extId2=19170405111519",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"patients"
+					],
+					"query": [
+						{
+							"key": "extId1",
+							"value": "10"
+						},
+						{
+							"key": "extId2",
+							"value": "19170405111519"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "GET patient (site / ibex) doesn't exist",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/patients?extId1=10&extId2=19170405111519",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"patients"
+							],
+							"query": [
+								{
+									"key": "extId1",
+									"value": "10"
+								},
+								{
+									"key": "extId2",
+									"value": "19170405111519"
+								}
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 18 Jul 2020 02:00:28 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "62"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Sat, 18 Jul 2020 02:01:28 GMT"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "\"Patient with site: 10 and ibex: 19170405111519 was not found\""
+				}
+			]
+		},
+		{
+			"name": "GET patients (site:28/dept:EPCS/wards:EPCS1)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7a74fde6-0c3e-4916-82c7-44d8ca45401e",
+						"exec": [
+							"// var jsonData = pm.response.json();\r",
+							"\r",
+							"// pm.test(\"Returns 4 records\", function() {\r",
+							"//     pm.expect(jsonData.length).to.eql(4);\r",
+							"// });\r",
+							"\r",
+							"// function recordIsActive (rec) {\r",
+							"//     return rec.active;\r",
+							"// }\r",
+							"\r",
+							"// pm.test(\"All Records are Active\", function() {\r",
+							"//     pm.expect(jsonData.every(recordIsActive)).to.be.true;\r",
+							"// });\r",
+							"\r",
+							"// pm.test(\"Status code is 200\", function () {\r",
+							"//     pm.response.to.have.status(200);\r",
+							"// });\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json,text/plain"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/patients?departmentCode=EPCS&siteId=28&wardCodes=EPCS1",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"patients"
+					],
+					"query": [
+						{
+							"key": "activeOnly",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "departmentCode",
+							"value": "EPCS"
+						},
+						{
+							"key": "siteId",
+							"value": "28"
+						},
+						{
+							"key": "wardCodes",
+							"value": "EPCS1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET patients (site:28/dept:ICU/wards:ICU,ICUW)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "45e2c086-d4c7-45d0-9566-b8d519375aab",
+						"exec": [
+							"// var jsonData = pm.response.json();\r",
+							"\r",
+							"// pm.test(\"Returns 6 records\", function() {\r",
+							"//     pm.expect(jsonData.length).to.eql(6);\r",
+							"// });\r",
+							"\r",
+							"// function recordIsActive (rec) {\r",
+							"//     return rec.active;\r",
+							"// }\r",
+							"\r",
+							"// pm.test(\"All Records are Active\", function() {\r",
+							"//     pm.expect(jsonData.every(recordIsActive)).to.be.true;\r",
+							"// });\r",
+							"\r",
+							"// pm.test(\"Status code is 200\", function () {\r",
+							"//     pm.response.to.have.status(200);\r",
+							"// });\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json,text/plain",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/patients?wardCodes=ICU,ICUW&departmentCode=ICU&siteId=28",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"patients"
+					],
+					"query": [
+						{
+							"key": "activeOnly",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "wardCodes",
+							"value": "ICU,ICUW"
+						},
+						{
+							"key": "departmentCode",
+							"value": "ICU"
+						},
+						{
+							"key": "siteId",
+							"value": "28"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
