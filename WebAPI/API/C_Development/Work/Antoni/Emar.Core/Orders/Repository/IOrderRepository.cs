@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Emar.Core.Helpers;
+using Emar.Core.Orders.Model;
 using Emar.Core.ResourceParameters;
 using Emar.Data.Entities;
 
@@ -14,8 +15,13 @@ namespace Emar.Core.Orders.Repository
         IEnumerable<OrderEvent> GetEvents(long orderId);
         OrderEvent GetEvent(long eventId);
         IEnumerable<OrderEvent> GetAdministrationEvents(long administrationId);
+
+        // User Quick List
         IEnumerable<UserQuickListItem> GetUserQuickListMostUsed(int userId, long? siteId);
         List<string> GetUserQuickListTabs(int userId, long? siteId);
         IEnumerable<UserQuickListItem> GetUserQuickListTabItems(int userId, long? siteId, string tab);
+        
+        // Department Preferred List
+        List<DepartmentPreferredListItem> GetDepartmentPreferredList(long siteId, string departmentCode, string linkBase);
     }
 }

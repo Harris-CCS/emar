@@ -161,5 +161,38 @@ namespace Emar.Core.Orders.Model.Mappings
                 };
             return ret;
         }
+
+        public static DepartmentPreferredItemDto MapDepartmentPreferredListItem(DepartmentPreferredListItem dbObj,
+            string linkBase)
+        {
+            if (dbObj == null)
+                return null;
+
+            var ret = new DepartmentPreferredItemDto
+            {
+                DepartmentCode = dbObj.DepartmentCode,
+                SiteId = dbObj.SiteId,
+                Id = dbObj.Id,
+                Ndc = dbObj.Ndc,
+                DrugId = dbObj.DrugId,
+                BrandName = dbObj.BrandName,
+                Dose = dbObj.Dose,
+                DoseUnit = MedicationMapper.MapMedicationUnit(dbObj.MedicationUnit),
+                MedicationRoute = MedicationMapper.MapMedicationRoute(dbObj.MedicationRoute),
+                FrequencyId = dbObj.FrequencyId,
+                OrderNotes = dbObj.OrderNotes
+            };
+
+            ret.PointInTime = ret.MedicationRoute?.PointInTime ?? true;
+
+            if (!string.IsNullOrEmpty(linkBase))
+                ret.Links = new[]
+                {
+                    new HateOasLinkDto(linkBase.Replace("/-99/", string.Concat("/", dbObj.Id, "/")),
+                        "add_dept_preferred_order_to_cart",
+                        "POST")
+                };
+            return ret;
+        }
     }
 }
