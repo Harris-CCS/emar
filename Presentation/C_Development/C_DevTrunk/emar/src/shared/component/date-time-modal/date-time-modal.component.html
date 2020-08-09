@@ -6,12 +6,13 @@
             </div>
             <div class="d-flex flex-column">
                 <button class="btn btn-secondary btn-sm m-1" (click)="onCancel()" type="button">Cancel</button>
+                <!-- TODO disabled now if < minDate -->
                 <button class="btn btn-secondary btn-sm m-1" (click)="onNow()" type="button">Now</button>
                 <button class="btn btn-danger btn-sm m-1" type="submit">Select</button>
             </div>
         </div>
 
-        <ngb-datepicker formControlName="date"></ngb-datepicker>
+        <ngb-datepicker formControlName="date" [minDate]="minDate" #dp></ngb-datepicker>
             
     </form>
 </app-modal>
