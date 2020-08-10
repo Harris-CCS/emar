@@ -13,5 +13,5 @@ for /f "delims=" %%x in (emar_dacpac.ini) do (set "%%x")
 @echo source_database_name = %source_database_name%
 @echo target_database_name = %target_database_name%
 @echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-"%pgm_msbuild%" "D:\dev\pulsecheck\Database\C_Development\Work\David\emar.sln" /t:rebuild /p:Configuration=Debug
+"%pgm_msbuild%" "%current_path%\..\emar.sln" /t:rebuild /p:Configuration=Debug
 title %current_script% **COMPLETE**
