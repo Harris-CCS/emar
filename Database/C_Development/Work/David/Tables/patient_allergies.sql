@@ -336,7 +336,7 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'Action taken status. V = Viewed, R = Rejected, C = Confirmed'
+  , @value = N'Action taken status. V = Viewed, R = Rejected, C = Confirmed, U=Unconfirmed'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
