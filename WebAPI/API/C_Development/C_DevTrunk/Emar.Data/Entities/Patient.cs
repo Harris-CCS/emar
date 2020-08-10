@@ -12,6 +12,7 @@ namespace Emar.Data.Entities
         {
             PatientCartOrders = new HashSet<PatientCartOrder>();
             PatientOrders = new HashSet<PatientOrder>();
+            PatientIndicators = new HashSet<PatientIndicator>();
         }
 
         [Key]
@@ -150,5 +151,8 @@ namespace Emar.Data.Entities
 
         [InverseProperty("Patient")]
         public virtual ExternalIdEntity ExternalIds { get; set; }
+
+        [InverseProperty("Patient")]
+        public virtual ICollection<PatientIndicator> PatientIndicators { get; set; }
     }
 }
