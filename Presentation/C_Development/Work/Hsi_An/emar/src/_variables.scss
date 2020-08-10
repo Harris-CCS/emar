@@ -1,0 +1,25 @@
+// basic color
+$e-red: #FF0000;
+$e-yellow: #FBEC5D;
+$e-blue: #64AAF5;
+$e-purple: #CC33CC;
+$e-orange: #FC9A39;
+$e-pink: #FFC6FF;
+$e-gray: #C2C7CC;
+
+$e-blood-orange: #FF3300;
+
+$e-blue-yonder: #0077ab;
+
+// bootstrap overwrite
+$font-size-root: 14px; // = 1rem for bootstrap and emar
+$theme-colors: (
+    "primary": $e-blue-yonder,
+    "warning": $e-orange
+);
+
+// emar
+$e-body-background-color: #EDEDED;
+$e-page-gray-background: #FBFBFB;
+$e-primary-button-color: $e-red;
+$e-secondary-button-color: $e-gray;

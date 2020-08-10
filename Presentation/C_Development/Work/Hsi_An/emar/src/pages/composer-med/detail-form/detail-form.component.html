@@ -15,7 +15,7 @@
     </div>
     -->
     <div class="form-group">
-        <label for="diagnosis">Diagnosis</label>
+        <label for="diagnosis">Diagnosis</label><br>
         <div ngbDropdown class="d-inline-block dropdown-select">
             <button class="btn btn-outline-dark" id="diagnosis" ngbDropdownToggle>
                 {{ selectedDiagnosis? selectedDiagnosis: "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;" }}
@@ -41,7 +41,7 @@
         </div>
         -->
         <div class="form-group">
-            <label for="diagnosis">Antimicrobial Indication</label>
+            <label for="diagnosis">Antimicrobial Indication</label><br>
             <div ngbDropdown class="d-inline-block dropdown-select" #indicationDrop="ngbDropdown">
                 <button class="btn"
                     [ngClass]="{'btn-outline-danger': selectedIndication==='', 'btn-outline-dark':selectedIndication!==''}"
@@ -53,7 +53,7 @@
                     <button ngbDropdownItem *ngFor="let indication of indications" (click)="changeSelectedIndication(indication)">
                         {{ indication }}
                     </button>
-                    <div class="input-group mb-3">
+                    <div class="input-group flex-nowrap">
                         <input type="text"
                             id="otherIndication"
                             placeholder="Other, please describe"
@@ -70,8 +70,8 @@
                     </div>
                 </div>
             </div>
+            <div class="requirement" *ngIf="selectedIndication==''">Required</div>
         </div>
-        <div class="requirement" *ngIf="selectedIndication==''">Indication is mandatory</div>
     </span>
 </span>
 </div>

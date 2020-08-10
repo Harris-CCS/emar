@@ -11,8 +11,8 @@ import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 export class DetailFormComponent implements OnInit {
   @Output() formReady = new EventEmitter<FormGroup>();
   detailForm: FormGroup;
-  diagnoses: string[] = ['Diagnosis1', 'Diagnosis2'];  //TODO get from service
-  indications: string[] = ['Indication1','Indication2']; //TODO get from service
+  diagnoses: string[] = ['Hypertension', 'Diabetes', 'Back pain'];  //TODO get from service
+  indications: string[] = ['Sepsis','Pneumonia']; //TODO get from service
   mandatoryIndication: boolean = true; //TODO get from service
   selectedDiagnosis: string = ''; //TODO from service
   selectedIndication: string = ''; //TODO from service
@@ -47,6 +47,7 @@ export class DetailFormComponent implements OnInit {
   
  changeOtherIndication() {
   this.selectedIndication = this.detailForm.controls['otherAntimicrobialIndication'].value;
+  this.detailForm.controls['otherAntimicrobialIndication'].setValue('');
  }
 
  validator() {

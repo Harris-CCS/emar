@@ -1,49 +1,57 @@
 <div class="dialog-createOrder">
     <div class="form">
-       <form id="createOrderForm" [formGroup]="composerMedForm">
+        <form id="createOrderForm" [formGroup]="composerMedForm">
             <div class="form-group">
                 <div class="partialDiv">
                     <div class="dialog-title">
                         <span>New Order: </span>
-                            {{getMed().name}}
+                        <span id="order-med-name" ngbTooltip="Dosing Information">
+                            {{getMed().name}}</span>
                     </div>
                     <div class="form-part">
-                        <div class="form-column">
-                            <span class="subheader">
+                        <!-- <div class="form-column"> -->
+                        <!-- <span class="subheader">
                                 <span>New Orders</span>
                             </span>
                             <span class="item">
                                 {{getMed().name}}
-                            </span>
-                            <span class="subheader">
+                            </span> -->
+                        <div class="form-column">
+                            <med-form (formReady)="formInitialized('med', $event)" [medOptions]="options">
+                            </med-form>
+                            <!-- <span class="subheader">
                                 <span>Administration Instructions</span>
                             </span>
                             <span class="item">
                                 <textarea class="form-control" formControlName="orderNotes"></textarea>
-                            </span>
-
+                            </span> -->
                             <detail-form (formReady)="formInitialized('detail', $event)"></detail-form>
                         </div>
                         <div class="form-column">
                             <frequency-form (formReady)="formInitialized('frequency', $event)"
                                 [preferredFrequencies]="options.availableFormStrength[selectedFormStrength].preferredFrequencies">
                             </frequency-form>
+                            <calendar-form></calendar-form>
+                            <date-time-modal></date-time-modal>
                         </div>
-                    </div> 
+                    </div>
                 </div>
             </div>
         </form>
         <div class="dialog-footer">
+            <ng-template #tipInvalid>
+                <div *ngIf="composerMedForm.get('detail').invalid">Other details section</div>
+                <div *ngIf="composerMedForm.get('frequency').invalid">Frequency section</div>
+            </ng-template>
+            <div class="requirement requirement-global" *ngIf="!composerMedForm.valid" [ngbTooltip]="tipInvalid">Invalid
+                Form</div>
             <button class="button-secondary button-raised" title="Add to Quick List">&#10025;</button>&nbsp;
             <button class="button-secondary button-raised" title="Continue">Continue</button>&nbsp;
-            <button 
-                [disabled]="!composerMedForm.valid"
-                class="button-primary button-raised" 
-                title={{getActionText()}}
+            <button [disabled]="!composerMedForm.valid" class="button-primary button-raised" title={{getActionText()}}
                 (click)="processCartOrder()">
                 {{getActionText()}}
             </button>
         </div>
-        <div><small><i>{{ composerMedForm.valid? 'Valid': 'Invalid' }} {{ composerMedForm.value | json }}</i></small></div>
+        <!-- <div><small><i>{{ composerMedForm.value | json }}</i></small></div> -->
     </div>
 </div>

@@ -11,10 +11,10 @@
       <a class="help" href="#" placement="bottom" ngbTooltip="Legend"></a>
     </div>
     <div class="user-block">
-      <div>{{user.siteName}}</div>
+      <div>{{user.site.name}}</div>
       <div class="user-data">
-        <div *ngIf="user.initialsDisplay || (user.firstName && user.lastName)" class="user-name">
-          <span *ngIf="user.nameDisplayInitials;else userFullName">{{ user.initialsDisplay }}</span>
+        <div *ngIf="user.userInitials || (user.firstName && user.lastName)" class="user-name">
+          <span *ngIf="user.displayInitialsIndicator;else userFullName">{{ user.userInitials }}</span>
         </div>
         <div class="user-options" placement="bottom" ngbTooltip="User Options"></div>
         <div ngbDropdown class='d-inline-block'>
@@ -86,7 +86,7 @@
 
 <ng-template #userFullName>
   <span id="user-full-name">
-    <span>{{user.firstName}}</span>
-    <span>{{user.lastName}}</span>
+    <span>{{user.firstName}} {{user.middleName}}</span>
+    <span>{{user.lastName}} {{user.nameSuffix}}</span>
   </span>
 </ng-template>

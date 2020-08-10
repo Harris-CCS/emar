@@ -61,6 +61,7 @@ export class MedOrderService {
       endTime: '2019-06-30T14:00:00',
       dose: med.dose,
       route: med.route,
+      frequency: {id: 1 , frequencyName: "ONCE"},
       signedOn: '2019-06-28T14:11:00',
       signedBy: 'mePost',
     };
@@ -79,6 +80,7 @@ export class MedOrderService {
       endTime: '2019-06-30T14:00:00',
       dose: med.dose,
       route: med.route,
+      frequency: {id: 2 , frequencyName: "2TIMESDAILY"},
       signedOn: '2019-06-28T14:11:00',
       signedBy: 'meUpdate'
     };

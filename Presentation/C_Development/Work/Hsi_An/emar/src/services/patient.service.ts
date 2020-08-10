@@ -42,8 +42,7 @@ export class PatientService {
   //   const headers = new HttpHeaders({ Accept: 'application/json' });
   //   const url = `${this.patientUrl}/${patientId}`;
 
-  //   // console.log('patient.service: getPatient patientId:', patientId)
-  //   // console.log('patient.service: getPatient patientId:', patientId)
+  //   console.log('patient.service: getPatient patientId:', patientId);
   //   console.log('patient.service: getPatient url:', url);
   //   return this.http
   //     .get<Patient>(url, { headers })

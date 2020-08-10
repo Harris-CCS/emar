@@ -1,0 +1,18 @@
+<span class="item">
+    <div *ngFor="let week of weeks">
+        <div class="d-flex">
+            <div class="day" *ngFor="let day of week">
+                <small class="text-primary"> {{ day.month }}/{{ day.day }} {{ day.name }}</small>
+                <button class="btn btn-outline-secondary btn-sm event"
+                    (click)="onSelectTime('Administration')"
+                    *ngFor="let event of day.events">
+                    {{ event }}
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-alarm" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M8 15A6 6 0 1 0 8 3a6 6 0 0 0 0 12zm0 1A7 7 0 1 0 8 2a7 7 0 0 0 0 14z"/>
+                        <path fill-rule="evenodd" d="M8 4.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.053.224l-1.5 3a.5.5 0 1 1-.894-.448L7.5 8.882V5a.5.5 0 0 1 .5-.5z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</span>
