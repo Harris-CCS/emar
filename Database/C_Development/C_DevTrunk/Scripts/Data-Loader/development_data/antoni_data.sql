@@ -181,4 +181,48 @@ VALUES
 (163,240,'2020-09-20',NULL,'drug05','brandname05',NULL,NULL,NULL,1,NULL,0,0,'2020-09-20',NULL,NULL,NULL)
 
 
+
+/************************************************
+Testing : name_display_initials
+Default Values for Site Options Table
+************************************************/
+
+update [users] set    
+    [name_display_initials] = 1
+where  [id] in(5, 10, 15, 20, 25, 30, 35, 40, 45, 50);
+
+/*********************************************************
+Testing : PATIENT_IMAGE_PATH, CUSTOM_INDICATORS_IMAGE_PATH
+Default Values for Site Options Table
+*********************************************************/
+
+update [target] set    
+    [option_value] = '\\ros-57c-dx01.picis.com\E$\ibex\inc'
+from   [dbo].[site_options] as [target]
+       inner join [dbo].[options] [options] on [target].[option_id] = [options].[id]
+       cross join
+(
+    select [id] from [get_internal_id] ('pulsecheck', 'sites', 19) union all
+    select [id] from [get_internal_id] ('pulsecheck', 'sites', 23) union all
+    select [id] from [get_internal_id] ('pulsecheck', 'sites',  1) union all
+    select [id] from [get_internal_id] ('pulsecheck', 'sites', 36)
+) [site]
+where  [options].[name] = 'PATIENT_IMAGE_PATH'
+       and [target].[site_id] = [site].[ID];
+
+update [target] set    
+    [option_value] = '\\ros-57c-dx01.picis.com\E$\git\pulsecheck\root\images\custom_indicators'
+from   [dbo].[site_options] as [target]
+       inner join [dbo].[options] [options] on [target].[option_id] = [options].[id]
+       cross join
+(
+    select [id] from [get_internal_id] ('pulsecheck', 'sites', 19) union all
+    select [id] from [get_internal_id] ('pulsecheck', 'sites', 23) union all
+    select [id] from [get_internal_id] ('pulsecheck', 'sites',  1) union all
+    select [id] from [get_internal_id] ('pulsecheck', 'sites', 36)
+) [site]
+where  [options].[name] = 'CUSTOM_INDICATORS_IMAGE_PATH'
+       and [target].[site_id] = [site].[ID];
+
+
 end;

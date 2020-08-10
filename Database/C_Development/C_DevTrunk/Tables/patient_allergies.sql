@@ -1,26 +1,30 @@
 create table [dbo].[patient_allergies]
     (
-      [id]                  [bigint] identity(1, 1) not null
-    , [patient_id]          [bigint] null
-    , [class]               [varchar](32) null
-    , [category]            [varchar](32) null
-    , [internal_drug_id]    [varchar](32) null
-    , [ndc]                 [varchar](32) null
-    , [drug_id]             [varchar](32) null
-    , [name]                [nvarchar](255) null
-    , [alternate_name]      [nvarchar](255) null
-    , [allergy_drug_id]     [varchar](32) null
-    , [is_active]           [bit] not null
-    , [comment]             [varchar](255) null
-    , [schedule]            [varchar](40) null
-    , [reaction]            [varchar](80) null
-    , [severity]            [varchar](80) null
-    , [parent_drug_id]      [varchar](32) null
-    , [parent_drug_name]    [nvarchar](255) null
-    , [add_user_id]         [int] not null
-    , [add_datetime]        [datetimeoffset](7) null
-    , [change_user_id]      [int] not null
-    , [change_datetime]     [datetimeoffset](7) null
+      [id]                 [bigint] identity(1, 1) not null
+    , [patient_id]         [bigint] null
+    , [class]              [varchar](32) null
+    , [category]           [varchar](32) null
+    , [internal_drug_id]   [varchar](32) null
+    , [ndc]                [varchar](32) null
+    , [drug_id]            [varchar](32) null
+    , [name]               [nvarchar](255) null
+    , [alternate_name]     [nvarchar](255) null
+    , [allergy_drug_id]    [varchar](32) null
+    , [is_active]          [bit] not null
+    , [comment]            [varchar](255) null
+    , [schedule]           [varchar](40) null
+    , [reaction]           [varchar](80) null
+    , [severity]           [varchar](80) null
+    , [parent_drug_id]     [varchar](32) null
+    , [parent_drug_name]   [nvarchar](255) null
+    , [add_user_id]        [int] not null
+    , [add_datetime]       [datetimeoffset](7) null
+    , [change_user_id]     [int] not null
+    , [change_datetime]    [datetimeoffset](7) null
+    , [action_status]      [char](1) null
+    , [information_source] [varchar](25) null
+    , [person_number]      [varchar](25) null
+    , [account_number]     [varchar](25) null
     , constraint [pk__patient_allergies__id] primary key clustered([id] asc));
 go
 
@@ -328,4 +332,48 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'patient_allergies'
   , @level2type = N'COLUMN'
   , @level2name = N'change_datetime';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'Action taken status. V = Viewed, R = Rejected, C = Confirmed'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'patient_allergies'
+  , @level2type = N'COLUMN'
+  , @level2name = N'action_status';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'Information Source - ''PC'' = PulseCheck, ''HIE'' = HIE/CCD, ''ADT'' = Interface'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'patient_allergies'
+  , @level2type = N'COLUMN'
+  , @level2name = N'information_source';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'Primary Use: Master patient index HL7 2.4 super number of the patient from ADT interface'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'patient_allergies'
+  , @level2type = N'COLUMN'
+  , @level2name = N'person_number';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'Primary Use: Account Number HL7 2.4 super number of the patient account from ADT interface'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'patient_allergies'
+  , @level2type = N'COLUMN'
+  , @level2name = N'account_number';
 go
