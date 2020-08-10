@@ -11,6 +11,8 @@ namespace Emar.Api.Helpers
         public const string Json = @"application/json";
         public const string Text = @"text/plain";
         public const string Jpeg = @"image/jpeg";
+        public const string Png = @"image/png";
+        public const string Gif = @"image/gif";
 
         public static bool IsValidMediaType(string mediaType)
         {

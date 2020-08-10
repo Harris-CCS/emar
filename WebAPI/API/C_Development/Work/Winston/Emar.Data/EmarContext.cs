@@ -17,6 +17,7 @@ namespace Emar.Data
             //ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
+        public virtual DbSet<PatientIndicator> PatientIndicators { get; set; }
         public virtual DbSet<DepartmentPreferredListItem> DepartmentPreferredListItems { get; set; }
         public virtual DbSet<Entities.Action> Actions { get; set; }
         public virtual DbSet<CartOrderAdministration> CartOrderAdministrations { get; set; }
@@ -226,6 +227,27 @@ namespace Emar.Data
                     .WithMany(p => p.PatientCartOrders)
                     .HasForeignKey(d => d.UserQuickListItemId)
                     .HasConstraintName("fk__patient_cart_orders__user_quick_list_items");
+            });
+
+            modelBuilder.Entity<PatientIndicator>(entity =>
+            {
+                entity.HasIndex(e => e.PatientId)
+                    .HasName("ix__patient_indicators__patient_id_site_id");
+
+                entity.Property(e => e.Code)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Description)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Type)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.Patient)
+                    .WithMany(p => p.PatientIndicators)
+                    .HasForeignKey(d => d.PatientId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__patient_indicators__patients");
             });
 
             modelBuilder.Entity<PatientOrder>(entity =>

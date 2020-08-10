@@ -100,6 +100,7 @@ namespace Emar.Core.Patients.Repository
                             .ThenInclude(site => site.SiteOptions)
                                 .ThenInclude(siteOptions => siteOptions.Option)
                         .Include(patient => patient.ExternalIds)
+                        .Include(patient => patient.PatientIndicators)
                         .Where(wherePredicate)
                         .ToList();
             }
@@ -109,6 +110,7 @@ namespace Emar.Core.Patients.Repository
                         .ThenInclude(site => site.SiteOptions)
                             .ThenInclude(siteOptions => siteOptions.Option)
                         .Include(patient => patient.ExternalIds)
+                        .Include(patient => patient.PatientIndicators)
                         .Where(wherePredicate)
                         .ToList();
         }
@@ -173,28 +175,8 @@ namespace Emar.Core.Patients.Repository
             return ptId.FirstOrDefault();
         }
 
-        public Dictionary<string, string> GetExternalRootSitePatientId(string number, GetPatientBy getPatientBy)
+        public Dictionary<string, string> GetExternalRootSitePatientId(string number, GetPatientBy getPatientBy, string RootType)
         {
-            Func<Patient, bool> wherePredicate;
-
-            switch (getPatientBy)
-            {
-                case GetPatientBy.Id:
-                    wherePredicate = p => p.Id == long.Parse(number);
-                    break;
-                case GetPatientBy.AccountNumber:
-                    wherePredicate = p => p.AccountNumber == number;
-                    break;
-                case GetPatientBy.CustomNumber:
-                    wherePredicate = p => p.CustomNumber == number;
-                    break;
-                case GetPatientBy.PersonNumber:
-                    wherePredicate = p => p.PersonNumber == number;
-                    break;
-                default:
-                    return null;
-            }
-
             var list = _context.Patients
                         .Include(patient => patient.Site)
                             .ThenInclude(site => site.ExternalIds)
@@ -209,12 +191,12 @@ namespace Emar.Core.Patients.Repository
                         .Where(p => p.ExternalIds.Vendor == "pulsecheck")
                         .Where(p => p.Site.ExternalIds.Entity == "sites")
                         .Where(p => p.Site.ExternalIds.Vendor == "pulsecheck")
-                        .Where(wherePredicate)
+                        .Where(GetWherePredicate(number, getPatientBy))
                         .Select(c => new
                         {
                             root = c.Site.SiteOptions
                                     .Join(_context.Options
-                                            .Where(o => o.Name == "PATIENT_IMAGE_PATH"),
+                                            .Where(o => o.Name == RootType),
                                                     so => so.OptionId,
                                                     o => o.Id,
                                                     (so, o) => new { so.OptionValue }),
@@ -332,17 +314,22 @@ namespace Emar.Core.Patients.Repository
 
         public Patient GetPatientByNumber(string number, GetPatientBy getPatientBy)
         {
+            return GetPatients(GetWherePredicate(number, getPatientBy))
+                    .FirstOrDefault();
+        }
+
+        Func<Patient, bool> GetWherePredicate(string number, GetPatientBy getPatientBy)
+        {
             switch (getPatientBy)
             {
+                case GetPatientBy.Id:
+                    return p => p.Id == long.Parse(number);
                 case GetPatientBy.AccountNumber:
-                    return GetPatients(p => p.AccountNumber == number)
-                            .FirstOrDefault();
+                    return p => p.AccountNumber == number;
                 case GetPatientBy.CustomNumber:
-                    return GetPatients(p => p.CustomNumber == number)
-                            .FirstOrDefault();
+                    return p => p.CustomNumber == number;
                 case GetPatientBy.PersonNumber:
-                    return GetPatients(p => p.PersonNumber == number)
-                            .FirstOrDefault();
+                    return p => p.PersonNumber == number;
                 default:
                     return null;
             }

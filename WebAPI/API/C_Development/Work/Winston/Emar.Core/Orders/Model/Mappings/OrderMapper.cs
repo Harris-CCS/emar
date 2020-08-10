@@ -16,7 +16,7 @@ namespace Emar.Core.Orders.Model.Mappings
                 return null;
             }
 
-            var dateFormat = patientOrder.Patient.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == @"LONG_DATE_FORMAT").OptionValue;
+            var dateFormat = patientOrder.Patient.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == AppConstants.LongDateFormat).OptionValue;
 
             PatientOrderDto patientOrderDto = new PatientOrderDto
             {
@@ -63,7 +63,7 @@ namespace Emar.Core.Orders.Model.Mappings
                 return null;
             }
 
-            var dateFormat = administration.PatientOrder.Patient.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == @"LONG_DATE_FORMAT").OptionValue;
+            var dateFormat = administration.PatientOrder.Patient.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == AppConstants.LongDateFormat).OptionValue;
 
             OrderAdministrationDto administrationDto = new OrderAdministrationDto
             {
@@ -110,7 +110,7 @@ namespace Emar.Core.Orders.Model.Mappings
                 return null;
             }
 
-            var dateFormat = @event.PatientOrder.Patient.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == @"LONG_DATE_FORMAT").OptionValue;
+            var dateFormat = @event.PatientOrder.Patient.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == AppConstants.LongDateFormat).OptionValue;
 
             OrderEventDto eventDto = new OrderEventDto
             {

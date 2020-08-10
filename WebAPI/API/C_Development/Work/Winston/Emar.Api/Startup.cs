@@ -216,6 +216,8 @@ namespace Emar.Api
 
             }
 
+            app.UseHttpContext();
+
             // app.UseResponseCaching();
 
             app.UseHttpCacheHeaders();

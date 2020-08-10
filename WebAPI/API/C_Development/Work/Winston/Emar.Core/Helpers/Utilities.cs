@@ -5,12 +5,18 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Reflection;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Emar.Core.Helpers
 {
     public static class AppConstants
     {
-        public const string ImagesRoute = "api/images";
+        public const string ImagesRoute = @"api/images";
+        public const string LongDateFormat = @"LONG_DATE_FORMAT";
+        public const string PatientImagePath = @"PATIENT_IMAGE_PATH";
+        public const string CustomIndicatorImagePath = @"CUSTOM_INDICATORS_IMAGE_PATH";
     }
 
     public static class StringExtensions
@@ -371,6 +377,34 @@ namespace Emar.Core.Helpers
         public static string GetTime(DateTimeOffset? dateTime, string timeFormat = null)
         {
             return dateTime?.ToString(timeFormat ?? defaultTimeFormat);
+        }
+    }
+
+    public class EmarHttpContext
+    {
+        private static IHttpContextAccessor m_httpContextAccessor;
+
+        public static HttpContext Current => m_httpContextAccessor.HttpContext;
+
+        public static string AppBaseUrl => $"{Current.Request.Scheme}://{Current.Request.Host}{Current.Request.PathBase}";
+
+        internal static void Configure(IHttpContextAccessor contextAccessor)
+        {
+            m_httpContextAccessor = contextAccessor;
+        }
+    }
+
+    public static class HttpContextExtensions
+    {
+        public static void AddHttpContextAccessor(this IServiceCollection services)
+        {
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+        }
+
+        public static IApplicationBuilder UseHttpContext(this IApplicationBuilder app)
+        {
+            EmarHttpContext.Configure(app.ApplicationServices.GetRequiredService<IHttpContextAccessor>());
+            return app;
         }
     }
 }
