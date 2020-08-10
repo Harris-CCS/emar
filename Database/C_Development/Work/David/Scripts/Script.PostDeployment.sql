@@ -10,16 +10,6 @@ Post-Deployment Script Template
 --------------------------------------------------------------------------------------
 *************************************************************************************/
 set nocount on;
--- Table Renamed dbo.site_preferred_list dbo.department_preferred_list
-drop table if exists dbo.site_preferred_list;
--- Table Renamed dbo.department_preferred_list dbo.department_preferred_list_items
-drop table if exists dbo.department_preferred_list;
--- Table Renamed dbo.user_quick_list dbo.user_quick_list_items
-drop table if exists dbo.user_quick_list;
--- Table Renamed dbo.patient_cart_details dbo.patient_cart_orders
-drop table if exists dbo.patient_cart_details
--- Table no longer used
-drop table if exists dbo.patient_carts
 
 declare
      @max_id bigint
