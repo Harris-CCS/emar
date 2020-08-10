@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Emar.Data.Entities
@@ -12,7 +11,7 @@ namespace Emar.Data.Entities
         public int Id { get; set; }
 
         [Column("site_id")]
-        public int SiteId { get; set; }
+        public long SiteId { get; set; }
 
         [Column("department_code")]
         [StringLength(15)]
