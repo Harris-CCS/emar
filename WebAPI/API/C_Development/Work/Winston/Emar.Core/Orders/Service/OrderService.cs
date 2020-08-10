@@ -103,6 +103,8 @@ namespace Emar.Core.Orders.Service
             return eventsList;
         }
 
+        #region User Quick List Services
+
         public UserQuickListFrameworkDto GetInitialUserQuickList(in int userId, int? siteId, 
             string tabLinkBase, string orderLinkBase)
         {
@@ -143,7 +145,8 @@ namespace Emar.Core.Orders.Service
             return ret;
         }
 
-        public IEnumerable<UserQuickListItemDto> GetQuickListTab(in int userId, int? siteId, string orderLinkBase, string tab)
+        public IEnumerable<UserQuickListItemDto> GetQuickListTab(in int userId, int? siteId, string orderLinkBase,
+            string tab)
         {
             List<UserQuickListItem> tabItems;
             if (tab == Constants.MostUsedTabTitle)
@@ -157,5 +160,24 @@ namespace Emar.Core.Orders.Service
             return tabItems.Select(item => OrderMapper.MapUserQuickListItem(item, orderLinkBase))
                 .OrderBy(i => i.BrandName);
         }
+
+        #endregion
+
+        #region Department Preferred List Services
+
+        public IEnumerable<DepartmentPreferredItemDto> GetDepartmentPreferredList(in int siteId, string departmentCode,
+            string linkBase)
+        {
+            List<DepartmentPreferredListItem> orders = _orderRepository.GetDepartmentPreferredList(siteId,
+                departmentCode,
+                linkBase).ToList();
+
+            if (!orders.Any()) return null;
+
+            return orders.Select(item => OrderMapper.MapDepartmentPreferredListItem(item, linkBase))
+                .OrderBy(i => i.BrandName);
+        }
+
+        #endregion
     }
 }
