@@ -11,7 +11,7 @@ namespace Emar.Core.Options.Service
             _optionRepository = optionRepository;
         }
 
-        public string GetOption(int siteId, string optionName)
+        public string GetOption(long siteId, string optionName)
         {
             return _optionRepository.GetOption(siteId, optionName);
         }

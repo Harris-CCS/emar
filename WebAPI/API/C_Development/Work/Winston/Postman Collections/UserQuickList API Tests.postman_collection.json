@@ -160,7 +160,7 @@
 							"});\r",
 							"\r",
 							"pm.test(\"Correct Tab Name returned\", function() {\r",
-							"    pm.expect(jsonData.currentTabName).to.eql(\"MostUsed\");\r",
+							"    pm.expect(jsonData.currentTab.tabName).to.eql(\"MostUsed\");\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -187,7 +187,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{URL}}/api/userquicklists",
+					"raw": "{{URL}}/api/userquicklists?patientId=1234",
 					"host": [
 						"{{URL}}"
 					],
@@ -200,6 +200,10 @@
 							"key": "SiteId",
 							"value": "10",
 							"disabled": true
+						},
+						{
+							"key": "patientId",
+							"value": "1234"
 						}
 					]
 				}
@@ -279,7 +283,7 @@
 						"exec": [
 							"var jsonData = pm.response.json();\r",
 							"\r",
-							"pm.test(\"Returns 91 records\", function() {\r",
+							"pm.test(\"Returns 91 records\", function () {\r",
 							"    pm.expect(jsonData.length).to.eql(91);\r",
 							"});\r",
 							"\r",
@@ -287,7 +291,10 @@
 							"    pm.response.to.have.status(200);\r",
 							"});\r",
 							"\r",
-							""
+							"pm.test(\"Has correct HATEOAS links\", function () {\r",
+							"    var expectedLink = pm.environment.get(\"URL\") + \"/api/userquicklists/40096/cartOrders/12345\";\r",
+							"    pm.expect(jsonData[0].links[0].href).to.eql(expectedLink);\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -313,7 +320,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{URL}}/api/userquicklists/tabs/C?SiteId=16",
+					"raw": "{{URL}}/api/userquicklists/tabs/C?SiteId=16&patientId=12345",
 					"host": [
 						"{{URL}}"
 					],
@@ -327,6 +334,10 @@
 						{
 							"key": "SiteId",
 							"value": "16"
+						},
+						{
+							"key": "patientId",
+							"value": "12345"
 						}
 					]
 				}

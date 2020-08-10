@@ -2,6 +2,6 @@
 {
     public interface IOptionService
     {
-        public string GetOption(int siteId, string optionName);
+        public string GetOption(long siteId, string optionName);
     }
 }

@@ -21,7 +21,7 @@ namespace Emar.Data.Entities
         public int Id { get; set; }
 
         [Column("site_id", TypeName = "int"), Required]
-        public int SiteId { get; set; }
+        public long SiteId { get; set; }
 
         [Required]
         [Column("name")]

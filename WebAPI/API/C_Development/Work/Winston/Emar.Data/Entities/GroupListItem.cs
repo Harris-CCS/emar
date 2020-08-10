@@ -10,7 +10,7 @@ namespace Emar.Data.Entities
         public int Id { get; set; }
 
         [Column("site_id", TypeName = "int"), Required]
-        public int SiteId { get; set; }
+        public long SiteId { get; set; }
 
         [Column("group_name", TypeName = "nvarchar(255)"), Required]
         public string GroupName { get; set; }

@@ -28,7 +28,7 @@ namespace Emar.Core.Options.Model
     {
         public int Id { get; set; }
 
-        public int SiteId { get; set; }
+        public long SiteId { get; set; }
 
         public int OptionId { get; set; }
 

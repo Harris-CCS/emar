@@ -13,7 +13,7 @@ namespace Emar.Core.Options.Repository
             _context = emarContext ?? throw new ArgumentNullException(nameof(emarContext));
         }
 
-        public string GetOption(int siteId, string optionName)
+        public string GetOption(long siteId, string optionName)
         {
             return _context.SiteOptions
                     .FirstOrDefault(so => so.SiteId == siteId &&

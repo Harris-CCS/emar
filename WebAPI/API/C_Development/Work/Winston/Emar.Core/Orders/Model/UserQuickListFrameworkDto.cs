@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Emar.Core.Orders.Model.Mappings;
 
 namespace Emar.Core.Orders.Model
 {
@@ -19,7 +18,7 @@ namespace Emar.Core.Orders.Model
 
             foreach (var tab in tabListing)
             {
-                TabListing.Add(new UserQuickListTabDto(tab, linkBase));    
+                TabListing.Add(new UserQuickListTabDto(tab, linkBase));
             }
         }
     }

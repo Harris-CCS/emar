@@ -1,7 +1,7 @@
 ﻿using System;
-using Microsoft.AspNetCore.Mvc;
 using Emar.Data;
 using Emar.Data.Helpers;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Emar.Api.Controllers
 {

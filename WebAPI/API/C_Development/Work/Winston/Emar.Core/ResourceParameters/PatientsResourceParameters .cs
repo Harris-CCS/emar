@@ -25,7 +25,7 @@
         /// <summary>
         /// Site (facility) identifier to restrict the list of returned patients to.
         /// </summary>
-        public int? SiteId { get; set; }
+        public long? SiteId { get; set; }
         /// <summary>
         /// Department code to restrict the list of returned patients to.
         /// </summary>

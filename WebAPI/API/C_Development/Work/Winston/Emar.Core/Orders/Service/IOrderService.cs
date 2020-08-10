@@ -16,15 +16,15 @@ namespace Emar.Core.Orders.Service
         IEnumerable<OrderEventDto> GetAdministrationEvents(long administrationId);
 
         // User Quick List services
-        UserQuickListFrameworkDto GetInitialUserQuickList(in int userId, int? siteId, string tabLinkBase, string orderLinkBase);
-        IEnumerable<UserQuickListItemDto> GetQuickListTab(in int userId, int? siteId, string orderLinkBase, string tab);
+        UserQuickListFrameworkDto GetInitialUserQuickList(in int userId, long? siteId, string tabLinkBase, string orderLinkBase);
+        IEnumerable<UserQuickListItemDto> GetQuickListTab(in int userId, long? siteId, string orderLinkBase, string tab);
 
         // Department Preferred List services
-        IEnumerable<DepartmentPreferredItemDto> GetDepartmentPreferredList(in int siteId, string departmentCode, string linkBase);
+        IEnumerable<DepartmentPreferredItemDto> GetDepartmentPreferredList(in long siteId, string departmentCode, string linkBase);
 
         // Mock Methods
         ComposerOptionsDto GetComposerSetupData(string brandName);
-        IEnumerable<FrequencyDto> GetFrequencies(int siteId);
-        IEnumerable<UnitDto> GetUnits(in int siteId);
+        IEnumerable<FrequencyDto> GetFrequencies(long siteId);
+        IEnumerable<UnitDto> GetUnits(in long siteId);
     }
 }

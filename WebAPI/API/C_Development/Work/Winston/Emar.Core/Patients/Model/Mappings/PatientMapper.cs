@@ -64,6 +64,7 @@ namespace Emar.Core.Patients.Model.Mappings
                 VsPainScale = pt.VsPainScale,
                 CustomNumber = pt.CustomNumber,
                 PersonNumber = pt.PersonNumber,
+                PatientImageSrc = AppConstants.ImagesRoute + "/patients/" + pt.Id.ToString(),
                 Orders = pt.PatientOrders?.Select(OrderMapper.MapOrder).ToList(),
                 Site = SiteMapper.MapSite(pt.Site)
             };
