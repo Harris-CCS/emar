@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 
 import { ModalComponent } from '../shared/component/modal/modal.component';
 
@@ -8,6 +8,7 @@ import { ModalComponent } from '../shared/component/modal/modal.component';
 
 export class ModalService {
   private modals: Array<ModalComponent>;
+  modalOpening = new EventEmitter<any>();
 
   constructor() {
     this.modals = [];
@@ -50,6 +51,7 @@ export class ModalService {
         modal.data = data;
         modal.modalTitle = title || ' ';
         modal.isOpen = true;
+        this.modalOpening.emit(data);
       }, 100);
     }
   }

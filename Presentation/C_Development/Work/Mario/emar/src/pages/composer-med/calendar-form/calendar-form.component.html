@@ -2,7 +2,7 @@
     <div *ngFor="let week of weeks">
         <div class="d-flex">
             <div class="day" *ngFor="let day of week">
-                <small> {{ day.month }}/{{ day.day }} {{ day.name }}</small>
+                <small class="text-primary"> {{ day.month }}/{{ day.day }} {{ day.name }}</small>
                 <button class="btn btn-outline-secondary btn-sm event"
                     (click)="onSelectTime('Administration')"
                     *ngFor="let event of day.events">

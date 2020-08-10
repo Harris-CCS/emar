@@ -47,6 +47,7 @@ export class DetailFormComponent implements OnInit {
   
  changeOtherIndication() {
   this.selectedIndication = this.detailForm.controls['otherAntimicrobialIndication'].value;
+  this.detailForm.controls['otherAntimicrobialIndication'].setValue('');
  }
 
  validator() {
