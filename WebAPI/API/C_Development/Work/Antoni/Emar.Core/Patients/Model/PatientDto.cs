@@ -286,5 +286,7 @@ namespace Emar.Core.Patients.Model
         public IEnumerable<PatientOrderDto>? Orders { get; set; }
 
         public SiteDto Site { get; set; }
+
+        public IEnumerable<PatientIndicatorDto>? PatientIndicators { get; set; }
     }
 }
