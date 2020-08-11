@@ -8,7 +8,7 @@ namespace Emar.Core.Orders.Model
         /// <summary>
         /// User Quick Lists are site-specific
         /// </summary>
-        public long SiteId { get; set; }
+        public int SiteId { get; set; }
 
         public string DepartmentCode { get; set; }
 

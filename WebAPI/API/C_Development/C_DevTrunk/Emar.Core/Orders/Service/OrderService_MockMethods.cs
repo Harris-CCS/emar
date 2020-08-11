@@ -64,7 +64,7 @@ namespace Emar.Core.Orders.Service
             return setupOptions;
         }
 
-        public IEnumerable<FrequencyDto> GetFrequencies(long siteId)
+        public IEnumerable<FrequencyDto> GetFrequencies(int siteId)
         {
             return new[]
             {
@@ -87,7 +87,7 @@ namespace Emar.Core.Orders.Service
             };
         }
 
-        public IEnumerable<UnitDto> GetUnits(in long siteId)
+        public IEnumerable<UnitDto> GetUnits(in int siteId)
         {
             return new[]
             {

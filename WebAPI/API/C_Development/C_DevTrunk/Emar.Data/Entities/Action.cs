@@ -24,7 +24,7 @@ namespace Emar.Data.Entities
         [StringLength(100)]
         public string Description { get; set; }
         [Column("site_id")]
-        public long SiteId { get; set; }
+        public int SiteId { get; set; }
         [Column("is_active")]
         public bool IsActive { get; set; }
 

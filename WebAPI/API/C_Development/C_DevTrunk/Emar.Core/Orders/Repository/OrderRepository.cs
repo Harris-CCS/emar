@@ -103,7 +103,7 @@ namespace Emar.Core.Orders.Repository
         /// <param name="userId"></param>
         /// <param name="siteId"></param>
         /// <returns></returns>
-        public IEnumerable<UserQuickListItem> GetUserQuickListMostUsed(int userId, long? siteId)
+        public IEnumerable<UserQuickListItem> GetUserQuickListMostUsed(int userId, int? siteId)
         {
             if (siteId == null)
                 return _context.UserQuickListItems
@@ -121,7 +121,7 @@ namespace Emar.Core.Orders.Repository
                 .ToList();
         }
 
-        public List<string> GetUserQuickListTabs(int userId, long? siteId)
+        public List<string> GetUserQuickListTabs(int userId, int? siteId)
         {
             if (siteId == null)
                 return _context.UserQuickListItems
@@ -137,7 +137,7 @@ namespace Emar.Core.Orders.Repository
                 .ToList();
         }
 
-        IEnumerable<UserQuickListItem> IOrderRepository.GetUserQuickListTabItems(int userId, long? siteId, string tab)
+        IEnumerable<UserQuickListItem> IOrderRepository.GetUserQuickListTabItems(int userId, int? siteId, string tab)
         {
             if (tab == "#")
             {
@@ -171,7 +171,7 @@ namespace Emar.Core.Orders.Repository
                 .ToList();
         }
 
-        public List<DepartmentPreferredListItem> GetDepartmentPreferredList(long siteId, string departmentCode, string linkBase)
+        public List<DepartmentPreferredListItem> GetDepartmentPreferredList(int siteId, string departmentCode, string linkBase)
         {
             Expression<Func<DepartmentPreferredListItem, bool>> whereLambda = s => s.SiteId == siteId;
             if(!string.IsNullOrWhiteSpace(departmentCode))

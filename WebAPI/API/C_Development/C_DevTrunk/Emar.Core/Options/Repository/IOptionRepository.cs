@@ -2,6 +2,6 @@
 {
     public interface IOptionRepository
     {
-        public string GetOption(long siteId, string optionName);
+        public string GetOption(int siteId, string optionName);
     }
 }
