@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "704a3d5e-6bc6-4ffd-8e18-e032c33cfbf4",
+		"_postman_id": "a36493a8-de59-4021-aa23-9c494b508462",
 		"name": "User API Tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -11,7 +11,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "f73b1e91-4daa-4215-a70e-2f15ee4feed3",
+						"id": "af0e2922-086d-4859-bc07-eca4f1456985",
 						"exec": [
 							"pm.test(\"Status code is 204\", function () {\r",
 							"    pm.response.to.have.status(204);\r",
@@ -107,7 +107,7 @@
 						}
 					],
 					"cookie": [],
-					"body": null
+					"body": ""
 				}
 			]
 		},
@@ -117,7 +117,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "9f37e0fc-1934-476a-8170-a184f1397f70",
+						"id": "06eaf743-b4c6-47ba-90ea-95552579e81f",
 						"exec": [
 							"var jsonData = pm.response.json();\r",
 							"pm.environment.set(\"HeatherId\", jsonData.id);\r",
@@ -246,7 +246,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "ad432aa5-43d9-4147-8dc5-0a4f34a647ca",
+						"id": "3d0fcdb8-4333-48d4-b295-d418af721a8a",
 						"exec": [
 							"pm.test(\"Correct Name returned\", function() {\r",
 							"    var jsonData = pm.response.json();\r",
@@ -363,7 +363,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "5b87c4e5-55be-4260-84b8-9f10a60707f4",
+						"id": "b3606eb6-e106-4247-a3b2-952e964c3ea4",
 						"exec": [
 							"pm.test(\"User was not found\", function () {\r",
 							"    let expectedStrings = ['User with id', 'was not found'];\r",
@@ -474,7 +474,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "d30c353c-4125-4446-862f-e86c54e4ab89",
+						"id": "e8e069dd-03e4-4348-9249-c0ff9b008717",
 						"exec": [
 							"pm.test(\"User was not found\", function () {\r",
 							"    let expectedStrings = ['User with external id', 'was not found'];\r",

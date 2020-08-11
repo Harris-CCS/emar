@@ -14,7 +14,7 @@ namespace Emar.Core.Patients.Model.Mappings
             if (pt == null)
                 return null;
 
-            var dateFormat = pt.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == @"LONG_DATE_FORMAT").OptionValue;
+            var dateFormat = pt.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == AppConstants.LongDateFormat).OptionValue;
 
             PatientDto patientDto = new PatientDto
             {
@@ -64,8 +64,10 @@ namespace Emar.Core.Patients.Model.Mappings
                 VsPainScale = pt.VsPainScale,
                 CustomNumber = pt.CustomNumber,
                 PersonNumber = pt.PersonNumber,
+                PatientImageSrc = EmarHttpContext.AppBaseUrl + "/" + AppConstants.ImagesRoute + "/patients/" + pt.Id.ToString(),
                 Orders = pt.PatientOrders?.Select(OrderMapper.MapOrder).ToList(),
-                Site = SiteMapper.MapSite(pt.Site)
+                Site = SiteMapper.MapSite(pt.Site),
+                PatientIndicators = pt.PatientIndicators?.Select(MapPatientIndicators).ToList()
             };
 
             // Calculate the age if the date-of-birth is present
@@ -94,6 +96,30 @@ namespace Emar.Core.Patients.Model.Mappings
                 patientDto.AgeUnits = "years";
             }
             return patientDto;
+        }
+
+        public static PatientIndicatorDto MapPatientIndicators(PatientIndicator indicator)
+        {
+            if (indicator == null)
+            {
+                return null;
+            }
+
+            PatientIndicatorDto indicatorDto = new PatientIndicatorDto
+            {
+                Id = indicator.Id,
+                PatientId = indicator.PatientId,
+                OrdinalPosition = indicator.OrdinalPosition,
+                Code = indicator.Code,
+                Type = indicator.Type,
+                Description = indicator.Description,
+                ImageName = indicator.ImageName,
+                ImageSrc = String.IsNullOrEmpty(indicator.ImageName)
+                            ? null
+                            : EmarHttpContext.AppBaseUrl + "/" + AppConstants.ImagesRoute + "/patients/" + indicator.PatientId.ToString() + "/indicators/" + indicator.ImageName
+            };
+
+            return indicatorDto;
         }
     }
 }

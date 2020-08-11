@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -12,12 +12,13 @@ namespace Emar.Data.Entities
         {
             PatientCartOrders = new HashSet<PatientCartOrder>();
             PatientOrders = new HashSet<PatientOrder>();
+            PatientIndicators = new HashSet<PatientIndicator>();
         }
 
         [Key]
         [Column("id")]
         public long Id { get; set; }
-        [Column("site_id")]
+        [Column("site_id", TypeName = "int")]
         public int SiteId { get; set; }
         [Column("medical_record_number")]
         [StringLength(25)]
@@ -147,5 +148,11 @@ namespace Emar.Data.Entities
 
         [InverseProperty("Patient")]
         public virtual ICollection<PatientOrder> PatientOrders { get; set; }
+
+        [InverseProperty("Patient")]
+        public virtual ExternalIdEntity ExternalIds { get; set; }
+
+        [InverseProperty("Patient")]
+        public virtual ICollection<PatientIndicator> PatientIndicators { get; set; }
     }
 }

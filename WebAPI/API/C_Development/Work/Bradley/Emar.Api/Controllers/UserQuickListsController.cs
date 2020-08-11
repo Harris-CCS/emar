@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Emar.Api.Helpers;
-using Emar.Core.Helpers;
 using Emar.Core.Orders.Model;
 using Emar.Core.Orders.Service;
-using Emar.Core.ResourceParameters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Emar.Api.Controllers
@@ -41,13 +39,13 @@ namespace Emar.Api.Controllers
             [FromQuery] int? siteId,
             [FromQuery] long? patientId)
         {
-            var tabLinkBase = Url.Link(nameof(GetUserQuickListTab),new { tabTitle = "C"});
+            var tabLinkBase = Url.Link(nameof(GetUserQuickListTab), new { tabTitle = "C" });
             tabLinkBase = tabLinkBase.Substring(0, tabLinkBase.LastIndexOf("/tabs/", StringComparison.InvariantCultureIgnoreCase) + 6);
 
             string orderLinkBase = null;
-            if((patientId??-1) > 0)
+            if ((patientId ?? -1) > 0)
                 orderLinkBase = Url.Link(nameof(CopyQuickListItemToCart),
-                    new {quickListItemId = -99, patientId = patientId});
+                    new { quickListItemId = -99, patientId = patientId });
 
             //            var link = CreateOrdersResourceUri(resourceParameters: resourceParameters, ResourceUriType.TabPage);
             UserQuickListFrameworkDto ret = _orderService.GetInitialUserQuickList(userId, siteId, tabLinkBase, orderLinkBase);
@@ -108,7 +106,7 @@ namespace Emar.Api.Controllers
             int quickListItemId,
             long patientId)
         {
-         
+
             return NotFound(
                 $"This endpoint hasn't been coded yet.");
         }

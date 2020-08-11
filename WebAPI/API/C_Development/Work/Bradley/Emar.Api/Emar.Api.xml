@@ -17,6 +17,105 @@
             <param name="propertyMappingService"></param>
             <param name="propertyCheckerService"></param>
         </member>
+        <member name="M:Emar.Api.Controllers.CartOrdersController.GetCartOrders(System.String,System.Nullable{System.Int32},System.Nullable{System.Int64})">
+            <summary>
+            Get all cart orders for a patient the user entered.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="userId">
+            Unique user identifier from Accept header.
+            </param>
+            <param name="patientId">
+            Unique patient identifier.
+            </param>
+            <returns>An ActionResult of type CartOrderDto</returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.CartOrdersController.GetCartOrder(System.String,System.Nullable{System.Int32},System.Int64)">
+            <summary>
+            Get a cart order for a patient the user entered.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="userId">
+            Unique user identifier from Accept header.
+            </param>
+            <param name="cartOrderId">
+            Unique cart order identifier.
+            </param>
+            <returns>An ActionResult of type CartOrderDto</returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.CartOrdersController.AddCartOrder(System.String,System.Nullable{System.Int32},Emar.Core.Carts.Model.CartOrderDto,System.Nullable{System.Int64})">
+            <summary>
+            Add a cart order for a patient the user entered.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="userId">
+            Unique user identifier from Accept header.
+            </param>
+            <param name="patientId">
+            Unique patient identifier.
+            </param>
+            <param name="cartOrderBody">
+            Body of the order to be added in the cart.
+            </param>
+            <returns>An ActionResult of type CartOrderDto</returns>
+            <remarks>
+            The JSON in the request body can **NOT** have Order and Administrations Ids set **OR** they **MUST** be set to 0.
+            </remarks>
+        </member>
+        <member name="M:Emar.Api.Controllers.CartOrdersController.UpdateCartOrder(System.String,System.Nullable{System.Int32},Emar.Core.Carts.Model.CartOrderDto,System.Int64)">
+            <summary>
+            Update a cart order.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="userId">
+            Unique user identifier from Accept header.
+            </param>
+            <param name="cartOrderId">
+            Unique cart order identifier.
+            </param>
+            <param name="cartOrderBody">
+            Body of the order to be added in the cart.
+            </param>
+            <returns>An ActionResult of type CartOrderDto</returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.CartOrdersController.DeleteCartOrder(System.String,System.Nullable{System.Int32},System.Nullable{System.Int64})">
+            <summary>
+            Delete a cart order.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="userId">
+            Unique user identifier from Accept header.
+            </param>
+            <param name="cartOrderId">
+            Unique cart order identifier.
+            </param>
+            <returns>An ActionResult of type CartOrderDto</returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.CartOrdersController.DeleteCart(System.String,System.Nullable{System.Int32},System.Nullable{System.Int64})">
+            <summary>
+            Delete the cart.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="userId">
+            Unique user identifier from Accept header.
+            </param>
+            <param name="patientId">
+            Unique patient identifier.
+            </param>
+            <returns>An ActionResult of type CartOrderDto</returns>
+        </member>
         <member name="M:Emar.Api.Controllers.CartOrdersController.CheckoutCart(System.String,System.Nullable{System.Int32},System.Nullable{System.Int64})">
             <summary>
             Order (checkout) the cart orders.
@@ -30,6 +129,36 @@
             <param name="patientId">
             Unique patient identifier.
             </param>
+            <returns></returns>
+        </member>
+        <member name="T:Emar.Api.Controllers.DepartmentPreferredListsController">
+            <summary>
+            Controller to retrieve the Department Preferred Lists for the Landing Page
+            </summary>
+        </member>
+        <member name="M:Emar.Api.Controllers.DepartmentPreferredListsController.#ctor(Emar.Core.Orders.Service.IOrderService,Emar.Core.Sites.Service.ISiteService)">
+            <summary>
+            Controller to handle calls related to the Department Preferred List
+            </summary>
+            <param name="orderService">Order Service provided by DI</param>
+            <param name="siteService">Site Service provided by DI</param>
+        </member>
+        <member name="M:Emar.Api.Controllers.DepartmentPreferredListsController.GetDepartmentPreferredList(System.Int32,System.String,System.Nullable{System.Int32})">
+            <summary>
+            Return the contents Department Preferred List
+            </summary>
+            <param name="siteId">The Site to retrieve the Department Preferred list for</param>
+            <param name="patientId">(Optional) If provided, then HATEOAS links will be created to allow for the adding of the order directly to the patient's/user's cart</param>
+            <param name="departmentCode">(Optional) If provided, the list will be for a specific department (if not provided, the entire list for the Site)</param>
+            <returns></returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.DepartmentPreferredListsController.CopyDepartmentPreferredItemToCart(System.Int32,System.Int32,System.Int64)">
+            <summary>
+            Create an order in the user/patient's cart as a copy of the Department Preferred List order
+            </summary>
+            <param name="userId">The user who is placing the order in the cart</param>
+            <param name="departmentPreferredItemId">The Department Preferred List Item to move into the patient's cart</param>
+            <param name="patientId">the patient that the cart is intended for</param>
             <returns></returns>
         </member>
         <member name="T:Emar.Api.Controllers.OrdersController">
@@ -173,7 +302,7 @@
             <remarks>
             </remarks>
         </member>
-        <member name="M:Emar.Api.Controllers.PatientsController.GetPatients(System.String,System.String,System.String,System.Nullable{System.Int32},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+        <member name="M:Emar.Api.Controllers.PatientsController.GetPatients(System.String,System.String,System.String,System.Nullable{System.Int32},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
             <summary>
             Get a list of patients in the system.
             </summary>
@@ -201,6 +330,18 @@
             <param name="siteId">
             *Optional.* \
             Site (facility) identifier to restrict the list of returned patients to.
+            </param>
+            <param name="accountNumber">
+            *Optional.* \
+            Patient's account number.
+            </param>
+            <param name="customNumber">
+            *Optional.* \
+            Patient's custom number.
+            </param>
+            <param name="personNumber">
+            *Optional.* \
+            Patient's person number.
             </param>
             <param name="departmentCode">
             *Optional.* \
@@ -232,7 +373,7 @@
             </param>
             <returns>An IActionResult of IEnumerable of type PatientDto</returns>
         </member>
-        <member name="M:Emar.Api.Controllers.UserQuickListsController.GetUserQuickListInitial(System.Int32,System.Nullable{System.Int32})">
+        <member name="M:Emar.Api.Controllers.UserQuickListsController.GetUserQuickListInitial(System.Int32,System.Nullable{System.Int32},System.Nullable{System.Int64})">
             <summary>
             Return initial information about a User's Quick List:
             will return the name and contents of the first Quick List tab,
@@ -240,15 +381,26 @@
             </summary>
             <param name="userId">The user to retrieve the quick list for (provided in the header)</param>
             <param name="siteId">(Optional) The Site to retrieve the user's quick list for (if omitted, return the user's quick list for all sites)</param>
+            <param name="patientId">(Optional) If provided, then HATEOAS links will be created to allow for the adding of the order directly to the patient's/user's cart</param>
             <returns></returns>
         </member>
-        <member name="M:Emar.Api.Controllers.UserQuickListsController.GetUserQuickListTab(System.Int32,System.Nullable{System.Int32},System.String)">
+        <member name="M:Emar.Api.Controllers.UserQuickListsController.GetUserQuickListTab(System.Int32,System.Nullable{System.Int32},System.Nullable{System.Int64},System.String)">
             <summary>
-            Return the contents for one tab of a a User's Quick List
+            Return the contents for one tab of a User's Quick List
             </summary>
             <param name="userId">The user to retrieve the quick list for (provided in the header)</param>
             <param name="siteId">(Optional) The Site to retrieve the user's quick list for (if omitted, return the user's quick list for all sites)</param>
+            <param name="patientId">(Optional) If provided, then HATEOAS links will be created to allow for the adding of the order directly to the patient's/user's cart</param>
             <param name="tabTitle">the tab to retrieve remembered orders for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.UserQuickListsController.CopyQuickListItemToCart(System.Int32,System.Int32,System.Int64)">
+            <summary>
+            Create an order in the user/patient's cart as a copy of the quicklist order
+            </summary>
+            <param name="userId">The user who owns the Cart</param>
+            <param name="quickListItemId">The QuickList Item to move into the cart</param>
+            <param name="patientId">the patient that the cart is intended for</param>
             <returns></returns>
         </member>
     </members>

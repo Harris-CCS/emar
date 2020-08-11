@@ -145,8 +145,7 @@ namespace Emar.Core.Orders.Service
             return ret;
         }
 
-        public IEnumerable<UserQuickListItemDto> GetQuickListTab(in int userId, int? siteId, string orderLinkBase,
-            string tab)
+        public IEnumerable<UserQuickListItemDto> GetQuickListTab(in int userId, int? siteId, string orderLinkBase, string tab)
         {
             List<UserQuickListItem> tabItems;
             if (tab == Constants.MostUsedTabTitle)

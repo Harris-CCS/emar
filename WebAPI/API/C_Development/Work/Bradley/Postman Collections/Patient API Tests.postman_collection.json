@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "ffaf1c3d-f45c-4b53-ac6e-5c705a769e82",
+		"_postman_id": "3a12c026-e617-42fa-89ab-fbe99f5c9d9e",
 		"name": "Patient API Tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -11,7 +11,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "f6e57dfe-4e30-45f9-8b1b-b35c962b7835",
+						"id": "685097f3-bb3d-43ee-9234-dc5748b65ec5",
 						"exec": [
 							"//pm.test(\"Not Found returned\", function() {\r",
 							"//    var jsonData = pm.response.json();\r",
@@ -119,15 +119,21 @@
 			]
 		},
 		{
-			"name": "Get ConneryId",
+			"name": "Get 'Beau Zelle Bamme' (by custom number)",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
-						"id": "c0581c31-60c8-429f-a2be-54f8310da4d1",
+						"id": "d39d2d0d-0bc3-42c2-aefa-2524aba47b08",
 						"exec": [
-							"var jsonData = pm.response.json();\r",
-							"pm.environment.set(\"ConneryId\", jsonData.id);"
+							"pm.test(\"Correct Id returned\", function() {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.id).to.eql(67);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -143,12 +149,12 @@
 				"header": [
 					{
 						"key": "Accept",
-						"value": "application/json,text/plain",
-						"type": "text"
+						"type": "text",
+						"value": "application/json,text/plain"
 					}
 				],
 				"url": {
-					"raw": "{{URL}}/api/patients?AccountNumber=150422085236",
+					"raw": "{{URL}}/api/patients?customNumber=C190517055504",
 					"host": [
 						"{{URL}}"
 					],
@@ -158,7 +164,259 @@
 					],
 					"query": [
 						{
-							"key": "AccountNumber",
+							"key": "customNumber",
+							"value": "C190517055504"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get ConneryId",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/patients?accountnumber=150422085236",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"patients"
+							],
+							"query": [
+								{
+									"key": "accountnumber",
+									"value": "150422085236"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 18 Jul 2020 01:55:54 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "966"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Sat, 18 Jul 2020 01:56:55 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Sat, 18 Jul 2020 01:55:55 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"AA3834261BC3E906C8348AC966056F8E\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 163,\n    \"active\": true,\n    \"accountNumber\": \"150422085236  \",\n    \"firstName\": \"Rowe\",\n    \"middleName\": \"\",\n    \"lastName\": \"Connery\",\n    \"nameSuffix\": \"\",\n    \"fullName\": \"Rowe Connery\",\n    \"gender\": \"M\",\n    \"dateOfBirth\": \"1933-03-03T00:00:00\",\n    \"age\": 87,\n    \"ageUnits\": \"years\",\n    \"chiefComplaint\": \"Syncopal Episode\",\n    \"heightInCm\": 0,\n    \"weightInKg\": 0,\n    \"siteId\": 28,\n    \"departmentCode\": \"ICU \",\n    \"wardCode\": \"ICUH    \",\n    \"roomBedCode\": \"            \",\n    \"urgencyColor\": \" \",\n    \"nameAlert\": false,\n    \"withdrawConsent\": false,\n    \"vsDatetime\": null,\n    \"vsBloodPressureIndicator\": \" \",\n    \"vsSystolic\": \"              \",\n    \"vsDiastolic\": \"              \",\n    \"vsPulseIndicator\": \" \",\n    \"vsPulse\": \"              \",\n    \"vsMapLevel\": null,\n    \"vsMap\": null,\n    \"vsRespiratoryIndicator\": \" \",\n    \"vsRespiratory\": \"              \",\n    \"vsTemperatureIndicator\": \" \",\n    \"vsTemperature\": \"              \",\n    \"vsEndTidalLevel\": null,\n    \"vsEndTidal\": null,\n    \"vsOxygenSaturationIndicator\": \" \",\n    \"vsOxygenSaturation\": \"\",\n    \"vsPainScaleIndicator\": \" \",\n    \"vsPainScale\": \"              \",\n    \"orders\": null,\n    \"site\": null,\n    \"siteName\": null\n}"
+				}
+			]
+		},
+		{
+			"name": "Get 'Beau Zelle Bamme' (by person number)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c7afa4d3-df31-4bea-9c63-c0e76b23e601",
+						"exec": [
+							"pm.test(\"Correct Id returned\", function() {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.id).to.eql(67);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json,text/plain"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/patients?personNumber=P190517055504",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"patients"
+					],
+					"query": [
+						{
+							"key": "personNumber",
+							"value": "P190517055504"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get ConneryId",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/patients?accountnumber=150422085236",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"patients"
+							],
+							"query": [
+								{
+									"key": "accountnumber",
+									"value": "150422085236"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 18 Jul 2020 01:55:54 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "966"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Sat, 18 Jul 2020 01:56:55 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Sat, 18 Jul 2020 01:55:55 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"AA3834261BC3E906C8348AC966056F8E\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 163,\n    \"active\": true,\n    \"accountNumber\": \"150422085236  \",\n    \"firstName\": \"Rowe\",\n    \"middleName\": \"\",\n    \"lastName\": \"Connery\",\n    \"nameSuffix\": \"\",\n    \"fullName\": \"Rowe Connery\",\n    \"gender\": \"M\",\n    \"dateOfBirth\": \"1933-03-03T00:00:00\",\n    \"age\": 87,\n    \"ageUnits\": \"years\",\n    \"chiefComplaint\": \"Syncopal Episode\",\n    \"heightInCm\": 0,\n    \"weightInKg\": 0,\n    \"siteId\": 28,\n    \"departmentCode\": \"ICU \",\n    \"wardCode\": \"ICUH    \",\n    \"roomBedCode\": \"            \",\n    \"urgencyColor\": \" \",\n    \"nameAlert\": false,\n    \"withdrawConsent\": false,\n    \"vsDatetime\": null,\n    \"vsBloodPressureIndicator\": \" \",\n    \"vsSystolic\": \"              \",\n    \"vsDiastolic\": \"              \",\n    \"vsPulseIndicator\": \" \",\n    \"vsPulse\": \"              \",\n    \"vsMapLevel\": null,\n    \"vsMap\": null,\n    \"vsRespiratoryIndicator\": \" \",\n    \"vsRespiratory\": \"              \",\n    \"vsTemperatureIndicator\": \" \",\n    \"vsTemperature\": \"              \",\n    \"vsEndTidalLevel\": null,\n    \"vsEndTidal\": null,\n    \"vsOxygenSaturationIndicator\": \" \",\n    \"vsOxygenSaturation\": \"\",\n    \"vsPainScaleIndicator\": \" \",\n    \"vsPainScale\": \"              \",\n    \"orders\": null,\n    \"site\": null,\n    \"siteName\": null\n}"
+				}
+			]
+		},
+		{
+			"name": "Get ConneryId (by account number)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "10947a00-1896-4975-9be5-4e7e60d68e85",
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.environment.set(\"ConneryId\", jsonData.id);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json,text/plain"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/patients?accountNumber=150422085236",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"patients"
+					],
+					"query": [
+						{
+							"key": "accountNumber",
 							"value": "150422085236"
 						}
 					]
@@ -245,7 +503,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "f6e57dfe-4e30-45f9-8b1b-b35c962b7835",
+						"id": "dc7c9b59-c46e-45cc-89b1-297b345a53d4",
 						"exec": [
 							"pm.test(\"Correct Name returned\", function() {\r",
 							"    var jsonData = pm.response.json();\r",
@@ -362,7 +620,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "ed32ce9c-c60e-4b8d-a7c2-96bcc765f77c",
+						"id": "a598388b-5769-4d2c-b236-d65642ae11a2",
 						"exec": [
 							"pm.test(\"Status code is 406\", function () {\r",
 							"    pm.response.to.have.status(406);\r",
@@ -452,7 +710,7 @@
 						}
 					],
 					"cookie": [],
-					"body": null
+					"body": ""
 				}
 			]
 		},
@@ -462,7 +720,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "935c9ac8-8894-4704-976a-2a944847cc42",
+						"id": "f9a12eb9-7ca0-4650-a11c-d2d48fe94761",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
@@ -580,7 +838,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "23c21c29-fb46-4d9c-a93d-5132d9c9996d",
+						"id": "672f5104-0e6a-4dc8-aaee-cadac3f447d7",
 						"exec": [
 							"pm.test(\"Status code is 400\", function () {\r",
 							"    pm.response.to.have.status(400);\r",
@@ -691,7 +949,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "dd58ec52-51f1-4f4e-8120-9e8c10ca0206",
+						"id": "5468f19c-7580-4230-b825-1b74132bb7dc",
 						"exec": [
 							"var jsonData = pm.response.json();\r",
 							"pm.environment.set(\"InfobuttonId\", jsonData.id);"
@@ -812,7 +1070,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "7c32683a-296a-452e-b657-d3bc93e3ba53",
+						"id": "3bd07673-fd21-4229-af70-a63510b902e3",
 						"exec": [
 							"pm.test(\"Correct Name returned\", function() {\r",
 							"    var jsonData = pm.response.json();\r",
@@ -949,7 +1207,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "5e8b5cfc-82ce-482d-a618-9e869eea0aa4",
+						"id": "885740c6-dca9-4597-ac61-9fff6e3c221c",
 						"exec": [
 							"var jsonData = pm.response.json();\r",
 							"pm.environment.set(\"ArthurId\", jsonData.id);"
@@ -1070,7 +1328,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "f59e3765-08fd-430c-b240-943ba22f2a29",
+						"id": "19bc0bef-22a7-4283-988a-b1a0e8c2413d",
 						"exec": [
 							"pm.test(\"Correct Name returned\", function() {\r",
 							"    var jsonData = pm.response.json();\r",
@@ -1187,7 +1445,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "e28c29a3-c9b3-4d1d-8dab-784d6ee4d28b",
+						"id": "b61b2405-1252-46ee-9f76-bc8e18b05ec9",
 						"exec": [
 							"pm.test(\"Correct account number returned\", function() {\r",
 							"    var jsonData = pm.response.json();\r",
@@ -1323,7 +1581,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "b2e077eb-c280-40fb-ac20-4443b4388a2b",
+						"id": "507c73bf-642e-4e18-aecd-3c9760f4ade8",
 						"exec": [
 							"pm.test(\"Patient was not found\", function () {\r",
 							"    let expectedStrings = ['Patient ', 'was not found'];\r",
@@ -1451,7 +1709,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "7a74fde6-0c3e-4916-82c7-44d8ca45401e",
+						"id": "3ad5e945-fbb6-4c78-a9de-7a3242c05cf7",
 						"exec": [
 							"// var jsonData = pm.response.json();\r",
 							"\r",
@@ -1529,7 +1787,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "45e2c086-d4c7-45d0-9566-b8d519375aab",
+						"id": "dce42437-9c2a-48cf-8e77-04c5826cdf9d",
 						"exec": [
 							"// var jsonData = pm.response.json();\r",
 							"\r",

@@ -192,7 +192,7 @@ namespace Emar.Api
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-            //IHostApplicationLifetime appLifetime)
+        //IHostApplicationLifetime appLifetime)
         {
             //// IHostApplicationLifetime allows us to fire OnStarted, OnStopping and OnStopped events ////
             //appLifetime.ApplicationStarted.Register(OnStarted);
@@ -215,6 +215,8 @@ namespace Emar.Api
                 });
 
             }
+
+            app.UseHttpContext();
 
             // app.UseResponseCaching();
 

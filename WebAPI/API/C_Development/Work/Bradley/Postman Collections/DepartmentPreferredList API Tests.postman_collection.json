@@ -1,17 +1,59 @@
 {
 	"info": {
-		"_postman_id": "3e1b913c-2e19-47ad-8dc1-c820148e4446",
+		"_postman_id": "178e6b94-b3e9-44e1-a21f-415450555c14",
 		"name": "DepartmentPreferredList API Tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
+		{
+			"name": "Get Site Id for tests",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3d07d3c6-6b13-4ec7-b981-a4708c4437f7",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"pm.environment.set(\"SiteId\", jsonData);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/api/sites?sitename=Any",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"sites"
+					],
+					"query": [
+						{
+							"key": "sitename",
+							"value": "Any"
+						}
+					]
+				}
+			},
+			"response": []
+		},
 		{
 			"name": "List for Site (no Department no Pt)",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
-						"id": "2072b3ad-9f8e-43a5-ad77-23cfd6530539",
+						"id": "55ff1279-e72e-4063-9030-92d399f85ad7",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
@@ -36,14 +78,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{URL}}/api/sites/9/departmentPreferredLists",
+					"raw": "{{URL}}/api/sites/{{SiteId}}/departmentPreferredLists",
 					"host": [
 						"{{URL}}"
 					],
 					"path": [
 						"api",
 						"sites",
-						"9",
+						"{{SiteId}}",
 						"departmentPreferredLists"
 					],
 					"query": [
@@ -68,7 +110,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "428e11aa-9e85-43d4-b17c-8edb6d36e80a",
+						"id": "a42577b9-ff68-4eb3-acc2-e46b11728934",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
@@ -93,14 +135,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{URL}}/api/sites/9/departmentPreferredLists?patientId=23456",
+					"raw": "{{URL}}/api/sites/{{SiteId}}/departmentPreferredLists?patientId=23456",
 					"host": [
 						"{{URL}}"
 					],
 					"path": [
 						"api",
 						"sites",
-						"9",
+						"{{SiteId}}",
 						"departmentPreferredLists"
 					],
 					"query": [
@@ -124,7 +166,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "8f832032-dc3a-431a-bb7c-4a3166b80a6e",
+						"id": "baecce7b-b60e-46e2-8aa0-9ce5989afe92",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
@@ -149,14 +191,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{URL}}/api/sites/9/departmentPreferredLists?departmentCode=Main%20ED",
+					"raw": "{{URL}}/api/sites/{{SiteId}}/departmentPreferredLists?departmentCode=Main%20ED",
 					"host": [
 						"{{URL}}"
 					],
 					"path": [
 						"api",
 						"sites",
-						"9",
+						"{{SiteId}}",
 						"departmentPreferredLists"
 					],
 					"query": [
@@ -180,7 +222,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "15b6680c-b715-4e56-a2c2-7571e8183ebd",
+						"id": "465ff0f6-3d39-477c-827a-11590c4c6649",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
@@ -195,7 +237,8 @@
 							"pm.test(\"Links returned\", function() {\r",
 							"    pm.expect(jsonData[0].links).to.not.eql(null);\r",
 							"});\r",
-							""
+							"\r",
+							"pm.environment.unset(\"SiteId\");"
 						],
 						"type": "text/javascript"
 					}
@@ -205,14 +248,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{URL}}/api/sites/9/departmentPreferredLists?patientId=23456&departmentCode=Main%20ED",
+					"raw": "{{URL}}/api/sites/{{SiteId}}/departmentPreferredLists?patientId=23456&departmentCode=Main%20ED",
 					"host": [
 						"{{URL}}"
 					],
 					"path": [
 						"api",
 						"sites",
-						"9",
+						"{{SiteId}}",
 						"departmentPreferredLists"
 					],
 					"query": [

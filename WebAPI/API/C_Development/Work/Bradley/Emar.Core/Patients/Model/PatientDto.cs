@@ -272,6 +272,13 @@ namespace Emar.Core.Patients.Model
             get => personNumber?.Trim();
             set => personNumber = value?.Trim();
         }
+
+        string patientImageSrc;
+        public string PatientImageSrc
+        {
+            get => patientImageSrc?.Trim();
+            set => patientImageSrc = value?.Trim();
+        }
         #endregion
 
         //private List<Allergy> Allergies { get; set; }
@@ -279,5 +286,7 @@ namespace Emar.Core.Patients.Model
         public IEnumerable<PatientOrderDto>? Orders { get; set; }
 
         public SiteDto Site { get; set; }
+
+        public IEnumerable<PatientIndicatorDto>? PatientIndicators { get; set; }
     }
 }

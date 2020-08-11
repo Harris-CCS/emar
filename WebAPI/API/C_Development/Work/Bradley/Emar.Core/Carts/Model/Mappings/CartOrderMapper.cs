@@ -13,7 +13,7 @@ namespace Emar.Core.Carts.Model.Mappings
             if (order == null)
                 return null;
 
-            var dateFormat = order.Patient.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == @"LONG_DATE_FORMAT").OptionValue;
+            var dateFormat = order.Patient.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == AppConstants.LongDateFormat).OptionValue;
 
             CartOrderDto orderDto = new CartOrderDto
             {
@@ -83,7 +83,7 @@ namespace Emar.Core.Carts.Model.Mappings
             if (administration == null)
                 return null;
 
-            var dateFormat = administration.PatientCartOrder.Patient.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == @"LONG_DATE_FORMAT").OptionValue;
+            var dateFormat = administration.PatientCartOrder.Patient.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == AppConstants.LongDateFormat).OptionValue;
 
             CartOrderAdministrationDto administrationDto = new CartOrderAdministrationDto
             {

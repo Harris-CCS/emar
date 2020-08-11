@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "9edbdb3b-aa1d-44e9-b9ea-99f4e76c6621",
+		"_postman_id": "f2aa7deb-394b-4fe9-9bbf-6b29cb57387b",
 		"name": "UserQuickList API Tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -11,7 +11,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "6f66ee9d-9630-4587-9ddb-e8d2c41c0d76",
+						"id": "042e8afc-5718-4ce1-be69-08955ab88a21",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
@@ -143,7 +143,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "87d2ff8d-02b6-41f4-9e76-16b85f71c9a0",
+						"id": "7f23096a-7455-4327-9d5e-629a336fab8a",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
@@ -160,7 +160,7 @@
 							"});\r",
 							"\r",
 							"pm.test(\"Correct Tab Name returned\", function() {\r",
-							"    pm.expect(jsonData.currentTabName).to.eql(\"MostUsed\");\r",
+							"    pm.expect(jsonData.currentTab.tabName).to.eql(\"MostUsed\");\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -187,7 +187,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{URL}}/api/userquicklists",
+					"raw": "{{URL}}/api/userquicklists?patientId=1234",
 					"host": [
 						"{{URL}}"
 					],
@@ -200,6 +200,10 @@
 							"key": "SiteId",
 							"value": "10",
 							"disabled": true
+						},
+						{
+							"key": "patientId",
+							"value": "1234"
 						}
 					]
 				}
@@ -212,7 +216,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "94227b59-e6f5-4a15-b0ee-2c383f82ec3a",
+						"id": "d83ff9d0-b2a1-4886-8dad-12a7a24937c0",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
@@ -275,11 +279,11 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "4c49175d-20e4-45df-8953-dea18729e994",
+						"id": "f379ac79-5afd-423a-8e15-74582875aa2f",
 						"exec": [
 							"var jsonData = pm.response.json();\r",
 							"\r",
-							"pm.test(\"Returns 91 records\", function() {\r",
+							"pm.test(\"Returns 91 records\", function () {\r",
 							"    pm.expect(jsonData.length).to.eql(91);\r",
 							"});\r",
 							"\r",
@@ -287,7 +291,11 @@
 							"    pm.response.to.have.status(200);\r",
 							"});\r",
 							"\r",
-							""
+							"pm.test(\"Has correct HATEOAS links\", function () {\r",
+							"    var quicklistId = jsonData[0].id;\r",
+							"    var expectedLink = pm.environment.get(\"URL\") + \"/api/userquicklists/\" + quicklistId + \"/cartOrders/12345\";\r",
+							"    pm.expect(jsonData[0].links[0].href).to.eql(expectedLink);\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -313,7 +321,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{URL}}/api/userquicklists/tabs/C?SiteId=16",
+					"raw": "{{URL}}/api/userquicklists/tabs/C?SiteId=16&patientId=12345",
 					"host": [
 						"{{URL}}"
 					],
@@ -327,6 +335,10 @@
 						{
 							"key": "SiteId",
 							"value": "16"
+						},
+						{
+							"key": "patientId",
+							"value": "12345"
 						}
 					]
 				}
@@ -339,7 +351,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "91945fe0-f009-4c08-9944-0d816f01a070",
+						"id": "89be110a-8a84-4193-94df-d6632fe95fe4",
 						"exec": [
 							"var jsonData = pm.response.json();\r",
 							"\r",
@@ -404,7 +416,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "5a221ef3-60e1-4f98-8307-a63c6d3febe9",
+						"id": "491452c2-5e6a-4b16-b462-bd88641e1fdf",
 						"exec": [
 							"// pm.test(\"Returns 91 records\", function() {\r",
 							"//     pm.expect(jsonData.length).to.eql(91);\r",
@@ -418,7 +430,9 @@
 							"    let expectedStrings = ['User with id', 'does not have any Quick List Orders for the ', 'C', 'tab for Site 17'];\r",
 							"    var textData = pm.response.text();\r",
 							"    expectedStrings.forEach(str => pm.expect(textData).to.include(str));\r",
-							"});"
+							"});\r",
+							"\r",
+							"pm.environment.unset(\"QuickListUserId\");"
 						],
 						"type": "text/javascript"
 					}
