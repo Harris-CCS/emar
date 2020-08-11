@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "ac21124d-a7b7-4b89-9603-cb8876d1a1ec",
+		"_postman_id": "9ffadd66-80ee-4559-9a4b-760f5f8a40de",
 		"name": "Image API Tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -11,7 +11,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "44b29897-cf08-4faa-8a2a-c31f144d4d5b",
+						"id": "d6a105d5-864c-4e6d-9cca-ce8278ff900d",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
@@ -74,10 +74,10 @@
 							]
 						}
 					},
-					"_postman_previewlanguage": null,
-					"header": null,
+					"_postman_previewlanguage": "Text",
+					"header": [],
 					"cookie": [],
-					"body": null
+					"body": ""
 				}
 			]
 		},
@@ -87,7 +87,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "ab40cc67-b3c4-46fe-b192-7f82bc02b717",
+						"id": "3215238e-eb4f-4eef-bdda-bba6cf6a90f1",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",

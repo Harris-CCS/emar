@@ -92,7 +92,7 @@ namespace Emar.Core.Patients.Model
         public decimal? WeightInKg { get; set; }
 
         #region geography - room, ward, department
-        public long SiteId { get; set; }
+        public int SiteId { get; set; }
 
         string departmentCode;
         public string DepartmentCode

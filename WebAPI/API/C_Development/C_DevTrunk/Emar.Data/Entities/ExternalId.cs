@@ -27,8 +27,11 @@ namespace Emar.Data.Entities
         [InverseProperty(nameof(Entities.Patient.ExternalIds))]
         public virtual Patient Patient { get; set; }
 
-        [ForeignKey(nameof(InternalId))]
-        [InverseProperty(nameof(Entities.Site.ExternalIds))]
-        public Site Site { get; set; }
+        //  This foreign key is not in the database, and can't be enforceable if it were:
+        //    - The datatypes don't line up, and 
+        //    - values exist in ExternalIds that don't point to the patients table
+        //[ForeignKey(nameof(InternalId))]
+        //[InverseProperty(nameof(Entities.Site.ExternalIds))]
+        //public Site Site { get; set; }
     }
 }
