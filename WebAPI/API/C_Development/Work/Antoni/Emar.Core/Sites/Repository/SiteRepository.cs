@@ -6,7 +6,7 @@ namespace Emar.Core.Sites.Repository
 {
     public class SiteRepository : ISiteRepository
     {
-        private EmarContext _context;
+        private readonly EmarContext _context;
 
         public SiteRepository(EmarContext context)
         {
@@ -19,6 +19,12 @@ namespace Emar.Core.Sites.Repository
             if (site?.Name == null) return null;
 
             return site;
+        }
+
+        public int GetSiteIdByName(string siteName)
+        {
+            var site = _context.Sites.FirstOrDefault(s => s.Name == siteName);
+            return site?.Id ?? -1;
         }
     }
 }

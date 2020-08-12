@@ -7,7 +7,7 @@
         /// </summary>
         public int Id { get; set; }
 
-        public long SiteId { get; set; }
+        public int SiteId { get; set; }
 
         /// <summary>
         /// Medication route name.
