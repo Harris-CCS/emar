@@ -62,15 +62,15 @@
                 (keyup.enter)=" changeSelectedDoseUnitByLookup($event.target.value)" [ngbTooltip]="selectedDU"
                 [(ngModel)]="selectedDoseUnit"> -->
 
-              <input type="text" required class="form-control unit-lookup" [ngbTypeahead]="searchDoseUnit"
+              <input type="search" required class="form-control unit-lookup" [ngbTypeahead]="searchDoseUnit"
                 [ngClass]="{'border-danger': medForm.get('doseUnitName').invalid}"
                 (selectItem)="changeSelectedDoseUnitByLookup($event.item)"
                 placeholder="{{(!selectedDoseUnitData || !selectedDoseUnitData.unitName || !selectedDoseUnitName) ? '-- unit--' :selectedDoseUnitName}}"
                 (keyup.enter)="changeSelectedDoseUnitByLookup($event.target.value)"
                 (focusout)="changeSelectedDoseUnitByLookup($event.target.value)" [editable]="false"
-                [ngbTooltip]="selectedDU" formControlName="doseUnitName"
-                (focus)="focus$.next($any($event).target.value)" (click)="click$.next($any($event).target.value)"
-                #duInstance="ngbTypeahead">
+                [ngbTooltip]="selectedDU" [disableTooltip]="selectedDoseUnitName && selectedDoseUnitName.length < 7"
+                formControlName="doseUnitName" (focus)="focus$.next($any($event).target.value)"
+                (click)="click$.next($any($event).target.value)" #duInstance="ngbTypeahead">
 
               <div class="requirement" *ngIf="medForm.get('dose').invalid || medForm.get('doseUnitName').invalid">
                 &nbsp; &nbsp; Mandatory Dose/Unit
@@ -112,11 +112,12 @@
                   </button>
                 </div>
               </div> -->
-              <input type="text" required class="form-control route-lookup" [ngbTypeahead]="searchRouteOfAdmin"
+              <input type="search" required class="form-control route-lookup" [ngbTypeahead]="searchRouteOfAdmin"
                 [ngClass]="{'border-danger': medForm.get('routeName').invalid}"
                 (selectItem)="changeSelectedRouteByLookup($event.item)"
                 placeholder="{{(!selectedRouteOfAdministrationData || !selectedRouteOfAdministrationData.routeName || !selectedRouteName) ? '-- route --' :selectedRouteName}}"
                 (keyup.enter)="changeSelectedRouteByLookup($event.target.value)" [ngbTooltip]="selectedRoute"
+                [disableTooltip]="selectedRouteName && selectedRouteName.length < 14"
                 (focusout)="changeSelectedRouteByLookup($event.target.value)" formControlName="routeName"
                 (focus)="focusRoute$.next($any($event).target.value)" [editable]="false"
                 (click)="clickRoute$.next($any($event).target.value)" #routeInstance="ngbTypeahead">
