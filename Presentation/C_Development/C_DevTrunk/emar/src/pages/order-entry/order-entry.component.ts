@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { User } from 'src/app/interfaces/user';
@@ -14,6 +14,7 @@ import { MEDICATIONS } from '../../app/mockup/medications';
 //import { ORDERS } from '../../app/mockup/orders';
 import { MedOrderService } from '../../services/med-order.service';
 import { PatientService } from 'src/services/patient.service';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
   selector: 'order-entry',
@@ -35,7 +36,8 @@ export class OrderEntryComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private patientService: PatientService,
-    private medOrderService: MedOrderService
+    private medOrderService: MedOrderService,
+    private modalService: ModalService
   ) {}
 
   ngOnInit(): void {
@@ -56,6 +58,19 @@ export class OrderEntryComponent implements OnInit {
   //
   //  return this.user;
   //}
+
+  performModalActions(modalId: string, modalContainerId: string): boolean {
+    if (this.isModalVisible(modalId)) {
+      const container = document.getElementById(modalContainerId);
+      container.scrollTop = 0;
+    }
+    return true;
+  }
+
+  isModalVisible(modalId: string): boolean {
+    const foundModalId = this.modalService.findModal(modalId);
+    return foundModalId && foundModalId.isOpen ? true : false;
+  }
 
   selectedPatient() {
     return this.patient;

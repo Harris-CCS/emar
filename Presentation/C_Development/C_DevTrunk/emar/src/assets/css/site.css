@@ -397,16 +397,6 @@ h3 {
   flex-direction: column;
 }
 
-.header-patient {
-  position: sticky;
-  /* order: 0; */
-  /* width: 100%; */
-  /*  max-height: 100px; */
-  top: 0;
-  z-index: 99;
-  background: #fff;
-}
-
 #dialog {
   max-height: 90% !important;
   max-width: 90% !important;

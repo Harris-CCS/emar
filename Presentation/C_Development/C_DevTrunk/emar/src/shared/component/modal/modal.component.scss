@@ -15,6 +15,15 @@
     background-color: white;
   }
 
+  .med-composer-modal {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    overflow: auto;
+  }
+
   .title {
     line-height: 2em;
     display: flex;
