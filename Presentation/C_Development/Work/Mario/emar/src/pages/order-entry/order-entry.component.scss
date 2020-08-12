@@ -1,6 +1,16 @@
 .page-content-wrapper .lists .lists-wrapper {
-    font-size: 14px;
-    margin-top: 20px;
-    margin-bottom: 0px;
-    font-weight: 700;
+  font-size: 14px;
+  margin-top: 20px;
+  margin-bottom: 0px;
+  font-weight: 700;
+}
+
+.overflow-vertical-on {
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+.overflow-vertical-off {
+  overflow: hidden;
+  overflow-y: hidden;
 }

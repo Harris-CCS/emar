@@ -1,5 +1,5 @@
 import { Frequency } from './frequency';
-// import { Duration } from './duration';
+import { Duration } from './duration';
 
 export interface Order {
   id: number;
