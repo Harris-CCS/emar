@@ -130,14 +130,20 @@ namespace Emar.Data.Entities
         [Column("vs_pain_scale")]
         [StringLength(14)]
         public string VsPainScale { get; set; }
+
         [Column("is_active")]
         public bool Active { get; set; }
+        
         [Column("custom_number")]
         [StringLength(25)]
         public string CustomNumber { get; set; }
+        
         [Column("person_number")]
         [StringLength(25)]
         public string PersonNumber { get; set; }
+
+        [Column("deactivation_datetime", TypeName = "datetimeoffset")]
+        public DateTimeOffset? DeactivationDatetime { get; set; }
 
         [ForeignKey(nameof(SiteId))]
         [InverseProperty(nameof(Entities.Site.Patients))]

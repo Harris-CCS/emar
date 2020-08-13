@@ -24,7 +24,7 @@ namespace Emar.Api.Controllers
             try
             {
                 var rpt = new EfToDbSynchHelper(_context).CompareEfToDb();
-                return Ok(rpt);
+                return rpt == null ? Ok("No problems found") : Ok(rpt);
             }
             catch (Exception e)
             {
