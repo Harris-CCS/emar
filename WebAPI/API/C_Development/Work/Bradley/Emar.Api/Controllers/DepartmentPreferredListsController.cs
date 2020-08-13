@@ -29,7 +29,7 @@ namespace Emar.Api.Controllers
         public DepartmentPreferredListsController(IOrderService orderService, ISiteService siteService)
         {
             _orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
-            _siteService = siteService;
+            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
         }
 
         /// <summary>
