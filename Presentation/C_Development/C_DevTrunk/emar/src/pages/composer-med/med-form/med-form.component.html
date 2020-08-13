@@ -41,7 +41,7 @@
               <span>
                 <input type="number" [ngClass]="{'border-danger': medForm.get('dose').invalid || !selectedDose}"
                   required id="dose" name="dose" min="0" [value]="selectedDose" formControlName="dose" max="9999"
-                  (change)="changeSelectedDose($event.target.value)">
+                  (change)="changeSelectedDose($event.target.value)" [class.is-invalid]="medForm.get('dose').invalid">
               </span>
               <!-- <div ngbDropdown class="d-inline-block dropdown-select">
                 <button class="btn btn-outline-dark" id="doseUnit" [editable]='true' ngbDropdownToggle>
@@ -65,15 +65,22 @@
               <input type="search" required class="form-control unit-lookup" [ngbTypeahead]="searchDoseUnit"
                 [ngClass]="{'border-danger': medForm.get('doseUnitName').invalid}"
                 (selectItem)="changeSelectedDoseUnitByLookup($event.item)"
-                placeholder="{{(!selectedDoseUnitData || !selectedDoseUnitData.unitName || !selectedDoseUnitName) ? '-- unit--' :selectedDoseUnitName}}"
                 (keyup.enter)="changeSelectedDoseUnitByLookup($event.target.value)"
+                placeholder="{{(!selectedDoseUnitData || !selectedDoseUnitData.unitName || !selectedDoseUnitName) ? '-- unit--' :selectedDoseUnitName}}"
                 (focusout)="changeSelectedDoseUnitByLookup($event.target.value)" [editable]="false"
                 [ngbTooltip]="selectedDU" [disableTooltip]="selectedDoseUnitName && selectedDoseUnitName.length < 7"
                 formControlName="doseUnitName" (focus)="focus$.next($any($event).target.value)"
-                (click)="click$.next($any($event).target.value)" #duInstance="ngbTypeahead">
+                (click)="click$.next($any($event).target.value)" #duInstance="ngbTypeahead"
+                [class.is-invalid]="medForm.get('doseUnitName').invalid">
 
-              <div class="requirement" *ngIf="medForm.get('dose').invalid || medForm.get('doseUnitName').invalid">
+              <!-- <div class="requirement" *ngIf="medForm.get('dose').invalid || medForm.get('doseUnitName').invalid">
                 &nbsp; &nbsp; Mandatory Dose/Unit
+              </div> -->
+              <div class="requirement" *ngIf="medForm.get('dose').invalid">
+                {{medForm.getError('error','dose')}}
+              </div>
+              <div class="requirement" *ngIf="medForm.get('doseUnitName').invalid">
+                {{medForm.getError('error','doseUnitName')}}
               </div>
             </div>
             <div class="table-cell center">
@@ -99,7 +106,7 @@
         <span class="table-container">
           <div class="table-row">
             <div class="table-cell">
-              <span class="requirement" *ngIf="medForm.get('routeOfAdministrationData').invalid">*
+              <span class="requirement" *ngIf="medForm.get('routeName').invalid">*
               </span>
               <!-- <div ngbDropdown class="d-inline-block dropdown-select">
                 <button class="btn btn-outline-dark" id="routeOfAdministration" ngbDropdownToggle
@@ -120,9 +127,13 @@
                 [disableTooltip]="selectedRouteName && selectedRouteName.length < 14"
                 (focusout)="changeSelectedRouteByLookup($event.target.value)" formControlName="routeName"
                 (focus)="focusRoute$.next($any($event).target.value)" [editable]="false"
-                (click)="clickRoute$.next($any($event).target.value)" #routeInstance="ngbTypeahead">
-              <div class="requirement" *ngIf="medForm.get('routeName').invalid">
+                (click)="clickRoute$.next($any($event).target.value)" #routeInstance="ngbTypeahead"
+                [class.is-invalid]="medForm.get('routeName').invalid">
+              <!-- <div class="requirement" *ngIf="medForm.get('routeName').invalid">
                 &nbsp; &nbsp; Mandatory Route
+              </div> -->
+              <div class="requirement" *ngIf="medForm.get('routeName').invalid">
+                {{medForm.getError('error','routeName')}}
               </div>
             </div>
             <div class="table-cell center">
