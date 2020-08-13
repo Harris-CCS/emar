@@ -178,5 +178,28 @@ namespace Emar.Core.Orders.Service
         }
 
         #endregion
+
+        #region Group Remembered Order Services
+
+        public GroupsRememberedOrdersDto GetGroupsRememberedOrdersList(int siteId, string departmentCode,
+            string linkBase)
+        {
+            List<GroupListItem> items = _orderRepository.GetGroupRememberedOrderItems(siteId, departmentCode, linkBase);
+            if (!items.Any()) return null;
+
+            var ret = new GroupsRememberedOrdersDto();
+            foreach (var groupName in items.GroupBy(i => i.GroupName).Select(i => i.Key).OrderBy(i => i))
+                ret.Groups.Add(new RememberedGroupDto
+                {
+                    GroupName = groupName,
+                    Orders = items.Where(i => i.GroupName == groupName)
+                        .Select(item => OrderMapper.MapGroupListItem(item, linkBase)).ToList()
+                });
+
+            return ret;
+        }
+
+        #endregion
+
     }
 }

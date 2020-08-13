@@ -22,6 +22,9 @@ namespace Emar.Core.Orders.Service
         // Department Preferred List services
         IEnumerable<DepartmentPreferredItemDto> GetDepartmentPreferredList(in int siteId, string departmentCode, string linkBase);
 
+        // Groups Remembered List services
+        GroupsRememberedOrdersDto GetGroupsRememberedOrdersList(int siteId, string departmentCode, string linkBase);
+
         // Mock Methods
         ComposerOptionsDto GetComposerSetupData(string brandName);
         IEnumerable<FrequencyDto> GetFrequencies(int siteId);

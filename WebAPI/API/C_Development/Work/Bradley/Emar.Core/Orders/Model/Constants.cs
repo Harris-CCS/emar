@@ -518,7 +518,7 @@
 
         #region UserQuickList Constants
 
-        public const string MostUsedTabTitle = "MostUsed";
+        public const string MostUsedTabTitle = "Most Used";
 
         #endregion
     }

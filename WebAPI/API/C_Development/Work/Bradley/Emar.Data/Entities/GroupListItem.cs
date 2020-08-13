@@ -39,6 +39,9 @@ namespace Emar.Data.Entities
         [Column("order_notes", TypeName = "nvarchar(MAX)")]
         public string OrderNotes { get; set; }
 
+        [Column("department_code", TypeName = "varchar(15)")]
+        public string DepartmentCode { get; set; }
+
 
         [ForeignKey(nameof(MedicationRouteId))]
         [InverseProperty(nameof(Entities.MedicationRoute.GroupListItems))]
