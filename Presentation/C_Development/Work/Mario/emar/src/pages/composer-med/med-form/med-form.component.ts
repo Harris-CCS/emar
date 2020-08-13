@@ -12,6 +12,7 @@ import {
   FormGroup,
   Validators,
   FormControl,
+  AbstractControl,
 } from '@angular/forms';
 import { Observable, Subject, merge } from 'rxjs';
 import {
@@ -60,7 +61,7 @@ export class MedFormComponent implements OnInit {
   selectedDoseUnitName: string = '';
   selectedDoseUnitData: Unit;
   selectedDoseName: string = '';
-  selectedRouteName: string = 'oral';
+  selectedRouteName: string;
   selectedPriority: string = 'STAT';
   enteredAdministrationInstructions: string = '';
   isTelephoneOrder: boolean = false;
@@ -84,14 +85,23 @@ export class MedFormComponent implements OnInit {
             this.selectedFormStrengthOptions
           ),
           formStrengthName: new FormControl(this.selectedFormStrengthName),
-          dose: new FormControl(this.selectedDose, Validators.required),
-          doseUnitName: new FormControl(this.selectedDoseUnitName),
+          dose: new FormControl(this.selectedDose, [
+            Validators.required,
+            this.doseValidator,
+          ]),
+          doseUnitName: new FormControl(this.selectedDoseUnitName, [
+            Validators.required,
+            this.doseUnitValidator,
+          ]),
           doseUnitData: new FormControl(this.selectedDoseUnitData),
           // selectedDoseData: new FormControl(this.selectedDoseData),
           routeOfAdministrationData: new FormControl(
             this.selectedRouteOfAdministrationData
           ),
-          routeName: new FormControl(this.selectedRouteName),
+          routeName: new FormControl(this.selectedRouteName, [
+            Validators.required,
+            this.routeUnitValidator,
+          ]),
           priority: new FormControl(this.selectedPriority),
           administrationInstructions: new FormControl(null),
           isTelephoneOrder: new FormControl(false),
@@ -226,7 +236,7 @@ export class MedFormComponent implements OnInit {
     }
 
     // console.log('thisChangeDoseUnit', this);
-    // console.log('medForm', this.medForm);
+    console.log('medForm', this.medForm);
   }
 
   changeSelectedDoseUnitByLookup(unitName: string): void {
@@ -252,6 +262,10 @@ export class MedFormComponent implements OnInit {
       debounceTime(200),
       distinctUntilChanged()
     );
+    console.log('text$', text$);
+    console.log('debouncedText$', debouncedText$);
+    console.log('duInstance', this.duInstance);
+    console.log('click$', this.click$);
     const clicksWithClosedPopup$ = this.click$.pipe(
       filter(() => !this.duInstance.isPopupOpen())
     );
@@ -437,5 +451,33 @@ export class MedFormComponent implements OnInit {
 
     // console.log('thisVerbalOrder', this);
     // console.log('medForm', this.medForm);
+  }
+
+  // ********** Validators ***************************
+
+  doseValidator(control: AbstractControl): { [key: string]: any } | null {
+    console.log('controlValue', control.value);
+    if (!control.value) {
+      return { error: '** Dose is required' };
+    } else if (control.value.toString().includes('-')) {
+      return { error: '** Dose cannot be negative or contain dashes' };
+    } else if (control.value.length > 4) {
+      return { error: '** Dose cannot be > 4 characters' };
+    }
+    return null;
+  }
+
+  doseUnitValidator(control: AbstractControl): { [key: string]: any } | null {
+    if (!control.value) {
+      return { error: '** Dose Unit is required' };
+    }
+    return null;
+  }
+
+  routeUnitValidator(control: AbstractControl): { [key: string]: any } | null {
+    if (!control.value) {
+      return { error: '** Route Unit is required' };
+    }
+    return null;
   }
 }
