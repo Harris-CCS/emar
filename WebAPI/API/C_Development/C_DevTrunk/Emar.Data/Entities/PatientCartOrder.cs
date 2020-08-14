@@ -30,10 +30,10 @@ namespace Emar.Data.Entities
         [StringLength(32)]
         public string Ndc { get; set; }
 
-        [Column("drug_id", TypeName = "varchar(32)")]
+        [Column("drug_id", TypeName = "varchar(32)"), Required]
         public string DrugId { get; set; }
 
-        [Column("brand_name", TypeName = "nvarchar(255)")]
+        [Column("brand_name", TypeName = "nvarchar(255)"), Required]
         public string BrandName { get; set; }
 
         [Column("dose", TypeName = "decimal(11,2)")]
@@ -66,7 +66,7 @@ namespace Emar.Data.Entities
         [Column("order_notes", TypeName = "nvarchar(MAX)")]
         public string OrderNotes { get; set; }
 
-        [Column("user_quick_list_item_id", TypeName = "bigint")]
+        [Column("user_quick_list_item_id", TypeName = "int")]
         public int? UserQuickListItemId { get; set; }
 
         [ForeignKey(nameof(MedicationRouteId))]

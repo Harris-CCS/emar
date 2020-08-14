@@ -23,5 +23,8 @@ namespace Emar.Core.Orders.Repository
         
         // Department Preferred List
         List<DepartmentPreferredListItem> GetDepartmentPreferredList(int siteId, string departmentCode, string linkBase);
+
+        // Group Remembered Order List
+        List<GroupListItem> GetGroupRememberedOrderItems(int siteId, string departmentCode, string linkBase);
     }
 }

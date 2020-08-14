@@ -12,7 +12,6 @@ namespace Emar.Core.Orders.Model
 
         public string DepartmentCode { get; set; }
 
-
         public IEnumerable<HateOasLinkDto> Links;
     }
 }
