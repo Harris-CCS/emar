@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "178e6b94-b3e9-44e1-a21f-415450555c14",
-		"name": "DepartmentPreferredList API Tests",
+		"_postman_id": "928e2f83-70d7-4d53-9b53-e98be6065301",
+		"name": "Group Lists Tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -29,7 +29,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{URL}}/api/sites?sitename=Automation%20Test_Multum",
+					"raw": "{{URL}}/api/sites?sitename=FDB%20%2836%29",
 					"host": [
 						"{{URL}}"
 					],
@@ -40,7 +40,7 @@
 					"query": [
 						{
 							"key": "sitename",
-							"value": "Automation%20Test_Multum"
+							"value": "FDB%20%2836%29"
 						}
 					]
 				}
@@ -53,7 +53,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "55ff1279-e72e-4063-9030-92d399f85ad7",
+						"id": "99286fd2-98da-480c-95a6-36d8a7ef586a",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
@@ -61,20 +61,28 @@
 							"\r",
 							"var jsonData = pm.response.json();\r",
 							"\r",
-							"pm.test(\"Returns 25 records\", function() {\r",
-							"    pm.expect(jsonData.length).to.eql(25);\r",
+							"pm.test(\"Returns 13 records\", function() {\r",
+							"    pm.expect(jsonData.groups.length).to.eql(13);\r",
 							"});\r",
 							"\r",
-							"pm.test(\"No Links returned\", function() {\r",
-							"    pm.expect(jsonData[0].links).to.eql(null);\r",
+							"pm.test(\"Group 1 has name 'Abdominal Pain'\", function() {\r",
+							"    pm.expect(jsonData.groups[0].groupName).to.eql(\"Abdominal Pain\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Group 1 has 12 records\", function() {\r",
+							"    pm.expect(jsonData.groups[0].orders.length).to.eql(12);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Links not returned\", function() {\r",
+							"    pm.expect(jsonData.groups[0].orders[0].links).to.eql(null);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"route returned\", function() {\r",
-							"    pm.expect(jsonData[4].medicationRoute).to.not.eql(null);\r",
+							"    pm.expect(jsonData.groups[0].orders[0].medicationRoute).to.not.eql(null);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"doseUnit returned\", function() {\r",
-							"    pm.expect(jsonData[4].doseUnit).to.not.eql(null);\r",
+							"    pm.expect(jsonData.groups[0].orders[5].doseUnit).to.not.eql(null);\r",
 							"});\r",
 							""
 						],
@@ -86,7 +94,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{URL}}/api/sites/{{SiteId}}/departmentPreferredLists",
+					"raw": "{{URL}}/api/sites/{{SiteId}}/groupsrememberedorderslists",
 					"host": [
 						"{{URL}}"
 					],
@@ -94,19 +102,7 @@
 						"api",
 						"sites",
 						"{{SiteId}}",
-						"departmentPreferredLists"
-					],
-					"query": [
-						{
-							"key": "patientId",
-							"value": "23456",
-							"disabled": true
-						},
-						{
-							"key": "departmentCode",
-							"value": "Main%20ED",
-							"disabled": true
-						}
+						"groupsrememberedorderslists"
 					]
 				}
 			},
@@ -118,7 +114,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "a42577b9-ff68-4eb3-acc2-e46b11728934",
+						"id": "680f970d-dd4b-4cae-b1fd-9a7bc1854c3f",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
@@ -126,20 +122,28 @@
 							"\r",
 							"var jsonData = pm.response.json();\r",
 							"\r",
-							"pm.test(\"Returns 25 records\", function() {\r",
-							"    pm.expect(jsonData.length).to.eql(25);\r",
+							"pm.test(\"Returns 13 records\", function() {\r",
+							"    pm.expect(jsonData.groups.length).to.eql(13);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Group 1 has name 'Abdominal Pain'\", function() {\r",
+							"    pm.expect(jsonData.groups[0].groupName).to.eql(\"Abdominal Pain\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Group 1 has 12 records\", function() {\r",
+							"    pm.expect(jsonData.groups[0].orders.length).to.eql(12);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Links returned\", function() {\r",
-							"    pm.expect(jsonData[0].links).to.not.eql(null);\r",
+							"    pm.expect(jsonData.groups[0].orders[0].links).to.not.eql(null);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"route returned\", function() {\r",
-							"    pm.expect(jsonData[4].medicationRoute).to.not.eql(null);\r",
+							"    pm.expect(jsonData.groups[0].orders[0].medicationRoute).to.not.eql(null);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"doseUnit returned\", function() {\r",
-							"    pm.expect(jsonData[4].doseUnit).to.not.eql(null);\r",
+							"    pm.expect(jsonData.groups[0].orders[5].doseUnit).to.not.eql(null);\r",
 							"});\r",
 							""
 						],
@@ -151,7 +155,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{URL}}/api/sites/{{SiteId}}/departmentPreferredLists?patientId=23456",
+					"raw": "{{URL}}/api/sites/{{SiteId}}/groupsrememberedorderslists?patientId=23456",
 					"host": [
 						"{{URL}}"
 					],
@@ -159,17 +163,12 @@
 						"api",
 						"sites",
 						"{{SiteId}}",
-						"departmentPreferredLists"
+						"groupsrememberedorderslists"
 					],
 					"query": [
 						{
 							"key": "patientId",
 							"value": "23456"
-						},
-						{
-							"key": "departmentCode",
-							"value": "Main%20ED",
-							"disabled": true
 						}
 					]
 				}
@@ -182,7 +181,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "baecce7b-b60e-46e2-8aa0-9ce5989afe92",
+						"id": "aa5f26e9-11bc-4556-bcc8-8a62adae60e4",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
@@ -190,20 +189,28 @@
 							"\r",
 							"var jsonData = pm.response.json();\r",
 							"\r",
-							"pm.test(\"Returns 12 records\", function() {\r",
-							"    pm.expect(jsonData.length).to.eql(12);\r",
+							"pm.test(\"Returns 11 records\", function() {\r",
+							"    pm.expect(jsonData.groups.length).to.eql(11);\r",
 							"});\r",
 							"\r",
-							"pm.test(\"No Links returned\", function() {\r",
-							"    pm.expect(jsonData[0].links).to.eql(null);\r",
+							"pm.test(\"Group 1 has name 'Abdominal Pain'\", function() {\r",
+							"    pm.expect(jsonData.groups[0].groupName).to.eql(\"Abdominal Pain\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Group 1 has 5 records\", function() {\r",
+							"    pm.expect(jsonData.groups[0].orders.length).to.eql(5);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Links not returned\", function() {\r",
+							"    pm.expect(jsonData.groups[0].orders[0].links).to.eql(null);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"route returned\", function() {\r",
-							"    pm.expect(jsonData[4].medicationRoute).to.not.eql(null);\r",
+							"    pm.expect(jsonData.groups[0].orders[1].medicationRoute).to.not.eql(null);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"doseUnit returned\", function() {\r",
-							"    pm.expect(jsonData[4].doseUnit).to.not.eql(null);\r",
+							"    pm.expect(jsonData.groups[0].orders[1].doseUnit).to.not.eql(null);\r",
 							"});\r",
 							""
 						],
@@ -215,7 +222,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{URL}}/api/sites/{{SiteId}}/departmentPreferredLists?departmentCode=Main%20ED",
+					"raw": "{{URL}}/api/sites/{{SiteId}}/groupsrememberedorderslists?departmentCode=Main%20ED",
 					"host": [
 						"{{URL}}"
 					],
@@ -223,14 +230,9 @@
 						"api",
 						"sites",
 						"{{SiteId}}",
-						"departmentPreferredLists"
+						"groupsrememberedorderslists"
 					],
 					"query": [
-						{
-							"key": "patientId",
-							"value": "23456",
-							"disabled": true
-						},
 						{
 							"key": "departmentCode",
 							"value": "Main%20ED"
@@ -246,7 +248,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "465ff0f6-3d39-477c-827a-11590c4c6649",
+						"id": "48256dcc-34d0-4521-8874-79442944bc74",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
@@ -254,23 +256,30 @@
 							"\r",
 							"var jsonData = pm.response.json();\r",
 							"\r",
-							"pm.test(\"Returns 12 records\", function() {\r",
-							"    pm.expect(jsonData.length).to.eql(12);\r",
+							"pm.test(\"Returns 11 records\", function() {\r",
+							"    pm.expect(jsonData.groups.length).to.eql(11);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Group 1 has name 'Abdominal Pain'\", function() {\r",
+							"    pm.expect(jsonData.groups[0].groupName).to.eql(\"Abdominal Pain\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Group 1 has 5 records\", function() {\r",
+							"    pm.expect(jsonData.groups[0].orders.length).to.eql(5);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Links returned\", function() {\r",
-							"    pm.expect(jsonData[0].links).to.not.eql(null);\r",
+							"    pm.expect(jsonData.groups[0].orders[0].links).to.not.eql(null);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"route returned\", function() {\r",
-							"    pm.expect(jsonData[4].medicationRoute).to.not.eql(null);\r",
+							"    pm.expect(jsonData.groups[0].orders[1].medicationRoute).to.not.eql(null);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"doseUnit returned\", function() {\r",
-							"    pm.expect(jsonData[4].doseUnit).to.not.eql(null);\r",
+							"    pm.expect(jsonData.groups[0].orders[1].doseUnit).to.not.eql(null);\r",
 							"});\r",
-							"\r",
-							"pm.environment.unset(\"SiteId\");"
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -280,7 +289,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{URL}}/api/sites/{{SiteId}}/departmentPreferredLists?patientId=23456&departmentCode=Main%20ED",
+					"raw": "{{URL}}/api/sites/{{SiteId}}/groupsrememberedorderslists?patientId=23456&departmentCode=Main%20ED",
 					"host": [
 						"{{URL}}"
 					],
@@ -288,7 +297,7 @@
 						"api",
 						"sites",
 						"{{SiteId}}",
-						"departmentPreferredLists"
+						"groupsrememberedorderslists"
 					],
 					"query": [
 						{

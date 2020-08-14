@@ -36,7 +36,7 @@ namespace Emar.Core.Orders.Model.Mappings
                 DoseUnit = MedicationMapper.MapMedicationUnit(patientOrder.MedicationUnit),
                 MedicationRoute = MedicationMapper.MapMedicationRoute(patientOrder.MedicationRoute),
                 ////Priority = (OrderPriorities)Enum.Parse(typeof(OrderPriorities), patientOrder.Priority),
-                FrequencyId = patientOrder.FrequencyId,
+                FrequencyId = patientOrder.FrequencyScheduleId,
                 Prn = patientOrder.Prn,
                 PointInTime = patientOrder.PointInTime,
                 OrderStatus = patientOrder.OrderStatus,
@@ -146,7 +146,7 @@ namespace Emar.Core.Orders.Model.Mappings
                 Dose = dbObj.Dose,
                 DoseUnit = MedicationMapper.MapMedicationUnit(dbObj.MedicationUnit),
                 MedicationRoute = MedicationMapper.MapMedicationRoute(dbObj.MedicationRoute),
-                FrequencyId = dbObj.FrequencyId,
+                FrequencyId = dbObj.FrequencyScheduleId,
                 OrderNotes = dbObj.OrderNotes
             };
 
@@ -179,7 +179,7 @@ namespace Emar.Core.Orders.Model.Mappings
                 Dose = dbObj.Dose,
                 DoseUnit = MedicationMapper.MapMedicationUnit(dbObj.MedicationUnit),
                 MedicationRoute = MedicationMapper.MapMedicationRoute(dbObj.MedicationRoute),
-                FrequencyId = dbObj.FrequencyId,
+                FrequencyId = dbObj.FrequencyScheduleId,
                 OrderNotes = dbObj.OrderNotes
             };
 
@@ -212,7 +212,7 @@ namespace Emar.Core.Orders.Model.Mappings
                 Dose = dbObj.Dose,
                 DoseUnit = MedicationMapper.MapMedicationUnit(dbObj.MedicationUnit),
                 MedicationRoute = MedicationMapper.MapMedicationRoute(dbObj.MedicationRoute),
-                FrequencyId = dbObj.FrequencyId,
+                FrequencyId = dbObj.FrequencyScheduleId,
                 OrderNotes = dbObj.OrderNotes
             };
 

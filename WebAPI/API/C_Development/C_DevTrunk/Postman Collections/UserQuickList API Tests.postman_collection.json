@@ -160,7 +160,7 @@
 							"});\r",
 							"\r",
 							"pm.test(\"Correct Tab Name returned\", function() {\r",
-							"    pm.expect(jsonData.currentTab.tabName).to.eql(\"MostUsed\");\r",
+							"    pm.expect(jsonData.currentTab.tabName).to.eql(\"Most Used\");\r",
 							"});"
 						],
 						"type": "text/javascript"
