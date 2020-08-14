@@ -19,31 +19,32 @@ create table [#fdb_ndc_info]
         load temporary tables for staging
 ****************************************/
 
+--if '$(load_data)' = 'live'
+--   and exists
+--(
+--    select null
+--    from   [master].[sys].[databases]
+--    where  [name] = 'ibex'
+--)
+--    begin
+
+--        insert into [#fdb_ndc_info]
+--            ([ndc]
+--           , [base_ndc]
+--           , [repackaged]
+--           , [medid]
+--           , [packaging]
+--           , [strength]
+--           , [days_obsolete]
+--           , [GCN_SEQNO]
+--           , [HICL_SEQNO]
+--           , [ROUTED_GEN_ID]
+--            )
+--        execute ('execute dbo.export_ibex_fdb_ndc_info');
+--    end;
+
 if '$(load_data)' = 'live'
-   and exists
-(
-    select null
-    from   [master].[sys].[databases]
-    where  [name] = 'ibex'
-)
-    begin
-
-        insert into [#fdb_ndc_info]
-            ([ndc]
-           , [base_ndc]
-           , [repackaged]
-           , [medid]
-           , [packaging]
-           , [strength]
-           , [days_obsolete]
-           , [GCN_SEQNO]
-           , [HICL_SEQNO]
-           , [ROUTED_GEN_ID]
-            )
-        execute ('execute dbo.export_ibex_fdb_ndc_info');
-    end;
-
-if '$(load_data)' = 'sample'
+or '$(load_data)' = 'sample'
     begin
 
         bulk insert [#fdb_ndc_info] from '$(current_path)Scripts\Data-Loader\sample_data\fdb_ndc_info.bcp' with(fieldterminator = '|~', rowterminator = '\n');

@@ -31,17 +31,23 @@ create table [#table_order]
 -- Input Tables That have completed export scripts here
 insert into [#table_order] values
 
+    --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ('dbo','fdb_allergy_name','global_data'),
     ('dbo','fdb_brand_name','global_data'),
     ('dbo','fdb_ndc_info','global_data'),
     ('dbo','options','global_data'),
-
+    ('dbo','frequency_calendar','global_data'),
+    ('dbo','frequency_days','global_data'),
+    ('dbo','frequency_interval_units','global_data'),
+    ('dbo','frequency_minutes','global_data'),
+    ('dbo','frequency_types','global_data'),
+    --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ('dbo','patient_allergies','phi_data'),
     ('dbo','patient_home_medications','phi_data'),
     ('dbo','patient_indicators','phi_data'),
     ('dbo','patient_orders','phi_data'),
     ('dbo','patients','phi_data'),
-
+    --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ('dbo','antimicrobial_indication_items','site_data'),
     ('dbo','antimicrobial_indications','site_data'),
     ('dbo','group_list_items','site_data'),
@@ -52,9 +58,12 @@ insert into [#table_order] values
     ('dbo','site_formulary_match','site_data'),
     ('dbo','site_options','site_data'),
     ('dbo','sites','site_data'),
-
+    ('dbo','frequency_schedules','site_data'),
+    ('dbo','frequency_interval_day_times','site_data'),
+    --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ('dbo','user_quick_list_items','user_data'),
     ('dbo','users','user_data');
+    --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 go
 /********************************************************************************************************************************************
@@ -190,6 +199,7 @@ from
 ) as [lst]
 inner join [#table_order] [to] on [to].[schema_name]=[lst].[schema_name] and [to].table_name=[lst].table_name
 where [lst].table_name in(select table_name from [#table_order])
+and [lst].table_name not in('frequency_interval_day_times')--"frequency_interval_day_times" combined with frequency_schedules.sql
 order by [lst].[load_level]
        , [lst].[schema_name]
        , [lst].[table_name];
@@ -205,6 +215,7 @@ from
 ) as [lst]
 where table_name in(select table_name from [#table_order])
 and table_name not in('site_options','options')--"not In Tables" are loaded from static scripts
+and [lst].table_name not like 'frequency%'--"frequency_interval_day_times" combined with frequency_schedules.sql
 order by [schema_name]
        , [table_name];
 
@@ -236,6 +247,7 @@ from
 ) as [lst]
 where table_name in(select table_name from [#table_order])
 and table_name not in('site_options','options')--"not In Tables" are loaded from static scripts
+and [lst].table_name not like 'frequency%'--"frequency_interval_day_times" combined with frequency_schedules.sql
 order by [schema_name]
        , [table_name];
 

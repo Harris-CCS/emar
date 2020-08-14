@@ -4,16 +4,16 @@ as
 
         create table [#group_list_items]
             (
-              [site_id]             [varchar](40) not null
-            , [group_name]          [nvarchar](255) not null
-            , [ndc]                 [varchar](32) null
-            , [drug_id]             [varchar](32) null
-            , [brand_name]          [nvarchar](255) not null
-            , [dose]                [varchar](40) null
-            , [medication_unit_id]  [varchar](100) null
-            , [medication_route_id] [varchar](40) null
-            , [frequency_id]        [int] null
-            , [order_notes]         [nvarchar](max) null);
+              [site_id]               [varchar](40) not null
+            , [group_name]            [nvarchar](255) not null
+            , [ndc]                   [varchar](32) null
+            , [drug_id]               [varchar](32) null
+            , [brand_name]            [nvarchar](255) not null
+            , [dose]                  [varchar](40) null
+            , [medication_unit_id]    [varchar](100) null
+            , [medication_route_id]   [varchar](40) null
+            , [frequency_schedule_id] [int] null
+            , [order_notes]           [nvarchar](max) null);
 
         insert into [#group_list_items]
         select [grp].[site] as                [site_id]
@@ -24,7 +24,7 @@ as
              , rtrim(ltrim([grp].[dose])) as  [dose]
              , rtrim(ltrim([grp].[unit])) as  [medication_unit_id]
              , rtrim(ltrim([grp].[route])) as [medication_route_id]
-             , 0 as                           [frequency_id]
+             , 0 as                           [frequency_schedule_id]
              , [grp].[notes] as               [order_notes]
         from   [ibex].[dbo].[grp]
                inner join [ibex].[dbo].[cde] on [grp].[num] = [cde].[num]
@@ -38,7 +38,7 @@ as
              , [dose]
              , [medication_unit_id]
              , [medication_route_id]
-             , [frequency_id]
+             , [frequency_schedule_id]
              , [order_notes]
              , rtrim(ltrim([1])) as [brand_name_1]
              , rtrim(ltrim([2])) as [dose_2]
@@ -56,7 +56,7 @@ as
                  , [grp].[dose]
                  , [grp].[medication_unit_id]
                  , [grp].[medication_route_id]
-                 , [grp].[frequency_id]
+                 , [grp].[frequency_schedule_id]
                  , [grp].[order_notes]
                  , [name_part].[ItemNumber]
                  , [name_part].[Item]
@@ -114,7 +114,7 @@ as
              , [result].[dose]
              , [result].[medication_unit_id]
              , [result].[medication_route_id]
-             , [result].[frequency_id]
+             , [result].[frequency_schedule_id]
              , [result].[order_notes]
         from   [#group_list_items_parsed] as [result]
         order by [result].[group_name]
