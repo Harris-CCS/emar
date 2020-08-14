@@ -2,17 +2,60 @@
     <form [formGroup]="dateTimeForm" (ngSubmit)="onSubmit()" class="m-2">
         <div class="d-flex justify-content-center">
             <div>
-                <ngb-timepicker formControlName="time"></ngb-timepicker>
+                <!-- <ngb-timepicker formControlName="time"></ngb-timepicker> -->
+                <div class="ngb-tp">
+                    <div class="ngb-tp-input-container ngb-tp-hour">
+                        <button tabindex="-1" type="button" class="btn btn-link"
+                            (click)="changeHour(hourStep)"
+                            [disabled]="!canHourUp">
+                                <span class="chevron ngb-tp-chevron"></span>
+                                <span class="sr-only">Increment hours</span>
+                        </button>
+                        <input type="text"
+                            class="ngb-tp-input form-control"
+                            maxlength="2"
+                            inputmode="numeric"
+                            placeholder="HH"
+                            formControlName="hour">
+                        <button tabindex="-1" type="button" class="btn btn-link"
+                            (click)="changeHour(-hourStep)"
+                            [disabled]="!canHourDown">
+                                <span class="chevron ngb-tp-chevron bottom"></span>
+                                <span class="sr-only">Decrement hours</span>
+                        </button>
+                    </div>
+                    <div class="ngb-tp-spacer"></div>
+                    <div class="ngb-tp-input-container ngb-tp-minute">
+                        <button tabindex="-1" type="button" class="btn btn-link"
+                            (click)="changeMinute(minuteStep)"
+                            [disabled]="!canMinuteUp">
+                                <span class="chevron ngb-tp-chevron"></span>
+                                <span class="sr-only">Increment minutes</span>
+                        </button>
+                        <input type="text"
+                            class="ngb-tp-input form-control"
+                            maxlength="2"
+                            inputmode="numeric"
+                            placeholder="MM"
+                            formControlName="minute">
+                        <button tabindex="-1" type="button" class="btn btn-link"
+                            (click)="changeMinute(-minuteStep)"
+                            [disabled]="!canMinuteDown">
+                                <span class="chevron ngb-tp-chevron bottom"></span>
+                                <span class="sr-only">Decrement minutes</span>
+                        </button>
+                    </div>
+                </div>
             </div>
+
             <div class="d-flex flex-column">
                 <button class="btn btn-secondary btn-sm m-1" (click)="onCancel()" type="button">Cancel</button>
-                <!-- TODO disabled now if < minDate -->
-                <button class="btn btn-secondary btn-sm m-1" (click)="onNow()" type="button">Now</button>
+                <button class="btn btn-secondary btn-sm m-1" (click)="onNow()" type="button" [disabled]="canNow">Now</button>
                 <button class="btn btn-danger btn-sm m-1" type="submit">Select</button>
             </div>
         </div>
 
-        <ngb-datepicker formControlName="date" [minDate]="minDate" #dp></ngb-datepicker>
+        <ngb-datepicker formControlName="date" [minDate]="minDate" [maxDate]="maxDate"[navigation]='navigation'></ngb-datepicker>
             
     </form>
 </app-modal>
