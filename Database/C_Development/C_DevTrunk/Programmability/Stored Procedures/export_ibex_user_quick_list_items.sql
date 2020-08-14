@@ -15,7 +15,7 @@ as
                end as                            [dose]
              , ltrim(rtrim([source].[unit])) as  [medication_unit_id]
              , ltrim(rtrim([source].[route])) as [medication_route_id]
-             , 0 as                              [frequency_id]
+             , 0 as                              [frequency_schedule_id]
              , ltrim(rtrim([source].[notes])) as [order_notes]
         from   [ibex].[dbo].[rxl] as [source]
                left join [ibex].[dbo].[fdb_ndc_info] as [ndc] on [source].[ndc] = [ndc].[ndc]

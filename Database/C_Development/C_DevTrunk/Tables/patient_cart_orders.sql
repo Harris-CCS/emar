@@ -11,7 +11,7 @@ create table [dbo].[patient_cart_orders]
     , [medication_unit_id]      [int] null
     , [medication_route_id]     [int] null
     , [priority]                [tinyint] not null
-    , [frequency_id]            [int] null
+    , [frequency_schedule_id]   [int] null
     , [prn]                     [bit] not null
     , [point_in_time]           [bit] not null
     , [begin_datetime]          [datetimeoffset](7) not null
@@ -52,6 +52,10 @@ go
 
 alter table [dbo].[patient_cart_orders]
 add constraint [fk__patient_cart_orders__user_quick_list_items] foreign key([user_quick_list_item_id]) references [dbo].[user_quick_list_items]([id]);
+go
+
+alter table [dbo].[patient_cart_orders]
+add constraint [fk__patient_cart_orders__frequency_schedules] foreign key([frequency_schedule_id]) references [dbo].[frequency_schedules]([id]);
 go
 
 /***************
@@ -222,13 +226,13 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'frequency_id'
+  , @value = N'Foreign Key to frequency_schedules table'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
   , @level1name = N'patient_cart_orders'
   , @level2type = N'COLUMN'
-  , @level2name = N'frequency_id';
+  , @level2name = N'frequency_schedule_id';
 go
 
 execute [sys].[sp_addextendedproperty] 

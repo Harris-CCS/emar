@@ -17,12 +17,12 @@ order by [TableName];
 use emar_bacpac;
 
 select * from SchemaDictionary where path not in('dbo.LoadLevels','tool.ScriptDiagram','dbo.load_levels','dbo.__RefactorLog.OperationKey')
-and cast([path] as varchar(500)) like '%ordinal%'
+and cast([path] as varchar(500)) like '%frequency%'
 order by 3,2,1
 
 
 select * from SchemaDictionary where path not in('dbo.LoadLevels','tool.ScriptDiagram','dbo.load_levels','dbo.__RefactorLog.OperationKey')
-and cast([path] as varchar(500)) like '%site_id%'
+and cast([path] as varchar(500)) like '%frequency_id%'
 order by 2,1,3
 
     select [col].[TABLE_CATALOG]
@@ -31,7 +31,7 @@ order by 2,1,3
          , [col].[COLUMN_NAME]
          , [col].[DATA_TYPE]
     from   [INFORMATION_SCHEMA].[COLUMNS] as [col]
-    where  ([COLUMN_NAME] like '%ordin%')and left(DATA_TYPE,1) not in ('n','b')
+    where  ([COLUMN_NAME] like '%frequency_id%')and left(DATA_TYPE,1) not in ('n','b')
     order by 1
            , 2
            , 3

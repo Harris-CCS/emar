@@ -17,7 +17,7 @@ create table [#patient_orders]
     , [medication_unit_id]      [varchar](20) null
     , [medication_route_id]     [varchar](50) null
     , [priority]                [tinyint] not null
-    , [frequency_id]            [int] null
+    , [frequency_schedule_id]   [int] null
     , [prn]                     [bit] not null
     , [point_in_time]           [bit] not null
     , [order_status]            [varchar](10) not null
@@ -46,7 +46,7 @@ if '$(load_data)' = 'live'
            , [medication_unit_id]
            , [medication_route_id]
            , [priority]
-           , [frequency_id]
+           , [frequency_schedule_id]
            , [prn]
            , [point_in_time]
            , [order_status]
@@ -118,7 +118,7 @@ if
            , [medication_unit_id]
            , [medication_route_id]
            , [priority]
-           , [frequency_id]
+           , [frequency_schedule_id]
            , [prn]
            , [point_in_time]
            , [order_status]
@@ -137,7 +137,7 @@ if
              , [mu].[id] as                                          [medication_unit_id]
              , [mr].[id] as                                          [medication_routes_id]
              , [source].[priority]
-             , [source].[frequency_id]
+             , [source].[frequency_schedule_id]
              , [source].[prn]
              , [source].[point_in_time]
              , [source].[order_status]

@@ -86,7 +86,7 @@ if '$(load_data)' in('sample', 'live')
                   , [dose]
                   , [medication_unit_id]
                   , [medication_route_id]
-                  , [frequency_id]
+                  , [frequency_schedule_id]
                   , [order_notes]
              from   [user_quick_list_items] as [q]
                     join [SiteCounts] as [cnt] on [q].[site_id] = [cnt].[site_id]

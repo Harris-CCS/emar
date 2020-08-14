@@ -37,9 +37,9 @@ update [target] set
     [name] = [source].[name]
   , [description] = [source].[description]
 from   [#options] as [source]
-       right join [dbo].[options] as [target] on [target].[id] = [source].[id]
-where  [target].[name] = [source].[name]
-       or [target].[description] = [source].[description];
+       inner join [dbo].[options] as [target] on [target].[id] = [source].[id]
+where  [target].[name] <> [source].[name]
+       or [target].[description] <> [source].[description];
 
 insert into [dbo].[options]
     ([id]

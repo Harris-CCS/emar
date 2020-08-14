@@ -13,6 +13,6 @@ for /f "delims=" %%x in (emar_dacpac.ini) do (set "%%x")
 @echo source_database_name = %source_database_name%
 @echo target_database_name = %target_database_name%
 @echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-@echo "%pgm_sqlpackage%" /Action:Publish /Quiet:False /SourceFile:"%current_path%\..\bin\Debug\emar.dacpac" /TargetServerName:"%server_name%" /TargetDatabaseName:"%source_database_name%" /Variables:current_path=zz /Variables:load_data=live /Variables:is_bacpac_build=true
-"%pgm_sqlpackage%" /Action:Publish /Quiet:False /SourceFile:"%current_path%\..\bin\Debug\emar.dacpac" /TargetServerName:"%server_name%" /TargetDatabaseName:"%source_database_name%" /Variables:current_path=zz /Variables:load_data=live /Variables:is_bacpac_build=true
+@echo "%pgm_sqlpackage%" /Action:Publish /Quiet:False /SourceFile:"%current_path%\..\bin\Debug\emar.dacpac" /TargetServerName:"%server_name%" /TargetDatabaseName:"%source_database_name%" /Variables:load_data=live /Variables:is_bacpac_build=true /Variables:current_path=%current_path%\..\bin\Debug\
+"%pgm_sqlpackage%" /Action:Publish /Quiet:False /SourceFile:"%current_path%\..\bin\Debug\emar.dacpac" /TargetServerName:"%server_name%" /TargetDatabaseName:"%source_database_name%"  /Variables:load_data=live /Variables:is_bacpac_build=true /Variables:current_path=%current_path%\..\bin\Debug\
 title %current_script% **COMPLETE**

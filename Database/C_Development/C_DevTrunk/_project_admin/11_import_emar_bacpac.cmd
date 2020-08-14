@@ -16,4 +16,7 @@ for /f "delims=" %%x in (emar_dacpac.ini) do (set "%%x")
 @echo "%pgm_sqlpackage%" /Action:Import /Quiet:False /SourceFile:"emar.bacpac" /TargetServerName:"%server_name%" /TargetDatabaseName:"%target_database_name%"
 "%pgm_sqlpackage%" /Action:Import /Quiet:False /SourceFile:"%current_path%\..\deploy_bacpac\emar.bacpac" /TargetServerName:"%server_name%" /TargetDatabaseName:"%target_database_name%"
 "%pgm_sqlpackage%" /Action:Publish /Quiet:False /SourceFile:"%current_path%\..\deploy_bacpac\emar.dacpac" /TargetServerName:"%server_name%" /TargetDatabaseName:"%target_database_name%"
+@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@echo %pgm_sqlcmd% -i reset_database.sql -S %server_name%
+"%pgm_sqlcmd%" -i reset_database.sql -S %server_name%
 title %current_script% **COMPLETE**
