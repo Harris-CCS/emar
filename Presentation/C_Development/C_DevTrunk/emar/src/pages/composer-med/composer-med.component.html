@@ -31,7 +31,7 @@
                             <frequency-form (formReady)="formInitialized('frequency', $event)"
                                 [preferredFrequencies]="options.availableFormStrength[selectedFormStrength].preferredFrequencies">
                             </frequency-form>
-                            <calendar-form></calendar-form>
+                            <calendar-form [composerMedForm]="composerMedForm"></calendar-form>
                             <date-time-modal></date-time-modal>
                         </div>
                     </div>
