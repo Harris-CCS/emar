@@ -103,7 +103,7 @@ namespace Emar.Core.Orders.Repository
         /// <param name="userId"></param>
         /// <param name="siteId"></param>
         /// <returns></returns>
-        public IEnumerable<UserQuickListItem> GetUserQuickListMostUsed(int userId, long? siteId)
+        public IEnumerable<UserQuickListItem> GetUserQuickListMostUsed(int userId, int? siteId)
         {
             if (siteId == null)
                 return _context.UserQuickListItems
@@ -121,7 +121,7 @@ namespace Emar.Core.Orders.Repository
                 .ToList();
         }
 
-        public List<string> GetUserQuickListTabs(int userId, long? siteId)
+        public List<string> GetUserQuickListTabs(int userId, int? siteId)
         {
             if (siteId == null)
                 return _context.UserQuickListItems
@@ -137,7 +137,7 @@ namespace Emar.Core.Orders.Repository
                 .ToList();
         }
 
-        IEnumerable<UserQuickListItem> IOrderRepository.GetUserQuickListTabItems(int userId, long? siteId, string tab)
+        IEnumerable<UserQuickListItem> IOrderRepository.GetUserQuickListTabItems(int userId, int? siteId, string tab)
         {
             if (tab == "#")
             {
@@ -171,13 +171,36 @@ namespace Emar.Core.Orders.Repository
                 .ToList();
         }
 
-        public List<DepartmentPreferredListItem> GetDepartmentPreferredList(long siteId, string departmentCode, string linkBase)
+        #endregion
+
+        #region Department Preferred List Section
+
+        public List<DepartmentPreferredListItem> GetDepartmentPreferredList(int siteId, string departmentCode, string linkBase)
         {
             Expression<Func<DepartmentPreferredListItem, bool>> whereLambda = s => s.SiteId == siteId;
             if(!string.IsNullOrWhiteSpace(departmentCode))
                 whereLambda = whereLambda.And(s => s.DepartmentCode == departmentCode);
 
-            return _context.DepartmentPreferredListItems.Where(whereLambda).ToList();
+            return _context.DepartmentPreferredListItems.Where(whereLambda)
+                    .Include(g => g.MedicationUnit)
+                    .Include(g => g.MedicationRoute).ToList();
+        }
+
+        #endregion
+
+        #region Groups Remembered Orders Section
+
+        public List<GroupListItem> GetGroupRememberedOrderItems(int siteId, string departmentCode, string linkBase)
+        {
+            Expression<Func<GroupListItem, bool>> whereLambda;
+            if (string.IsNullOrWhiteSpace(departmentCode))
+                whereLambda = s => s.SiteId == siteId;
+            else
+                whereLambda = s => s.SiteId == siteId && s.DepartmentCode == departmentCode;
+
+            return _context.GroupListItems.Where(whereLambda)
+                .Include( g => g.MedicationUnit)
+                .Include(g => g.MedicationRoute).ToList();
         }
 
         #endregion

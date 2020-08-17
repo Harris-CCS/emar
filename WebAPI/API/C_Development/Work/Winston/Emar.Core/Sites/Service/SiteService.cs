@@ -21,5 +21,10 @@ namespace Emar.Core.Sites.Service
             if (site == null) return null;
             return SiteMapper.MapSite(site);
         }
+
+        public int GetSiteIdByName(string siteName)
+        {
+            return _siteRepository.GetSiteIdByName(siteName);
+        }
     }
 }

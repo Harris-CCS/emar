@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -19,7 +19,7 @@ namespace Emar.Data.Entities
         [Column("id")]
         public long Id { get; set; }
         [Column("site_id", TypeName = "int")]
-        public long SiteId { get; set; }
+        public int SiteId { get; set; }
         [Column("medical_record_number")]
         [StringLength(25)]
         public string MedicalRecordNumber { get; set; }
@@ -130,14 +130,20 @@ namespace Emar.Data.Entities
         [Column("vs_pain_scale")]
         [StringLength(14)]
         public string VsPainScale { get; set; }
+
         [Column("is_active")]
         public bool Active { get; set; }
+        
         [Column("custom_number")]
         [StringLength(25)]
         public string CustomNumber { get; set; }
+        
         [Column("person_number")]
         [StringLength(25)]
         public string PersonNumber { get; set; }
+
+        [Column("deactivation_datetime", TypeName = "datetimeoffset")]
+        public DateTimeOffset? DeactivationDatetime { get; set; }
 
         [ForeignKey(nameof(SiteId))]
         [InverseProperty(nameof(Entities.Site.Patients))]

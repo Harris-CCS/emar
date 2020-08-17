@@ -21,7 +21,7 @@ namespace Emar.Data.Entities
 
         [Key]
         [Column("id", TypeName = "int")]
-        public long Id { get; set; }
+        public int Id { get; set; }
         [Required]
         [Column("name")]
         [StringLength(40)]
@@ -57,7 +57,10 @@ namespace Emar.Data.Entities
         [InverseProperty("Site")]
         public virtual ICollection<SiteOption> SiteOptions { get; set; }
 
-        [InverseProperty("Site")]
-        public virtual ExternalIdEntity ExternalIds { get; set; }
+        //  This foreign key is not in the database, and can't be enforceable if it were:
+        //    - The datatypes don't line up, and 
+        //    - values exist in ExternalIds that don't point to the patients table
+        //[InverseProperty("Site")]
+        //public virtual ExternalIdEntity ExternalIds { get; set; }
     }
 }

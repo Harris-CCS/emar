@@ -161,6 +161,36 @@
             <param name="patientId">the patient that the cart is intended for</param>
             <returns></returns>
         </member>
+        <member name="T:Emar.Api.Controllers.GroupsRememberedOrdersController">
+            <summary>
+            Controller to retrieve the Groups Remembered Orders Lists for the Landing Page
+            </summary>
+        </member>
+        <member name="M:Emar.Api.Controllers.GroupsRememberedOrdersController.#ctor(Emar.Core.Orders.Service.IOrderService,Emar.Core.Sites.Service.ISiteService)">
+            <summary>
+            Controller to handle calls related to the Groups Remembered Orders List
+            </summary>
+            <param name="orderService">Order Service provided by DI</param>
+            <param name="siteService">Site Service provided by DI</param>
+        </member>
+        <member name="M:Emar.Api.Controllers.GroupsRememberedOrdersController.GetGroupsRememberedOrdersList(System.Int32,System.String,System.Nullable{System.Int32})">
+            <summary>
+            Return the contents Groups Remembered Orders  List
+            </summary>
+            <param name="siteId">The Site to retrieve the Groups Remembered Orders List for</param>
+            <param name="patientId">(Optional) If provided, then HATEOAS links will be created to allow for the adding of the order directly to the patient's/user's cart</param>
+            <param name="departmentCode">(Optional) If provided, the list will be for a specific department (if not provided, the entire list for the Site)</param>
+            <returns></returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.GroupsRememberedOrdersController.CopyGropusRememberedItemToCart(System.Int32,System.Int32,System.Int64)">
+            <summary>
+            Create an order in the user/patient's cart as a copy of the Groups Remembered List order
+            </summary>
+            <param name="userId">The user who is placing the order in the cart</param>
+            <param name="groupsRememberedItemId">The Groups Remembered List Item to move into the patient's cart</param>
+            <param name="patientId">the patient that the cart is intended for</param>
+            <returns></returns>
+        </member>
         <member name="T:Emar.Api.Controllers.OrdersController">
             <summary>
             Patient Orders Controller

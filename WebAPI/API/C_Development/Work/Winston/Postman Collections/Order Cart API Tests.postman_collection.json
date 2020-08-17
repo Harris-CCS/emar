@@ -1,0 +1,1429 @@
+{
+	"info": {
+		"_postman_id": "29a85b01-56d3-4016-be30-1aca9499642c",
+		"name": "Order Cart API Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get all orders of a cart (not found)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "00d11326-7fac-46da-b45e-dd79b52f2ee4",
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"pm.environment.set(\"CartOrderPatientId\", \"163\");\r",
+							"pm.environment.set(\"CartOrderUserId\", \"123\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c65d09bd-ab7f-438c-b50b-95b83e1a0c41",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-User",
+						"type": "text",
+						"value": "123"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/carts/1",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"carts",
+						"1"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get all orders of a cart (not found)",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "X-User",
+								"type": "text",
+								"value": "123"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/carts/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"carts",
+								"1"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Thu, 13 Aug 2020 13:36:17 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "70"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Thu, 13 Aug 2020 13:37:18 GMT"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "\"No cart orders found on patient with id '1' from user with id '123'.\""
+				}
+			]
+		},
+		{
+			"name": "Create a cart order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2407f32d-10dc-4175-8185-1527f6847b33",
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"pm.environment.set(\"CartOrderId\", jsonData.id);\r",
+							"pm.environment.set(\"CartOrderPatientId\", jsonData.patientId);\r",
+							"pm.environment.set(\"CartOrderUserId\", jsonData.userId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-User",
+						"type": "text",
+						"value": "{{CartOrderUserId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"patientId\": \"{{CartOrderPatientId}}\",\r\n    \"userId\": \"{{CartOrderUserId}}\",\r\n    \"addDatetime\": \"2020-09-23T00:30:00+00:00\",\r\n    \"ndc\": null,\r\n    \"drugId\": \"drug888\",\r\n    \"brandName\": \"brandname999\",\r\n    \"dose\": null,\r\n    \"medicationUnitId\": null,\r\n    \"medicationRoute\": null,\r\n    \"priority\": 1,\r\n    \"frequencyId\": null,\r\n    \"prn\": false,\r\n    \"pointInTime\": false,\r\n    \"beginDatetime\": \"2020-09-23T01:00:00+00:00\",\r\n    \"endDatetime\": null,\r\n    \"orderNotes\": null,\r\n    \"userQuickListItemId\": null,\r\n    \"cartOrderAdministrations\": [\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T01:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T02:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T03:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T04:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T05:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T06:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T07:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/carts/{{CartOrderPatientId}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"carts",
+						"{{CartOrderPatientId}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Create a cart order",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "X-User",
+								"type": "text",
+								"value": "{{CartOrderUserId}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"patientId\": \"{{CartOrderPatientId}}\",\r\n    \"userId\": \"{{CartOrderUserId}}\",\r\n    \"addDatetime\": \"2020-09-23T00:30:00+00:00\",\r\n    \"ndc\": null,\r\n    \"drugId\": \"drug888\",\r\n    \"brandName\": \"brandname999\",\r\n    \"dose\": null,\r\n    \"medicationUnitId\": null,\r\n    \"medicationRoute\": null,\r\n    \"priority\": 1,\r\n    \"frequencyId\": null,\r\n    \"prn\": false,\r\n    \"pointInTime\": false,\r\n    \"beginDatetime\": \"2020-09-23T01:00:00+00:00\",\r\n    \"endDatetime\": null,\r\n    \"orderNotes\": null,\r\n    \"userQuickListItemId\": null,\r\n    \"cartOrderAdministrations\": [\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T01:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T02:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T03:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T04:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T05:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T06:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T07:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/carts/{{CartOrderPatientId}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"carts",
+								"{{CartOrderPatientId}}"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Thu, 13 Aug 2020 13:36:28 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "2831"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Thu, 13 Aug 2020 13:37:29 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Thu, 13 Aug 2020 13:36:29 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"4EB436F27F7B5728EFCD765093222BB3\""
+						},
+						{
+							"key": "Location",
+							"value": "http://localhost:51044/api/carts/orders/47"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						},
+						{
+							"key": "X-User",
+							"value": "123"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"patientId\": 163,\n    \"userId\": 123,\n    \"addDatetime\": \"2020-09-23T00:30:00+00:00\",\n    \"addDate\": \"09/23/2020\",\n    \"addTime\": \"00:30:00\",\n    \"priority\": 0,\n    \"prn\": false,\n    \"beginDatetime\": \"2020-09-23T01:00:00+00:00\",\n    \"beginDate\": \"09/23/2020\",\n    \"beginTime\": \"01:00:00\",\n    \"endDatetime\": null,\n    \"endDate\": null,\n    \"endTime\": null,\n    \"userQuickListItemId\": null,\n    \"cartOrderAdministrations\": [\n        {\n            \"id\": 363,\n            \"patientCartOrderId\": 47,\n            \"administrationScheduledDatetime\": \"2020-09-23T01:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"01:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        },\n        {\n            \"id\": 364,\n            \"patientCartOrderId\": 47,\n            \"administrationScheduledDatetime\": \"2020-09-23T02:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"02:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        },\n        {\n            \"id\": 365,\n            \"patientCartOrderId\": 47,\n            \"administrationScheduledDatetime\": \"2020-09-23T03:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"03:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        },\n        {\n            \"id\": 366,\n            \"patientCartOrderId\": 47,\n            \"administrationScheduledDatetime\": \"2020-09-23T04:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"04:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        },\n        {\n            \"id\": 367,\n            \"patientCartOrderId\": 47,\n            \"administrationScheduledDatetime\": \"2020-09-23T05:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"05:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        },\n        {\n            \"id\": 368,\n            \"patientCartOrderId\": 47,\n            \"administrationScheduledDatetime\": \"2020-09-23T06:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"06:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        },\n        {\n            \"id\": 369,\n            \"patientCartOrderId\": 47,\n            \"administrationScheduledDatetime\": \"2020-09-23T07:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"07:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        }\n    ],\n    \"user\": {\n        \"id\": 123,\n        \"typeCode\": \"N\",\n        \"typeDescription\": \"nurse\",\n        \"userInitials\": \"CH1\",\n        \"firstName\": \"Christine\",\n        \"middleName\": \"\",\n        \"lastName\": \"Hildebrand, RN\",\n        \"nameSuffix\": \"\",\n        \"displayName\": \"Christine Hildebrand, RN\",\n        \"orderingOnlyPhysician\": false,\n        \"displayInitialsIndicator\": false,\n        \"site\": {\n            \"id\": 28,\n            \"name\": \"Pulsecheck Hospital\",\n            \"active\": true,\n            \"timeZoneName\": \"Central Standard Time\"\n        }\n    },\n    \"id\": 47,\n    \"ndc\": null,\n    \"drugId\": \"drug888\",\n    \"brandName\": \"brandname999\",\n    \"dose\": null,\n    \"doseUnit\": null,\n    \"medicationRoute\": null,\n    \"frequencyId\": null,\n    \"pointInTime\": false,\n    \"orderNotes\": null\n}"
+				}
+			]
+		},
+		{
+			"name": "Get all orders of a cart",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3be6f0ff-81e3-4add-8347-a8496fb80a70",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-User",
+						"type": "text",
+						"value": "{{CartOrderUserId}}"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/carts/{{CartOrderPatientId}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"carts",
+						"{{CartOrderPatientId}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get all orders of a cart",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "X-User",
+								"type": "text",
+								"value": "{{CartOrderUserId}}"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/carts/{{CartOrderPatientId}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"carts",
+								"{{CartOrderPatientId}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Thu, 13 Aug 2020 13:36:50 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "5913"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Thu, 13 Aug 2020 13:37:50 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Thu, 13 Aug 2020 13:36:50 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"6EC1BC4337F39703CB4D2CA99E3EE8E6\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						},
+						{
+							"key": "X-Pagination",
+							"value": "{\"totalCount\":2,\"pageSize\":10,\"currentPage\":1,\"totalPages\":1}"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"orders\": [\n        {\n            \"patientId\": 163,\n            \"userId\": 123,\n            \"addDatetime\": \"2020-09-23T00:30:00+00:00\",\n            \"addDate\": \"09/23/2020\",\n            \"addTime\": \"00:30:00\",\n            \"priority\": 0,\n            \"prn\": false,\n            \"beginDatetime\": \"2020-09-23T01:00:00+00:00\",\n            \"beginDate\": \"09/23/2020\",\n            \"beginTime\": \"01:00:00\",\n            \"endDatetime\": null,\n            \"endDate\": null,\n            \"endTime\": null,\n            \"userQuickListItemId\": null,\n            \"cartOrderAdministrations\": [\n                {\n                    \"id\": 356,\n                    \"patientCartOrderId\": 46,\n                    \"administrationScheduledDatetime\": \"2020-09-23T01:00:00+00:00\",\n                    \"administrationScheduledDate\": \"09/23/2020\",\n                    \"administrationScheduledTime\": \"01:00:00\",\n                    \"stopScheduledDatetime\": null,\n                    \"stopScheduledDate\": null,\n                    \"stopScheduledTime\": null,\n                    \"pointInTime\": true\n                },\n                {\n                    \"id\": 357,\n                    \"patientCartOrderId\": 46,\n                    \"administrationScheduledDatetime\": \"2020-09-23T02:00:00+00:00\",\n                    \"administrationScheduledDate\": \"09/23/2020\",\n                    \"administrationScheduledTime\": \"02:00:00\",\n                    \"stopScheduledDatetime\": null,\n                    \"stopScheduledDate\": null,\n                    \"stopScheduledTime\": null,\n                    \"pointInTime\": true\n                },\n                {\n                    \"id\": 358,\n                    \"patientCartOrderId\": 46,\n                    \"administrationScheduledDatetime\": \"2020-09-23T03:00:00+00:00\",\n                    \"administrationScheduledDate\": \"09/23/2020\",\n                    \"administrationScheduledTime\": \"03:00:00\",\n                    \"stopScheduledDatetime\": null,\n                    \"stopScheduledDate\": null,\n                    \"stopScheduledTime\": null,\n                    \"pointInTime\": true\n                },\n                {\n                    \"id\": 359,\n                    \"patientCartOrderId\": 46,\n                    \"administrationScheduledDatetime\": \"2020-09-23T04:00:00+00:00\",\n                    \"administrationScheduledDate\": \"09/23/2020\",\n                    \"administrationScheduledTime\": \"04:00:00\",\n                    \"stopScheduledDatetime\": null,\n                    \"stopScheduledDate\": null,\n                    \"stopScheduledTime\": null,\n                    \"pointInTime\": true\n                },\n                {\n                    \"id\": 360,\n                    \"patientCartOrderId\": 46,\n                    \"administrationScheduledDatetime\": \"2020-09-23T05:00:00+00:00\",\n                    \"administrationScheduledDate\": \"09/23/2020\",\n                    \"administrationScheduledTime\": \"05:00:00\",\n                    \"stopScheduledDatetime\": null,\n                    \"stopScheduledDate\": null,\n                    \"stopScheduledTime\": null,\n                    \"pointInTime\": true\n                },\n                {\n                    \"id\": 361,\n                    \"patientCartOrderId\": 46,\n                    \"administrationScheduledDatetime\": \"2020-09-23T06:00:00+00:00\",\n                    \"administrationScheduledDate\": \"09/23/2020\",\n                    \"administrationScheduledTime\": \"06:00:00\",\n                    \"stopScheduledDatetime\": null,\n                    \"stopScheduledDate\": null,\n                    \"stopScheduledTime\": null,\n                    \"pointInTime\": true\n                },\n                {\n                    \"id\": 362,\n                    \"patientCartOrderId\": 46,\n                    \"administrationScheduledDatetime\": \"2020-09-23T07:00:00+00:00\",\n                    \"administrationScheduledDate\": \"09/23/2020\",\n                    \"administrationScheduledTime\": \"07:00:00\",\n                    \"stopScheduledDatetime\": null,\n                    \"stopScheduledDate\": null,\n                    \"stopScheduledTime\": null,\n                    \"pointInTime\": true\n                }\n            ],\n            \"user\": {\n                \"id\": 123,\n                \"typeCode\": \"N\",\n                \"typeDescription\": \"nurse\",\n                \"userInitials\": \"CH1\",\n                \"firstName\": \"Christine\",\n                \"middleName\": \"\",\n                \"lastName\": \"Hildebrand, RN\",\n                \"nameSuffix\": \"\",\n                \"displayName\": \"Christine Hildebrand, RN\",\n                \"orderingOnlyPhysician\": false,\n                \"displayInitialsIndicator\": false,\n                \"site\": {\n                    \"id\": 28,\n                    \"name\": \"Pulsecheck Hospital\",\n                    \"active\": true,\n                    \"timeZoneName\": \"Central Standard Time\"\n                }\n            },\n            \"id\": 46,\n            \"ndc\": null,\n            \"drugId\": \"drug888\",\n            \"brandName\": \"brandname999\",\n            \"dose\": null,\n            \"doseUnit\": null,\n            \"medicationRoute\": null,\n            \"frequencyId\": null,\n            \"pointInTime\": false,\n            \"orderNotes\": null,\n            \"links\": [\n                {\n                    \"href\": null,\n                    \"rel\": \"self\",\n                    \"method\": \"GET\"\n                }\n            ]\n        },\n        {\n            \"patientId\": 163,\n            \"userId\": 123,\n            \"addDatetime\": \"2020-09-23T00:30:00+00:00\",\n            \"addDate\": \"09/23/2020\",\n            \"addTime\": \"00:30:00\",\n            \"priority\": 0,\n            \"prn\": false,\n            \"beginDatetime\": \"2020-09-23T01:00:00+00:00\",\n            \"beginDate\": \"09/23/2020\",\n            \"beginTime\": \"01:00:00\",\n            \"endDatetime\": null,\n            \"endDate\": null,\n            \"endTime\": null,\n            \"userQuickListItemId\": null,\n            \"cartOrderAdministrations\": [\n                {\n                    \"id\": 363,\n                    \"patientCartOrderId\": 47,\n                    \"administrationScheduledDatetime\": \"2020-09-23T01:00:00+00:00\",\n                    \"administrationScheduledDate\": \"09/23/2020\",\n                    \"administrationScheduledTime\": \"01:00:00\",\n                    \"stopScheduledDatetime\": null,\n                    \"stopScheduledDate\": null,\n                    \"stopScheduledTime\": null,\n                    \"pointInTime\": true\n                },\n                {\n                    \"id\": 364,\n                    \"patientCartOrderId\": 47,\n                    \"administrationScheduledDatetime\": \"2020-09-23T02:00:00+00:00\",\n                    \"administrationScheduledDate\": \"09/23/2020\",\n                    \"administrationScheduledTime\": \"02:00:00\",\n                    \"stopScheduledDatetime\": null,\n                    \"stopScheduledDate\": null,\n                    \"stopScheduledTime\": null,\n                    \"pointInTime\": true\n                },\n                {\n                    \"id\": 365,\n                    \"patientCartOrderId\": 47,\n                    \"administrationScheduledDatetime\": \"2020-09-23T03:00:00+00:00\",\n                    \"administrationScheduledDate\": \"09/23/2020\",\n                    \"administrationScheduledTime\": \"03:00:00\",\n                    \"stopScheduledDatetime\": null,\n                    \"stopScheduledDate\": null,\n                    \"stopScheduledTime\": null,\n                    \"pointInTime\": true\n                },\n                {\n                    \"id\": 366,\n                    \"patientCartOrderId\": 47,\n                    \"administrationScheduledDatetime\": \"2020-09-23T04:00:00+00:00\",\n                    \"administrationScheduledDate\": \"09/23/2020\",\n                    \"administrationScheduledTime\": \"04:00:00\",\n                    \"stopScheduledDatetime\": null,\n                    \"stopScheduledDate\": null,\n                    \"stopScheduledTime\": null,\n                    \"pointInTime\": true\n                },\n                {\n                    \"id\": 367,\n                    \"patientCartOrderId\": 47,\n                    \"administrationScheduledDatetime\": \"2020-09-23T05:00:00+00:00\",\n                    \"administrationScheduledDate\": \"09/23/2020\",\n                    \"administrationScheduledTime\": \"05:00:00\",\n                    \"stopScheduledDatetime\": null,\n                    \"stopScheduledDate\": null,\n                    \"stopScheduledTime\": null,\n                    \"pointInTime\": true\n                },\n                {\n                    \"id\": 368,\n                    \"patientCartOrderId\": 47,\n                    \"administrationScheduledDatetime\": \"2020-09-23T06:00:00+00:00\",\n                    \"administrationScheduledDate\": \"09/23/2020\",\n                    \"administrationScheduledTime\": \"06:00:00\",\n                    \"stopScheduledDatetime\": null,\n                    \"stopScheduledDate\": null,\n                    \"stopScheduledTime\": null,\n                    \"pointInTime\": true\n                },\n                {\n                    \"id\": 369,\n                    \"patientCartOrderId\": 47,\n                    \"administrationScheduledDatetime\": \"2020-09-23T07:00:00+00:00\",\n                    \"administrationScheduledDate\": \"09/23/2020\",\n                    \"administrationScheduledTime\": \"07:00:00\",\n                    \"stopScheduledDatetime\": null,\n                    \"stopScheduledDate\": null,\n                    \"stopScheduledTime\": null,\n                    \"pointInTime\": true\n                }\n            ],\n            \"user\": {\n                \"id\": 123,\n                \"typeCode\": \"N\",\n                \"typeDescription\": \"nurse\",\n                \"userInitials\": \"CH1\",\n                \"firstName\": \"Christine\",\n                \"middleName\": \"\",\n                \"lastName\": \"Hildebrand, RN\",\n                \"nameSuffix\": \"\",\n                \"displayName\": \"Christine Hildebrand, RN\",\n                \"orderingOnlyPhysician\": false,\n                \"displayInitialsIndicator\": false,\n                \"site\": {\n                    \"id\": 28,\n                    \"name\": \"Pulsecheck Hospital\",\n                    \"active\": true,\n                    \"timeZoneName\": \"Central Standard Time\"\n                }\n            },\n            \"id\": 47,\n            \"ndc\": null,\n            \"drugId\": \"drug888\",\n            \"brandName\": \"brandname999\",\n            \"dose\": null,\n            \"doseUnit\": null,\n            \"medicationRoute\": null,\n            \"frequencyId\": null,\n            \"pointInTime\": false,\n            \"orderNotes\": null,\n            \"links\": [\n                {\n                    \"href\": null,\n                    \"rel\": \"self\",\n                    \"method\": \"GET\"\n                }\n            ]\n        }\n    ],\n    \"links\": [\n        {\n            \"href\": \"http://localhost:51044/api/carts/163?UserId=123&PageSize=10&PageNumber=1&OrderBy=Id\",\n            \"rel\": \"self\",\n            \"method\": \"GET\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Get a cart order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "eddffef7-f2c2-497f-b8c6-7961134bf895",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-User",
+						"type": "text",
+						"value": "{{CartOrderUserId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/carts/orders/{{CartOrderId}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"carts",
+						"orders",
+						"{{CartOrderId}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get a cart order",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "X-User",
+								"type": "text",
+								"value": "{{CartOrderUserId}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/carts/orders/{{CartOrderId}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"carts",
+								"orders",
+								"{{CartOrderId}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Thu, 13 Aug 2020 13:37:26 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "2923"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Thu, 13 Aug 2020 13:38:27 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Thu, 13 Aug 2020 13:37:27 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"ACC821B1C20877C8ABE2E343DA4D4A7E\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"patientId\": 163,\n    \"userId\": 123,\n    \"addDatetime\": \"2020-09-23T00:30:00+00:00\",\n    \"addDate\": \"09/23/2020\",\n    \"addTime\": \"00:30:00\",\n    \"priority\": 0,\n    \"prn\": false,\n    \"beginDatetime\": \"2020-09-23T01:00:00+00:00\",\n    \"beginDate\": \"09/23/2020\",\n    \"beginTime\": \"01:00:00\",\n    \"endDatetime\": null,\n    \"endDate\": null,\n    \"endTime\": null,\n    \"userQuickListItemId\": null,\n    \"cartOrderAdministrations\": [\n        {\n            \"id\": 363,\n            \"patientCartOrderId\": 47,\n            \"administrationScheduledDatetime\": \"2020-09-23T01:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"01:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        },\n        {\n            \"id\": 364,\n            \"patientCartOrderId\": 47,\n            \"administrationScheduledDatetime\": \"2020-09-23T02:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"02:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        },\n        {\n            \"id\": 365,\n            \"patientCartOrderId\": 47,\n            \"administrationScheduledDatetime\": \"2020-09-23T03:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"03:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        },\n        {\n            \"id\": 366,\n            \"patientCartOrderId\": 47,\n            \"administrationScheduledDatetime\": \"2020-09-23T04:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"04:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        },\n        {\n            \"id\": 367,\n            \"patientCartOrderId\": 47,\n            \"administrationScheduledDatetime\": \"2020-09-23T05:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"05:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        },\n        {\n            \"id\": 368,\n            \"patientCartOrderId\": 47,\n            \"administrationScheduledDatetime\": \"2020-09-23T06:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"06:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        },\n        {\n            \"id\": 369,\n            \"patientCartOrderId\": 47,\n            \"administrationScheduledDatetime\": \"2020-09-23T07:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"07:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        }\n    ],\n    \"user\": {\n        \"id\": 123,\n        \"typeCode\": \"N\",\n        \"typeDescription\": \"nurse\",\n        \"userInitials\": \"CH1\",\n        \"firstName\": \"Christine\",\n        \"middleName\": \"\",\n        \"lastName\": \"Hildebrand, RN\",\n        \"nameSuffix\": \"\",\n        \"displayName\": \"Christine Hildebrand, RN\",\n        \"orderingOnlyPhysician\": false,\n        \"displayInitialsIndicator\": false,\n        \"site\": {\n            \"id\": 28,\n            \"name\": \"Pulsecheck Hospital\",\n            \"active\": true,\n            \"timeZoneName\": \"Central Standard Time\"\n        }\n    },\n    \"id\": 47,\n    \"ndc\": null,\n    \"drugId\": \"drug888\",\n    \"brandName\": \"brandname999\",\n    \"dose\": null,\n    \"doseUnit\": null,\n    \"medicationRoute\": null,\n    \"frequencyId\": null,\n    \"pointInTime\": false,\n    \"orderNotes\": null,\n    \"links\": [\n        {\n            \"href\": \"http://localhost:51044/api/carts/orders/47\",\n            \"rel\": \"self\",\n            \"method\": \"GET\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Update a cart order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0a0e475f-aa95-443b-93ee-473cc0b72b0b",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-User",
+						"type": "text",
+						"value": "{{CartOrderUserId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"{{CartOrderId}}\",\r\n    \"patientId\": \"{{CartOrderPatientId}}\",\r\n    \"userId\": \"{{CartOrderUserId}}\",\r\n    \"addDatetime\": \"2020-09-30T20:30:20+00:00\",\r\n    \"ndc\": null,\r\n    \"drugId\": \"drug123\",\r\n    \"brandName\": \"brandname123\",\r\n    \"dose\": null,\r\n    \"medicationUnitId\": null,\r\n    \"medicationRoute\": null,\r\n    \"priority\": 0,\r\n    \"frequencyId\": null,\r\n    \"prn\": false,\r\n    \"pointInTime\": false,\r\n    \"beginDatetime\": \"2020-09-23T00:20:00+00:00\",\r\n    \"endDatetime\": null,\r\n    \"orderNotes\": null,\r\n    \"userQuickListItemId\": null,\r\n    \"cartOrderAdministrations\": [\r\n        {\r\n            \"patientCartOrderId\": \"{{CartOrderId}}\",\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T13:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"patientCartOrderId\": \"{{CartOrderId}}\",\r\n            \"pointInTime\": false,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T14:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"patientCartOrderId\": \"{{CartOrderId}}\",\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T15:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"patientCartOrderId\": \"{{CartOrderId}}\",\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T16:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"patientCartOrderId\": \"{{CartOrderId}}\",\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T17:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"patientCartOrderId\": \"{{CartOrderId}}\",\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T18:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"patientCartOrderId\": \"{{CartOrderId}}\",\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T19:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/carts/orders/{{CartOrderId}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"carts",
+						"orders",
+						"{{CartOrderId}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Update a cart order",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "X-User",
+								"type": "text",
+								"value": "{{CartOrderUserId}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"{{CartOrderId}}\",\r\n    \"patientId\": \"{{CartOrderPatientId}}\",\r\n    \"userId\": \"{{CartOrderUserId}}\",\r\n    \"addDatetime\": \"2020-09-30T20:30:20+00:00\",\r\n    \"ndc\": null,\r\n    \"drugId\": \"drug123\",\r\n    \"brandName\": \"brandname123\",\r\n    \"dose\": null,\r\n    \"medicationUnitId\": null,\r\n    \"medicationRoute\": null,\r\n    \"priority\": 0,\r\n    \"frequencyId\": null,\r\n    \"prn\": false,\r\n    \"pointInTime\": false,\r\n    \"beginDatetime\": \"2020-09-23T00:20:00+00:00\",\r\n    \"endDatetime\": null,\r\n    \"orderNotes\": null,\r\n    \"userQuickListItemId\": null,\r\n    \"cartOrderAdministrations\": [\r\n        {\r\n            \"patientCartOrderId\": \"{{CartOrderId}}\",\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T13:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"patientCartOrderId\": \"{{CartOrderId}}\",\r\n            \"pointInTime\": false,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T14:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"patientCartOrderId\": \"{{CartOrderId}}\",\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T15:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"patientCartOrderId\": \"{{CartOrderId}}\",\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T16:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"patientCartOrderId\": \"{{CartOrderId}}\",\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T17:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"patientCartOrderId\": \"{{CartOrderId}}\",\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T18:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"patientCartOrderId\": \"{{CartOrderId}}\",\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T19:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/carts/orders/{{CartOrderId}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"carts",
+								"orders",
+								"{{CartOrderId}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Thu, 13 Aug 2020 13:39:44 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "2884"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Thu, 13 Aug 2020 13:40:44 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Thu, 13 Aug 2020 13:39:44 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"C438BF088D1DA1B1E2FCCDEA2E7FF3E8\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"patientId\": 163,\n    \"userId\": 123,\n    \"addDatetime\": \"2020-09-30T20:30:20+00:00\",\n    \"addDate\": \"09/30/2020\",\n    \"addTime\": \"20:30:20\",\n    \"priority\": 0,\n    \"prn\": false,\n    \"beginDatetime\": \"2020-09-23T00:20:00+00:00\",\n    \"beginDate\": \"09/23/2020\",\n    \"beginTime\": \"00:20:00\",\n    \"endDatetime\": null,\n    \"endDate\": null,\n    \"endTime\": null,\n    \"userQuickListItemId\": null,\n    \"cartOrderAdministrations\": [\n        {\n            \"id\": 370,\n            \"patientCartOrderId\": 47,\n            \"administrationScheduledDatetime\": \"2020-09-23T13:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"13:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        },\n        {\n            \"id\": 371,\n            \"patientCartOrderId\": 47,\n            \"administrationScheduledDatetime\": \"2020-09-23T14:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"14:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": false\n        },\n        {\n            \"id\": 372,\n            \"patientCartOrderId\": 47,\n            \"administrationScheduledDatetime\": \"2020-09-23T15:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"15:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        },\n        {\n            \"id\": 373,\n            \"patientCartOrderId\": 47,\n            \"administrationScheduledDatetime\": \"2020-09-23T16:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"16:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        },\n        {\n            \"id\": 374,\n            \"patientCartOrderId\": 47,\n            \"administrationScheduledDatetime\": \"2020-09-23T17:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"17:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        },\n        {\n            \"id\": 375,\n            \"patientCartOrderId\": 47,\n            \"administrationScheduledDatetime\": \"2020-09-23T18:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"18:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        },\n        {\n            \"id\": 376,\n            \"patientCartOrderId\": 47,\n            \"administrationScheduledDatetime\": \"2020-09-23T19:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"19:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        }\n    ],\n    \"user\": {\n        \"id\": 123,\n        \"typeCode\": \"N\",\n        \"typeDescription\": \"nurse\",\n        \"userInitials\": \"CH1\",\n        \"firstName\": \"Christine\",\n        \"middleName\": \"\",\n        \"lastName\": \"Hildebrand, RN\",\n        \"nameSuffix\": \"\",\n        \"displayName\": \"Christine Hildebrand, RN\",\n        \"orderingOnlyPhysician\": false,\n        \"displayInitialsIndicator\": false,\n        \"site\": {\n            \"id\": 28,\n            \"name\": \"Pulsecheck Hospital\",\n            \"active\": true,\n            \"timeZoneName\": \"Central Standard Time\"\n        }\n    },\n    \"id\": 47,\n    \"ndc\": null,\n    \"drugId\": \"drug123\",\n    \"brandName\": \"brandname123\",\n    \"dose\": null,\n    \"doseUnit\": null,\n    \"medicationRoute\": null,\n    \"frequencyId\": null,\n    \"pointInTime\": false,\n    \"orderNotes\": null,\n    \"links\": [\n        {\n            \"href\": null,\n            \"rel\": \"self\",\n            \"method\": \"GET\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Delete a cart order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8d0b6bfc-7eaf-405e-993a-a1fa31386d30",
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-User",
+						"type": "text",
+						"value": "{{CartOrderUserId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/carts/orders/{{CartOrderId}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"carts",
+						"orders",
+						"{{CartOrderId}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Delete a cart order",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "X-User",
+								"type": "text",
+								"value": "{{CartOrderUserId}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/carts/orders/{{CartOrderId}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"carts",
+								"orders",
+								"{{CartOrderId}}"
+							]
+						}
+					},
+					"status": "No Content",
+					"code": 204,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Thu, 13 Aug 2020 13:39:57 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Thu, 13 Aug 2020 13:40:57 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Thu, 13 Aug 2020 13:39:57 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"0D0882E1AB97F85710692923F5F318F1\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Create 5 cart orders",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "404f0f2c-0698-4e6c-9ea5-6b3c4fcabe30",
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"pm.environment.set(\"CartOrderId\", jsonData.id);\r",
+							"pm.environment.set(\"CartOrderPatientId\", jsonData.patientId);\r",
+							"pm.environment.set(\"CartOrderUserId\", jsonData.userId);\r",
+							"\r",
+							"// initialize counter as an environment variable, if not already done\r",
+							"if (!pm.environment.has(\"count5orders\")) {\r",
+							"    console.log(\"Setting counter now\");\r",
+							"    pm.environment.set(\"count5orders\", 1);\r",
+							" }\r",
+							" \r",
+							"let currentCount = parseInt(pm.environment.get(\"count5orders\")); \r",
+							"let numberOfLoops = 5;\r",
+							"\r",
+							"if (currentCount < numberOfLoops) {\r",
+							"    postman.setNextRequest(pm.info.requestName);\r",
+							"}\r",
+							"\r",
+							"// increment the counter and re-save the value as an environment variable\r",
+							"currentCount++;\r",
+							"pm.environment.set(\"count5orders\", currentCount);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-User",
+						"type": "text",
+						"value": "{{CartOrderUserId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"patientId\": \"{{CartOrderPatientId}}\",\r\n    \"userId\": \"{{CartOrderUserId}}\",\r\n    \"addDatetime\": \"2020-09-23T00:30:00+00:00\",\r\n    \"ndc\": null,\r\n    \"drugId\": \"drug888\",\r\n    \"brandName\": \"brandname999\",\r\n    \"dose\": null,\r\n    \"medicationUnitId\": null,\r\n    \"medicationRoute\": null,\r\n    \"priority\": 1,\r\n    \"frequencyId\": null,\r\n    \"prn\": false,\r\n    \"pointInTime\": false,\r\n    \"beginDatetime\": \"2020-09-23T01:00:00+00:00\",\r\n    \"endDatetime\": null,\r\n    \"orderNotes\": null,\r\n    \"userQuickListItemId\": null,\r\n    \"cartOrderAdministrations\": [\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T01:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T02:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T03:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T04:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T05:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T06:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T07:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/carts/{{CartOrderPatientId}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"carts",
+						"{{CartOrderPatientId}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Create 5 cart orders",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "X-User",
+								"type": "text",
+								"value": "{{CartOrderUserId}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"patientId\": \"{{CartOrderPatientId}}\",\r\n    \"userId\": \"{{CartOrderUserId}}\",\r\n    \"addDatetime\": \"2020-09-23T00:30:00+00:00\",\r\n    \"ndc\": null,\r\n    \"drugId\": \"drug888\",\r\n    \"brandName\": \"brandname999\",\r\n    \"dose\": null,\r\n    \"medicationUnitId\": null,\r\n    \"medicationRoute\": null,\r\n    \"priority\": 1,\r\n    \"frequencyId\": null,\r\n    \"prn\": false,\r\n    \"pointInTime\": false,\r\n    \"beginDatetime\": \"2020-09-23T01:00:00+00:00\",\r\n    \"endDatetime\": null,\r\n    \"orderNotes\": null,\r\n    \"userQuickListItemId\": null,\r\n    \"cartOrderAdministrations\": [\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T01:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T02:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T03:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T04:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T05:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T06:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T07:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/carts/{{CartOrderPatientId}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"carts",
+								"{{CartOrderPatientId}}"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Thu, 13 Aug 2020 13:48:12 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "2831"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Thu, 13 Aug 2020 13:49:13 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Thu, 13 Aug 2020 13:48:13 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"3476553D748C53B970BB1813980368A0\""
+						},
+						{
+							"key": "Location",
+							"value": "http://localhost:51044/api/carts/orders/50"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						},
+						{
+							"key": "X-User",
+							"value": "123"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"patientId\": 163,\n    \"userId\": 123,\n    \"addDatetime\": \"2020-09-23T00:30:00+00:00\",\n    \"addDate\": \"09/23/2020\",\n    \"addTime\": \"00:30:00\",\n    \"priority\": 0,\n    \"prn\": false,\n    \"beginDatetime\": \"2020-09-23T01:00:00+00:00\",\n    \"beginDate\": \"09/23/2020\",\n    \"beginTime\": \"01:00:00\",\n    \"endDatetime\": null,\n    \"endDate\": null,\n    \"endTime\": null,\n    \"userQuickListItemId\": null,\n    \"cartOrderAdministrations\": [\n        {\n            \"id\": 391,\n            \"patientCartOrderId\": 50,\n            \"administrationScheduledDatetime\": \"2020-09-23T01:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"01:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        },\n        {\n            \"id\": 392,\n            \"patientCartOrderId\": 50,\n            \"administrationScheduledDatetime\": \"2020-09-23T02:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"02:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        },\n        {\n            \"id\": 393,\n            \"patientCartOrderId\": 50,\n            \"administrationScheduledDatetime\": \"2020-09-23T03:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"03:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        },\n        {\n            \"id\": 394,\n            \"patientCartOrderId\": 50,\n            \"administrationScheduledDatetime\": \"2020-09-23T04:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"04:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        },\n        {\n            \"id\": 395,\n            \"patientCartOrderId\": 50,\n            \"administrationScheduledDatetime\": \"2020-09-23T05:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"05:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        },\n        {\n            \"id\": 396,\n            \"patientCartOrderId\": 50,\n            \"administrationScheduledDatetime\": \"2020-09-23T06:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"06:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        },\n        {\n            \"id\": 397,\n            \"patientCartOrderId\": 50,\n            \"administrationScheduledDatetime\": \"2020-09-23T07:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"07:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        }\n    ],\n    \"user\": {\n        \"id\": 123,\n        \"typeCode\": \"N\",\n        \"typeDescription\": \"nurse\",\n        \"userInitials\": \"CH1\",\n        \"firstName\": \"Christine\",\n        \"middleName\": \"\",\n        \"lastName\": \"Hildebrand, RN\",\n        \"nameSuffix\": \"\",\n        \"displayName\": \"Christine Hildebrand, RN\",\n        \"orderingOnlyPhysician\": false,\n        \"displayInitialsIndicator\": false,\n        \"site\": {\n            \"id\": 28,\n            \"name\": \"Pulsecheck Hospital\",\n            \"active\": true,\n            \"timeZoneName\": \"Central Standard Time\"\n        }\n    },\n    \"id\": 50,\n    \"ndc\": null,\n    \"drugId\": \"drug888\",\n    \"brandName\": \"brandname999\",\n    \"dose\": null,\n    \"doseUnit\": null,\n    \"medicationRoute\": null,\n    \"frequencyId\": null,\n    \"pointInTime\": false,\n    \"orderNotes\": null\n}"
+				}
+			]
+		},
+		{
+			"name": "Delete a cart",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "dba9f9ee-3002-4f41-b5f0-6acf12b31f05",
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-User",
+						"type": "text",
+						"value": "{{CartOrderUserId}}"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/carts/{{CartOrderPatientId}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"carts",
+						"{{CartOrderPatientId}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Delete a cart",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "X-User",
+								"type": "text",
+								"value": "{{CartOrderUserId}}"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/carts/{{CartOrderPatientId}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"carts",
+								"{{CartOrderPatientId}}"
+							]
+						}
+					},
+					"status": "No Content",
+					"code": 204,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Thu, 13 Aug 2020 13:46:09 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Thu, 13 Aug 2020 13:47:10 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Thu, 13 Aug 2020 13:46:10 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"9C677E25346F68E8A35D040F793AFC59\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Create 7 cart orders",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3d3b23f9-f842-48f2-868a-81d9242d7bf9",
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"pm.environment.set(\"CartOrderId\", jsonData.id);\r",
+							"pm.environment.set(\"CartOrderPatientId\", jsonData.patientId);\r",
+							"pm.environment.set(\"CartOrderUserId\", jsonData.userId);\r",
+							"\r",
+							"// initialize counter as an environment variable, if not already done\r",
+							"if (!pm.environment.has(\"count7orders\")) {\r",
+							"    console.log(\"Setting counter now\");\r",
+							"    pm.environment.set(\"count7orders\", 1);\r",
+							" }\r",
+							" \r",
+							"let currentCount = parseInt(pm.environment.get(\"count7orders\")); \r",
+							"let numberOfLoops = 7;\r",
+							"\r",
+							"if (currentCount < numberOfLoops) {\r",
+							"    postman.setNextRequest(pm.info.requestName);\r",
+							"}\r",
+							"\r",
+							"// increment the counter and re-save the value as an environment variable\r",
+							"currentCount++;\r",
+							"pm.environment.set(\"count7orders\", currentCount);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-User",
+						"type": "text",
+						"value": "{{CartOrderUserId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"patientId\": \"{{CartOrderPatientId}}\",\r\n    \"userId\": \"{{CartOrderUserId}}\",\r\n    \"addDatetime\": \"2020-09-23T00:30:00+00:00\",\r\n    \"ndc\": null,\r\n    \"drugId\": \"drug888\",\r\n    \"brandName\": \"brandname999\",\r\n    \"dose\": null,\r\n    \"medicationUnitId\": null,\r\n    \"medicationRoute\": null,\r\n    \"priority\": 1,\r\n    \"frequencyId\": null,\r\n    \"prn\": false,\r\n    \"pointInTime\": false,\r\n    \"beginDatetime\": \"2020-09-23T01:00:00+00:00\",\r\n    \"endDatetime\": null,\r\n    \"orderNotes\": null,\r\n    \"userQuickListItemId\": null,\r\n    \"cartOrderAdministrations\": [\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T01:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T02:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T03:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T04:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T05:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T06:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T07:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/carts/{{CartOrderPatientId}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"carts",
+						"{{CartOrderPatientId}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Create 7 cart orders",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "X-User",
+								"type": "text",
+								"value": "{{CartOrderUserId}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"patientId\": \"{{CartOrderPatientId}}\",\r\n    \"userId\": \"{{CartOrderUserId}}\",\r\n    \"addDatetime\": \"2020-09-23T00:30:00+00:00\",\r\n    \"ndc\": null,\r\n    \"drugId\": \"drug888\",\r\n    \"brandName\": \"brandname999\",\r\n    \"dose\": null,\r\n    \"medicationUnitId\": null,\r\n    \"medicationRoute\": null,\r\n    \"priority\": 1,\r\n    \"frequencyId\": null,\r\n    \"prn\": false,\r\n    \"pointInTime\": false,\r\n    \"beginDatetime\": \"2020-09-23T01:00:00+00:00\",\r\n    \"endDatetime\": null,\r\n    \"orderNotes\": null,\r\n    \"userQuickListItemId\": null,\r\n    \"cartOrderAdministrations\": [\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T01:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T02:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T03:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T04:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T05:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T06:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T07:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/carts/{{CartOrderPatientId}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"carts",
+								"{{CartOrderPatientId}}"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Thu, 13 Aug 2020 13:48:54 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "2831"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Thu, 13 Aug 2020 13:49:54 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Thu, 13 Aug 2020 13:48:54 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"E653BAB3F20638E25C0B4C17AE1EC925\""
+						},
+						{
+							"key": "Location",
+							"value": "http://localhost:51044/api/carts/orders/51"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						},
+						{
+							"key": "X-User",
+							"value": "123"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"patientId\": 163,\n    \"userId\": 123,\n    \"addDatetime\": \"2020-09-23T00:30:00+00:00\",\n    \"addDate\": \"09/23/2020\",\n    \"addTime\": \"00:30:00\",\n    \"priority\": 0,\n    \"prn\": false,\n    \"beginDatetime\": \"2020-09-23T01:00:00+00:00\",\n    \"beginDate\": \"09/23/2020\",\n    \"beginTime\": \"01:00:00\",\n    \"endDatetime\": null,\n    \"endDate\": null,\n    \"endTime\": null,\n    \"userQuickListItemId\": null,\n    \"cartOrderAdministrations\": [\n        {\n            \"id\": 398,\n            \"patientCartOrderId\": 51,\n            \"administrationScheduledDatetime\": \"2020-09-23T01:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"01:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        },\n        {\n            \"id\": 399,\n            \"patientCartOrderId\": 51,\n            \"administrationScheduledDatetime\": \"2020-09-23T02:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"02:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        },\n        {\n            \"id\": 400,\n            \"patientCartOrderId\": 51,\n            \"administrationScheduledDatetime\": \"2020-09-23T03:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"03:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        },\n        {\n            \"id\": 401,\n            \"patientCartOrderId\": 51,\n            \"administrationScheduledDatetime\": \"2020-09-23T04:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"04:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        },\n        {\n            \"id\": 402,\n            \"patientCartOrderId\": 51,\n            \"administrationScheduledDatetime\": \"2020-09-23T05:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"05:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        },\n        {\n            \"id\": 403,\n            \"patientCartOrderId\": 51,\n            \"administrationScheduledDatetime\": \"2020-09-23T06:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"06:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        },\n        {\n            \"id\": 404,\n            \"patientCartOrderId\": 51,\n            \"administrationScheduledDatetime\": \"2020-09-23T07:00:00+00:00\",\n            \"administrationScheduledDate\": \"09/23/2020\",\n            \"administrationScheduledTime\": \"07:00:00\",\n            \"stopScheduledDatetime\": null,\n            \"stopScheduledDate\": null,\n            \"stopScheduledTime\": null,\n            \"pointInTime\": true\n        }\n    ],\n    \"user\": {\n        \"id\": 123,\n        \"typeCode\": \"N\",\n        \"typeDescription\": \"nurse\",\n        \"userInitials\": \"CH1\",\n        \"firstName\": \"Christine\",\n        \"middleName\": \"\",\n        \"lastName\": \"Hildebrand, RN\",\n        \"nameSuffix\": \"\",\n        \"displayName\": \"Christine Hildebrand, RN\",\n        \"orderingOnlyPhysician\": false,\n        \"displayInitialsIndicator\": false,\n        \"site\": {\n            \"id\": 28,\n            \"name\": \"Pulsecheck Hospital\",\n            \"active\": true,\n            \"timeZoneName\": \"Central Standard Time\"\n        }\n    },\n    \"id\": 51,\n    \"ndc\": null,\n    \"drugId\": \"drug888\",\n    \"brandName\": \"brandname999\",\n    \"dose\": null,\n    \"doseUnit\": null,\n    \"medicationRoute\": null,\n    \"frequencyId\": null,\n    \"pointInTime\": false,\n    \"orderNotes\": null\n}"
+				}
+			]
+		},
+		{
+			"name": "Sign orders of a cart (checkout cart)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "10ee68e5-0e2f-4775-a7f8-874f60076248",
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.environment.unset(\"CartOrderId\");\r",
+							"pm.environment.unset(\"CartOrderPatientId\");\r",
+							"pm.environment.unset(\"CartOrderUserId\");\r",
+							"pm.environment.unset(\"count5orders\");\r",
+							"pm.environment.unset(\"count7orders\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-User",
+						"value": "{{CartOrderUserId}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/carts/{{CartOrderPatientId}}/checkout",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"carts",
+						"{{CartOrderPatientId}}",
+						"checkout"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Sign orders of a cart (checkout cart)",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-User",
+								"value": "{{CartOrderUserId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/carts/{{CartOrderPatientId}}/checkout",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"carts",
+								"{{CartOrderPatientId}}",
+								"checkout"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Thu, 13 Aug 2020 13:49:43 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "88"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Thu, 13 Aug 2020 13:50:44 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Thu, 13 Aug 2020 13:49:44 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"C67ADC800C9E056B795D78ADF1714E09\""
+						},
+						{
+							"key": "Location",
+							"value": "http://localhost:51044/api/orders?patientId=163"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						},
+						{
+							"key": "X-User",
+							"value": "123"
+						}
+					],
+					"cookie": [],
+					"body": "\"Cart orders on patient with id '163' from user with id '123' were signed successfully.\""
+				}
+			]
+		}
+	],
+	"protocolProfileBehavior": {}
+}

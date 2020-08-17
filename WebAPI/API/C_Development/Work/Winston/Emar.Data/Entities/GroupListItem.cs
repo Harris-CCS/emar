@@ -10,7 +10,7 @@ namespace Emar.Data.Entities
         public int Id { get; set; }
 
         [Column("site_id", TypeName = "int"), Required]
-        public long SiteId { get; set; }
+        public int SiteId { get; set; }
 
         [Column("group_name", TypeName = "nvarchar(255)"), Required]
         public string GroupName { get; set; }
@@ -33,11 +33,14 @@ namespace Emar.Data.Entities
         [Column("medication_route_id", TypeName = "int")]
         public int? MedicationRouteId { get; set; }
 
-        [Column("frequency_id", TypeName = "int")]
-        public int? FrequencyId { get; set; }
+        [Column("frequency_schedule_id", TypeName = "int")]
+        public int? FrequencyScheduleId { get; set; }
 
         [Column("order_notes", TypeName = "nvarchar(MAX)")]
         public string OrderNotes { get; set; }
+
+        [Column("department_code", TypeName = "varchar(15)")]
+        public string DepartmentCode { get; set; }
 
 
         [ForeignKey(nameof(MedicationRouteId))]

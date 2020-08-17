@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "d4338a28-2525-4d6f-8f37-af7740bd0ec2",
+		"_postman_id": "e8e17e9c-cf1a-4ac5-8a61-ddcbe3b19c79",
 		"name": "Order API Tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -14,7 +14,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "b8cc4f06-8d90-4552-b8e8-8bf3cc2e02e1",
+								"id": "79262eb9-9d94-4814-85ce-695559495212",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
@@ -128,7 +128,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "a04808bd-4f8e-4e7c-a4c9-838d454297d2",
+								"id": "aedc0083-0c87-409d-90b3-a789c32f0be3",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
@@ -244,7 +244,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "b6b3ea80-6355-4658-a6ef-49d2e15b384e",
+								"id": "7e1fe3f8-d4be-4958-9273-172867a1f85f",
 								"exec": [
 									"pm.test(\"Patient was not found\", function () {\r",
 									"    let expectedStrings = ['Patient with id', 'was not found'];\r",
@@ -358,7 +358,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "7495322b-5a8a-4080-8a07-469d248f4bc4",
+								"id": "f9568ec4-d1e8-4076-82ed-a135160fb5a9",
 								"exec": [
 									"var jsonData = pm.response.json();\r",
 									"let skipTest = false;\r",
@@ -486,7 +486,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "490cce0b-9ae8-42a6-a062-69a02fb28368",
+								"id": "43cdfa8b-a74a-4958-8377-387bcbc2e329",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
@@ -623,7 +623,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "b4b16b78-e9d8-407b-836b-cc9bb63e1b92",
+								"id": "756e455a-5ca9-4dea-a2f6-be7b5fabae8b",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
@@ -766,7 +766,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "770bc06b-a5a3-4ec1-97e0-537c2e9dd5ce",
+								"id": "b50eb712-5b8b-4c71-a716-e23c9aca922a",
 								"exec": [
 									"//pm.test(\"Not Acceptable returned\", function() {\r",
 									"//    var jsonData = pm.response.json();\r",
@@ -863,7 +863,7 @@
 								}
 							],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -873,7 +873,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "83176351-04b1-40c2-99f6-946791ecb7bd",
+								"id": "be48b984-64a7-4592-8573-e8b70840af4a",
 								"exec": [
 									"pm.test(\"Status code is 400\", function () {\r",
 									"    pm.response.to.have.status(400);\r",
@@ -975,7 +975,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "40e3366e-d7a4-42e9-8e4c-312856f90da5",
+						"id": "cfb0231a-5036-481d-8517-bfeb7300dc81",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
@@ -1095,7 +1095,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "99316fe7-fcd3-4809-aec8-7bbc7b170814",
+						"id": "9306bbd6-d193-477e-a76a-83a6ecaf7f62",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
@@ -1207,7 +1207,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "88d8cf4c-246f-40c1-95f9-ecc3a7162c9c",
+						"id": "59aa088b-5c42-4da2-bdec-0fc03b763dd0",
 						"exec": [
 							"pm.test(\"Patient order was not found\", function () {\r",
 							"    let expectedStrings = ['Patient order with id', 'was not found'];\r",
@@ -1318,7 +1318,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "91d17cd1-6cda-44a0-b955-52b0a37aa41c",
+						"id": "6f903b2a-5cb8-46cf-820f-6945992d5be4",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
@@ -1451,7 +1451,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "7a4aebf6-e0e4-41d5-95c7-b788b5bde3b6",
+						"id": "54d186b7-9d77-4c3b-912a-53377c193dbf",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
@@ -1587,7 +1587,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "dc47107a-7521-4a3a-8d2c-e91aaee4103a",
+						"id": "88a46704-066b-416f-b7b5-232dd6154540",
 						"exec": [
 							"//pm.test(\"Not Acceptable returned\", function() {\r",
 							"//    var jsonData = pm.response.json();\r",
@@ -1682,7 +1682,7 @@
 						}
 					],
 					"cookie": [],
-					"body": null
+					"body": ""
 				}
 			]
 		}

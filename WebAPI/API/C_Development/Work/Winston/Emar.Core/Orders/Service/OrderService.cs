@@ -105,7 +105,7 @@ namespace Emar.Core.Orders.Service
 
         #region User Quick List Services
 
-        public UserQuickListFrameworkDto GetInitialUserQuickList(in int userId, long? siteId, 
+        public UserQuickListFrameworkDto GetInitialUserQuickList(in int userId, int? siteId, 
             string tabLinkBase, string orderLinkBase)
         {
             List<string> tabList = _orderRepository.GetUserQuickListTabs(userId, siteId).OrderBy(i => i).ToList();
@@ -145,7 +145,7 @@ namespace Emar.Core.Orders.Service
             return ret;
         }
 
-        public IEnumerable<UserQuickListItemDto> GetQuickListTab(in int userId, long? siteId, string orderLinkBase, string tab)
+        public IEnumerable<UserQuickListItemDto> GetQuickListTab(in int userId, int? siteId, string orderLinkBase, string tab)
         {
             List<UserQuickListItem> tabItems;
             if (tab == Constants.MostUsedTabTitle)
@@ -164,7 +164,7 @@ namespace Emar.Core.Orders.Service
 
         #region Department Preferred List Services
 
-        public IEnumerable<DepartmentPreferredItemDto> GetDepartmentPreferredList(in long siteId, string departmentCode,
+        public IEnumerable<DepartmentPreferredItemDto> GetDepartmentPreferredList(in int siteId, string departmentCode,
             string linkBase)
         {
             List<DepartmentPreferredListItem> orders = _orderRepository.GetDepartmentPreferredList(siteId,
@@ -178,5 +178,28 @@ namespace Emar.Core.Orders.Service
         }
 
         #endregion
+
+        #region Group Remembered Order Services
+
+        public GroupsRememberedOrdersDto GetGroupsRememberedOrdersList(int siteId, string departmentCode,
+            string linkBase)
+        {
+            List<GroupListItem> items = _orderRepository.GetGroupRememberedOrderItems(siteId, departmentCode, linkBase);
+            if (!items.Any()) return null;
+
+            var ret = new GroupsRememberedOrdersDto();
+            foreach (var groupName in items.GroupBy(i => i.GroupName).Select(i => i.Key).OrderBy(i => i))
+                ret.Groups.Add(new RememberedGroupDto
+                {
+                    GroupName = groupName,
+                    Orders = items.Where(i => i.GroupName == groupName)
+                        .Select(item => OrderMapper.MapGroupListItem(item, linkBase)).ToList()
+                });
+
+            return ret;
+        }
+
+        #endregion
+
     }
 }

@@ -62,6 +62,10 @@ namespace Emar.Data
 
                 entity.Property(e => e.Ndc).IsUnicode(false);
 
+                entity.Property(e => e.BrandName).IsUnicode(true);
+
+
+
                 entity.HasOne(d => d.MedicationRoute)
                     .WithMany(p => p.DepartmentPreferredListItems)
                     .HasForeignKey(d => d.MedicationRouteId)
@@ -100,6 +104,8 @@ namespace Emar.Data
                 entity.Property(e => e.DrugId).IsUnicode(false);
 
                 entity.Property(e => e.Ndc).IsUnicode(false);
+
+                entity.Property(e => e.DepartmentCode).IsUnicode(false);
 
                 entity.HasOne(d => d.MedicationRoute)
                     .WithMany(p => p.GroupListItems)

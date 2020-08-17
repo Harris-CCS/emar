@@ -59,8 +59,8 @@ namespace Emar.Data.Entities
         [Column("priority", TypeName = "tinyint"), Required]
         public byte Priority { get; set; }
 
-        [Column("frequency_id", TypeName = "int")]
-        public int? FrequencyId { get; set; }
+        [Column("frequency_schedule_id", TypeName = "int")]
+        public int? FrequencyScheduleId { get; set; }
 
         [Column("prn", TypeName = "bit"), Required]
         public bool Prn { get; set; }

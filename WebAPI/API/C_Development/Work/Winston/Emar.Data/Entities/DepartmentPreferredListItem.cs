@@ -11,7 +11,7 @@ namespace Emar.Data.Entities
         public int Id { get; set; }
 
         [Column("site_id")]
-        public long SiteId { get; set; }
+        public int SiteId { get; set; }
 
         [Column("department_code")]
         [StringLength(15)]
@@ -40,8 +40,8 @@ namespace Emar.Data.Entities
         [Column("medication_route_id")]
         public int? MedicationRouteId { get; set; }
 
-        [Column("frequency_id")]
-        public int? FrequencyId { get; set; }
+        [Column("frequency_schedule_id", TypeName = "int")]
+        public int? FrequencyScheduleId { get; set; }
 
         [Column("order_notes")]
         public string OrderNotes { get; set; }

@@ -17,11 +17,14 @@ namespace Emar.Core.Orders.Repository
         IEnumerable<OrderEvent> GetAdministrationEvents(long administrationId);
 
         // User Quick List
-        IEnumerable<UserQuickListItem> GetUserQuickListMostUsed(int userId, long? siteId);
-        List<string> GetUserQuickListTabs(int userId, long? siteId);
-        IEnumerable<UserQuickListItem> GetUserQuickListTabItems(int userId, long? siteId, string tab);
+        IEnumerable<UserQuickListItem> GetUserQuickListMostUsed(int userId, int? siteId);
+        List<string> GetUserQuickListTabs(int userId, int? siteId);
+        IEnumerable<UserQuickListItem> GetUserQuickListTabItems(int userId, int? siteId, string tab);
         
         // Department Preferred List
-        List<DepartmentPreferredListItem> GetDepartmentPreferredList(long siteId, string departmentCode, string linkBase);
+        List<DepartmentPreferredListItem> GetDepartmentPreferredList(int siteId, string departmentCode, string linkBase);
+
+        // Group Remembered Order List
+        List<GroupListItem> GetGroupRememberedOrderItems(int siteId, string departmentCode, string linkBase);
     }
 }

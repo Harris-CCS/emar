@@ -36,7 +36,7 @@ namespace Emar.Core.Orders.Model.Mappings
                 DoseUnit = MedicationMapper.MapMedicationUnit(patientOrder.MedicationUnit),
                 MedicationRoute = MedicationMapper.MapMedicationRoute(patientOrder.MedicationRoute),
                 ////Priority = (OrderPriorities)Enum.Parse(typeof(OrderPriorities), patientOrder.Priority),
-                FrequencyId = patientOrder.FrequencyId,
+                FrequencyId = patientOrder.FrequencyScheduleId,
                 Prn = patientOrder.Prn,
                 PointInTime = patientOrder.PointInTime,
                 OrderStatus = patientOrder.OrderStatus,
@@ -146,7 +146,7 @@ namespace Emar.Core.Orders.Model.Mappings
                 Dose = dbObj.Dose,
                 DoseUnit = MedicationMapper.MapMedicationUnit(dbObj.MedicationUnit),
                 MedicationRoute = MedicationMapper.MapMedicationRoute(dbObj.MedicationRoute),
-                FrequencyId = dbObj.FrequencyId,
+                FrequencyId = dbObj.FrequencyScheduleId,
                 OrderNotes = dbObj.OrderNotes
             };
 
@@ -179,7 +179,7 @@ namespace Emar.Core.Orders.Model.Mappings
                 Dose = dbObj.Dose,
                 DoseUnit = MedicationMapper.MapMedicationUnit(dbObj.MedicationUnit),
                 MedicationRoute = MedicationMapper.MapMedicationRoute(dbObj.MedicationRoute),
-                FrequencyId = dbObj.FrequencyId,
+                FrequencyId = dbObj.FrequencyScheduleId,
                 OrderNotes = dbObj.OrderNotes
             };
 
@@ -190,6 +190,39 @@ namespace Emar.Core.Orders.Model.Mappings
                 {
                     new HateOasLinkDto(linkBase.Replace("/-99/", string.Concat("/", dbObj.Id, "/")),
                         "add_dept_preferred_order_to_cart",
+                        "POST")
+                };
+            return ret;
+        }
+
+        public static GroupListItemDto MapGroupListItem(GroupListItem dbObj, string linkBase)
+        {
+            if (dbObj == null)
+                return null;
+
+            var ret = new GroupListItemDto
+            {
+                DepartmentCode = dbObj.DepartmentCode,
+                SiteId = dbObj.SiteId,
+                GroupName = dbObj.GroupName,
+                Id = dbObj.Id,
+                Ndc = dbObj.Ndc,
+                DrugId = dbObj.DrugId,
+                BrandName = dbObj.BrandName,
+                Dose = dbObj.Dose,
+                DoseUnit = MedicationMapper.MapMedicationUnit(dbObj.MedicationUnit),
+                MedicationRoute = MedicationMapper.MapMedicationRoute(dbObj.MedicationRoute),
+                FrequencyId = dbObj.FrequencyScheduleId,
+                OrderNotes = dbObj.OrderNotes
+            };
+
+            ret.PointInTime = ret.MedicationRoute?.PointInTime ?? true;
+
+            if (!string.IsNullOrEmpty(linkBase))
+                ret.Links = new[]
+                {
+                    new HateOasLinkDto(linkBase.Replace("/-99/", string.Concat("/", dbObj.Id, "/")),
+                        "add_group_order_to_cart",
                         "POST")
                 };
             return ret;
