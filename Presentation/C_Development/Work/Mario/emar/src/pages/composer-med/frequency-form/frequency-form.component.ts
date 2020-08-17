@@ -2,7 +2,6 @@ import { Component, Output, EventEmitter, OnInit, Input, ɵisDefaultChangeDetect
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, bufferTime } from 'rxjs/operators';
-import { NgbTimeStruct, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
 import { Frequency } from '../../../app/interfaces/frequency';
 import { FREQUENCIES } from '../../../app/mockup/frequencies';
@@ -43,7 +42,7 @@ export class FrequencyFormComponent implements OnInit {
             selectedStartDateTime = this.API2displayDateTime(this.order.startTime);
         }
         if (this.order === null || this.order.triageTime == null || this.order.triageTime === '') {
-            this.minStartDateTime = '08/08/2020 00:00';  /// TODO starttime - some hours
+            this.minStartDateTime = selectedStartDateTime.replace(/ .+$/, '') + ' 00:00';  /// TODO starttime - some hours
         } else {
             this.minStartDateTime = this.API2displayDateTime(this.order.triageTime);
         }
