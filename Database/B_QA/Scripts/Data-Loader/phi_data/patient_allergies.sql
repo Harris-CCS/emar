@@ -4,26 +4,30 @@ drop table if exists [#patient_allergies];
 
 create table [#patient_allergies]
     (
-      [patient_id]       [varchar](50) null
-    , [class]            [varchar](32) null
-    , [category]         [varchar](32) null
-    , [internal_drug_id] [varchar](32) null
-    , [ndc]              [varchar](32) null
-    , [drug_id]          [varchar](32) null
-    , [name]             [nvarchar](255) null
-    , [alternate_name]   [nvarchar](255) null
-    , [allergy_drug_id]  [varchar](32) null
-    , [is_active]        [bit] not null
-    , [comment]          [varchar](255) null
-    , [schedule]         [varchar](40) null
-    , [reaction]         [varchar](80) null
-    , [severity]         [varchar](80) null
-    , [parent_drug_id]   [varchar](32) null
-    , [parent_drug_name] [nvarchar](255) null
-    , [add_user_id]      [varchar](50) null
-    , [add_datetime]     [varchar](50) null
-    , [change_user_id]   [varchar](50) null
-    , [change_datetime]  [varchar](50) null);
+      [patient_id]         [varchar](50) null
+    , [class]              [varchar](32) null
+    , [category]           [varchar](32) null
+    , [internal_drug_id]   [varchar](32) null
+    , [ndc]                [varchar](32) null
+    , [drug_id]            [varchar](32) null
+    , [name]               [nvarchar](255) null
+    , [alternate_name]     [nvarchar](255) null
+    , [allergy_drug_id]    [varchar](32) null
+    , [is_active]          [bit] not null
+    , [comment]            [varchar](255) null
+    , [schedule]           [varchar](40) null
+    , [reaction]           [varchar](80) null
+    , [severity]           [varchar](80) null
+    , [parent_drug_id]     [varchar](32) null
+    , [parent_drug_name]   [nvarchar](255) null
+    , [add_user_id]        [varchar](50) null
+    , [add_datetime]       [varchar](50) null
+    , [change_user_id]     [varchar](50) null
+    , [change_datetime]    [varchar](50) null
+    , [action_status]      [char](1) null
+    , [information_source] [varchar](25) null
+    , [person_number]      [varchar](25) null
+    , [account_number]     [varchar](25) null);
 
 if '$(load_data)' = 'live'
    and exists
@@ -55,6 +59,10 @@ if '$(load_data)' = 'live'
            , [add_datetime]
            , [change_user_id]
            , [change_datetime]
+           , [action_status]     
+           , [information_source]
+           , [person_number]     
+           , [account_number]    
             )
         execute ('execute dbo.export_ibex_patient_allergies');
     end;
@@ -123,6 +131,10 @@ if
            , [add_datetime]
            , [change_user_id]
            , [change_datetime]
+           , [action_status]     
+           , [information_source]
+           , [person_number]     
+           , [account_number]    
             )
         select isnull([internal_patient_id].[id], -1) as             [patient_id]
             , [source].[class]
@@ -139,12 +151,14 @@ if
             , [source].[severity]
             , [source].[parent_drug_id]
             , [source].[parent_drug_name]
-            , isnull([internal_add_user_id].[id], 0) as             [add_user_id]
-            , [dbo].[ibex_date_to_offset_date]
-            ([source].[add_datetime], [site].[time_zone_name]) as    [add_datetime]
-            , isnull([internal_change_user_id].[id], 0) as          [change_user_id]
-            , [dbo].[ibex_date_to_offset_date]
-            ([source].[change_datetime], [site].[time_zone_name]) as [change_datetime]
+            , isnull([internal_add_user_id].[id], 0) as                                                [add_user_id]
+            , [dbo].[ibex_date_to_offset_date]([source].[add_datetime], [site].[time_zone_name]) as    [add_datetime]
+            , isnull([internal_change_user_id].[id], 0) as                                             [change_user_id]
+            , [dbo].[ibex_date_to_offset_date]([source].[change_datetime], [site].[time_zone_name]) as [change_datetime]
+            , [source].[action_status]     
+            , [source].[information_source]
+            , [source].[person_number]     
+            , [source].[account_number]    
         from   [#patient_allergies] as [source]
                outer apply [dbo].[get_internal_id]
             ('pulsecheck', 'patients', [source].[patient_id]) as [internal_patient_id]

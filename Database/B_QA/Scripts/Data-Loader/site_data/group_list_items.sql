@@ -4,16 +4,16 @@ drop table if exists [#group_list_items];
 
 create table [#group_list_items]
     (
-      [site_id]             [varchar](25) not null
-    , [group_name]          [nvarchar](255) not null
-    , [ndc]                 [varchar](32) null
-    , [drug_id]             [varchar](32) null
-    , [brand_name]          [nvarchar](255) not null
-    , [dose]                [varchar](50) null
-    , [medication_unit_id]  [varchar](40) null
-    , [medication_route_id] [varchar](50) null
-    , [frequency_id]        [varchar](50) null
-    , [order_notes]         [nvarchar](max) null);
+      [site_id]               [varchar](25) not null
+    , [group_name]            [nvarchar](255) not null
+    , [ndc]                   [varchar](32) null
+    , [drug_id]               [varchar](32) null
+    , [brand_name]            [nvarchar](255) not null
+    , [dose]                  [varchar](50) null
+    , [medication_unit_id]    [varchar](40) null
+    , [medication_route_id]   [varchar](50) null
+    , [frequency_schedule_id] [varchar](50) null
+    , [order_notes]           [nvarchar](max) null);
 
 if '$(load_data)' = 'live'
    and exists
@@ -33,7 +33,7 @@ if '$(load_data)' = 'live'
            , [dose]
            , [medication_unit_id]
            , [medication_route_id]
-           , [frequency_id]
+           , [frequency_schedule_id]
            , [order_notes]
             )
         execute ('execute dbo.export_ibex_group_list_items');
@@ -85,6 +85,7 @@ if
 
         insert into [dbo].[group_list_items]
             ([site_id]
+           , [department_code]
            , [group_name]
            , [ndc]
            , [drug_id]
@@ -92,10 +93,11 @@ if
            , [dose]
            , [medication_unit_id]
            , [medication_route_id]
-           , [frequency_id]
+           , [frequency_schedule_id]
            , [order_notes]
             )
         select isnull([internal_site].[id], -1) as [site_id]
+             , '' as                               [department_code]
              , [source].[group_name]
              , [source].[ndc]
              , [source].[drug_id]
@@ -103,7 +105,7 @@ if
              , [source].[dose]
              , [mu].[id] as                        [medication_unit_id]
              , [mr].[id] as                        [medication_routes_id]
-             , [source].[frequency_id]
+             , [source].[frequency_schedule_id]
              , [source].[order_notes]
         from   [#group_list_items] as [source]
                outer apply [dbo].[get_internal_id]('pulsecheck', 'sites', [source].[site_id]) as [internal_site]
@@ -119,6 +121,28 @@ if
 /***************************************
         loading [external_ids] reference
 ***************************************/
+
+        with SiteCounts
+             as (select [site_id]
+                      , count(*) as [cnt]
+                 from   [group_list_items]
+                 group by [site_id]),
+             src
+             as (select [id]
+                      , case
+                            when row_number() over(partition by [g].[site_id]
+                                 order by [g].[site_id]
+                                        , [brand_name]) > ([cnt].[cnt] / 2.0)
+                                then 'Main ED'
+                            else 'Fast Track'
+                        end as [new_department_code]
+                 from   [group_list_items] as [g]
+                        join [SiteCounts] as [cnt] on [g].[site_id] = [cnt].[site_id])
+             update [g] set    
+                 [g].[department_code] = [new_department_code]
+             from   [dbo].[group_list_items] [g]
+                    join [src] on [g].[id] = [src].[id];
+
 /****************
         end table
 ****************/

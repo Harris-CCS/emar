@@ -1,16 +1,17 @@
 create table [dbo].[group_list_items]
     (
-      [id]                  [int] identity(1, 1) not null
-    , [site_id]             [int] not null
-    , [group_name]          [nvarchar](255) not null
-    , [ndc]                 [varchar](32) null
-    , [drug_id]             [varchar](32) null
-    , [brand_name]          [nvarchar](255) not null
-    , [dose]                [decimal](11, 2) null
-    , [medication_unit_id]  [int] null
-    , [medication_route_id] [int] null
-    , [frequency_id]        [int] null
-    , [order_notes]         [nvarchar](max) null
+      [id]                    [int] identity(1, 1) not null
+    , [site_id]               [int] not null
+    , [department_code]       [varchar](15) null
+    , [group_name]            [nvarchar](255) not null
+    , [ndc]                   [varchar](32) null
+    , [drug_id]               [varchar](32) null
+    , [brand_name]            [nvarchar](255) not null
+    , [dose]                  [decimal](11, 2) null
+    , [medication_unit_id]    [int] null
+    , [medication_route_id]   [int] null
+    , [frequency_schedule_id] [int] null
+    , [order_notes]           [nvarchar](max) null
     , constraint [pk__group_list_items__id] primary key clustered([id] asc));
 go
 
@@ -37,6 +38,10 @@ go
 
 alter table [dbo].[group_list_items]
 add constraint [fk__group_list_items__medication_routes] foreign key([medication_route_id]) references [dbo].[medication_routes]([id]);
+go
+
+alter table [dbo].[group_list_items]
+add constraint [fk__group_list_items__frequency_schedules] foreign key([frequency_schedule_id]) references [dbo].[frequency_schedules]([id]);
 go
 
 /***************
@@ -98,6 +103,17 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'group_list_items'
   , @level2type = N'COLUMN'
   , @level2name = N'site_id';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'Department which owns the Group List Item'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'group_list_items'
+  , @level2type = N'COLUMN'
+  , @level2name = N'department_code';
 go
 
 execute [sys].[sp_addextendedproperty] 
@@ -185,13 +201,13 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'Foreign Key to Frequencies table'
+  , @value = N'Foreign Key to frequency_schedules table'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
   , @level1name = N'group_list_items'
   , @level2type = N'COLUMN'
-  , @level2name = N'frequency_id';
+  , @level2name = N'frequency_schedule_id';
 go
 
 execute [sys].[sp_addextendedproperty] 

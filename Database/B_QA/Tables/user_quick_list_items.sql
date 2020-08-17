@@ -9,7 +9,7 @@ create table [dbo].[user_quick_list_items]
     , [dose]                         [decimal](11, 2) null
     , [medication_unit_id]           [int] null
     , [medication_route_id]          [int] null
-    , [frequency_id]                 [int] null
+    , [frequency_schedule_id]        [int] null
     , [order_notes]                  [nvarchar](max) null
     , [usages_this_week]             [int] null
     , [weekly_usage_rolling_average] [decimal](9, 3) null
@@ -52,6 +52,10 @@ go
 
 alter table [dbo].[user_quick_list_items]
 add constraint [fk__user_quick_list_items__medication_routes] foreign key([medication_route_id]) references [dbo].[medication_routes]([id]);
+go
+
+alter table [dbo].[user_quick_list_items]
+add constraint [fk__user_quick_list_items__frequency_schedules] foreign key([frequency_schedule_id]) references [dbo].[frequency_schedules]([id]);
 go
 
 /***************
@@ -223,13 +227,13 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'Foreign Key to Frequencies table'
+  , @value = N'Foreign Key to frequency_schedules table'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
   , @level1name = N'user_quick_list_items'
   , @level2type = N'COLUMN'
-  , @level2name = N'frequency_id';
+  , @level2name = N'frequency_schedule_id';
 go
 
 execute [sys].[sp_addextendedproperty] 

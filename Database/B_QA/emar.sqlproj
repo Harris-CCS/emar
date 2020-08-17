@@ -153,7 +153,6 @@
     <Build Include="Tables\fdb_ndc_info.sql" />
     <Build Include="Tables\fdb_brand_name.sql" />
     <Build Include="Tables\fdb_allergy_name.sql" />
-    <Build Include="Programmability\Stored Procedures\export_ibex_fdb_ndc_info.sql" />
     <Build Include="Programmability\Stored Procedures\export_ibex_fdb_allergy.sql" />
     <Build Include="Programmability\Stored Procedures\export_ibex_fdb_brand_name.sql" />
     <None Include="Scripts\Data-Loader\global_data\fdb_allergy_name.sql" />
@@ -167,6 +166,31 @@
     <Build Include="Programmability\Stored Procedures\export_ibex_site_code_shares.sql" />
     <None Include="Scripts\Data-Loader\site_data\site_code_shares.sql" />
     <Build Include="Programmability\Functions\Table-values Functions\get_code_share_site.sql" />
+    <Build Include="Programmability\Stored Procedures\pc_fdb_get_drc_info.sql" />
+    <Build Include="Programmability\Stored Procedures\create_FDB_search.sql" />
+    <Build Include="Tables\antimicrobial_indication_items.sql" />
+    <Build Include="Tables\antimicrobial_indications.sql" />
+    <Build Include="Programmability\Stored Procedures\export_ibex_antimicrobial_indication_items.sql" />
+    <Build Include="Programmability\Stored Procedures\export_ibex_antimicrobial_indications.sql" />
+    <None Include="Scripts\Data-Loader\site_data\antimicrobial_indication_items.sql" />
+    <None Include="Scripts\Data-Loader\site_data\antimicrobial_indications.sql" />
+    <Build Include="Tables\frequency_calendar.sql" />
+    <Build Include="Tables\frequency_days.sql" />
+    <Build Include="Tables\frequency_interval_day_times.sql" />
+    <Build Include="Tables\frequency_interval_units.sql" />
+    <Build Include="Tables\frequency_minutes.sql" />
+    <Build Include="Tables\frequency_schedules.sql" />
+    <Build Include="Tables\frequency_types.sql" />
+    <Build Include="Views\frequency_schedules_view.sql" />
+    <None Include="Scripts\Data-Loader\global_data\frequency_calendar.sql" />
+    <None Include="Scripts\Data-Loader\global_data\frequency_days.sql" />
+    <None Include="Scripts\Data-Loader\global_data\frequency_interval_units.sql" />
+    <None Include="Scripts\Data-Loader\global_data\frequency_minutes.sql" />
+    <None Include="Scripts\Data-Loader\global_data\frequency_types.sql" />
+    <None Include="Scripts\Data-Loader\site_data\frequency_schedules.sql" />
+    <Build Include="Programmability\Stored Procedures\frequency_calendar_build.sql" />
+    <Build Include="Programmability\Stored Procedures\frequency_minutes_build.sql" />
+    <Build Include="Programmability\Stored Procedures\get_frequency_schedule_items.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />
@@ -222,6 +246,12 @@
     <None Include="Scripts\Data-Loader\sample_data\site_code_shares.bcp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Scripts\Data-Loader\sample_data\antimicrobial_indication_items.bcp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Data-Loader\sample_data\antimicrobial_indications.bcp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <PreDeploy Include="Scripts\Script.PreDeployment.sql" />
@@ -240,6 +270,10 @@
     <SqlCmdVariable Include="current_path">
       <DefaultValue>$(ProjectDir)$(OutputPath)</DefaultValue>
       <Value>$(SqlCmdVar__2)</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="is_bacpac_build">
+      <DefaultValue>false</DefaultValue>
+      <Value>$(SqlCmdVar__3)</Value>
     </SqlCmdVariable>
     <SqlCmdVariable Include="load_data">
       <DefaultValue>none</DefaultValue>

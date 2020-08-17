@@ -18,10 +18,11 @@ insert into [#options]
    , [description]
     )
 values
-    (1, 'LONG_DATE_FORMAT', 'Long Date Format for user display'),
-    (2, 'SHORT_DATE_FORMAT', 'Short Date Format for user display'),
-    (3, 'SCHEDULE_FUTURE_ITEMS', 'How many days forward (including today) to generate future administration records'),
-    (4, 'DATABASESERVER_ROOT', 'root name of the location where images are stored');
+    (1, 'LONG_DATE_FORMAT'            , 'Long Date Format for user display'                                                ),
+    (2, 'SHORT_DATE_FORMAT'           , 'Short Date Format for user display'                                               ),
+    (3, 'SCHEDULE_FUTURE_ITEMS'       , 'How many days forward (including today) to generate future administration records'),
+    (4, 'PATIENT_IMAGE_PATH'          , 'Path to patients image files'                                                     ),
+    (5, 'CUSTOM_INDICATORS_IMAGE_PATH', 'Path to custom indicators image files'                                            );
 
 /*************************************
         begin loading permanent tables
@@ -36,9 +37,9 @@ update [target] set
     [name] = [source].[name]
   , [description] = [source].[description]
 from   [#options] as [source]
-       right join [dbo].[options] as [target] on [target].[id] = [source].[id]
-where  [target].[name] = [source].[name]
-       or [target].[description] = [source].[description];
+       inner join [dbo].[options] as [target] on [target].[id] = [source].[id]
+where  [target].[name] <> [source].[name]
+       or [target].[description] <> [source].[description];
 
 insert into [dbo].[options]
     ([id]

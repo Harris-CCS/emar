@@ -64,4 +64,32 @@ if '$(load_data)' in('sample', 'live')
         where  user_id = @userId;
 
         set rowcount 0;
+
+        with SiteCounts
+             as (select [site_id]
+                      , count(*) as [cnt]
+                 from   [user_quick_list_items]
+                 group by [site_id]
+                        , user_id)
+             INSERT department_preferred_list_items
+             select [q].[site_id]
+                  , [department_code] = case
+                                            when row_number() over(partition by [q].[site_id]
+                                                 order by [q].[site_id]
+                                                        , [brand_name]) < ([cnt].[cnt] / 2.0)
+                                                then 'Main ED'
+                                            else 'Fast Track'
+                                        end
+                  , [ndc]
+                  , isnull([drug_id], 999999)
+                  , [brand_name]
+                  , [dose]
+                  , [medication_unit_id]
+                  , [medication_route_id]
+                  , [frequency_schedule_id]
+                  , [order_notes]
+             from   [user_quick_list_items] as [q]
+                    join [SiteCounts] as [cnt] on [q].[site_id] = [cnt].[site_id]
+             order by [q].[site_id]
+                    , [brand_name];
     end;

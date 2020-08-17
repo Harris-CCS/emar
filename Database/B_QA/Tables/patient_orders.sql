@@ -14,7 +14,7 @@ create table [dbo].[patient_orders]
     , [medication_unit_id]      [int] null
     , [medication_route_id]     [int] null
     , [priority]                [tinyint] not null
-    , [frequency_id]            [int] null
+    , [frequency_schedule_id]   [int] null
     , [prn]                     [bit] not null
     , [point_in_time]           [bit] not null
     , [order_status]            [varchar](10) not null
@@ -50,6 +50,10 @@ go
 
 alter table [dbo].[patient_orders]
 add constraint [fk__patient_orders__medication_units] foreign key([medication_unit_id]) references [dbo].[medication_units]([id]);
+go
+
+alter table [dbo].[patient_orders]
+add constraint [fk__patient_orders__frequency_schedules] foreign key([frequency_schedule_id]) references [dbo].[frequency_schedules]([id]);
 go
 
 /***************
@@ -231,13 +235,13 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'frequency_id'
+  , @value = N'Foreign Key to frequency_schedules table'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
   , @level1name = N'patient_orders'
   , @level2type = N'COLUMN'
-  , @level2name = N'frequency_id';
+  , @level2name = N'frequency_schedule_id';
 go
 
 execute [sys].[sp_addextendedproperty] 

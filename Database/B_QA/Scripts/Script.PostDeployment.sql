@@ -10,52 +10,50 @@ Post-Deployment Script Template
 --------------------------------------------------------------------------------------
 *************************************************************************************/
 set nocount on;
--- Table Renamed dbo.site_preferred_list dbo.department_preferred_list
-drop table if exists dbo.site_preferred_list;
--- Table Renamed dbo.department_preferred_list dbo.department_preferred_list_items
-drop table if exists dbo.department_preferred_list;
--- Table Renamed dbo.user_quick_list dbo.user_quick_list_items
-drop table if exists dbo.user_quick_list;
--- Table Renamed dbo.patient_cart_details dbo.patient_cart_orders
-drop table if exists dbo.patient_cart_details
--- Table no longer used
-drop table if exists dbo.patient_carts
 
 declare
      @max_id bigint
-    ,@drop_export_procedures_to_enable_bacpac_build bit =1;
 
 /* Insert table order
 LVL: 000 SEQ: 001 TBL: dbo.actions
 LVL: 000 SEQ: 002 TBL: dbo.fdb_allergy_name
 LVL: 000 SEQ: 003 TBL: dbo.fdb_brand_name
 LVL: 000 SEQ: 004 TBL: dbo.fdb_ndc_info
-LVL: 000 SEQ: 005 TBL: dbo.options
-LVL: 000 SEQ: 006 TBL: dbo.permissions
-LVL: 000 SEQ: 007 TBL: dbo.prompt_groups
-LVL: 000 SEQ: 008 TBL: dbo.sites
-LVL: 000 SEQ: 009 TBL: dbo.templates
-LVL: 001 SEQ: 001 TBL: dbo.medication_routes
-LVL: 001 SEQ: 002 TBL: dbo.medication_units
-LVL: 001 SEQ: 003 TBL: dbo.override_reasons
-LVL: 001 SEQ: 004 TBL: dbo.patients
-LVL: 001 SEQ: 005 TBL: dbo.prompts
-LVL: 001 SEQ: 006 TBL: dbo.site_code_shares
-LVL: 001 SEQ: 007 TBL: dbo.site_formulary
-LVL: 001 SEQ: 008 TBL: dbo.site_formulary_match
-LVL: 001 SEQ: 009 TBL: dbo.site_options
-LVL: 001 SEQ: 010 TBL: dbo.template_prompt_groups
-LVL: 001 SEQ: 011 TBL: dbo.users
+LVL: 000 SEQ: 005 TBL: dbo.frequency_calendar
+LVL: 000 SEQ: 006 TBL: dbo.frequency_days
+LVL: 000 SEQ: 007 TBL: dbo.frequency_interval_units
+LVL: 000 SEQ: 008 TBL: dbo.frequency_minutes
+LVL: 000 SEQ: 009 TBL: dbo.frequency_types
+LVL: 000 SEQ: 010 TBL: dbo.options
+LVL: 000 SEQ: 011 TBL: dbo.permissions
+LVL: 000 SEQ: 012 TBL: dbo.prompt_groups
+LVL: 000 SEQ: 013 TBL: dbo.sites
+LVL: 000 SEQ: 014 TBL: dbo.templates
+LVL: 001 SEQ: 001 TBL: dbo.antimicrobial_indication_items
+LVL: 001 SEQ: 002 TBL: dbo.antimicrobial_indications
+LVL: 001 SEQ: 003 TBL: dbo.frequency_schedules
+LVL: 001 SEQ: 004 TBL: dbo.medication_routes
+LVL: 001 SEQ: 005 TBL: dbo.medication_units
+LVL: 001 SEQ: 006 TBL: dbo.override_reasons
+LVL: 001 SEQ: 007 TBL: dbo.patients
+LVL: 001 SEQ: 008 TBL: dbo.prompts
+LVL: 001 SEQ: 009 TBL: dbo.site_code_shares
+LVL: 001 SEQ: 010 TBL: dbo.site_formulary
+LVL: 001 SEQ: 011 TBL: dbo.site_formulary_match
+LVL: 001 SEQ: 012 TBL: dbo.site_options
+LVL: 001 SEQ: 013 TBL: dbo.template_prompt_groups
+LVL: 001 SEQ: 014 TBL: dbo.users
 LVL: 002 SEQ: 001 TBL: dbo.action_route_templates
 LVL: 002 SEQ: 002 TBL: dbo.department_preferred_list_items
-LVL: 002 SEQ: 003 TBL: dbo.group_list_items
-LVL: 002 SEQ: 004 TBL: dbo.patient_allergies
-LVL: 002 SEQ: 005 TBL: dbo.patient_home_medications
-LVL: 002 SEQ: 006 TBL: dbo.patient_indicators
-LVL: 002 SEQ: 007 TBL: dbo.patient_orders
-LVL: 002 SEQ: 008 TBL: dbo.prompt_choices
-LVL: 002 SEQ: 009 TBL: dbo.user_permissions
-LVL: 002 SEQ: 010 TBL: dbo.user_quick_list_items
+LVL: 002 SEQ: 003 TBL: dbo.frequency_interval_day_times
+LVL: 002 SEQ: 004 TBL: dbo.group_list_items
+LVL: 002 SEQ: 005 TBL: dbo.patient_allergies
+LVL: 002 SEQ: 006 TBL: dbo.patient_home_medications
+LVL: 002 SEQ: 007 TBL: dbo.patient_indicators
+LVL: 002 SEQ: 008 TBL: dbo.patient_orders
+LVL: 002 SEQ: 009 TBL: dbo.prompt_choices
+LVL: 002 SEQ: 010 TBL: dbo.user_permissions
+LVL: 002 SEQ: 011 TBL: dbo.user_quick_list_items
 LVL: 003 SEQ: 001 TBL: dbo.order_administrations
 LVL: 003 SEQ: 002 TBL: dbo.patient_cart_orders
 LVL: 004 SEQ: 001 TBL: dbo.cart_order_administrations
@@ -67,8 +65,16 @@ LVL: 005 SEQ: 001 TBL: dbo.order_event_details
 :r ..\Scripts\Data-Loader\global_data\fdb_allergy_name.sql
 :r ..\Scripts\Data-Loader\global_data\fdb_brand_name.sql
 :r ..\Scripts\Data-Loader\global_data\fdb_ndc_info.sql
+:r ..\Scripts\Data-Loader\global_data\frequency_calendar.sql
+:r ..\Scripts\Data-Loader\global_data\frequency_days.sql
+:r ..\Scripts\Data-Loader\global_data\frequency_interval_units.sql
+:r ..\Scripts\Data-Loader\global_data\frequency_minutes.sql
+:r ..\Scripts\Data-Loader\global_data\frequency_types.sql
 :r ..\Scripts\Data-Loader\global_data\options.sql
 :r ..\Scripts\Data-Loader\site_data\sites.sql
+:r ..\Scripts\Data-Loader\site_data\antimicrobial_indication_items.sql
+:r ..\Scripts\Data-Loader\site_data\antimicrobial_indications.sql
+:r ..\Scripts\Data-Loader\site_data\frequency_schedules.sql
 :r ..\Scripts\Data-Loader\site_data\medication_routes.sql
 :r ..\Scripts\Data-Loader\site_data\medication_units.sql
 :r ..\Scripts\Data-Loader\phi_data\patients.sql
@@ -90,9 +96,13 @@ LVL: 005 SEQ: 001 TBL: dbo.order_event_details
 :r ..\Scripts\Data-Loader\development_data\bradley_data.sql
 --- END: custom data deployments for development
 
--- procedures were only needed for data import process and are no longer needed.
-if @drop_export_procedures_to_enable_bacpac_build=1
+-- External References are not allowed in a bacpac file.
+-- To create the bacpac procedures with an external reference must be dropped
+-- After bacpac is created create the dacpac including these procedures
+if '$(is_bacpac_build)'='True'
 begin
+    drop procedure if exists [dbo].[export_ibex_antimicrobial_indication_items];
+    drop procedure if exists [dbo].[export_ibex_antimicrobial_indications];
     drop procedure if exists [dbo].[export_ibex_fdb_allergy_name];
     drop procedure if exists [dbo].[export_ibex_fdb_brand_name];
     drop procedure if exists [dbo].[export_ibex_fdb_ndc_info];
@@ -110,6 +120,9 @@ begin
     drop procedure if exists [dbo].[export_ibex_sites];
     drop procedure if exists [dbo].[export_ibex_user_quick_list_items];
     drop procedure if exists [dbo].[export_ibex_users];
+    ---- emar specific procedures with external references
+    drop procedure if exists [dbo].[create_FDB_search];
+    drop procedure if exists [dbo].[pc_fdb_get_drc_info];
 end;
 --- variables global to all diagram_ published scripts
 declare

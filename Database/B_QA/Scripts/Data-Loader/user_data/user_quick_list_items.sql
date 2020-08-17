@@ -4,16 +4,16 @@ drop table if exists [#user_quick_list_items];
 
 create table [#user_quick_list_items]
     (
-      [site_id]             [varchar](25) not null
-    , [user_id]             [varchar](25) not null
-    , [ndc]                 [varchar](32) null
-    , [drug_id]             [varchar](32) null
-    , [brand_name]          [nvarchar](255) not null
-    , [dose]                [varchar](50) null
-    , [medication_unit_id]  [varchar](50) null
-    , [medication_route_id] [varchar](50) null
-    , [frequency_id]        [varchar](50) null
-    , [order_notes]         [nvarchar](max) null);
+      [site_id]               [varchar](25) not null
+    , [user_id]               [varchar](25) not null
+    , [ndc]                   [varchar](32) null
+    , [drug_id]               [varchar](32) null
+    , [brand_name]            [nvarchar](255) not null
+    , [dose]                  [varchar](50) null
+    , [medication_unit_id]    [varchar](50) null
+    , [medication_route_id]   [varchar](50) null
+    , [frequency_schedule_id] [varchar](50) null
+    , [order_notes]           [nvarchar](max) null);
 
 if '$(load_data)' = 'live'
    and exists
@@ -33,7 +33,7 @@ if '$(load_data)' = 'live'
            , [dose]
            , [medication_unit_id]
            , [medication_route_id]
-           , [frequency_id]
+           , [frequency_schedule_id]
            , [order_notes]
             )
         execute ('execute dbo.export_ibex_user_quick_list_items');
@@ -92,7 +92,7 @@ if
            , [dose]
            , [medication_unit_id]
            , [medication_route_id]
-           , [frequency_id]
+           , [frequency_schedule_id]
            , [order_notes]
             )
         select isnull([internal_site_site].[id], -1) as [site_id]
@@ -103,7 +103,7 @@ if
              , [source].[dose]
              , [mu].[id] as                             [medication_unit_id]
              , [mr].[id] as                             [medication_routes_id]
-             , [source].[frequency_id]
+             , [source].[frequency_schedule_id]
              , [source].[order_notes]
         from   [#user_quick_list_items] as [source]
                outer apply [dbo].[get_internal_id]('pulsecheck', 'sites', [source].[site_id]) as [internal_site_site]

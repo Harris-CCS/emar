@@ -43,6 +43,7 @@ create table [dbo].[patients]
     , [is_active]                      [bit] not null
     , [custom_number]                  [varchar](25) null
     , [person_number]                  [varchar](25) null
+    , [deactivation_datetime]          [datetimeoffset](7) null
     , constraint [pk__patients__id] primary key clustered([id] asc));
 go
 
@@ -123,7 +124,7 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'Medical file number of the patient from ADT interface'
+  , @value = N'Primary Use: Medical Record Number HL7 2.4 super number of the patient MRN from ADT interface'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -134,7 +135,7 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'Account number of the patient visit from ADT interface'
+  , @value = N'Primary Use: Account Number HL7 2.4 super number of the patient account from ADT interface'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -570,4 +571,15 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'patients'
   , @level2type = N'COLUMN'
   , @level2name = N'person_number';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'Datatime pateint is_active flag was set to inactive.'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'patients'
+  , @level2type = N'COLUMN'
+  , @level2name = N'deactivation_datetime';
 go
