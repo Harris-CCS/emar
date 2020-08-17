@@ -56,6 +56,7 @@ as
              , ltrim(rtrim([source].[vspain])) as              [vs_pain_scale]
              , ltrim(rtrim([source].[custom_insurance_id])) as [custom_number]
              , ltrim(rtrim([source].[person])) as              [person_number]
+             , ltrim(rtrim([source].[ibex])) as                [visit_start_datetime]
         from   [ibex].[dbo].[pat] as [source]
                inner join [ibex].[dbo].[org] as [sites] on [sites].[site] = [source].[site]
         order by [source].[lname]

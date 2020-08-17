@@ -191,6 +191,10 @@
     <Build Include="Programmability\Stored Procedures\frequency_calendar_build.sql" />
     <Build Include="Programmability\Stored Procedures\frequency_minutes_build.sql" />
     <Build Include="Programmability\Stored Procedures\get_frequency_schedule_items.sql" />
+    <Build Include="Tables\medication_interactions.sql" />
+    <Build Include="Tables\order_interactions.sql" />
+    <Build Include="Programmability\Stored Procedures\export_ibex_override_reasons.sql" />
+    <None Include="Scripts\Data-Loader\site_data\override_reasons.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />
@@ -250,6 +254,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Scripts\Data-Loader\sample_data\antimicrobial_indications.bcp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Data-Loader\sample_data\override_reasons.bcp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

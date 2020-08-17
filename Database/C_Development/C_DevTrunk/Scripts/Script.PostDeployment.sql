@@ -47,18 +47,20 @@ LVL: 002 SEQ: 001 TBL: dbo.action_route_templates
 LVL: 002 SEQ: 002 TBL: dbo.department_preferred_list_items
 LVL: 002 SEQ: 003 TBL: dbo.frequency_interval_day_times
 LVL: 002 SEQ: 004 TBL: dbo.group_list_items
-LVL: 002 SEQ: 005 TBL: dbo.patient_allergies
-LVL: 002 SEQ: 006 TBL: dbo.patient_home_medications
-LVL: 002 SEQ: 007 TBL: dbo.patient_indicators
-LVL: 002 SEQ: 008 TBL: dbo.patient_orders
-LVL: 002 SEQ: 009 TBL: dbo.prompt_choices
-LVL: 002 SEQ: 010 TBL: dbo.user_permissions
-LVL: 002 SEQ: 011 TBL: dbo.user_quick_list_items
+LVL: 002 SEQ: 005 TBL: dbo.medication_interactions
+LVL: 002 SEQ: 006 TBL: dbo.patient_allergies
+LVL: 002 SEQ: 007 TBL: dbo.patient_home_medications
+LVL: 002 SEQ: 008 TBL: dbo.patient_indicators
+LVL: 002 SEQ: 009 TBL: dbo.patient_orders
+LVL: 002 SEQ: 010 TBL: dbo.prompt_choices
+LVL: 002 SEQ: 011 TBL: dbo.user_permissions
+LVL: 002 SEQ: 012 TBL: dbo.user_quick_list_items
 LVL: 003 SEQ: 001 TBL: dbo.order_administrations
 LVL: 003 SEQ: 002 TBL: dbo.patient_cart_orders
 LVL: 004 SEQ: 001 TBL: dbo.cart_order_administrations
 LVL: 004 SEQ: 002 TBL: dbo.order_administration_notes
 LVL: 004 SEQ: 003 TBL: dbo.order_events
+LVL: 004 SEQ: 004 TBL: dbo.order_interactions
 LVL: 005 SEQ: 001 TBL: dbo.order_event_details
 */
 -- https://stackoverflow.com/questions/23923366/specifying-a-relative-path-in-post-deployment-sql-files
@@ -77,6 +79,7 @@ LVL: 005 SEQ: 001 TBL: dbo.order_event_details
 :r ..\Scripts\Data-Loader\site_data\frequency_schedules.sql
 :r ..\Scripts\Data-Loader\site_data\medication_routes.sql
 :r ..\Scripts\Data-Loader\site_data\medication_units.sql
+:r ..\Scripts\Data-Loader\site_data\override_reasons.sql
 :r ..\Scripts\Data-Loader\phi_data\patients.sql
 :r ..\Scripts\Data-Loader\site_data\site_code_shares.sql
 :r ..\Scripts\Data-Loader\site_data\site_formulary.sql
@@ -109,6 +112,7 @@ begin
     drop procedure if exists [dbo].[export_ibex_group_list_items];
     drop procedure if exists [dbo].[export_ibex_medication_routes];
     drop procedure if exists [dbo].[export_ibex_medication_units];
+    drop procedure if exists [dbo].[export_ibex_override_reasons];
     drop procedure if exists [dbo].[export_ibex_patient_allergies];
     drop procedure if exists [dbo].[export_ibex_patient_home_medications];
     drop procedure if exists [dbo].[export_ibex_patient_indicators];
@@ -124,6 +128,7 @@ begin
     drop procedure if exists [dbo].[create_FDB_search];
     drop procedure if exists [dbo].[pc_fdb_get_drc_info];
 end;
+
 --- variables global to all diagram_ published scripts
 declare
     @diagram_id      [int]

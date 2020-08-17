@@ -1,8 +1,8 @@
 create table [dbo].[frequency_interval_day_times]
     (
-      [frequency_schedule_id]   [int] not null
-    , [frequency_day_id]  [tinyint] not null
-    , [frequency_time] [time](0) null);
+      [frequency_schedule_id] [int] not null
+    , [frequency_day_id]      [tinyint] not null
+    , [frequency_time]        [time](0) null);
 go
 
 /********
@@ -39,7 +39,7 @@ go
     Table
 ***************/
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Table contains the specific days and times or a frequency to generate a schedule record for.'
   , @level0type = N'SCHEMA'
@@ -52,4 +52,37 @@ go
  Data Dictionary
     Columns
 ***************/
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'frequency_schedule_id'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'frequency_interval_day_times'
+  , @level2type = N'COLUMN'
+  , @level2name = N'frequency_schedule_id';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'frequency_day_id'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'frequency_interval_day_times'
+  , @level2type = N'COLUMN'
+  , @level2name = N'frequency_day_id';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'frequency_time'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'frequency_interval_day_times'
+  , @level2type = N'COLUMN'
+  , @level2name = N'frequency_time';
+go
 

@@ -44,3 +44,24 @@ go
     Columns
 ***************/
 
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'id'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'frequency_interval_units'
+  , @level2type = N'COLUMN'
+  , @level2name = N'id';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'name'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'frequency_interval_units'
+  , @level2type = N'COLUMN'
+  , @level2name = N'name';
+go
