@@ -1,11 +1,12 @@
-print 'Loading Table: antimicrobial_indication_items';
+print 'Loading Table: override_reasons';
 
-drop table if exists [#antimicrobial_indication_items];
+drop table if exists [#override_reasons];
 
-create table [#antimicrobial_indication_items]
+create table [#override_reasons]
     (
-      [site_id]      [varchar](25) not null
-    , [sub_category] [varchar](25) not null);
+      [site_id]       [varchar](25) not null
+    , [is_medication] [bit] not null
+    , [description]   [varchar](80) not null);
 
 if '$(load_data)' = 'live'
    and exists
@@ -16,23 +17,24 @@ if '$(load_data)' = 'live'
 )
     begin
 
-        insert into [#antimicrobial_indication_items]
+        insert into [#override_reasons]
             ([site_id]
-           , [sub_category]
+           , [is_medication]
+           , [description]
             )
-        execute ('execute dbo.export_ibex_antimicrobial_indication_items');
+        execute ('execute dbo.export_ibex_override_reasons');
     end;
 
 if '$(load_data)' = 'sample'
     begin
 
-        bulk insert [#antimicrobial_indication_items] from '$(current_path)Scripts\Data-Loader\sample_data\antimicrobial_indication_items.bcp' with(fieldterminator = '|~', rowterminator = '\n');
+        bulk insert [#override_reasons] from '$(current_path)Scripts\Data-Loader\sample_data\override_reasons.bcp' with(fieldterminator = '|~', rowterminator = '\n');
     end;
 
 if
 (
     select count(*)
-    from   [#antimicrobial_indication_items]
+    from   [#override_reasons]
 ) > 0
     begin
 
@@ -48,19 +50,21 @@ if
         begin loading permanent tables
 *************************************/
 
-        -- set identity_insert [dbo].[antimicrobial_indication_items] on;
+        -- set identity_insert [dbo].[override_reasons] on;
 
-        insert into [dbo].[antimicrobial_indication_items]
+        insert into [dbo].[override_reasons]
             ([site_id]
-           , [sub_category]
+           , [is_medication]
+           , [description]
             )
         select isnull([internal_site].[id], -1) as [site_id]
-             , [source].[sub_category]
-        from   [#antimicrobial_indication_items] as [source]
+             , [source].[is_medication]
+             , [source].[description]
+        from   [#override_reasons] as [source]
                outer apply [dbo].[get_internal_id]
             ('pulsecheck', 'sites', [source].[site_id]) as [internal_site];
 
-        -- set identity_insert [dbo].[antimicrobial_indication_items] off;
+        -- set identity_insert [dbo].[override_reasons] off;
 
 /***************************************
         loading [external_ids] reference
@@ -72,4 +76,4 @@ if
         commit transaction;
     end;
 
-drop table if exists [#antimicrobial_indication_items];
+drop table if exists [#override_reasons];
