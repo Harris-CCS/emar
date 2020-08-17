@@ -5,5 +5,6 @@ namespace Emar.Core.Sites.Service
     public interface ISiteService
     {
         SiteDto GetSite(in int siteId);
+        int GetSiteIdByName(string siteName);
     }
 }

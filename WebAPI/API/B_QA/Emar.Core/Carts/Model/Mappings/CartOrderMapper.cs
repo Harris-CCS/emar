@@ -13,7 +13,7 @@ namespace Emar.Core.Carts.Model.Mappings
             if (order == null)
                 return null;
 
-            var dateFormat = order.Patient.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == @"LONG_DATE_FORMAT").OptionValue;
+            var dateFormat = order.Patient.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == AppConstants.LongDateFormat).OptionValue;
 
             CartOrderDto orderDto = new CartOrderDto
             {
@@ -31,7 +31,7 @@ namespace Emar.Core.Carts.Model.Mappings
                 DoseUnit = MedicationMapper.MapMedicationUnit(order.MedicationUnit),
                 MedicationRoute = MedicationMapper.MapMedicationRoute(order.MedicationRoute),
                 //Priority = (OrderPriorities)Enum.Parse(typeof(OrderPriorities), order.Priority),
-                FrequencyId = order.FrequencyId,
+                FrequencyId = order.FrequencyScheduleId,
                 Prn = order.Prn,
                 PointInTime = order.PointInTime,
                 BeginDatetime = order.BeginDatetime,
@@ -66,7 +66,7 @@ namespace Emar.Core.Carts.Model.Mappings
                 MedicationRouteId = orderDto.MedicationRoute?.Id,
                 //MedicationRoute = orderDto.MedicationRoute,
                 ////Priority = (OrderPriorities)Enum.Parse(typeof(OrderPriorities), order.Priority),
-                FrequencyId = orderDto.FrequencyId,
+                FrequencyScheduleId = orderDto.FrequencyId,
                 Prn = orderDto.Prn,
                 PointInTime = orderDto.PointInTime,
                 BeginDatetime = orderDto.BeginDatetime,
@@ -83,7 +83,7 @@ namespace Emar.Core.Carts.Model.Mappings
             if (administration == null)
                 return null;
 
-            var dateFormat = administration.PatientCartOrder.Patient.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == @"LONG_DATE_FORMAT").OptionValue;
+            var dateFormat = administration.PatientCartOrder.Patient.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == AppConstants.LongDateFormat).OptionValue;
 
             CartOrderAdministrationDto administrationDto = new CartOrderAdministrationDto
             {

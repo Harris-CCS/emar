@@ -5,5 +5,6 @@ namespace Emar.Core.Sites.Repository
     public interface ISiteRepository  
     {
         Site GetSite(int siteId);
+        int GetSiteIdByName(string siteName);
     }
 }

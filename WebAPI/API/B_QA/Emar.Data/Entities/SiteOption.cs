@@ -9,7 +9,7 @@ namespace Emar.Data.Entities
         [Key]
         [Column("id")]
         public int Id { get; set; }
-        [Column("site_id")]
+        [Column("site_id", TypeName = "int")]
         public int SiteId { get; set; }
         [Column("option_id")]
         public int OptionId { get; set; }
@@ -19,8 +19,9 @@ namespace Emar.Data.Entities
         public string OptionValue { get; set; }
 
         [ForeignKey(nameof(OptionId))]
-        [InverseProperty(nameof (Entities.Option.SiteOptions))]
+        [InverseProperty(nameof(Entities.Option.SiteOptions))]
         public virtual Option Option { get; set; }
+
         [ForeignKey(nameof(SiteId))]
         [InverseProperty(nameof(Entities.Site.SiteOptions))]
         public virtual Site Site { get; set; }

@@ -12,6 +12,9 @@
         /// </summary>
         public enum GetPatientBy
         {
+            None,
+            Id,
+            MedicalRecordNumber,
             AccountNumber,
             CustomNumber,
             PersonNumber

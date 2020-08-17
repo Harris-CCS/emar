@@ -16,8 +16,7 @@ namespace Emar.Core.Orders.Model.Mappings
                 return null;
             }
 
-            var dateFormat = patientOrder.Patient.Site.SiteOptions
-                .FirstOrDefault(si => si.Option.Name == @"LONG_DATE_FORMAT").OptionValue;
+            var dateFormat = patientOrder.Patient.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == AppConstants.LongDateFormat).OptionValue;
 
             PatientOrderDto patientOrderDto = new PatientOrderDto
             {
@@ -37,11 +36,11 @@ namespace Emar.Core.Orders.Model.Mappings
                 DoseUnit = MedicationMapper.MapMedicationUnit(patientOrder.MedicationUnit),
                 MedicationRoute = MedicationMapper.MapMedicationRoute(patientOrder.MedicationRoute),
                 ////Priority = (OrderPriorities)Enum.Parse(typeof(OrderPriorities), patientOrder.Priority),
-                FrequencyId = patientOrder.FrequencyId,
+                FrequencyId = patientOrder.FrequencyScheduleId,
                 Prn = patientOrder.Prn,
                 PointInTime = patientOrder.PointInTime,
                 OrderStatus = patientOrder.OrderStatus,
-                OrderStatusCode = (OrderStatuses) Enum.Parse(typeof(OrderStatuses), patientOrder.OrderStatusCode),
+                OrderStatusCode = (OrderStatuses)Enum.Parse(typeof(OrderStatuses), patientOrder.OrderStatusCode),
                 BeginDatetime = patientOrder.BeginDatetime,
                 BeginDate = DateTimeHelper.GetDate(patientOrder.BeginDatetime, dateFormat),
                 BeginTime = DateTimeHelper.GetTime(patientOrder.BeginDatetime),
@@ -49,8 +48,7 @@ namespace Emar.Core.Orders.Model.Mappings
                 EndDate = DateTimeHelper.GetDate(patientOrder.EndDateTime, dateFormat),
                 EndTime = DateTimeHelper.GetTime(patientOrder.EndDateTime),
                 OrderNotes = patientOrder.OrderNotes,
-                OrderAdministrations = patientOrder.OrderAdministrations?.Select(admin => MapOrderAdministration(admin))
-                    .ToList()
+                OrderAdministrations = patientOrder.OrderAdministrations?.Select(admin => MapOrderAdministration(admin)).ToList()
                 ////OrderEvents = patientOrder.OrderEvents?.Select(OrderMapper.MapOrderEvent).Where(@event => @event.AdministrationId == null).ToList()
                 ////OrderEvents = patientOrder.OrderEvents?.Select(ev => OrderMapper.MapOrderEvent(ev)).ToList()
             };
@@ -65,20 +63,17 @@ namespace Emar.Core.Orders.Model.Mappings
                 return null;
             }
 
-            var dateFormat = administration.PatientOrder.Patient.Site.SiteOptions
-                .FirstOrDefault(si => si.Option.Name == @"LONG_DATE_FORMAT").OptionValue;
+            var dateFormat = administration.PatientOrder.Patient.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == AppConstants.LongDateFormat).OptionValue;
 
             OrderAdministrationDto administrationDto = new OrderAdministrationDto
             {
                 Id = administration.Id,
                 OrderId = administration.PatientOrderId,
                 AdministrationScheduledDatetime = administration.AdministrationScheduledDatetime,
-                AdministrationScheduledDate =
-                    DateTimeHelper.GetDate(administration.AdministrationScheduledDatetime, dateFormat),
+                AdministrationScheduledDate = DateTimeHelper.GetDate(administration.AdministrationScheduledDatetime, dateFormat),
                 AdministrationScheduledTime = DateTimeHelper.GetTime(administration.AdministrationScheduledDatetime),
                 AdministrationInputDatetime = administration.AdministrationInputDatetime,
-                AdministrationInputDate =
-                    DateTimeHelper.GetDate(administration.AdministrationInputDatetime, dateFormat),
+                AdministrationInputDate = DateTimeHelper.GetDate(administration.AdministrationInputDatetime, dateFormat),
                 AdministrationInputTime = DateTimeHelper.GetTime(administration.AdministrationInputDatetime),
                 AdministrationDatetime = administration.AdministrationDatetime,
                 AdministrationDate = DateTimeHelper.GetDate(administration.AdministrationDatetime, dateFormat),
@@ -115,8 +110,7 @@ namespace Emar.Core.Orders.Model.Mappings
                 return null;
             }
 
-            var dateFormat = @event.PatientOrder.Patient.Site.SiteOptions
-                .FirstOrDefault(si => si.Option.Name == @"LONG_DATE_FORMAT").OptionValue;
+            var dateFormat = @event.PatientOrder.Patient.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == AppConstants.LongDateFormat).OptionValue;
 
             OrderEventDto eventDto = new OrderEventDto
             {
@@ -152,7 +146,7 @@ namespace Emar.Core.Orders.Model.Mappings
                 Dose = dbObj.Dose,
                 DoseUnit = MedicationMapper.MapMedicationUnit(dbObj.MedicationUnit),
                 MedicationRoute = MedicationMapper.MapMedicationRoute(dbObj.MedicationRoute),
-                FrequencyId = dbObj.FrequencyId,
+                FrequencyId = dbObj.FrequencyScheduleId,
                 OrderNotes = dbObj.OrderNotes
             };
 
@@ -185,7 +179,7 @@ namespace Emar.Core.Orders.Model.Mappings
                 Dose = dbObj.Dose,
                 DoseUnit = MedicationMapper.MapMedicationUnit(dbObj.MedicationUnit),
                 MedicationRoute = MedicationMapper.MapMedicationRoute(dbObj.MedicationRoute),
-                FrequencyId = dbObj.FrequencyId,
+                FrequencyId = dbObj.FrequencyScheduleId,
                 OrderNotes = dbObj.OrderNotes
             };
 
@@ -196,6 +190,39 @@ namespace Emar.Core.Orders.Model.Mappings
                 {
                     new HateOasLinkDto(linkBase.Replace("/-99/", string.Concat("/", dbObj.Id, "/")),
                         "add_dept_preferred_order_to_cart",
+                        "POST")
+                };
+            return ret;
+        }
+
+        public static GroupListItemDto MapGroupListItem(GroupListItem dbObj, string linkBase)
+        {
+            if (dbObj == null)
+                return null;
+
+            var ret = new GroupListItemDto
+            {
+                DepartmentCode = dbObj.DepartmentCode,
+                SiteId = dbObj.SiteId,
+                GroupName = dbObj.GroupName,
+                Id = dbObj.Id,
+                Ndc = dbObj.Ndc,
+                DrugId = dbObj.DrugId,
+                BrandName = dbObj.BrandName,
+                Dose = dbObj.Dose,
+                DoseUnit = MedicationMapper.MapMedicationUnit(dbObj.MedicationUnit),
+                MedicationRoute = MedicationMapper.MapMedicationRoute(dbObj.MedicationRoute),
+                FrequencyId = dbObj.FrequencyScheduleId,
+                OrderNotes = dbObj.OrderNotes
+            };
+
+            ret.PointInTime = ret.MedicationRoute?.PointInTime ?? true;
+
+            if (!string.IsNullOrEmpty(linkBase))
+                ret.Links = new[]
+                {
+                    new HateOasLinkDto(linkBase.Replace("/-99/", string.Concat("/", dbObj.Id, "/")),
+                        "add_group_order_to_cart",
                         "POST")
                 };
             return ret;

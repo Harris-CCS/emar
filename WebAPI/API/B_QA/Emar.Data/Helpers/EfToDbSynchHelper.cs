@@ -1,174 +1,200 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Reflection;
+using System.Runtime;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Emar.Data.Helpers
 {
     public class EfToDbSynchHelper
     {
-        private EmarContext _context;
+        private readonly EmarContext _context;
 
         public EfToDbSynchHelper(EmarContext context)
         {
             _context = context;
         }
 
-        public void CompareEfToDb()
+        public EfDiscrepancyReportDto CompareEfToDb()
         {
-            List<TableAttribues> tbls = SurveyEfEntities();
-            var report = new EfDiscrepancyReportDto();
+            List<EfTableAttributes> tables = SurveyEfEntities();
 
-            using (SqlConnection conn = new SqlConnection(_context.Database.GetDbConnection().ConnectionString))
+            if (ProblemsExitInEfDefinitions(tables, out EfDiscrepancyReportDto report))
+                return report;
+
+            CompareSureveyToDatabase(tables, report);
+
+            if (!report.Tables.Any()) return null;
+
+            //CompileCorrectionCode(report);
+            return report;
+        }
+
+        private void CompareSureveyToDatabase(List<EfTableAttributes> tables, EfDiscrepancyReportDto report)
+        {
+            using (var conn = new SqlConnection(_context.Database.GetDbConnection().ConnectionString))
             {
                 conn.Open();
-                using (SqlCommand comm = new SqlCommand(ColumnQuery, conn))
+                foreach (var tbl in tables)
                 {
-                    foreach (var tbl in tbls)
+                    using (var comm = new SqlCommand(string.Format(COLUMN_QUERY, tbl.SqlTableName), conn))
                     {
-                        comm.CommandText = string.Format(ColumnQuery, tbl.TableName);
-                        var reader = comm.ExecuteReader();
-                        while (reader.Read())
+                        using (var reader = comm.ExecuteReader())
                         {
-                            // Find the record in the list of columns
-                            var colName = reader["name"].ToString();
-                            var col = tbl.Columns.FirstOrDefault(c => c.Name == colName);
-                            if (col?.Name == null)
-                                RegisterMissingColumn(tbl.TableName, reader, report);
-                            else
-                                ConfirmColumnProperties(tbl.TableName, reader, col, report);
+                            while (reader.Read())
+                            {
+                                ReadTheReader(reader, out string colName, out string sqlDataType, out bool sqlNullable,
+                                    out bool primaryKey);
+                                // Find the record in the list of columns
+                                var col = tbl.Columns.FirstOrDefault(c => c.SqlName == colName);
+                                if (col?.SqlName == null)
+                                    tbl.Columns.Add(col = RegisterMissingColumn(tbl.SqlTableName, tbl.EntityName, colName,
+                                        sqlDataType, sqlNullable, primaryKey, report));
+                                else
+                                    ConfirmColumnPropertiesMatchSql(tbl, col, sqlDataType, sqlNullable,
+                                        primaryKey, report);
+                                col.ExistsInDb = true;
+                            }
                         }
-                    }   
+                    }
                 }
             }
 
-            return;
-        }
-
-        private void ConfirmColumnProperties(string tblName, SqlDataReader reader, ColumnAttributes col,
-            EfDiscrepancyReportDto report)
-        {
-            EfDiscrepancyColumnDto rptColumn;
-
-            if (col.AnnotationDoesntMatchDataType(reader))
+            foreach (var table in tables)
             {
-                rptColumn = new EfDiscrepancyColumnDto
+                foreach (var column in table.Columns)
                 {
-                    ColumnName = reader[0].ToString(),
-                    Errors = "Annotation SQL datatype doesn't match the CLR datatype and properties",
-                };
-            }
-            else if ((col.KeyColumn ? 1 : 0) != (int) reader["KeyColumn"])
-            {
-                rptColumn = new EfDiscrepancyColumnDto
-                {
-                    ColumnName = reader[0].ToString(),
-                    Errors = "Column is part of primary key in the database, but not annotated as such",
-                };
-
-            }
-
-        }
-
-        private void RegisterMissingColumn(string table, SqlDataReader reader, EfDiscrepancyReportDto report)
-        {
-            var rptTable = report.Tables.FirstOrDefault(t => t.TableName == table);
-            if (rptTable?.TableName == null) rptTable = new EfDiscrepancyTableDto();
-
-            var columnName = reader["name"].ToString();
-            var dataType = (reader["datatype"].ToString() ?? "sqlvariant").ToLower();
-            var nullable = Convert.ToBoolean(reader["is_nullable"]) ? "" : ", Required";
-            var keyColumn = Convert.ToBoolean(reader["KeyColumn"]) ? "" : ", Key";
-
-            var clrType = SqlToClrDataType(dataType, out bool unicode);
-
-            var propertyName = columnName.Substring(0,1).ToUpper() + columnName.Substring(1).ToLower();
-            var idx = propertyName.IndexOf('_');
-            while (idx > -1)
-            {
-                propertyName = propertyName.Substring(0, idx)
-                               + propertyName.Substring(idx, 1).ToUpper()
-                               + propertyName.Substring(idx + 1);
-                idx = propertyName.IndexOf('_');
-            }
-
-
-            var rptColumn = new EfDiscrepancyColumnDto
-            {
-                ColumnName = columnName,
-                Errors = "Column Missing",
-                CorrectionCode = $"[Column(\"{reader["columnName"]}\", TypeName = \"{dataType}\"){nullable}{keyColumn}]" 
-                                 + Environment.NewLine
-                                 + $"public long {propertyName} {{ get; set; }}"
-            };
-
-            if (dataType == "string" && !unicode)
-                rptColumn.CorrectionCode += Environment.NewLine + Environment.NewLine
-                                                                + $"modelBuilder.Entity<{table}>(entity => " +
-                                                                Environment.NewLine
-                                                                + "{" + Environment.NewLine
-                                                                + $"    entity.Property(e => e.{propertyName}).IsUnicode(false);" +
-                                                                Environment.NewLine
-                                                                + "});";
-
-
-            rptTable.Columns.Add(rptColumn);
-        }
-
-        private string SqlToClrDataType(string dataType, out bool unicode)
-        {
-            var dtParts = dataType.Split(new[] {'(', ')', ','});
-            switch (dtParts[0])
-            {
-                case "varchar":
-                case "char":
-                    unicode = false;
-                    return "string";
-                case "nvarchar":
-                case "nchar":
-                    unicode = true;
-                    return "string";
-                default:
-                    throw new NotImplementedException();
-            }
-
-        }
-
-        private List<TableAttribues> SurveyEfEntities()
-        {
-            List<TableAttribues> tbls = new List<TableAttribues>();
-            foreach (var entity in _context.Model.GetEntityTypes().Select(t => t.ClrType).ToList())
-            {
-                var columns = new List<ColumnAttributes>();
-                var foreignKeys = new List<ForeignKeyAttributes>();
-                foreach (var prop in entity.GetProperties())
-                {
-                    var attributes = prop.CustomAttributes.ToList();
-
-                    var notMappedAttribute = attributes.Where(a => a.AttributeType == typeof(NotMappedAttribute));
-                    if (notMappedAttribute.Any())
-                        continue;
-
-                    // If it is a foreign key, needs both ForeignKeyAttribute and InversePropertyAttribute
-                    var fkAttributes = attributes.Where(a =>
-                        a.AttributeType == typeof(ForeignKeyAttribute)
-                        || a.AttributeType == typeof(InversePropertyAttribute)).ToList();
-
-                    if (fkAttributes.Any())
-                        foreignKeys.Add(SurveyForeignKey(prop, attributes));
-                    else
-                        columns.Add(SurveyColumn(prop, attributes));
+                    if (!column.ExistsInDb)
+                        report.RegisterProblem(table, column, ReportProblem.ColumnNotInDatabase, null, true);
                 }
+            }
+        }
+
+        //private void CompileCorrectionCode(EfDiscrepancyReportDto report)
+        //{
+        //    var compCode = new Dictionary<string, string>();
+        //    foreach (var correction in report.Tables.SelectMany(table =>
+        //        table.Columns.SelectMany(column => column.CorrectionCode)))
+        //    {
+        //        if (compCode.TryGetValue(correction.Key, out string correctionCode))
+        //            compCode[correction.Key] += Environment.NewLine + correction.Value;
+        //        else
+        //            compCode.Add(correction.Key, correction.Value);
+        //    }
+
+        //    report.CorrectionCode = compCode;
+        //}
+
+        private void ReadTheReader(SqlDataReader reader, out string colName, out string dataType, out bool nullable,
+            out bool primaryKey)
+        {
+            colName = reader["name"].ToString();
+            dataType = reader["datatype"].ToString();
+            nullable = Convert.ToByte(reader["is_nullable"]) != 0;
+            primaryKey= Convert.ToByte(reader["KeyColumn"]) != 0;
+        }
+
+        private bool ProblemsExitInEfDefinitions(List<EfTableAttributes> tables, out EfDiscrepancyReportDto report)
+        {
+            report = new EfDiscrepancyReportDto();
+
+            string errorTable = "<missing>";
+            string errorColumn = "<missing>";
+            try
+            {
+                foreach (var table in tables)
+                {
+                    errorTable = table.EntityName;
+                    foreach (var column in table.Columns)
+                    {
+                        errorColumn = column.ClrName;
+                        ConfirmColumnPropertiesMatchSql(table, column, column.SqlDataType,
+                            !column.Required, column.KeyColumn, report);
+                    }
+                }
+            }
+            catch (NotImplementedException e)
+            {
+                throw new NotImplementedException($"When looking for problems in '{errorTable}'.'{errorColumn}'", e);
+            }
+
+            return report.Tables.Any();
+        }
+
+        private List<EfTableAttributes> SurveyEfEntities()
+        {
+            var tbls = new List<EfTableAttributes>();
+            foreach (IEntityType entity in _context.Model.GetEntityTypes().OrderBy(a=>a.Name))
+            {
+                var columns = new List<EfColumnAttributes>();
+                foreach (IProperty iProp in entity.GetProperties())
+                {
+                    var col = new EfColumnAttributes
+                    {
+                        ClrName = iProp.Name,
+                        Required = !iProp.IsNullable,
+                        IsUnicode = iProp.IsUnicode(),
+                        ClrDataType = iProp.PropertyInfo.PropertyType,
+                        SqlDataType = iProp.GetColumnType(),
+                        SqlName = iProp.GetColumnName(),
+                        MaxStringLength = iProp.GetMaxLength(),
+                        IsFixWidth = iProp.IsFixedLength()
+                    };
+                    if (iProp.IsPrimaryKey() && !iProp.IsKey())
+                        throw new AmbiguousImplementationException("Found Primary Key not marked as \"Key\" in SurveyEfEntities()");
+                    if (iProp.IsKey())
+                        col.SetKeyColumn();
+                    columns.Add(col);
+                }
+
+                var foreignKeys = new List<EfForeignKeyAttributes>();
+                //foreach (var fk in entity.GetForeignKeys())
+                //{
+                // EfForeignKeyAttributes fkObj = new EfForeignKeyAttributes();
+                // var DeclaringEntityType = fk.DeclaringEntityType;
+                // var DeleteBehavior = fk.DeleteBehavior;
+                // var DependentToPrincipal = fk.DependentToPrincipal;
+                // var IsOwnership = fk.IsOwnership;
+                // var IsRequired = fk.IsRequired;
+                // var IsUnique = fk.IsUnique;
+                // var PrincipalEntityType = fk.PrincipalEntityType;
+                // var PrincipalKey = fk.PrincipalKey;
+                // var PrincipalToDependent = fk.PrincipalToDependent;
+                // var Properties = fk.Properties;
+
+                // fkObj.Property = fk.DependentToPrincipal.Name;
+                // fkObj.DataType = fk.PrincipalEntityType.ClrType;
+                // IEnumerable<INavigation> y = fk.FindNavigationsFrom(entity);
+
+                //    foreignKeys.Add(fkObj);
+
+
+                    //private EfForeignKeyAttributes SurveyForeignKey(PropertyInfo prop, List<CustomAttributeData> fkAttributes)
+                    //{
+                    //    var fk = new EfForeignKeyAttributes { Name = prop.Name, DataType = prop.PropertyType };
+
+                    //    foreach (var fkAttribute in fkAttributes)
+                    //    {
+                    //        if (fkAttribute.AttributeType == typeof(InversePropertyAttribute))
+                    //            fk.InversePropertyArgument = fkAttribute.ConstructorArguments[0].ToString().Trim('\"');
+                    //        else if (fkAttribute.AttributeType == typeof(ForeignKeyAttribute))
+                    //            fk.ForeignKeyArgument = fkAttribute.ConstructorArguments[0].ToString().Trim('\"');
+                    //        else
+                    //        {
+                    //        }
+                    //    }
+
+                    //    return fk;
+                    //}
+            //}
 
                 tbls.Add(
-                    new TableAttribues
+                    new EfTableAttributes
                     {
-                        EntityName = entity.FullName,
-                        TableName = ((TableAttribute)entity.GetCustomAttributes(false)[0]).Name,
+                        EntityName = entity.Name,
+                        SqlTableName = entity.GetTableName(),
                         Columns = columns,
                         ForeignKeys = foreignKeys
                     });
@@ -177,105 +203,156 @@ namespace Emar.Data.Helpers
             return tbls;
         }
 
-        private ColumnAttributes SurveyColumn(PropertyInfo prop, List<CustomAttributeData> attributes)
+        private static void ConfirmColumnPropertiesMatchSql(EfTableAttributes tbl, EfColumnAttributes col, 
+            string sqlDataType, bool? sqlNullable, bool keyColumn, EfDiscrepancyReportDto report)
         {
-            var col = new ColumnAttributes { DataType = prop.PropertyType };
-            if (col.DataType == typeof(String))
-                col.IsUnicode = prop.ReflectedType?.IsUnicodeClass ?? false;
+            ReportProblem error = ReportProblem.None;
 
-            foreach (var x in attributes)
+            if (EntityColumnTypeNotMatchSql(sqlDataType, sqlNullable, col.ClrDataType, col.IsUnicode, 
+                col.MaxStringLength, out string probDetails, out bool noteAsRequired))
+                error = ReportProblem.AnnotationSqlDatatypeNotMatchClrDatatype;
+            else if (col.KeyColumn != keyColumn)
+                error = keyColumn
+                    ? ReportProblem.PropertyNotFlaggedAsKey
+                    : ReportProblem.PropertyImproperlyFlaggedAsKey;
+            else if (col.Required == sqlNullable)
+                error = sqlNullable ?? true
+                    ? ReportProblem.PropertyFlaggedRequiredButColumnNullable
+                    : ReportProblem.PropertyNotFlaggedRequiredButColumnNotNullable;
+
+            if (error == ReportProblem.None) return;
+            report.RegisterProblem(tbl, col, error, probDetails, noteAsRequired);
+        }
+
+        private EfColumnAttributes RegisterMissingColumn(string sqlTableName, string entityName, string sqlColName, 
+            string sqlDataType, bool nullable, bool keyColumn, EfDiscrepancyReportDto report)
+        {
+            var clrType = SqlToClrDataTypeString(sqlDataType, nullable, out bool? unicode, out bool noteAsRequired);
+            var propertyName = PascalNameFromSqlName(sqlColName);
+
+        var correctionCode = EfDiscrepancyColumnDto.CreateCorrectionCode(entityName, sqlColName, 
+                sqlDataType, keyColumn, nullable, clrType, propertyName, unicode, noteAsRequired, ReportProblem.DbColumnMissing);
+
+            report.RegisterProblem(sqlTableName, entityName, sqlColName, ReportProblem.DbColumnMissing,
+                correctionCode);
+
+            var ret = new EfColumnAttributes
             {
-                if (x.AttributeType == typeof(KeyAttribute))
-                    col.Key();
-                else if (x.AttributeType == typeof(ColumnAttribute))
+                Required = !nullable, 
+                ClrDataType = SqlToClrDataTypeString(clrType, nullable),
+                ClrName = propertyName,
+                IsUnicode = unicode,
+                SqlDataType = sqlDataType,
+                SqlName = sqlColName
+            };
+
+            return ret;
+        }
+
+        private static string PascalNameFromSqlName(string sqlName)
+        {
+            var propertyName = sqlName.Substring(0, 1).ToUpper() + sqlName.Substring(1).ToLower();
+            int idx ;
+            while ((idx = propertyName.IndexOf('_')) > -1)
+            {
+                propertyName = propertyName.Substring(0, idx)
+                               + propertyName.Substring(idx + 1, 1).ToUpper()
+                               + propertyName.Substring(idx + 2);
+            }
+
+            return propertyName;
+        }
+
+        /*
+                private ColumnAttributes SurveyColumn(PropertyInfo prop, List<CustomAttributeData> attributes)
                 {
-                    ParseColumnAttribute(x, out string name, out string type);
-                    col.Name = name;
-                    if (type != null) col.SqlDataType = type;
+                    if (prop == null) throw new ArgumentNullException(nameof(prop));
+
+                    var col = new ColumnAttributes {ClrDataType = prop.PropertyType, ClrName = prop.Name};
+
+                    var opt = prop.Attributes;
+                    var req = prop.CustomAttributes;
+
+                    if (col.ClrDataType == typeof(string))
+                        col.IsUnicode = prop.PropertyType.UnderlyingSystemType.IsUnicodeClass;
+                    //var b = PropertyExtensions.IsUnicode(prop);
+
+                    foreach (Attribute attribute in prop.GetCustomAttributes())
+                    {
+                        if (attribute.TypeId == typeof(KeyAttribute))
+                            col.SetKeyColumn();
+                        else if (attribute.TypeId == typeof(ColumnAttribute))
+                        {
+                            var colAttribue = (ColumnAttribute) attribute;
+
+                            col.SqlName = colAttribue.Name;
+                            if (((ColumnAttribute) attribute).TypeName != null)
+                                col.SqlDataType = colAttribue.TypeName;
+                        }
+                        else if (attribute.TypeId == typeof(RequiredAttribute))
+                            col.Required = true;
+                        else if (attribute.TypeId == typeof(StringLengthAttribute))
+                            col.MaxStringLength = ((StringLengthAttribute) attribute).MaximumLength;
+                        else
+                        {
+                        }
+                    }
+                    //foreach (var x in attributes)
+                    //{
+                    //    if (x.AttributeType == typeof(KeyAttribute))
+                    //        col.SetKeyColumn();
+                    //    else if (x.AttributeType == typeof(ColumnAttribute))
+                    //    {
+                    //        ParseColumnAttribute(x, out string name, out string type);
+                    //        col.SqlName = name;
+                    //        if (type != null) col.SqlDataType = type;
+                    //    }
+                    //    else if (x.AttributeType == typeof(RequiredAttribute))
+                    //        col.Required = true;
+                    //    else if (x.AttributeType == typeof(StringLengthAttribute))
+                    //        col.MaxStringLength =
+                    //            Convert.ToInt32(x.ConstructorArguments[0].ToString().Split(')')[1]);
+                    //    else
+                    //    {
+                    //    }
+                    //}
+
+                    return col;
                 }
-                else if (x.AttributeType == typeof(RequiredAttribute))
-                    col.Required = true;
-                else if (x.AttributeType == typeof(StringLengthAttribute))
-                    col.MaxStringLength =
-                        Convert.ToInt32(x.ConstructorArguments[0].ToString().Split(')')[1]);
-                else
+        */
+
+        internal class EfTableAttributes
+        {
+            private string _entityName;
+
+            internal string EntityName
+            {
+                get => _entityName;
+                set
                 {
+                    if (value.Contains('.'))
+                        _entityName = value.Substring(value.LastIndexOf('.') + 1);
+                    else
+                        _entityName = value;
                 }
             }
 
-            return col;
+            internal List<EfColumnAttributes> Columns { get; set; }
+            internal List<EfForeignKeyAttributes> ForeignKeys { get; set; }
+            public String SqlTableName { get; set; }
         }
 
-        private ForeignKeyAttributes SurveyForeignKey(PropertyInfo prop, List<CustomAttributeData> fkAttributes)
+        internal class EfColumnAttributes
         {
-            var fk = new ForeignKeyAttributes { Name = prop.Name, DataType = prop.PropertyType };
+            internal bool KeyColumn { get; private set; }
 
-            foreach (var fkAttribute in fkAttributes)
-            {
-                if (fkAttribute.AttributeType == typeof(InversePropertyAttribute))
-                    fk.InversePropertyArgument = fkAttribute.ConstructorArguments[0].ToString().Trim('\"');
-                else if (fkAttribute.AttributeType == typeof(ForeignKeyAttribute))
-                    fk.ForeignKeyArgument = fkAttribute.ConstructorArguments[0].ToString().Trim('\"');
-                else
-                {
-                }
-            }
+            internal bool Required { get; set; }
 
-            return fk;
-        }
+            internal string SqlName { get; set; }
 
-        private void ParseColumnAttribute(CustomAttributeData customAttributeData, out string colName, out string sqlDataType)
-        {
-            // Column Name
-            colName = customAttributeData.ConstructorArguments[0].ToString().Trim('\"');
+            internal string ClrName { get; set; }
 
-            // Column Sql Datatype
-            CustomAttributeNamedArgument art =
-                customAttributeData.NamedArguments.FirstOrDefault(a => a.MemberName == "TypeName");
-            sqlDataType = art.TypedValue.Value != null ? art.TypedValue.ToString().Trim('\"') : null;
-        }
-
-        private class TableAttribues
-        {
-            internal string EntityName { get; set; }
-            internal List<ColumnAttributes> Columns { get; set; }
-            internal List<ForeignKeyAttributes> ForeignKeys { get; set; }
-            public String TableName { get; set; }
-        }
-
-        private class ColumnAttributes
-        {
-            
-            private bool _isKey;
-            internal bool KeyColumn => _isKey;
-        
-            internal int MaxStringLength { get; set; }
-            
-            internal string Name { get; set; }
-
-            internal Type DataType { get; set; }
-
-            internal bool IsUnicode { get; set; }
-
-            internal bool VariableLength { get; }
-
-            private bool _required;
-            internal bool Required
-            {
-                get => _required;
-                set => _required = value;
-            }
-
-            internal void Key()
-            {
-                _required = true;
-                _isKey = true;
-            }
-
-            //internal void SetDataType(Type prop)
-            //{
-            //    _dataType = prop.Name;
-            //}
+            internal int? MaxStringLength { get; set; }
 
             private string _sqlDataType;
             public string SqlDataType
@@ -284,104 +361,440 @@ namespace Emar.Data.Helpers
                 set => _sqlDataType = value.ToLower().Replace(" ", "");
             }
 
-            //var parts = sqlDataType.ToLower().Split(new[] {'(', ',', ')'});
+            internal Type ClrDataType { get; set; }
+
+            internal bool? IsUnicode { get; set; } = true;
+            internal bool IsFixWidth { get; set; }
+            public bool ExistsInDb { get; set; } = false;
+
+            internal void SetKeyColumn()
+            {
+                Required = true;
+                KeyColumn = true;
+            }
+
+            //public bool AnnotationNotMatchClrDataType(out string probDetails)
+            //{
+            //    probDetails = null;
+
+            //    if (SqlDataType == null)
+            //        return false;
+
+            //    var parts = SqlDataType.ToLower().Split(new[] { '(', ',', ')' });
             //    if (parts[0].Contains("char"))
             //    {
-            //        _dataType = "String";
-            //        MaxStringLength = Convert.ToInt32(parts[1]);
-            //        switch (parts[0].Trim())
+            //        if(ClrDataType != typeof(string))
+            //            return true;
+
+            //        if (parts[1] == "max")
             //        {
-            //            case "varchar":
-            //                _variableLength = true;
-            //                _isUnicode = false;
-            //                break;
-            //            case "char":
-            //                _variableLength = false;
-            //                _isUnicode = false;
-            //                break;
-            //            case "nvarchar":
-            //                _variableLength = true;
-            //                _isUnicode = true;
-            //                break;
-            //            case "nchar":
-            //                _variableLength = false;
-            //                _isUnicode = false;
-            //                break;
+            //            if (MaxStringLength != null)
+            //                return true;
+            //        }
+            //        else if (MaxStringLength != null && MaxStringLength != Convert.ToInt32(parts[1]))
+            //            return true;
+            //        else
+            //        {
+            //            switch (parts[0].Trim())
+            //            {
+            //                case "varchar":
+            //                case "char":
+            //                    if (IsUnicode ?? true)
+            //                        return true;
+            //                    break;
+            //                case "nvarchar":
+            //                case "nchar":
+            //                    if (!(IsUnicode??true))
+            //                    {
+            //                        probDetails = "n[var]char marked as NOT Unicode.";
+            //                        return true;
+            //                    }
+
+            //                    break;
+            //            }
             //        }
             //    }
-            //    else
-            //    {
-            //        switch (sqlDataType.Trim().ToLower())
-            //        {
-            //            case "bigint":
-            //                _dataType = "Int64";
-            //                break;
-            //            case "bit":
-            //                _dataType = "Boolean";
-            //                break;
-            //            case "datetimeoffset":
-            //                _dataType = "DateTimeOffset";
-            //                break;
-            //            default:
-            //                break;
-            //        }
-            //    }
+        
+            //    return false;
             //}
-            public bool AnnotationDoesntMatchDataType(SqlDataReader reader)
+
+
+        }
+
+        private static string SqlToClrDataTypeString(string dataType, bool nullable, out bool? unicode, out bool noteAsRequired)
+        {
+            unicode = null;
+            noteAsRequired = false;
+            var dtParts = dataType.Split(new[] { '(', ')', ',' });
+
+            switch (dtParts[0])
             {
-                throw new NotImplementedException();    
+                case "varchar":
+                case "char":
+                    unicode = false;
+                    if (!nullable)
+                        noteAsRequired = true;
+                    return "string";
+                case "nvarchar":
+                case "nchar":
+                    unicode = true;
+                    if (!nullable)
+                        noteAsRequired = true;
+                    return "string";
+                case "datetimeoffset":
+                    if (nullable)
+                        return "DateTimeOffset?";
+                    return "DateTimeOffset";
+                case "int":
+                    if (nullable)
+                        return "int?";
+                    return "int";
+                default:
+                    throw new NotImplementedException();
             }
         }
 
-        internal class ForeignKeyAttributes
+        private static Type SqlToClrDataTypeString(string dataType, bool nullable)
+        {
+            var dtParts = dataType.Split(new[] { '(', ')', ',' });
+
+            switch (dtParts[0])
+            {
+                case "varchar":
+                case "char":
+                case "nvarchar":
+                case "nchar":
+                    return typeof(System.String);
+                case "datetimeoffset":
+                    return typeof(DateTimeOffset);
+                case "int":
+                    return typeof(int);
+                case "int?":
+                    return typeof(int?);
+                default:
+                    throw new NotImplementedException($"SqlToClrDataTypeString() switch doesn't cover case: '{dtParts[0]}");
+            }
+        }
+
+        private static bool EntityColumnTypeNotMatchSql(string sqlDataType, bool? sqlNullable,
+            Type clrDataType, bool? isUnicode, int? maxStringLength, out string probDetails, out bool noteAsRequired)
+        {
+            probDetails = "";
+            noteAsRequired = false;
+
+            if (sqlDataType == null)
+                return false;
+
+            var typeParts = sqlDataType.Split(new[] {'(', ')', ' '}, StringSplitOptions.RemoveEmptyEntries);
+            switch (typeParts[0].Trim().ToLower())
+            {
+                case "varchar":
+                case "char":
+                    if (!(sqlNullable ?? true))
+                        noteAsRequired = true;
+                    if (clrDataType != typeof(string) || (isUnicode ?? true))
+                    { probDetails = "[var]char marked as Unicode."; break; }
+                    if (CharLengthIncorrect(typeParts[1], maxStringLength))
+                        probDetails = "[var]char string length doesn't match CLR string length from annotations";
+                    break;
+                case "nvarchar":
+                case "nchar":
+                    if (!(sqlNullable ?? true))
+                        noteAsRequired = true;
+                    if (clrDataType != typeof(string) || !(isUnicode ?? true))
+                    { probDetails = "n[var]char marked as NOT Unicode."; break; }
+                    if (CharLengthIncorrect(typeParts[1], maxStringLength))
+                        probDetails = "n[var]char string length doesn't match annotation.";
+                    break;
+                case "binary":
+                    CheckPrimitiveType(typeParts[0].Trim().ToLower(), clrDataType,
+                        typeof(byte[]), typeof(byte?[]), sqlNullable, out probDetails);
+                    break;
+                case "bigint":
+                    CheckPrimitiveType(typeParts[0].Trim().ToLower(), clrDataType, 
+                        typeof(long), typeof(long?), sqlNullable, out probDetails);
+                    break;
+                case "int":
+                    CheckPrimitiveType(typeParts[0].Trim().ToLower(), clrDataType,
+                        typeof(int), typeof(int?), sqlNullable, out probDetails);
+                    break;
+                case "smallint":
+                    CheckPrimitiveType(typeParts[0].Trim().ToLower(), clrDataType,
+                        typeof(short), typeof(short?), sqlNullable, out probDetails);
+                    break;
+                case "tinyint":
+                    CheckPrimitiveType(typeParts[0].Trim().ToLower(), clrDataType,
+                        typeof(byte), typeof(byte?), sqlNullable, out probDetails);
+                    break;
+                case "bit":
+                    CheckPrimitiveType(typeParts[0].Trim().ToLower(), clrDataType,
+                        typeof(bool), typeof(bool?), sqlNullable, out probDetails);
+                    break;
+                case "decimal":
+                case "numeric":
+                    CheckPrimitiveType(typeParts[0].Trim().ToLower(), clrDataType,
+                        typeof(decimal), typeof(decimal?), sqlNullable, out probDetails);
+                    break;
+                case "datetimeoffset":
+                    CheckPrimitiveType(typeParts[0].Trim().ToLower(), clrDataType,
+                        typeof(DateTimeOffset), typeof(DateTimeOffset?), sqlNullable, out probDetails);
+                    break;
+                case "date":
+                    CheckPrimitiveType(typeParts[0].Trim().ToLower(), clrDataType,
+                        typeof(DateTime), typeof(DateTime?), sqlNullable, out probDetails);
+                    break;
+                default:
+                    throw new NotImplementedException($"EntityColumnTypeNotMatchSql case missing {typeParts[0]}");
+            }
+
+            return probDetails != "";
+        }
+
+        private static void CheckPrimitiveType(string sqlType, Type clrDataType, 
+            Type clrNonNullTarget, Type clrNullTarget, bool? sqlNullable, out string probDetails)
+        {
+            probDetails = "";
+            if ((sqlNullable ?? true) && clrDataType != clrNullTarget)
+             probDetails = $"NULLABLE '{sqlType}' SQL data type doesn't have a property data type of {clrNullTarget}"; 
+            else if (!(sqlNullable ?? false) && clrDataType != clrNonNullTarget)
+                probDetails = $"NON NULLABLE '{sqlType}' SQL data type doesn't have a property data type of {clrNonNullTarget}";
+        }
+
+        private static bool CharLengthIncorrect(string dbCharLength, int? propertyMaxStringLength)
+        {
+            if (dbCharLength == "max")
+            {
+                if (propertyMaxStringLength != null)
+                    return true;
+            }
+            else
+            {
+                if (propertyMaxStringLength == null)
+                    return false;
+
+                if (dbCharLength != (propertyMaxStringLength ?? -1).ToString())
+                    return true;
+            }
+
+            return false;
+        }
+
+        internal class EfForeignKeyAttributes
         {
             internal string Name { get; set; }
 
             internal Type DataType { get; set; }
             internal string InversePropertyArgument { get; set; }
             internal string ForeignKeyArgument { get; set; }
+            internal string Property { get; set; }
         }
 
-        private const string ColumnQuery = "SELECT	c.name, \n\r" +
-                                           "TYPE_NAME(system_type_id) + \n\r" +
-                                           "CASE\n\r" +
-                                           "WHEN TYPE_NAME(system_type_id) LIKE 'n%char' \n\r" +
-                                           "THEN CONCAT('(', max_length / 2, ')')\n\r" +
-                                           "THEN CONCAT('(', max_length / 2, ')')\n\r" +
-                                           "WHEN TYPE_NAME(system_type_id) LIKE '%char' \n\r" +
-                                           "THEN CONCAT('(', max_length, ')')\n\r" +
-                                           "WHEN TYPE_NAME(system_type_id) = 'numeric' \n\r" +
-                                           "THEN CONCAT('(', precision, ',', scale, ')')\n\r" +
-                                           "ELSE ''\n\r" +
-                                           "END AS datatype\n\r" +
-                                           ", is_nullable\n\r" +
-                                           ", CASE WHEN ic.index_id IS NULL THEN 0 ELSE 1 END AS KeyColumn\n\r" +
-                                           "FROM    sys.columns c\n\r" +
-                                           "JOIN sys.indexes i\n\r" +
-                                           "ON c.object_id = i.object_id\n\r" +
-                                           "AND i.is_primary_key = 1\n\r" +
-                                           "LEFT JOIN sys.index_columns ic\n\r" +
-                                           "ON ic.object_id = i.object_id\n\r" +
-                                           "AND i.index_id = ic.index_id\n\r" +
-                                           "AND c.column_id = ic.column_id\n\r" +
-                                           "WHERE c.object_id = OBJECT_ID('%s')\n\r";
-    }
+        public class EfDiscrepancyReportDto
+        {
+            public readonly List<EfDiscrepancyTableDto> Tables = new List<EfDiscrepancyTableDto>();
 
-    public class EfDiscrepancyReportDto
-    {
-        public List<EfDiscrepancyTableDto> Tables { get; set; }
-    }
+            internal void RegisterProblem(EfTableAttributes problemTable, EfColumnAttributes problemColumn, 
+                ReportProblem problem, string problemDetails, bool noteAsRequired)
+            {
+                var table = GetTable(problemTable.SqlTableName, problemTable.EntityName);
+                var column = table.GetColumn(problemColumn.SqlName, problemColumn.ClrName);
+                var clrDataType = problemColumn.ClrDataType.Name + ((problemColumn.Required || problemColumn.ClrDataType.Name == "string") ? "":"?");
 
-    public class EfDiscrepancyTableDto
-    {
-        public string TableName { get; set; }
-        public List<EfDiscrepancyColumnDto> Columns = new List<EfDiscrepancyColumnDto>();
-    }
+                column.Error = problem;
+                column.ErrorDetails = problemDetails;
+                table.CorrectionCode.AddRange(EfDiscrepancyColumnDto.CreateCorrectionCode(problemTable.EntityName,
+                    problemColumn.SqlName, problemColumn.SqlDataType, problemColumn.KeyColumn,
+                    !problemColumn.Required, clrDataType, problemColumn.ClrName,
+                    problemColumn.IsUnicode, noteAsRequired, problem));
+            }
 
-    public class EfDiscrepancyColumnDto
-    {
-        public string ColumnName { get; set; }
-        public string Errors { get; set; }
-        public string CorrectionCode { get; set; }
+            internal void RegisterProblem(string sqlTableName, string enetityName, string sqlColumnName,
+                ReportProblem problem, List<ProblemDto> correctionCode)
+            {
+                var table = GetTable(sqlTableName, enetityName);
+                var column = table.GetColumn(sqlColumnName);
+
+                column.Error = problem;
+                table.CorrectionCode.AddRange(correctionCode);
+            }
+            
+            private EfDiscrepancyTableDto GetTable(string sqlTableName, string entityName)
+            {
+                var tbl = Tables.FirstOrDefault(t => t.SqlTableName == sqlTableName);
+               if (tbl?.SqlTableName == null)
+                        Tables.Add(tbl = new EfDiscrepancyTableDto(sqlTableName, entityName));
+                
+               return tbl;
+            }
+        }
+
+        public class EfDiscrepancyTableDto
+        {
+            public string SqlTableName { get; private set; }
+            public string EntityName { get; private set; }
+            public readonly List<EfDiscrepancyColumnDto> Columns = new List<EfDiscrepancyColumnDto>();
+            public List<ProblemDto> CorrectionCode { get; set; } = new List<ProblemDto>();
+
+            internal EfDiscrepancyTableDto(string sqlTableName, string entityName)
+            {
+                SqlTableName = sqlTableName;
+                EntityName = entityName ?? PascalNameFromSqlName(sqlTableName);
+            }
+
+            internal EfDiscrepancyColumnDto GetColumn(string sqlColumnName)
+            {
+                EfDiscrepancyColumnDto column = Columns.FirstOrDefault(c => c.SqlColumnName == sqlColumnName);
+                if (column == null) Columns.Add(column = new EfDiscrepancyColumnDto(sqlColumnName));
+                return column;
+            }
+
+            internal EfDiscrepancyColumnDto GetColumn(string sqlColumnName, string propertyName)
+            {
+                EfDiscrepancyColumnDto column = Columns.FirstOrDefault(c => c.SqlColumnName == sqlColumnName);
+                if (column == null) Columns.Add(column = new EfDiscrepancyColumnDto(sqlColumnName, propertyName));
+                return column;
+            }
+        }
+
+        public class EfDiscrepancyColumnDto
+        {
+            public string SqlColumnName { get; private set; }
+            public string PropertyName { get; private set; }
+            internal ReportProblem Error { get; set; }
+            public string ErrorDescription => Error.ToString();
+            public string ErrorDetails { get; set; }
+
+            internal EfDiscrepancyColumnDto(string sqlColumnName)
+            {
+                SqlColumnName = sqlColumnName;
+                PropertyName = PascalNameFromSqlName(sqlColumnName);
+            }
+
+            internal EfDiscrepancyColumnDto(string sqlColumnName, string propertyName)
+            {
+                SqlColumnName = sqlColumnName;
+                PropertyName = propertyName;
+            }
+
+            public static List<ProblemDto> CreateCorrectionCode(string entityName, string sqlColName,
+                string sqlDataType, in bool keyColumn, in bool nullable, string clrType, string propertyName,
+                bool? unicode, bool noteAsRequired, ReportProblem problem)
+            {
+                string instruction;
+                switch (problem)
+                {
+                    //case ReportProblem.AnnotationNotMatchClrDataType:
+                    //    break;
+                    //case ReportProblem.AnnotationSqlDatatypeNotMatchClrDatatype:
+                    //    break;
+                    case ReportProblem.DbColumnMissing:
+                        instruction = "Add Property to Entity file";
+                        break;
+                    //case ReportProblem.PropertyNotFlaggedAsKey:
+                    //    break;
+                    //case ReportProblem.PropertyImproperlyFlaggedAsKey:
+                    //    break;
+                    //case ReportProblem.None:
+                    //    break;
+                    //case ReportProblem.PropertyFlaggedRequiredButColumnNullable:
+                    //    break;
+                    //case ReportProblem.PropertyNotFlaggedRequiredButColumnNotNullable:
+                    //    break;
+                    case ReportProblem.ColumnNotInDatabase:
+                        instruction = "Remove Property from Entity file";
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(problem), problem, "in EfDiscrepancyColumnDto.CreateCorrectionCode()");
+                }
+
+                if (problem == ReportProblem.ColumnNotInDatabase)
+                {
+                    return new List<ProblemDto>
+                    {
+                        new ProblemDto
+                        {
+                            Instruction = instruction,
+                            Which = WhichFile.TargetFile,
+                            Code = propertyName
+                        }
+                    };
+                }
+
+                var keyRequiredText = keyColumn ? ", Key" : (nullable ? "" : ", Required");
+                var ret = new List<ProblemDto>
+                {
+                    new ProblemDto
+                    {
+                        Instruction = instruction,
+                        Which = WhichFile.TargetFile,
+                        Code = @"[Column(""" + sqlColName + @""", TypeName = """ + sqlDataType + @""")" +
+                               $"{keyRequiredText}]" + $"public {clrType} {propertyName} {{ get; set; }}"
+                    }
+                };
+
+                if (!(unicode ?? true))
+                    ret.Add(new ProblemDto
+                    {
+                        Instruction = "Add this property to the 'modelBuilder.Entity<{entityName}>(entity =>' section",
+                        Which = WhichFile.ContextFile,
+                        Code = $"    entity.Property(e => e.{propertyName}).IsUnicode(false);"
+                    });
+
+                return ret;
+            }
+
+        }
+
+        public class ProblemDto
+        {
+            public string Instruction { get; set; }
+            internal WhichFile Which { get; set; }
+            public string Where => Which.ToString();
+            public string Code { get; set; }
+        }
+
+        public enum ReportProblem
+        {
+            AnnotationNotMatchClrDataType,
+            AnnotationSqlDatatypeNotMatchClrDatatype,
+            DbColumnMissing,
+            PropertyNotFlaggedAsKey,
+            PropertyImproperlyFlaggedAsKey,
+            None,
+            PropertyFlaggedRequiredButColumnNullable,
+            PropertyNotFlaggedRequiredButColumnNotNullable,
+            ColumnNotInDatabase
+        }
+
+        public enum WhichFile
+        {
+            TargetFile,
+            ContextFile
+        }
+
+        private const string COLUMN_QUERY = "SELECT	c.name, \n\r" +
+                                            "TYPE_NAME(system_type_id) + \n\r" +
+                                            "CASE\n\r" +
+                                            "WHEN TYPE_NAME(system_type_id) LIKE 'n%char' \n\r" +
+                                            "THEN CONCAT('(', max_length / 2, ')')\n\r" +
+                                            "WHEN TYPE_NAME(system_type_id) LIKE '%char' \n\r" +
+                                            "OR TYPE_NAME(system_type_id) = 'binary'  \n\r" +
+                                            "THEN CONCAT('(', max_length, ')')\n\r" +
+                                            "WHEN TYPE_NAME(system_type_id) = 'numeric' \n\r" +
+                                            "THEN CONCAT('(', precision, ',', scale, ')')\n\r" +
+                                            "ELSE ''\n\r" +
+                                            "END AS datatype\n\r" +
+                                            ", is_nullable\n\r" +
+                                            ", CASE WHEN ic.index_id IS NULL THEN 0 ELSE 1 END AS KeyColumn\n\r" +
+                                            "FROM    sys.columns c\n\r" +
+                                            "JOIN sys.indexes i\n\r" +
+                                            "ON c.object_id = i.object_id\n\r" +
+                                            "AND i.is_primary_key = 1\n\r" +
+                                            "LEFT JOIN sys.index_columns ic\n\r" +
+                                            "ON ic.object_id = i.object_id\n\r" +
+                                            "AND i.index_id = ic.index_id\n\r" +
+                                            "AND c.column_id = ic.column_id\n\r" +
+                                            "WHERE c.object_id = OBJECT_ID('{0}')\n\r";
+
     }
 }

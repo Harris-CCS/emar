@@ -1,0 +1,382 @@
+{
+	"info": {
+		"_postman_id": "86d02295-bff2-4265-a2a2-12f14b74c9de",
+		"name": "Image API Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Patient id & custom number (by account number)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d328e747-30da-43ed-b515-b59b3c3da3e6",
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.environment.set(\"BammeId\", jsonData.id);\r",
+							"pm.environment.set(\"BammeCustomNumber\", jsonData.customNumber);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json,text/plain",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/patients?accountNumber=190517055504",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"patients"
+					],
+					"query": [
+						{
+							"key": "accountNumber",
+							"value": "190517055504"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Patient id & custom number (by account number)",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/plain",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/patients?accountNumber=190517055504",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"patients"
+							],
+							"query": [
+								{
+									"key": "accountNumber",
+									"value": "190517055504"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Wed, 12 Aug 2020 18:59:30 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Content-Length",
+							"value": "3476"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "public,max-age=60,must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "Wed, 12 Aug 2020 19:00:31 GMT"
+						},
+						{
+							"key": "Last-Modified",
+							"value": "Wed, 12 Aug 2020 18:59:31 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "\"C3212933AE608803F649EFF0179B7CAA\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, Accept-Language, Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 67,\n    \"active\": true,\n    \"accountNumber\": \"190517055504\",\n    \"medicalRecordNumber\": \"20190517055504\",\n    \"firstName\": \"Beau\",\n    \"middleName\": \"Zelle\",\n    \"lastName\": \"Bamme\",\n    \"nameSuffix\": \"\",\n    \"fullName\": \"Beau Zelle Bamme\",\n    \"gender\": \"M\",\n    \"dateOfBirth\": \"2002-04-02T00:00:00\",\n    \"birthDate\": \"04/02/2002\",\n    \"age\": 18,\n    \"ageUnits\": \"years\",\n    \"complaint\": \"Amputation\",\n    \"heightInCm\": 172.72,\n    \"weightInKg\": 79.38,\n    \"siteId\": 28,\n    \"departmentCode\": \"NEW\",\n    \"wardCode\": \"HOLD\",\n    \"roomBedCode\": \"\",\n    \"urgency\": \"R\",\n    \"urgencyColor\": \"\",\n    \"nameAlert\": true,\n    \"withdrawConsent\": true,\n    \"vsDatetime\": null,\n    \"vsDatetimeDate\": null,\n    \"vsDatetimeTime\": null,\n    \"vsBloodPressureIndicator\": \"\",\n    \"vsSystolic\": \"\",\n    \"vsDiastolic\": \"\",\n    \"vsPulseIndicator\": \"\",\n    \"vsPulse\": \"\",\n    \"vsMapLevel\": \"\",\n    \"vsMap\": \"\",\n    \"vsRespiratoryIndicator\": \"\",\n    \"vsRespiratory\": \"\",\n    \"vsTemperatureIndicator\": \"\",\n    \"vsTemperature\": \"\",\n    \"vsEndTidalLevel\": \"\",\n    \"vsEndTidal\": \"\",\n    \"vsOxygenSaturationIndicator\": \"\",\n    \"vsOxygenSaturation\": \"\",\n    \"vsPainScaleIndicator\": \"\",\n    \"vsPainScale\": \"\",\n    \"customNumber\": \"C190517055504\",\n    \"personNumber\": \"P190517055504\",\n    \"patientImageSrc\": \"http://localhost:51044/api/images/patients/67\",\n    \"orders\": [\n        {\n            \"applicableFilters\": [],\n            \"patientId\": 67,\n            \"addDatetime\": \"2019-07-25T11:48:55-05:00\",\n            \"addDate\": \"07/25/2019\",\n            \"addTime\": \"11:48:55\",\n            \"beginDatetime\": \"2019-07-25T11:48:55-05:00\",\n            \"beginDate\": \"07/25/2019\",\n            \"beginTime\": \"11:48:55\",\n            \"endDatetime\": \"2019-07-25T11:48:55-05:00\",\n            \"endDate\": \"07/25/2019\",\n            \"endTime\": \"11:48:55\",\n            \"priority\": 0,\n            \"prn\": false,\n            \"orderStatusCode\": 1,\n            \"orderStatus\": \"Pending\",\n            \"orderType\": \"Scheduled\",\n            \"addUserId\": 5675,\n            \"orderingPhysicianId\": 2408,\n            \"orderAdministrations\": [],\n            \"orderEvents\": null,\n            \"addUser\": {\n                \"id\": 5675,\n                \"typeCode\": \"A\",\n                \"typeDescription\": \"administrator\",\n                \"userInitials\": \"JEDI\",\n                \"firstName\": \"Romulus 10132\",\n                \"middleName\": \"\",\n                \"lastName\": \"Darth\",\n                \"nameSuffix\": \"\",\n                \"displayName\": \"Romulus 10132 Darth\",\n                \"orderingOnlyPhysician\": false,\n                \"displayInitialsIndicator\": false,\n                \"site\": {\n                    \"id\": 28,\n                    \"name\": \"Pulsecheck Hospital\",\n                    \"active\": true,\n                    \"timeZoneName\": \"Central Standard Time\"\n                }\n            },\n            \"orderingPhysicianUser\": {\n                \"id\": 2408,\n                \"typeCode\": \"D\",\n                \"typeDescription\": \"physician\",\n                \"userInitials\": \"SKMD\",\n                \"firstName\": \"Sarada\",\n                \"middleName\": \"\",\n                \"lastName\": \"Koneru Md\",\n                \"nameSuffix\": \"\",\n                \"displayName\": \"Sarada Koneru Md\",\n                \"orderingOnlyPhysician\": false,\n                \"displayInitialsIndicator\": false,\n                \"site\": {\n                    \"id\": 28,\n                    \"name\": \"Pulsecheck Hospital\",\n                    \"active\": true,\n                    \"timeZoneName\": \"Central Standard Time\"\n                }\n            },\n            \"id\": 18,\n            \"ndc\": \"00054014225\",\n            \"drugId\": \"235158\",\n            \"brandName\": \"Acarbose\",\n            \"dose\": 1,\n            \"doseUnit\": {\n                \"id\": 70,\n                \"siteId\": 28,\n                \"code\": \"TABS\",\n                \"unitName\": \"tablet\",\n                \"printName\": \"tablet\",\n                \"active\": true\n            },\n            \"medicationRoute\": null,\n            \"frequencyId\": 0,\n            \"pointInTime\": true,\n            \"orderNotes\": \"\"\n        }\n    ],\n    \"site\": {\n        \"id\": 28,\n        \"name\": \"Pulsecheck Hospital\",\n        \"active\": true,\n        \"timeZoneName\": \"Central Standard Time\"\n    },\n    \"patientIndicators\": [\n        {\n            \"id\": 15,\n            \"patientId\": 67,\n            \"ordinalPosition\": 1,\n            \"code\": \"YES\",\n            \"type\": \"ANY6_1\",\n            \"description\": \"Yes\",\n            \"imageName\": \"xt.gif\",\n            \"imageSrc\": \"http://localhost:51044/api/images/patients/67/indicators/xt.gif\"\n        },\n        {\n            \"id\": 16,\n            \"patientId\": 67,\n            \"ordinalPosition\": 3,\n            \"code\": \"00\",\n            \"type\": \"ANY5_1\",\n            \"description\": \"new admission\",\n            \"imageName\": \"xf.gif\",\n            \"imageSrc\": \"http://localhost:51044/api/images/patients/67/indicators/xf.gif\"\n        },\n        {\n            \"id\": 17,\n            \"patientId\": 67,\n            \"ordinalPosition\": 4,\n            \"code\": \"NONE\",\n            \"type\": \"ANY2_1\",\n            \"description\": \"Not applicable\",\n            \"imageName\": \"gc.gif\",\n            \"imageSrc\": \"http://localhost:51044/api/images/patients/67/indicators/gc.gif\"\n        },\n        {\n            \"id\": 18,\n            \"patientId\": 67,\n            \"ordinalPosition\": 5,\n            \"code\": \"NTRC\",\n            \"type\": \"ANY1_1\",\n            \"description\": \"Enteric Precaution\",\n            \"imageName\": \"rt.gif\",\n            \"imageSrc\": \"http://localhost:51044/api/images/patients/67/indicators/rt.gif\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Patient image (by id)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0c768ac2-3ae8-40d0-a10d-6c900b6ebc4f",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "image/jpeg",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/images/patients/{{BammeId}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"images",
+						"patients",
+						"{{BammeId}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Patient image (by id)",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "image/jpeg",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/images/patients/{{BammeId}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"images",
+								"patients",
+								"{{BammeId}}"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Patient image (by custom number)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "10ba0145-d71f-4728-a7dc-8f62544ba69c",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "image/jpeg",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/images/patients?getPatientBy=customNumber&number={{BammeCustomNumber}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"images",
+						"patients"
+					],
+					"query": [
+						{
+							"key": "getPatientBy",
+							"value": "customNumber"
+						},
+						{
+							"key": "number",
+							"value": "{{BammeCustomNumber}}"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Patient image (by custom number)",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "image/jpeg",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/images/patients?getPatientBy=customNumber&number={{BammeCustomNumber}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"images",
+								"patients"
+							],
+							"query": [
+								{
+									"key": "getPatientBy",
+									"value": "customNumber"
+								},
+								{
+									"key": "number",
+									"value": "{{BammeCustomNumber}}"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Patient indicator image (by id)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fdd4f338-dcda-4079-ad86-83e66bf35796",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.environment.unset(\"BammeId\");\r",
+							"pm.environment.unset(\"BammeCustomNumber\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "image/jpeg"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/images/patients/{{BammeId}}/indicators/Cigarette.png",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"images",
+						"patients",
+						"{{BammeId}}",
+						"indicators",
+						"Cigarette.png"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Patient indicator image (by id)",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "image/jpeg"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/images/patients/{{BammeId}}/indicators/Cigarette.png",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"images",
+								"patients",
+								"{{BammeId}}",
+								"indicators",
+								"Cigarette.png"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		}
+	],
+	"protocolProfileBehavior": {}
+}

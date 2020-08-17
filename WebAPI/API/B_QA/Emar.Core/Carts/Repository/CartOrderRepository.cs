@@ -215,7 +215,7 @@ namespace Emar.Core.Carts.Repository
                             MedicationUnitId = cartOrder.MedicationUnitId,
                             MedicationRouteId = cartOrder.MedicationRouteId,
                             Priority = cartOrder.Priority,
-                            FrequencyId = cartOrder.FrequencyId,
+                            FrequencyScheduleId = cartOrder.FrequencyScheduleId,
                             Prn = cartOrder.Prn,
                             PointInTime = cartOrder.PointInTime,
                             OrderStatus = OrderStatuses.Pending.ToString(),
