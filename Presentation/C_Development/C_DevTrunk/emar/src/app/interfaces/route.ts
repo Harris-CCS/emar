@@ -1,6 +1,6 @@
 export interface Route {
-    id: number;
-    siteId?: number;
-    routeName: string;
-    pointInTime?: Boolean;
+  id?: number;
+  siteId?: number;
+  routeName?: string;
+  pointInTime?: Boolean;
 }
