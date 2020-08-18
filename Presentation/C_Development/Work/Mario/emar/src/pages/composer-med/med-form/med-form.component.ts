@@ -23,6 +23,7 @@ import {
 } from 'rxjs/operators';
 import { ComposerOptions } from '../../../app/interfaces/composerOptions';
 import { FormStrength } from '../../../app/interfaces/formStrength';
+import { AdministrationInstructions } from '../../../app/interfaces/administrationInstructions';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { Dose } from '../../../app/interfaces/dose';
 import { Unit } from '../../../app/interfaces/unit';
@@ -49,7 +50,6 @@ export class MedFormComponent implements OnInit {
   medForm: FormGroup;
   // Temp Data for strengths, doses, doseUnits, routes, and priorities - Get these from API service
   doseUnits: Unit[] = UNITS;
-  routes: Route[];
   priorities = ['STAT', 'Routine'];
   //
 
@@ -63,9 +63,8 @@ export class MedFormComponent implements OnInit {
   selectedDoseName: string = '';
   selectedRouteName: string;
   selectedPriority: string = 'STAT';
-  enteredAdministrationInstructions: string = '';
-  isTelephoneOrder: boolean = false;
-  isVerbalOrder: boolean = false;
+  enteredAdministrationInstructionsText: string = '';
+  selectedAdministrationInstructionsData: AdministrationInstructions[] = [];
 
   constructor(private fb: FormBuilder) {}
 
@@ -103,9 +102,8 @@ export class MedFormComponent implements OnInit {
             this.routeUnitValidator,
           ]),
           priority: new FormControl(this.selectedPriority),
-          administrationInstructions: new FormControl(null),
-          isTelephoneOrder: new FormControl(false),
-          isVerbalOrder: new FormControl(false),
+          administrationInstructionsText: new FormControl(null),
+          administrationInstructionsData: new FormControl(null),
         }
         // { validators: this.validator.bind(this) }
       );
@@ -116,89 +114,71 @@ export class MedFormComponent implements OnInit {
   }
 
   initLowestMedicationStrengthOptionData(): void {
-    let lowestMedStrengthIndex = -1;
-    let lowestMedStrengthDoseIndex = -1;
-    let lowestMedStrengthDose = -1;
-
-    // Locate the lowest dose for this medication
-
-    this.medOptions.availableFormStrength.forEach((strength, index) => {
-      if (strength.preferredDoses) {
-        strength.preferredDoses.forEach((prefDose, prefDoseIndex) => {
-          if (prefDose.dose && prefDose.dose > 0) {
-            if (
-              lowestMedStrengthDose === -1 ||
-              prefDose.dose < lowestMedStrengthDose
-            ) {
-              lowestMedStrengthIndex = index;
-              lowestMedStrengthDoseIndex = prefDoseIndex;
-              lowestMedStrengthDose = prefDose.dose;
-            }
-          }
-        });
-      }
-    });
-    // Assign the selected entry so that it can appear on screen
-    if (lowestMedStrengthIndex !== -1) {
-      this.assignSelectedMedStrengthParameters(
-        lowestMedStrengthIndex,
-        lowestMedStrengthDoseIndex
-      );
+    if (this.medOptions.availableFormStrength[0]) {
+      // this.assignSelectedMedStrengthParameters(0);
+      this.changeSelectedStrength(0);
     }
   }
 
-  assignSelectedMedStrengthParameters(
-    medStrengthIndex: number,
-    medStrengthDoseIndex: number
-  ): void {
-    this.selectedFormStrengthOptions = this.medOptions.availableFormStrength[
-      medStrengthIndex
-    ];
-
-    const selectedDoseData: Dose = this.selectedFormStrengthOptions
-      .preferredDoses[medStrengthDoseIndex];
-
-    this.selectedDose = selectedDoseData.dose;
-    this.selectedDoseUnitName = selectedDoseData.doseUnit.unitName;
-    this.selectedDoseUnitData = selectedDoseData.doseUnit;
-
-    this.changeSelectedDoseName();
-
-    this.selectedFormStrengthName = this.selectedFormStrengthOptions.formStrengthName;
-    if (
-      this.selectedFormStrengthOptions.preferredRoutes &&
-      this.selectedFormStrengthOptions.preferredRoutes.length === 1
-    ) {
-      this.selectedRouteOfAdministrationData = this.selectedFormStrengthOptions.preferredRoutes[0];
-      this.selectedRouteName = this.selectedFormStrengthOptions.preferredRoutes[0].routeName;
+  assignSelectedMedStrengthParameters(medStrengthIndex: number): void {
+    if (this.medForm) {
+      this.resetMedForm();
+      this.changeSelectedStrength(medStrengthIndex);
+    } else {
+      this.selectedFormStrengthOptions = this.medOptions.availableFormStrength[
+        medStrengthIndex
+      ];
     }
+  }
+
+  resetMedForm() {
+    this.selectedFormStrengthOptions = {};
+    this.selectedRouteOfAdministrationData = {};
+
+    this.selectedFormStrengthName = '';
+    this.selectedDose = null;
+    this.selectedDoseUnitName = '';
+    this.selectedDoseUnitData = {};
+    this.selectedDoseName = '';
+    this.selectedRouteName = '';
+    this.selectedPriority = 'STAT';
+    this.enteredAdministrationInstructionsText = '';
+    this.selectedAdministrationInstructionsData = [];
+
+    this.medForm.reset();
+    // console.log('resetMedForm', this.medForm);
   }
 
   // ********** Form Strength ***************************
 
   changeSelectedStrength(strengthIndex: number) {
-    // console.log('strengthIndex', strengthIndex);
-    this.selectedFormStrengthOptions = this.medOptions.availableFormStrength[
-      strengthIndex
-    ];
-    // this.selectedFormStrengthName = this.selectedFormStrengthOptions.formStrengthName;
+    if (
+      this.selectedFormStrengthName &&
+      this.medOptions.availableFormStrength[strengthIndex].formStrengthName ===
+        this.selectedFormStrengthName
+    ) {
+      console.log('do nothing');
+    } else {
+      if (this.medForm) {
+        this.resetMedForm();
+      }
 
-    this.medForm.controls['formStrengthOptions'].setValue(
-      this.selectedFormStrengthOptions
-    );
+      this.selectedFormStrengthOptions = this.medOptions.availableFormStrength[
+        strengthIndex
+      ];
+      this.selectedFormStrengthName = this.selectedFormStrengthOptions.formStrengthName;
 
-    this.medForm.controls['formStrengthName'].setValue(
-      this.selectedFormStrengthOptions.formStrengthName
-    );
+      if (this.medForm) {
+        this.medForm.controls['formStrengthOptions'].setValue(
+          this.selectedFormStrengthOptions
+        );
 
-    // console.log(
-    //   'changeSelectedFormStrengthOptions',
-    //   this.selectedFormStrengthOptions
-    // );
-    // console.log(
-    //   'changeSelectedFormStrengthName',
-    //   this.selectedFormStrengthName
-    // );
+        this.medForm.controls['formStrengthName'].setValue(
+          this.selectedFormStrengthOptions.formStrengthName
+        );
+      }
+    }
+    // console.log('thisStrength', this);
   }
 
   // ********** Dose/Unit ***************************
@@ -220,7 +200,7 @@ export class MedFormComponent implements OnInit {
   }
 
   changeSelectedDoseUnit(unit: Unit) {
-    console.log('changebyUnitObject', unit);
+    // console.log('changebyUnitObject', unit);
     if (unit) {
       this.selectedDoseUnitData = unit;
       this.selectedDoseUnitName = unit.unitName;
@@ -236,7 +216,7 @@ export class MedFormComponent implements OnInit {
     }
 
     // console.log('thisChangeDoseUnit', this);
-    console.log('medForm', this.medForm);
+    // console.log('medForm', this.medForm);
   }
 
   changeSelectedDoseUnitByLookup(unitName: string): void {
@@ -262,10 +242,6 @@ export class MedFormComponent implements OnInit {
       debounceTime(200),
       distinctUntilChanged()
     );
-    console.log('text$', text$);
-    console.log('debouncedText$', debouncedText$);
-    console.log('duInstance', this.duInstance);
-    console.log('click$', this.click$);
     const clicksWithClosedPopup$ = this.click$.pipe(
       filter(() => !this.duInstance.isPopupOpen())
     );
@@ -317,7 +293,7 @@ export class MedFormComponent implements OnInit {
   // ********** Route Of Administration ***************************
 
   changeSelectedRoute(route: Route) {
-    console.log('ChangeByRouteLookup', route);
+    // console.log('ChangeByRouteLookup', route);
     if (route) {
       this.selectedRouteOfAdministrationData = route;
       this.selectedRouteName = route.routeName;
@@ -377,19 +353,6 @@ export class MedFormComponent implements OnInit {
     return mergeResults;
   };
 
-  // TODO: Check if these methods are needed
-
-  getRouteOfAdministrationName(): string {
-    if (
-      !this.selectedRouteOfAdministrationData ||
-      !this.selectedRouteOfAdministrationData.routeName
-    ) {
-      return 'Select A Route';
-    } else {
-      return this.selectedRouteOfAdministrationData.routeName;
-    }
-  }
-
   // ********** Priority ***************************
 
   changeSelectedPriority(priority: string) {
@@ -401,55 +364,51 @@ export class MedFormComponent implements OnInit {
 
   // ********** Administration Instructions ***************************
 
-  changeAdministrationInstructionsText(text: string): void {
+  saveAdministrationInstructionsText(text: string): void {
     if (text) {
-      this.enteredAdministrationInstructions = text;
-      this.medForm.controls['administrationInstructions'].setValue(text);
+      this.enteredAdministrationInstructionsText = text;
+      this.medForm.controls['administrationInstructionsText'].setValue(text);
     } else {
-      this.enteredAdministrationInstructions = '';
-      this.medForm.controls['administrationInstructions'].setValue('');
+      this.enteredAdministrationInstructionsText = '';
+      this.medForm.controls['administrationInstructionsText'].setValue('');
     }
 
     // console.log('thisAdminInstructions', this);
     // console.log('medForm', this.medForm);
   }
 
-  addTelephoneOrderText(): void {
-    this.isTelephoneOrder = !this.isTelephoneOrder;
-    if (this.isTelephoneOrder) {
-      this.enteredAdministrationInstructions = !this
-        .enteredAdministrationInstructions
-        ? 'Telephone Order Text'
-        : `${this.enteredAdministrationInstructions} Telephone Order Text`;
-      this.medForm.controls['administrationInstructions'].setValue(
-        this.enteredAdministrationInstructions
-      );
+  updateSelectedAdminInstructions(
+    instructions: AdministrationInstructions
+  ): void {
+    if (instructions.id && instructions.text) {
+      const checked = (document.getElementById(
+        `${instructions.name}-${instructions.id}`
+      ) as HTMLInputElement).checked;
+      if (checked) {
+        // Selection needs to be added. Update selected Administration Instructions Pre-Set Data
+        this.selectedAdministrationInstructionsData.push(instructions);
+        this.medForm.controls['administrationInstructionsData'].setValue(
+          this.selectedAdministrationInstructionsData
+        );
+        // Update selected Administration Instructions Overall Text
+        this.enteredAdministrationInstructionsText = !this
+          .enteredAdministrationInstructionsText
+          ? instructions.text
+          : `${this.enteredAdministrationInstructionsText} ${instructions.text}`;
+        this.medForm.controls['administrationInstructionsText'].setValue(
+          this.enteredAdministrationInstructionsText
+        );
+      } else {
+        // Selection needs to be removed from the selelected administration pre-set text data
+        this.selectedAdministrationInstructionsData = this.selectedAdministrationInstructionsData.filter(
+          (inst) => inst.id !== instructions.id
+        );
+        this.medForm.controls['administrationInstructionsData'].setValue(
+          this.selectedAdministrationInstructionsData
+        );
+      }
     }
-
-    this.changeAdministrationInstructionsText(
-      this.enteredAdministrationInstructions
-    );
-    // console.log('thisTelephoneOrder', this);
-    // console.log('medForm', this.medForm);
-  }
-
-  addVerbalOrderText(): void {
-    this.isVerbalOrder = !this.isVerbalOrder;
-    if (this.isVerbalOrder) {
-      this.enteredAdministrationInstructions = !this
-        .enteredAdministrationInstructions
-        ? 'Verbal Order Text'
-        : `${this.enteredAdministrationInstructions} Verbal Order Text`;
-      this.medForm.controls['administrationInstructions'].setValue(
-        this.enteredAdministrationInstructions
-      );
-    }
-
-    this.changeAdministrationInstructionsText(
-      this.enteredAdministrationInstructions
-    );
-
-    // console.log('thisVerbalOrder', this);
+    // console.log('enteredAdminText', this.enteredAdministrationInstructionsText);
     // console.log('medForm', this.medForm);
   }
 

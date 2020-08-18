@@ -192,24 +192,22 @@
         <span class="table-container">
           <div class="table-row">
             <div class="table-cell">
-              <textarea class="form-control" formControlName="administrationInstructions"
-                [value]="enteredAdministrationInstructions"
-                (focusout)="changeAdministrationInstructionsText($event.target.value)"></textarea>
+              <textarea class="form-control" formControlName="administrationInstructionsText"
+                [value]="enteredAdministrationInstructionsText"
+                (focusout)="saveAdministrationInstructionsText($event.target.value)"></textarea>
             </div>
           </div>
         </span>
-        <!-- Order Source -->
-        <span class='table-container'>
+        <!-- Administration Instructions Pre-set Text  -->
+        <span class='table-container' *ngIf="selectedFormStrengthOptions.administrationInstructions">
           <div class="table-row">
-            <div class="table-cell">
-              <input type="checkbox" id="telephone-order" name="telephone-order" [checked]="isTelephoneOrder"
-                [disabled]="isVerbalOrder" [value]="isTelephoneOrder" (click)="addTelephoneOrderText()">
-              <label for=" telephone-order"> &nbsp; Telephone Order</label>
-            </div>
-            <div class="table-cell">
-              <input type="checkbox" id="verbal-order" name="verbal-order" [checked]="isVerbalOrder"
-                [disabled]="isTelephoneOrder" (click)="addVerbalOrderText()">
-              <label for="verbal-order"> &nbsp; Verbal Order</label>
+            <div class="table-cell"
+              *ngFor="let adminInstructions of selectedFormStrengthOptions.administrationInstructions">
+              <input type="checkbox" id="{{adminInstructions.name}}-{{adminInstructions.id}}"
+                name="{{adminInstructions.name}}-{{adminInstructions.id}}"
+                (click)="updateSelectedAdminInstructions(adminInstructions)">
+              <label for="{{adminInstructions.name}}-{{adminInstructions.id}}"> &nbsp;
+                {{adminInstructions.name}}</label>
             </div>
           </div>
         </span>
