@@ -1,10 +1,9 @@
 <div class="modal-container" *ngIf="isOpen">
     <div class="modal-overlay" (click)="close(true)"></div>
-    <div class="app-modal">
+    <div class="app-modal" [ngClass]="{'med-composer-modal': modalId === 'medComposer'}">
         <div class="title">
             <div *ngIf="modalTitle" [innerHTML]="modalTitle"></div>
-            <button *ngIf="blocking && closebtn"
-                class="btn-close" (click)="close()">&#9747;</button>
+            <button *ngIf="blocking && closebtn" class="btn-close" (click)="close()">&#9747;</button>
         </div>
         <div class="body">
             <ng-content></ng-content>

@@ -5,10 +5,9 @@ import { ModalService } from '../../../services/modal.service';
 @Component({
   selector: 'app-modal',
   templateUrl: './modal.component.html',
-  styleUrls: ['./modal.component.scss']
+  styleUrls: ['./modal.component.scss'],
 })
 export class ModalComponent implements OnInit {
-
   isOpen: boolean = false;
 
   @Input() closebtn: boolean;
@@ -26,18 +25,17 @@ export class ModalComponent implements OnInit {
     }
   }
 
-  constructor(private modalService: ModalService) { }
+  constructor(private modalService: ModalService) {}
 
   /* ngOnInit - Initiated when component loads */
   ngOnInit() {
     this.modalService.registerModal(this);
-    console.log('ModalComponent: closebtn:', this.closebtn)
-    console.log('ModalComponent: blocking:', this.blocking)
+    console.log('ModalComponent: closebtn:', this.closebtn);
+    console.log('ModalComponent: blocking:', this.blocking);
   }
 
   /* close - Closes the selected modal */
   close(checkBlocking = false): void {
     this.modalService.close(this.modalId, checkBlocking);
   }
-
 }
