@@ -126,6 +126,18 @@ export const COMPOSER_OPTIONS: ComposerOptions[] = [
             frequencyName: '8 TIMES DAILY',
           },
         ],
+        administrationInstructions: [
+          {
+            id: 1,
+            name: 'Telephone Order',
+            text: 'This is a telephone order',
+          },
+          {
+            id: 2,
+            name: 'Verbal Order',
+            text: 'This is a verbal order',
+          },
+        ],
       },
       {
         id: 1099,
@@ -182,6 +194,18 @@ export const COMPOSER_OPTIONS: ComposerOptions[] = [
           {
             id: 1,
             frequencyName: 'ONCE',
+          },
+        ],
+        administrationInstructions: [
+          {
+            id: 3,
+            name: 'Call In Order',
+            text: 'This is a call in order',
+          },
+          {
+            id: 4,
+            name: 'Test Order',
+            text: 'This is a test order',
           },
         ],
       },
