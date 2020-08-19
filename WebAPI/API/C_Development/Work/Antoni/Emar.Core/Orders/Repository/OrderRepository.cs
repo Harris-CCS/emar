@@ -171,13 +171,36 @@ namespace Emar.Core.Orders.Repository
                 .ToList();
         }
 
+        #endregion
+
+        #region Department Preferred List Section
+
         public List<DepartmentPreferredListItem> GetDepartmentPreferredList(int siteId, string departmentCode, string linkBase)
         {
             Expression<Func<DepartmentPreferredListItem, bool>> whereLambda = s => s.SiteId == siteId;
             if(!string.IsNullOrWhiteSpace(departmentCode))
                 whereLambda = whereLambda.And(s => s.DepartmentCode == departmentCode);
 
-            return _context.DepartmentPreferredListItems.Where(whereLambda).ToList();
+            return _context.DepartmentPreferredListItems.Where(whereLambda)
+                    .Include(g => g.MedicationUnit)
+                    .Include(g => g.MedicationRoute).ToList();
+        }
+
+        #endregion
+
+        #region Groups Remembered Orders Section
+
+        public List<GroupListItem> GetGroupRememberedOrderItems(int siteId, string departmentCode, string linkBase)
+        {
+            Expression<Func<GroupListItem, bool>> whereLambda;
+            if (string.IsNullOrWhiteSpace(departmentCode))
+                whereLambda = s => s.SiteId == siteId;
+            else
+                whereLambda = s => s.SiteId == siteId && s.DepartmentCode == departmentCode;
+
+            return _context.GroupListItems.Where(whereLambda)
+                .Include( g => g.MedicationUnit)
+                .Include(g => g.MedicationRoute).ToList();
         }
 
         #endregion

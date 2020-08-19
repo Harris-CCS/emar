@@ -10,6 +10,7 @@ namespace Emar.Data.Entities
     {
         public Patient()
         {
+            PatientAllergies = new HashSet<PatientAllergy>();
             PatientCartOrders = new HashSet<PatientCartOrder>();
             PatientOrders = new HashSet<PatientOrder>();
             PatientIndicators = new HashSet<PatientIndicator>();
@@ -18,7 +19,7 @@ namespace Emar.Data.Entities
         [Key]
         [Column("id")]
         public long Id { get; set; }
-        [Column("site_id", TypeName = "int")]
+        [Column("site_id")]
         public int SiteId { get; set; }
         [Column("medical_record_number")]
         [StringLength(25)]
@@ -130,18 +131,26 @@ namespace Emar.Data.Entities
         [Column("vs_pain_scale")]
         [StringLength(14)]
         public string VsPainScale { get; set; }
+
         [Column("is_active")]
         public bool Active { get; set; }
+        
         [Column("custom_number")]
         [StringLength(25)]
         public string CustomNumber { get; set; }
+        
         [Column("person_number")]
         [StringLength(25)]
         public string PersonNumber { get; set; }
+        [Column("deactivation_datetime")]
+        public DateTimeOffset? DeactivationDatetime { get; set; }
 
         [ForeignKey(nameof(SiteId))]
         [InverseProperty(nameof(Entities.Site.Patients))]
         public virtual Site Site { get; set; }
+
+        [InverseProperty("Patient")]
+        public virtual ICollection<PatientAllergy> PatientAllergies { get; set; }
 
         [InverseProperty("Patient")]
         public virtual ICollection<PatientCartOrder> PatientCartOrders { get; set; }

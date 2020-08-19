@@ -13,6 +13,8 @@ namespace Emar.Data.Entities
             OrderAdministrationsAcknowledgeUser = new HashSet<OrderAdministration>();
             OrderAdministrationAdministeringUser = new HashSet<OrderAdministration>();
             OrderAdministrationStopUser = new HashSet<OrderAdministration>();
+            PatientAllergiesAddUser = new HashSet<PatientAllergy>();
+            PatientAllergiesChangeUser = new HashSet<PatientAllergy>();
             PatientCartOrders = new HashSet<PatientCartOrder>();
             PatientOrdersAddUser = new HashSet<PatientOrder>();
             PatientOrdersOrderPhysicianUser = new HashSet<PatientOrder>();
@@ -20,58 +22,53 @@ namespace Emar.Data.Entities
         }
 
         [Key]
-        [Column("id", TypeName = "int")]
+        [Column("id")]
         public int Id { get; set; }
-
-        [Column("site_id", TypeName = "int"), Required]
+        [Column("site_id")]
         public int SiteId { get; set; }
-
         [Required]
         [Column("type")]
         [StringLength(1)]
         public string Type { get; set; }
-
-        [Column("is_active", TypeName = "bit"), Required]
+        [Column("is_active")]
         public bool IsActive { get; set; }
-
         [Required]
-        [Column("initials_display", TypeName = "nvarchar(4)")]
+        [Column("initials_display")]
+        [StringLength(4)]
         public string UserInitials { get; set; }
-
         [Required]
-        [Column("first_name", TypeName = "nvarchar(35)")]
+        [Column("first_name")]
+        [StringLength(35)]
         public string FirstName { get; set; }
-
         [Required]
-        [Column("last_name", TypeName = "nvarchar(35)")]
+        [Column("last_name")]
+        [StringLength(35)]
         public string LastName { get; set; }
-
-        [Column("middle_name", TypeName = "nvarchar(35)")]
+        [Column("middle_name")]
+        [StringLength(35)]
         public string MiddleName { get; set; }
-
-        [Column("name_suffix", TypeName = "nvarchar(25)")]
+        [Column("name_suffix")]
+        [StringLength(25)]
         public string NameSuffix { get; set; }
-
-        [Column("ordering_only_physician", TypeName = "bit")]
+        [Column("ordering_only_physician")]
         public bool? OrderingOnlyPhysician { get; set; }
-
-        [Column("name_display_initials", TypeName = "bit")]
+        [Column("name_display_initials")]
         public bool? DisplayInitialsIndicator { get; set; }
-
         [Required]
-        [Column("login_name", TypeName = "varchar(255)")]
+        [Column("login_name")]
+        [StringLength(255)]
         public string LoginName { get; set; }
-
-        [Column("login_password", TypeName = "varchar(255)"), Required]
+        [Required]
+        [Column("login_password")]
+        [StringLength(255)]
         public string LoginPassword { get; set; }
-
-        [Column("salt", TypeName = "binary(16)"), Required]
+        [Required]
+        [Column("salt")]
+        [MaxLength(16)]
         public byte[] Salt { get; set; }
-
-        [Column("last_login_time", TypeName = "datetimeoffset")]
+        [Column("last_login_time")]
         public DateTimeOffset? LastLoginTime { get; set; }
-
-        [Column("failed_login_attempts", TypeName = "int"), Required]
+        [Column("failed_login_attempts")]
         public int FailedLoginAttempts { get; set; }
 
         [ForeignKey(nameof(SiteId))]
@@ -87,6 +84,11 @@ namespace Emar.Data.Entities
         [InverseProperty(nameof(OrderAdministration.StopUser))]
         public virtual ICollection<OrderAdministration> OrderAdministrationStopUser { get; set; }
 
+        [InverseProperty(nameof(PatientAllergy.AddUser))]
+        public virtual ICollection<PatientAllergy> PatientAllergiesAddUser { get; set; }
+
+        [InverseProperty(nameof(PatientAllergy.ChangeUser))]
+        public virtual ICollection<PatientAllergy> PatientAllergiesChangeUser { get; set; }
 
         [InverseProperty(nameof(PatientOrder.AddUser))]
         public virtual ICollection<PatientOrder> PatientOrdersAddUser { get; set; }

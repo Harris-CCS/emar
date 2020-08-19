@@ -3,6 +3,7 @@ using System.Linq;
 using Emar.Core.Helpers;
 using Emar.Core.Orders.Model.Mappings;
 using Emar.Core.Sites.Model.Mappings;
+using Emar.Core.Users.Model.Mappings;
 using Emar.Data.Entities;
 
 namespace Emar.Core.Patients.Model.Mappings
@@ -120,6 +121,47 @@ namespace Emar.Core.Patients.Model.Mappings
             };
 
             return indicatorDto;
+        }
+
+        public static PatientAllergyDto MapPatientAllergies(PatientAllergy allergy)
+        {
+            if (allergy == null)
+            {
+                return null;
+            }
+
+            PatientAllergyDto allergyDto = new PatientAllergyDto
+            {
+                Id = allergy.Id,
+                PatientId = allergy.PatientId,
+                Class = allergy.Class,
+                Category = allergy.Category,
+                InternalDrugId = allergy.InternalDrugId,
+                Ndc = allergy.Ndc,
+                DrugId = allergy.DrugId,
+                Name = allergy.Name,
+                AlternateName = allergy.AlternateName,
+                AllergyDrugId = allergy.AllergyDrugId,
+                IsActive = allergy.IsActive,
+                Comment = allergy.Comment,
+                Schedule = allergy.Schedule,
+                Reaction = allergy.Reaction,
+                Severity = allergy.Severity,
+                ParentDrugId = allergy.ParentDrugId,
+                ParentDrugName = allergy.ParentDrugName,
+                AddUserId = allergy.AddUserId,
+                AddUser = UserMapper.MapUser(allergy.AddUser),
+                AddDatetime = allergy.AddDatetime,
+                ChangeUserId = allergy.ChangeUserId,
+                ChangeUser = UserMapper.MapUser(allergy.ChangeUser),
+                ChangeDatetime = allergy.ChangeDatetime,
+                ActionStatus = allergy.ActionStatus,
+                InformationSource = allergy.InformationSource,
+                PersonNumber = allergy.PersonNumber,
+                AccountNumber = allergy.AccountNumber
+            };
+
+            return allergyDto;
         }
     }
 }

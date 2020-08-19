@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Emar.Api.Helpers;
 using Emar.Core.Carts.Model;
 using Emar.Core.Orders.Model;
@@ -11,50 +10,50 @@ using Microsoft.AspNetCore.Mvc;
 namespace Emar.Api.Controllers
 {
     /// <summary>
-    /// Controller to retrieve the Department Preferred Lists for the Landing Page
+    /// Controller to retrieve the Groups Remembered Orders Lists for the Landing Page
     /// </summary>
     [ApiController]
     //[Produces(MediaTypes.PcEmar, MediaTypes.Json)]
     [Consumes(MediaTypes.PcEmar, MediaTypes.Json)]
-    public class DepartmentPreferredListsController : ControllerBase
+    public class GroupsRememberedOrdersController : ControllerBase
     {
         private readonly IOrderService _orderService;
         private readonly ISiteService _siteService;
 
         /// <summary>
-        /// Controller to handle calls related to the Department Preferred List
+        /// Controller to handle calls related to the Groups Remembered Orders List
         /// </summary>
         /// <param name="orderService">Order Service provided by DI</param>
         /// <param name="siteService">Site Service provided by DI</param>
-        public DepartmentPreferredListsController(IOrderService orderService, ISiteService siteService)
+        public GroupsRememberedOrdersController(IOrderService orderService, ISiteService siteService)
         {
             _orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
         }
 
         /// <summary>
-        /// Return the contents Department Preferred List
+        /// Return the contents Groups Remembered Orders  List
         /// </summary>
-        /// <param name="siteId">The Site to retrieve the Department Preferred list for</param>
+        /// <param name="siteId">The Site to retrieve the Groups Remembered Orders List for</param>
         /// <param name="patientId">(Optional) If provided, then HATEOAS links will be created to allow for the adding of the order directly to the patient's/user's cart</param>
         /// <param name="departmentCode">(Optional) If provided, the list will be for a specific department (if not provided, the entire list for the Site)</param>
         /// <returns></returns>
-        [HttpGet("api/sites/{siteId}/departmentPreferredLists", Name = "GetDepartmentPreferredList")]
-        [ProducesResponseType(typeof(IEnumerable<DepartmentPreferredItemDto>), 200)] // (OK) - the resource is sent in the response
+        [HttpGet("api/sites/{siteId}/groupsrememberedorderslists", Name = "GetGroupsRememberedOrdersList")]
+        [ProducesResponseType(typeof(GroupsRememberedOrdersDto), 200)] // (OK) - the resource is sent in the response
         //[ProducesResponseType(400)] // (bad request) - indicates a bad request (e.g. wrong parameter)
         [ProducesResponseType(404)] // (not found) - the resource does not exits
         //[ProducesResponseType(406)] // (not acceptable) - the server does not support the required representation
-        public ActionResult<IEnumerable<DepartmentPreferredItemDto>> GetDepartmentPreferredList(
+        public ActionResult<GroupsRememberedOrdersDto> GetGroupsRememberedOrdersList(
             [FromRoute] int siteId,
             [FromQuery] string departmentCode,
             [FromQuery] int? patientId)
         {
             var ptId = patientId;
-            var linkBase = Url.Link(nameof(CopyDepartmentPreferredItemToCart),
-                new { patientId = ptId, departmentPreferredItemId = -99});
+            var linkBase = Url.Link(nameof(CopyGropusRememberedItemToCart),
+                new { patientId = ptId, groupsRememberedItemId = -99});
 
-            IEnumerable<DepartmentPreferredItemDto> ret =
-                _orderService.GetDepartmentPreferredList(siteId, departmentCode, linkBase);
+            GroupsRememberedOrdersDto ret =
+                _orderService.GetGroupsRememberedOrdersList(siteId, departmentCode, linkBase);
 
             if (ret != null) return Ok(ret);
 
@@ -62,27 +61,27 @@ namespace Emar.Api.Controllers
 
             if (departmentCode == null)
                 return NotFound(
-                    $"No Department Preferred Items found for site '{site.Name}'");
+                    $"No Groups Remembered List Items found for site '{site.Name}'");
             return NotFound(
-                $"No Department Preferred Items found for site '{site.Name}', department: '{departmentCode}'");
+                $"No Groups Remembered List Items found for site '{site.Name}', department: '{departmentCode}'");
         }
 
         /// <summary>
-        /// Create an order in the user/patient's cart as a copy of the Department Preferred List order
+        /// Create an order in the user/patient's cart as a copy of the Groups Remembered List order
         /// </summary>
         /// <param name="userId">The user who is placing the order in the cart</param>
-        /// <param name="departmentPreferredItemId">The Department Preferred List Item to move into the patient's cart</param>
+        /// <param name="groupsRememberedItemId">The Groups Remembered List Item to move into the patient's cart</param>
         /// <param name="patientId">the patient that the cart is intended for</param>
         /// <returns></returns>
-        [HttpPost("/api/patients/{patientId}/departmentPreferredLists/{departmentPreferredItemId}/cartOrders",
-            Name = nameof(CopyDepartmentPreferredItemToCart))]
+        [HttpPost("/api/patients/{patientId}/groupsrememberedorderslists/{groupsRememberedItemId}/cartOrders",
+            Name = nameof(CopyGropusRememberedItemToCart))]
         [ProducesResponseType(typeof(CartOrderDto), 200)] // (OK) - the resource is sent in the response
         //[ProducesResponseType(400)] // (bad request) - indicates a bad request (e.g. wrong parameter)
         [ProducesResponseType(404)] // (not found) - the resource does not exits
         //[ProducesResponseType(406)] // (not acceptable) - the server does not support the required representation
-        public ActionResult<CartOrderDto> CopyDepartmentPreferredItemToCart(
+        public ActionResult<CartOrderDto> CopyGropusRememberedItemToCart(
             [FromHeader(Name = "X-User")] int userId,
-            int departmentPreferredItemId,
+            int groupsRememberedItemId,
             long patientId)
         {
          
