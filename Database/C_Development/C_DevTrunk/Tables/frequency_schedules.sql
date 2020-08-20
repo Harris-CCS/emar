@@ -5,12 +5,13 @@ create table [dbo].[frequency_schedules]
     , [name]                       [sysname] not null
     , [point_in_time]              [bit] not null
     , [frequency_type_id]          [int] not null
-    , [frequency_type_recuring]    [int] not null
+    , [frequency_type_recurring]   [int] not null
     , [frequency_interval]         [int] not null
     , [frequency_interval_unit_id] [int] not null
     , [interval_start_time]        [time](0) not null
     , [interval_end_minutes]       [smallint] not null
-    , [notes]                      [varchar](1000) null
+    , [notes]                      [nvarchar](1000) null
+    , [is_active]                  [bit] not null
     , primary key clustered([id] asc));
 
 go
@@ -18,6 +19,11 @@ go
 /********
  Defaults
 ********/
+
+alter table [dbo].[frequency_schedules]
+add constraint [df__frequency_schedules__is_active] default((1)) for [is_active];
+go
+
 /*****************
  Unique constraint
 *****************/
@@ -49,6 +55,18 @@ go
  Data Dictionary
     Defaults
 ***************/
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'default templates__is_active to 1'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'frequency_schedules'
+  , @level2type = N'CONSTRAINT'
+  , @level2name = N'df__frequency_schedules__is_active';
+go
+
 /***************
  Data Dictionary
     Indexes
@@ -97,7 +115,7 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'site_id'
+  , @value = N'Hospital identifier foriegn key to site table'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -141,13 +159,13 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'frequency_type_recuring'
+  , @value = N'frequency_type_recurring'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
   , @level1name = N'frequency_schedules'
   , @level2type = N'COLUMN'
-  , @level2name = N'frequency_type_recuring';
+  , @level2name = N'frequency_type_recurring';
 go
 
 execute [sys].[sp_addextendedproperty] 
@@ -203,4 +221,15 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'frequency_schedules'
   , @level2type = N'COLUMN'
   , @level2name = N'notes';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'is_active 1=True 0=False'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'frequency_schedules'
+  , @level2type = N'COLUMN'
+  , @level2name = N'is_active';
 go

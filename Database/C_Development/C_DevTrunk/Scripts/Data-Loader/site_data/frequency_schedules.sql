@@ -11,7 +11,7 @@ create table [#frequency_schedules]
     (
       [name]                       [sysname] null
     , [frequency_type_id]          [int] default 1  -- Daily, Weekly ...
-    , [frequency_type_recuring]    [int] default 1  -- every n days (weeks... maybe future dev)
+    , [frequency_type_recurring]    [int] default 1  -- every n days (weeks... maybe future dev)
     , [frequency_interval]         [int] default 0  -- time interval default 0
     , [frequency_interval_unit_id] [int] default 0  -- interval unit Hours, Minutes
     , [interval_start_time]        [time](0) default '00:00'
@@ -276,7 +276,7 @@ insert into [dbo].[frequency_schedules]
    , [site_id]
    , [name]
    , [frequency_type_id]
-   , [frequency_type_recuring]
+   , [frequency_type_recurring]
    , [frequency_interval]
    , [frequency_interval_unit_id]
    , [interval_start_time]
@@ -291,7 +291,7 @@ insert into [dbo].[frequency_schedules]
     ([site_id]
    , [name]
    , [frequency_type_id]
-   , [frequency_type_recuring]
+   , [frequency_type_recurring]
    , [frequency_interval]
    , [frequency_interval_unit_id]
    , [interval_start_time]
@@ -302,7 +302,7 @@ insert into [dbo].[frequency_schedules]
 select [site].[site_id]
      , [fs].[name]
      , [fs].[frequency_type_id]
-     , [fs].[frequency_type_recuring]
+     , [fs].[frequency_type_recurring]
      , [fs].[frequency_interval]
      , [fs].[frequency_interval_unit_id]
      , [fs].[interval_start_time]

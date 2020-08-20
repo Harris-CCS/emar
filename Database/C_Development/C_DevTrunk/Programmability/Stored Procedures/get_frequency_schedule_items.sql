@@ -89,7 +89,7 @@ as
                  , [fs].[id] as                                                                                           [frequency_schedules_id]
                  , [fs].[name] as                                                                                         [frequency_schedule_name]
                  , cast(cast([cal].[the_date] as datetime) + cast([fjd].[frequency_time] as datetime) as datetime2(7)) as [sched_datetime]
-                 , [fs].[frequency_type_recuring]
+                 , [fs].[frequency_type_recurring]
             from     [dbo].[frequency_schedules] as [fs]
                      inner join [dbo].[frequency_interval_day_times] as [fjd] on [fs].[id] = [fjd].[frequency_schedule_id]
                      inner join [dbo].[frequency_calendar] as [cal] on [fjd].[frequency_day_id] = [cal].[the_day_of_week]
@@ -105,7 +105,7 @@ as
                  , [fs].[id] as                                 [frequency_schedules_id]
                  , [fs].[name] as                               [frequency_schedule_name]
                  , cast(@local_current_time as datetime2(7)) as [sched_datetime]
-                 , [fs].[frequency_type_recuring]
+                 , [fs].[frequency_type_recurring]
             from     [dbo].[frequency_schedules] as [fs]
                      inner join [dbo].[frequency_types] as [ft] on [ft].[id] = [fs].[frequency_type_id]
             where   [fs].[id] = @frequency_schedule_id
@@ -117,7 +117,7 @@ as
                        , [fs].[id] as                                                                                           [frequency_schedules_id]
                        , [fs].[name] as                                                                                         [frequency_schedule_name]
                        , cast(cast([cal].[the_date] as datetime) + cast([fjt].[frequency_time] as datetime) as datetime2(7)) as [sched_datetime]
-                       , [fs].[frequency_type_recuring]
+                       , [fs].[frequency_type_recurring]
             from           [dbo].[frequency_schedules] as [fs]
                            inner join [dbo].[frequency_interval_day_times] as [fjd] on [fs].[id] = [fjd].[frequency_schedule_id]
                            inner join [dbo].[frequency_interval_units] as [fi] on [fi].[id] = [fs].[frequency_interval_unit_id]
@@ -150,7 +150,7 @@ as
                     , [fs].[id] as              [frequency_schedules_id]
                     , [fs].[name] as            [frequency_schedule_name]
                     , [fjt].[frequency_time] as [sched_datetime]
-                    , [fs].[frequency_type_recuring]
+                    , [fs].[frequency_type_recurring]
             from      [dbo].[frequency_schedules] as [fs]
                       inner join [dbo].[frequency_interval_units] as [fi] on [fi].[id] = [fs].[frequency_interval_unit_id]
                       inner join [dbo].[frequency_types] as [ft] on [ft].[id] = [fs].[frequency_type_id]
@@ -176,8 +176,8 @@ as
                   and [ft].[name] in(N'Interval')
                   and [fs].[frequency_interval] > 0
         ) as [sched]
-        where([sched].[sched_order] % [sched].[frequency_type_recuring] = 1
-              or [sched].[frequency_type_recuring] = 1)
+        where([sched].[sched_order] % [sched].[frequency_type_recurring] = 1
+              or [sched].[frequency_type_recurring] = 1)
              and [sched].[sched_datetime] between @datetime_period_begin and @datetime_period_end
         order by [sched].[sched_datetime];
     end;

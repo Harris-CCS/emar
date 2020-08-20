@@ -226,7 +226,7 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'Pulsecheck procdure used to generate "dose range chacking"'
+  , @value = N'Pulsecheck procdure used to generate "dose range checking" information'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'PROCEDURE'

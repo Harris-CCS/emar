@@ -195,6 +195,14 @@
     <Build Include="Tables\order_interactions.sql" />
     <Build Include="Programmability\Stored Procedures\export_ibex_override_reasons.sql" />
     <None Include="Scripts\Data-Loader\site_data\override_reasons.sql" />
+    <Build Include="Tables\preferred_frequency_schedules.sql" />
+    <Build Include="Tables\preferred_medication_doses.sql" />
+    <Build Include="Tables\preferred_medication_routes.sql" />
+    <Build Include="Programmability\Functions\Table-values Functions\escape_sql.sql" />
+    <Build Include="Programmability\Stored Procedures\pc_fdb_meds_search.sql" />
+    <None Include="Scripts\Data-Loader\site_data\preferred_frequency_schedules.sql" />
+    <None Include="Scripts\Data-Loader\site_data\preferred_medication_doses.sql" />
+    <None Include="Scripts\Data-Loader\site_data\preferred_medication_routes.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />
