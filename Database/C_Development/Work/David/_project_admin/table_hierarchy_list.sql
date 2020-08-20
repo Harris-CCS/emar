@@ -55,6 +55,9 @@ insert into [#table_order] values
     ('dbo','medication_routes','site_data'),
     ('dbo','medication_units','site_data'),
     ('dbo','override_reasons','site_data'),
+    ('dbo','preferred_frequency_schedules','site_data'),
+    ('dbo','preferred_medication_doses','site_data'),
+    ('dbo','preferred_medication_routes','site_data'),
     ('dbo','site_code_shares','site_data'),
     ('dbo','site_formulary','site_data'),
     ('dbo','site_formulary_match','site_data'),
@@ -214,7 +217,7 @@ from
     where   [table_name] not in(select table_name From [#table_exclude])
 ) as [lst]
 where table_name in(select table_name from [#table_order])
-and table_name not in('site_options','options')--"not In Tables" are loaded from static scripts
+and table_name not in('site_options','options','preferred_frequency_schedules','preferred_medication_doses','preferred_medication_routes')--"not In Tables" are loaded from static scripts
 and [lst].table_name not like 'frequency%'--"frequency_interval_day_times" combined with frequency_schedules.sql
 order by [schema_name]
        , [table_name];
@@ -246,7 +249,7 @@ from
     where   [table_name] not in(select table_name From [#table_exclude])
 ) as [lst]
 where table_name in(select table_name from [#table_order])
-and table_name not in('site_options','options')--"not In Tables" are loaded from static scripts
+and table_name not in('site_options','options','preferred_frequency_schedules','preferred_medication_doses','preferred_medication_routes')--"not In Tables" are loaded from static scripts
 and [lst].table_name not like 'frequency%'--"frequency_interval_day_times" combined with frequency_schedules.sql
 order by [schema_name]
        , [table_name];

@@ -74,7 +74,8 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'id'
+  , @value = N'MEDICATION_INDICATION_LIST - Medication Indication List 
+This table contains the sub categories that are maintained for antimicrobial stewardship purposes.'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -88,7 +89,7 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'id'
+  , @value = N'Auto increment table ID'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
