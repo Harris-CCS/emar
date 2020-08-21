@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Emar.Api.Controllers
 {
     [ApiController]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class UtilitiesController : ControllerBase
     {
         private readonly EmarContext _context;
@@ -24,7 +25,11 @@ namespace Emar.Api.Controllers
             try
             {
                 var rpt = new EfToDbSynchHelper(_context).CompareEfToDb();
-                return rpt == null ? Ok("No problems found") : Ok(rpt);
+                if (rpt == null)
+                    return Ok("No problems found");
+
+                var rptText = rpt.CreateOutputText();
+                return Ok(rptText);
             }
             catch (Exception e)
             {

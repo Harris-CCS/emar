@@ -37,6 +37,7 @@ namespace Emar.Core.Orders.Model.Mappings
                 MedicationRoute = MedicationMapper.MapMedicationRoute(patientOrder.MedicationRoute),
                 ////Priority = (OrderPriorities)Enum.Parse(typeof(OrderPriorities), patientOrder.Priority),
                 FrequencyId = patientOrder.FrequencyScheduleId,
+                FrequencySchedule = MedicationMapper.MapMedicationFrequency(patientOrder.FrequencySchedule),
                 Prn = patientOrder.Prn,
                 PointInTime = patientOrder.PointInTime,
                 OrderStatus = patientOrder.OrderStatus,
@@ -146,7 +147,7 @@ namespace Emar.Core.Orders.Model.Mappings
                 Dose = dbObj.Dose,
                 DoseUnit = MedicationMapper.MapMedicationUnit(dbObj.MedicationUnit),
                 MedicationRoute = MedicationMapper.MapMedicationRoute(dbObj.MedicationRoute),
-                FrequencyId = dbObj.FrequencyScheduleId,
+                FrequencySchedule = MedicationMapper.MapMedicationFrequency(dbObj.FrequencySchedule),
                 OrderNotes = dbObj.OrderNotes
             };
 
@@ -179,7 +180,7 @@ namespace Emar.Core.Orders.Model.Mappings
                 Dose = dbObj.Dose,
                 DoseUnit = MedicationMapper.MapMedicationUnit(dbObj.MedicationUnit),
                 MedicationRoute = MedicationMapper.MapMedicationRoute(dbObj.MedicationRoute),
-                FrequencyId = dbObj.FrequencyScheduleId,
+                FrequencySchedule = MedicationMapper.MapMedicationFrequency(dbObj.FrequencySchedule),
                 OrderNotes = dbObj.OrderNotes
             };
 
@@ -212,7 +213,7 @@ namespace Emar.Core.Orders.Model.Mappings
                 Dose = dbObj.Dose,
                 DoseUnit = MedicationMapper.MapMedicationUnit(dbObj.MedicationUnit),
                 MedicationRoute = MedicationMapper.MapMedicationRoute(dbObj.MedicationRoute),
-                FrequencyId = dbObj.FrequencyScheduleId,
+                FrequencySchedule = MedicationMapper.MapMedicationFrequency(dbObj.FrequencySchedule),
                 OrderNotes = dbObj.OrderNotes
             };
 
