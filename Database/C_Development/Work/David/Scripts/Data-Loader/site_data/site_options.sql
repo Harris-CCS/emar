@@ -7,7 +7,9 @@ Default Values for Site Options
 declare 
     @LONG_DATE_FORMAT               varchar(25) = 'mm/dd/yyyy'
   , @SHORT_DATE_FORMAT              varchar(25) = 'mm/dd/yy'
-  , @SCHEDULE_FUTURE_ITEMS          varchar(25) = '3';
+  , @SCHEDULE_FUTURE_ITEMS          varchar(25) = '3'
+  , @RXALERT                        varchar(25) = 'ALL';
+
 drop table if exists [#site_options];
 
 create table [#site_options]
@@ -34,6 +36,8 @@ select [site].[id] as   [site_id]
                then @SHORT_DATE_FORMAT
            when [option].[name] = 'SCHEDULE_FUTURE_ITEMS'
                then @SCHEDULE_FUTURE_ITEMS
+           when [option].[name] = 'RXALERT'
+               then @RXALERT
            else 'DEFAULT_NOT_DEFINED'
        end as           [option_value]
 from   [dbo].[sites] as [site]

@@ -22,7 +22,11 @@ values
     (2, 'SHORT_DATE_FORMAT'           , 'Short Date Format for user display'                                               ),
     (3, 'SCHEDULE_FUTURE_ITEMS'       , 'How many days forward (including today) to generate future administration records'),
     (4, 'PATIENT_IMAGE_PATH'          , 'Path to patients image files'                                                     ),
-    (5, 'CUSTOM_INDICATORS_IMAGE_PATH', 'Path to custom indicators image files'                                            );
+    (5, 'CUSTOM_INDICATORS_IMAGE_PATH', 'Path to custom indicators image files'                                            ),
+    (6, 'RXALERT'                     , 'Possible Values:
+  - ALL      Show All
+  - MODERATE Show Moderate, Severe and Contraindicated Only
+  - SEVERE   Show Severe and Contraindicated Only'                                                                         );
 
 /*************************************
         begin loading permanent tables

@@ -127,7 +127,14 @@ while @@FETCH_STATUS = 0
             end;
         else
             begin
-                set @sql_cmd = N'if exists (select null from sys.tables where name=''' + @table_name + ''') dbcc checkident(''[' + @schema_name + '].[' + @table_name + ']'',reseed,0) with no_infomsgs;';
+                --- once a table seed value has been used the next ID will be seed+1
+                --- truncate table will reset to seed
+                --- delete table will remain seed+1
+                set @sql_cmd = N'if exists (select null from sys.tables where name=''' + @table_name + ''')
+    begin
+        if (select IDENT_CURRENT(''[' + @schema_name + '].[' + @table_name + ']''))>1
+            dbcc checkident(''[' + @schema_name + '].[' + @table_name + ']'',reseed,0) with no_infomsgs;
+    end;';
                 execute [sp_executeSQL] @sql_cmd;
             end;
 
