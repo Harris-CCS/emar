@@ -69,6 +69,11 @@ namespace Emar.Data.Entities
         [Column("user_quick_list_item_id", TypeName = "int")]
         public int? UserQuickListItemId { get; set; }
 
+
+        [ForeignKey(nameof(FrequencyScheduleId))]
+        [InverseProperty(nameof(Entities.FrequencySchedule.PatientCartOrders))]
+        public virtual FrequencySchedule FrequencySchedule { get; set; }
+
         [ForeignKey(nameof(MedicationRouteId))]
         [InverseProperty(nameof(Entities.MedicationRoute.PatientCartOrders))]
         public virtual MedicationRoute MedicationRoute { get; set; }

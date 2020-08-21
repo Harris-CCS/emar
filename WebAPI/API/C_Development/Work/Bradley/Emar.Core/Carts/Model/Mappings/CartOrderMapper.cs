@@ -32,6 +32,7 @@ namespace Emar.Core.Carts.Model.Mappings
                 MedicationRoute = MedicationMapper.MapMedicationRoute(order.MedicationRoute),
                 //Priority = (OrderPriorities)Enum.Parse(typeof(OrderPriorities), order.Priority),
                 FrequencyId = order.FrequencyScheduleId,
+                FrequencySchedule = MedicationMapper.MapMedicationFrequency(order.FrequencySchedule),
                 Prn = order.Prn,
                 PointInTime = order.PointInTime,
                 BeginDatetime = order.BeginDatetime,

@@ -15,7 +15,7 @@ namespace Emar.Core.Patients.Model.Mappings
                 return null;
 
             var dateFormat = pt.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == AppConstants.LongDateFormat).OptionValue;
-
+            
             PatientDto patientDto = new PatientDto
             {
                 Id = pt.Id,
@@ -64,6 +64,8 @@ namespace Emar.Core.Patients.Model.Mappings
                 VsPainScale = pt.VsPainScale,
                 CustomNumber = pt.CustomNumber,
                 PersonNumber = pt.PersonNumber,
+                VisitStartDatetime = pt.VisitStartDatetime,
+                DeactivationDatetime = pt.DeactivationDatetime,
                 PatientImageSrc = EmarHttpContext.AppBaseUrl + "/" + AppConstants.ImagesRoute + "/patients/" + pt.Id.ToString(),
                 Orders = pt.PatientOrders?.Select(OrderMapper.MapOrder).ToList(),
                 Site = SiteMapper.MapSite(pt.Site),
