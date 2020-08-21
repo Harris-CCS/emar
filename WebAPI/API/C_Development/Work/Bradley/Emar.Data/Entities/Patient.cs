@@ -133,14 +133,17 @@ namespace Emar.Data.Entities
 
         [Column("is_active")]
         public bool Active { get; set; }
-        
+
         [Column("custom_number")]
         [StringLength(25)]
         public string CustomNumber { get; set; }
-        
+
         [Column("person_number")]
         [StringLength(25)]
         public string PersonNumber { get; set; }
+
+        [Column("visit_start_datetime", TypeName = "datetimeoffset")]
+        public DateTimeOffset? VisitStartDatetime { get; set; }
 
         [Column("deactivation_datetime", TypeName = "datetimeoffset")]
         public DateTimeOffset? DeactivationDatetime { get; set; }
@@ -154,9 +157,6 @@ namespace Emar.Data.Entities
 
         [InverseProperty("Patient")]
         public virtual ICollection<PatientOrder> PatientOrders { get; set; }
-
-        [InverseProperty("Patient")]
-        public virtual ExternalIdEntity ExternalIds { get; set; }
 
         [InverseProperty("Patient")]
         public virtual ICollection<PatientIndicator> PatientIndicators { get; set; }
