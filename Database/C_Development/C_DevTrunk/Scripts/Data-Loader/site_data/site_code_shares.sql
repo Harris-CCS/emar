@@ -103,7 +103,6 @@ with cte_source
           , [source].[entity]
      from   [cte_source] as [source]
             left join [dbo].[site_code_shares] as [target] on [target].[source_site_id] = [source].[source_site_id]
-                                                              and [target].[target_site_id] = [source].[target_site_id]
                                                               and [target].[entity] = [source].[entity]
      where  [target].[entity] is null
             and [source].[source_site_id] > 0;
