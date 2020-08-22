@@ -9,12 +9,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { PatientsDashboardComponent } from '../pages/patients-dashboard/patients-dashboard.component';
 import { environment } from 'src/environments/environment';
 import { ComposerMedSelfModule } from '../pages/composer-med-self/composer-med-self.module';
+import { ComposerSchedulerService } from '../services/composer-scheduler.service';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    PatientsDashboardComponent
-  ],
+  declarations: [AppComponent, PatientsDashboardComponent],
   imports: [
     BrowserModule,
     SharedComponentsModule,
@@ -25,6 +23,7 @@ import { ComposerMedSelfModule } from '../pages/composer-med-self/composer-med-s
   ],
   providers: [
     //{ provide: "BASE_API_URL", useValue: environment.apiUrl},
+    ComposerSchedulerService,
   ],
   bootstrap: [AppComponent],
 })
