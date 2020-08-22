@@ -21,6 +21,7 @@ import {
   filter,
   map,
 } from 'rxjs/operators';
+import { ComposerSchedulerService } from '../../../services/composer-scheduler.service';
 import { ComposerOptions } from '../../../app/interfaces/composerOptions';
 import { FormStrength } from '../../../app/interfaces/formStrength';
 import { AdministrationInstructions } from '../../../app/interfaces/administrationInstructions';
@@ -38,7 +39,6 @@ import { UNITS } from '../../../app/mockup/doseUnits';
 export class MedFormComponent implements OnInit {
   @Input() medOptions: ComposerOptions;
   @Input() initLowestMedStrengthData: boolean = true;
-  @Output() formReady = new EventEmitter<FormGroup>();
 
   @ViewChild('duInstance', { static: true }) duInstance: NgbTypeahead;
   focus$ = new Subject<string>();
@@ -66,7 +66,10 @@ export class MedFormComponent implements OnInit {
   enteredAdministrationInstructionsText: string = '';
   selectedAdministrationInstructionsData: AdministrationInstructions[] = [];
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private composerSchedulerService: ComposerSchedulerService
+  ) {}
 
   ngOnInit() {
     if (!this.medOptions) {
@@ -107,27 +110,19 @@ export class MedFormComponent implements OnInit {
         }
         // { validators: this.validator.bind(this) }
       );
-      // console.log('medOptions', this.medOptions);
-      // console.log('thisInit', this);
-      // console.log('medForm', this.medForm);
+      // console.log('medOptionsThis', this);
     }
+    this.composerSchedulerService.addFormGroup('med', this.medForm);
+    this.composerSchedulerService.performFormReset.subscribe(() => {
+      if (this.composerSchedulerService.performFormReset.value) {
+        this.resetMedForm();
+      }
+    });
   }
 
   initLowestMedicationStrengthOptionData(): void {
     if (this.medOptions.availableFormStrength[0]) {
-      // this.assignSelectedMedStrengthParameters(0);
-      this.changeSelectedStrength(0);
-    }
-  }
-
-  assignSelectedMedStrengthParameters(medStrengthIndex: number): void {
-    if (this.medForm) {
-      this.resetMedForm();
-      this.changeSelectedStrength(medStrengthIndex);
-    } else {
-      this.selectedFormStrengthOptions = this.medOptions.availableFormStrength[
-        medStrengthIndex
-      ];
+      this.changeSelectedStrength(0, false);
     }
   }
 
@@ -143,24 +138,38 @@ export class MedFormComponent implements OnInit {
     this.selectedRouteName = '';
     this.selectedPriority = 'STAT';
     this.enteredAdministrationInstructionsText = '';
+
+    for (const adminInstructions of this
+      .selectedAdministrationInstructionsData) {
+      const adminInstructionsCheckbox = document.getElementById(
+        `${adminInstructions.name}-${adminInstructions.id}`
+      ) as HTMLInputElement;
+      if (adminInstructionsCheckbox) {
+        adminInstructionsCheckbox.checked = false;
+      }
+    }
+
     this.selectedAdministrationInstructionsData = [];
 
-    this.medForm.reset();
-    // console.log('resetMedForm', this.medForm);
+    if (!this.selectedFormStrengthName) {
+      this.changeSelectedStrength(0, false);
+    }
+
+    // console.log('resetMedFormThis', this);
   }
 
   // ********** Form Strength ***************************
 
-  changeSelectedStrength(strengthIndex: number) {
+  changeSelectedStrength(strengthIndex: number, callReset: boolean = false) {
     if (
       this.selectedFormStrengthName &&
       this.medOptions.availableFormStrength[strengthIndex].formStrengthName ===
         this.selectedFormStrengthName
     ) {
-      console.log('do nothing');
+      '';
     } else {
-      if (this.medForm) {
-        this.resetMedForm();
+      if (this.medForm && callReset) {
+        this.composerSchedulerService.resetForm();
       }
 
       this.selectedFormStrengthOptions = this.medOptions.availableFormStrength[
@@ -178,12 +187,14 @@ export class MedFormComponent implements OnInit {
         );
       }
     }
-    // console.log('thisStrength', this);
+    // console.log('changeStrengthThis', this);
   }
 
   // ********** Dose/Unit ***************************
 
   changeSelectedDose(dose: any, source?: string) {
+    // console.log('doseValue', dose);
+
     if (source === 'happyButton' && typeof dose === 'object') {
       this.selectedDose = dose.dose;
       this.changeSelectedDoseUnit(dose.doseUnit);
@@ -195,8 +206,7 @@ export class MedFormComponent implements OnInit {
 
     this.changeSelectedDoseName();
 
-    // console.log('thisChangeDoseNumber', this);
-    // console.log('medForm', this.medForm);
+    // console.log('changeDoseNumberThis', this);
   }
 
   changeSelectedDoseUnit(unit: Unit) {
@@ -215,8 +225,7 @@ export class MedFormComponent implements OnInit {
       this.medForm.controls['doseUnitData'].setValue(null);
     }
 
-    // console.log('thisChangeDoseUnit', this);
-    // console.log('medForm', this.medForm);
+    // console.log('changeDoseUnitThis', this);
   }
 
   changeSelectedDoseUnitByLookup(unitName: string): void {
@@ -225,8 +234,7 @@ export class MedFormComponent implements OnInit {
       ? null
       : UNITS.find((fndUnit) => fndUnit.unitName === unitName);
     this.changeSelectedDoseUnit(matchingUnit);
-    // console.log('thisChangeDoseUnitByLookup', this);
-    // console.log('medForm', this.medForm);
+    // console.log('changeDoseUnitByLookupThis', this);
   }
 
   changeSelectedDoseName(): void {
@@ -266,30 +274,6 @@ export class MedFormComponent implements OnInit {
     return mergeResults;
   };
 
-  // TODO: Check if these methods are needed
-
-  lookupUnit(text$: Observable<string>) {
-    return text$.pipe(
-      debounceTime(200),
-      distinctUntilChanged(),
-      map((term) =>
-        term.length < 1
-          ? []
-          : UNITS.filter((unit) =>
-              new RegExp(term, 'mi').test(unit.unitName)
-            ).slice(0, 10)
-      )
-      // TODO this.units but this is undefined
-    );
-  }
-
-  formatUnit = (unit: Unit) => unit.unitName;
-
-  getSelectedDoseUnitName(): string {
-    alert(this.selectedDoseUnitName);
-    return this.selectedDoseUnitName;
-  }
-
   // ********** Route Of Administration ***************************
 
   changeSelectedRoute(route: Route) {
@@ -305,8 +289,7 @@ export class MedFormComponent implements OnInit {
       this.medForm.controls['routeName'].setValue('');
       this.medForm.controls['routeOfAdministrationData'].setValue(null);
     }
-    // console.log('thisRouteObject', this);
-    // console.log('medForm', this.medForm);
+    // console.log('RouteThis', this);
   }
 
   changeSelectedRouteByLookup(routeName: string): void {
@@ -358,8 +341,7 @@ export class MedFormComponent implements OnInit {
   changeSelectedPriority(priority: string) {
     this.selectedPriority = priority;
     this.medForm.controls['priority'].setValue(priority);
-    // console.log('thisPriorityString', this);
-    // console.log('medForm', this.medForm);
+    // console.log('priorityThis', this);
   }
 
   // ********** Administration Instructions ***************************
@@ -373,8 +355,7 @@ export class MedFormComponent implements OnInit {
       this.medForm.controls['administrationInstructionsText'].setValue('');
     }
 
-    // console.log('thisAdminInstructions', this);
-    // console.log('medForm', this.medForm);
+    // console.log('adminInstructionsThis', this);
   }
 
   updateSelectedAdminInstructions(
@@ -408,20 +389,30 @@ export class MedFormComponent implements OnInit {
         );
       }
     }
-    // console.log('enteredAdminText', this.enteredAdministrationInstructionsText);
-    // console.log('medForm', this.medForm);
+    // console.log('enteredAdminTextThis', this);
   }
 
   // ********** Validators ***************************
 
   doseValidator(control: AbstractControl): { [key: string]: any } | null {
-    console.log('controlValue', control.value);
-    if (!control.value) {
-      return { error: '** Dose is required' };
-    } else if (control.value.toString().includes('-')) {
-      return { error: '** Dose cannot be negative or contain dashes' };
-    } else if (control.value.length > 4) {
-      return { error: '** Dose cannot be > 4 characters' };
+    if (
+      !control ||
+      control.value === undefined ||
+      control.value === null ||
+      control.value === ''
+    ) {
+      return { error: '** Blank or invalid dose' };
+    } else {
+      const valueAsString = control.value.toString();
+      if (valueAsString.includes('-')) {
+        return { error: '** Dose cannot be negative or contain dashes' };
+      } else if (valueAsString.includes('+')) {
+        return { error: '** Dose cannot contain plus signs' };
+      } else if (valueAsString === '0') {
+        return { error: '** Dose cannot be 0' };
+      } else if (control.value.length > 4) {
+        return { error: '** Dose cannot be > 4 characters' };
+      }
     }
     return null;
   }
