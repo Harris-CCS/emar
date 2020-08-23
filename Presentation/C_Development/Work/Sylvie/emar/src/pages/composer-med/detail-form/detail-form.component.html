@@ -17,12 +17,12 @@
         <div class="form-group">
             <label for="diagnosis">Diagnosis</label><br>
             <div ngbDropdown class="d-inline-block dropdown-select">
-                <button class="btn btn-outline-dark" id="diagnosis" ngbDropdownToggle>
+                <button class=" btn btn-outline-dark" id="diagnosis" ngbDropdownToggle>
                     {{ selectedDiagnosis? selectedDiagnosis: "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;" }}
                 </button>
                 <div ngbDropdownMenu aria-labelledby="diagnosis">
-                    <button ngbDropdownItem (click)="changeSelectedDiagnosis('-- diagnosis --')">
-                        -- diagnosis --
+                    <button ngbDropdownItem (click)="changeSelectedDiagnosis('')">
+                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                     </button>
                     <button ngbDropdownItem *ngFor="let diagnosis of diagnoses"
                         (click)="changeSelectedDiagnosis(diagnosis)">
@@ -46,15 +46,19 @@
         -->
             <div class="form-group">
                 <label for="diagnosis">Antimicrobial Indication</label><br>
-                <div ngbDropdown class="d-inline-block dropdown-select" #indicationDrop="ngbDropdown">
+                <span class="requirement" *ngIf="detailForm.get('antimicrobialIndication').invalid">*&nbsp;
+                </span>
+                <div ngbDropdown class="d-inline-block dropdown-select" #indicationDrop="ngbDropdown"
+                    placement="bottom-left" [ngbPopover]="reqIndication" [openDelay]="1000"
+                    triggers="mouseenter:mouseleave" [disablePopover]="detailForm.get('antimicrobialIndication').valid">
                     <button class="btn"
                         [ngClass]="{'btn-outline-danger': selectedIndication==='', 'btn-outline-dark':selectedIndication!==''}"
                         id="indication" ngbDropdownToggle>
                         {{ selectedIndication? selectedIndication: "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;" }}
                     </button>
                     <div ngbDropdownMenu aria-labelledby="indication">
-                        <button ngbDropdownItem (click)="changeSelectedIndication('-- indication --')">
-                            -- indication --
+                        <button ngbDropdownItem (click)="changeSelectedIndication('')">
+                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                         </button>
                         <button ngbDropdownItem *ngFor="let indication of indications"
                             (click)="changeSelectedIndication(indication)">
@@ -78,10 +82,14 @@
                     </div>
                 </div>
                 <!-- <div class="requirement" *ngIf="selectedIndication==''">Required</div> -->
-                <div class="requirement" *ngIf="(detailForm.get('antimicrobialIndication').invalid)">
+                <!-- <div class="requirement" *ngIf="(detailForm.get('antimicrobialIndication').invalid)">
                     {{detailForm.getError('error','antimicrobialIndication')}}
-                </div>
+                </div> -->
             </div>
         </span>
     </span>
 </div>
+
+<ng-template #reqIndication><span class="requirement req-popover">
+        {{detailForm.getError('error','antimicrobialIndication')}} </span>
+</ng-template>

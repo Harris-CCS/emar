@@ -10,6 +10,7 @@ import { ModalService } from '../../services/modal.service';
 import { MedOrderService } from '../../services/med-order.service';
 import { COMPOSER_OPTIONS } from '../../app/mockup/composerOptions';
 import { ComposerOptions } from '../../app/interfaces/composerOptions';
+import { ComposerSchedulerService } from '../../services/composer-scheduler.service';
 
 @Component({
   selector: 'composer-med',
@@ -19,24 +20,40 @@ import { ComposerOptions } from '../../app/interfaces/composerOptions';
 
 // Inspiration: https://itnext.io/partial-reactive-form-with-angular-components-443ca06d8419
 export class ComposerMedComponent implements OnInit {
-  composerMedForm: FormGroup;
+  @Input() resetForm: boolean;
+  // composerMedForm: FormGroup;
   options: ComposerOptions = COMPOSER_OPTIONS[0]; // TODO API call
   selectedFormStrength = 0;
 
   constructor(
     private fb: FormBuilder,
     private modalService: ModalService,
-    private medOrderService: MedOrderService
+    private medOrderService: MedOrderService,
+    private composerSchedulerService: ComposerSchedulerService
   ) {}
 
   ngOnInit(): void {
-    this.composerMedForm = this.fb.group({
-      orderNotes: null, // this is here for test
-    });
+    // this.composerMedForm = this.fb.group({
+    //   orderNotes: null, // this is here for test
+    // });
   }
 
-  formInitialized(name: string, form: FormGroup) {
-    this.composerMedForm.setControl(name, form);
+  // formInitialized(name: string, form: FormGroup) {
+  //   this.composerMedForm.setControl(name, form);
+  // }
+
+  isMedComposerFormInvalid(): boolean {
+    return this.composerSchedulerService.composerMedForm.invalid ? true : false;
+  }
+
+  isMedComposerPropertyInvalid(property: string): boolean {
+    return this.composerSchedulerService.composerMedForm.get(property).invalid
+      ? true
+      : false;
+  }
+
+  resetMedComposerForm() {
+    this.modalService.close('medComposer');
   }
 
   getData() {
