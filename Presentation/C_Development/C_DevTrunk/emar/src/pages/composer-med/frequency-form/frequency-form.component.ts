@@ -29,8 +29,9 @@ import { FREQUENCIES } from '../../../app/mockup/frequencies';
 import { ModalService } from 'src/services/modal.service';
 import { Order } from 'src/app/interfaces/order';
 import { Duration } from 'src/app/interfaces/duration';
+import { Unit } from 'src/app/interfaces/unit';
 import { ComposerSchedulerService } from 'src/services/composer-scheduler.service';
-const DURATION_UNITS: string[] = ['Doses', 'Hours', 'Days'];
+const DURATION_UNITS: string[] = ['Dose(s)', 'Hour(s)', 'Day(s)'];
 
 @Component({
   selector: 'frequency-form',
@@ -54,10 +55,12 @@ export class FrequencyFormComponent implements OnInit {
   startEvent = new EventEmitter<string>();
   endEvent = new EventEmitter<string>();
   selectedFrequencyName: string = '';
-  selectedFrequencyData: Frequency;
+  selectedFrequencyData: Frequency = {};
   selectedDuration: number;
-  selectedDurationUnit: Duration;
-  selectedDurationUnitName: string;
+  selectedDurationUnit: Unit;
+  selectedDurationUnitName: string = '';
+  initialStartDateTime: string = '';
+  initialEndDateTime: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -67,58 +70,67 @@ export class FrequencyFormComponent implements OnInit {
 
   ngOnInit() {
     // default values
-    let selectedStartDateTime: string = '';
-    let selectedEndDateTime: string = '';
-    let selectedFrequency: string = '';
-    let selectedFrequencyData: object = {};
-    let selectedDuration: string = '';
-    let selectedDurationUnit: string = '';
-    if (
-      this.order === null ||
-      this.order.startTime === null ||
-      this.order.startTime === ''
-    ) {
-      selectedStartDateTime = this.API2displayDateTime(); // now
-    } else {
-      selectedStartDateTime = this.API2displayDateTime(this.order.startTime);
-    }
-    if (
-      this.order === null ||
-      this.order.triageTime == null ||
-      this.order.triageTime === ''
-    ) {
-      this.minStartDateTime =
-        selectedStartDateTime.replace(/ .+$/, '') + ' 00:00'; /// TODO starttime - some hours
-    } else {
-      this.minStartDateTime = this.API2displayDateTime(this.order.triageTime);
-    }
-    if (this.order !== null) {
-      selectedFrequencyData = this.order.frequency;
-      selectedFrequency = this.order.frequency.frequencyName;
-      selectedEndDateTime = this.order.endTime;
-      selectedDuration = this.order.duration.duration.toString();
-      selectedDurationUnit = this.order.duration.durationUnit.unitName;
-    }
+    // let selectedStartDateTime: string = '';
+    // let selectedEndDateTime: string = '';
+    // let selectedFrequency: string = '';
+    // let selectedFrequencyData: object = {};
+    // let selectedDuration: string = '';
+    // let selectedDurationUnit: string = '';
+    // if (
+    //   this.order === null ||
+    //   this.order.startTime === null ||
+    //   this.order.startTime === ''
+    // ) {
+    //   selectedStartDateTime = this.API2displayDateTime(); // now
+    // } else {
+    //   selectedStartDateTime = this.API2displayDateTime(this.order.startTime);
+    // }
+    // if (
+    //   this.order === null ||
+    //   this.order.triageTime == null ||
+    //   this.order.triageTime === ''
+    // ) {
+    //   this.minStartDateTime =
+    //     selectedStartDateTime.replace(/ .+$/, '') + ' 00:00'; /// TODO starttime - some hours
+    // } else {
+    //   this.minStartDateTime = this.API2displayDateTime(this.order.triageTime);
+    // }
+    // if (this.order !== null) {
+    //   selectedFrequencyData = this.order.frequency;
+    //   selectedFrequency = this.order.frequency.frequencyName;
+    //   selectedEndDateTime = this.order.endTime;
+    //   selectedDuration = this.order.duration.duration.toString();
+    //   selectedDurationUnit = this.order.duration.durationUnit.unitName;
+    // }
     // form definition
     // TODO date format validator, end >= start validator in case manual entry
+    this.setDefaults();
     this.frequencyForm = this.fb.group({
-      frequency: new FormControl(selectedFrequency, [
+      frequency: new FormControl(this.selectedFrequencyName, [
         Validators.required,
         this.frequencyValidator,
       ]),
-      frequencyData: new FormControl(selectedFrequencyData),
-      duration: new FormControl(selectedDuration, [
+      frequencyData: new FormControl(this.selectedFrequencyData),
+      duration: new FormControl(this.selectedDuration, [
         // Validators.required,
         this.durationValidator,
         this.durationValidator.bind(this),
       ]),
-      durationUnit: new FormControl(selectedDurationUnit, [
+      durationUnit: new FormControl(this.selectedDurationUnit, [
         // Validators.required,
         this.durationUnitValidator,
         this.durationUnitValidator.bind(this),
       ]),
-      startTime: new FormControl(selectedStartDateTime),
-      endTime: new FormControl(selectedEndDateTime),
+      startTime: new FormControl(this.initialStartDateTime, [
+        Validators.required,
+        this.startTimeValidator,
+        this.startTimeValidator.bind(this),
+      ]),
+      endTime: new FormControl(this.initialEndDateTime, [
+        // Validators.required,
+        this.endTimeValidator,
+        this.endTimeValidator.bind(this),
+      ]),
     });
     // this.formReady.emit(this.frequencyForm);
     this.composerSchedulerService.addFormGroup('frequency', this.frequencyForm);
@@ -137,11 +149,50 @@ export class FrequencyFormComponent implements OnInit {
   }
 
   resetFrequencyForm() {
+    this.setDefaults();
+    this.frequencyForm.patchValue({ startTime: this.initialStartDateTime });
+    this.frequencyForm.patchValue({ endTime: this.initialEndDateTime });
+    console.log('resetFrequencyThis', this);
+  }
+
+  setDefaults(): void {
     this.selectedFrequencyName = '';
     this.selectedFrequencyData = {};
     this.selectedDuration = null;
     this.selectedDurationUnit = {};
     this.selectedDurationUnitName = '';
+    this.initialStartDateTime = '';
+    this.initialEndDateTime = '';
+    if (
+      this.order === null ||
+      this.order.startTime === null ||
+      this.order.startTime === ''
+    ) {
+      this.initialStartDateTime = this.API2displayDateTime(); // now
+    } else {
+      this.initialStartDateTime = this.API2displayDateTime(
+        this.order.startTime
+      );
+    }
+    if (
+      this.order === null ||
+      this.order.triageTime == null ||
+      this.order.triageTime === ''
+    ) {
+      this.minStartDateTime =
+        this.initialStartDateTime.replace(/ .+$/, '') + ' 00:00'; /// TODO starttime - some hours
+    } else {
+      this.minStartDateTime = this.API2displayDateTime(this.order.triageTime);
+    }
+    if (this.order !== null) {
+      this.selectedFrequencyData = this.order.frequency;
+      this.selectedFrequencyName = this.order.frequency.frequencyName;
+      this.initialEndDateTime = this.order.endTime;
+      this.selectedDuration = this.order.duration.duration;
+      this.selectedDurationUnit = this.order.duration.durationUnit;
+      this.selectedDurationUnitName = this.order.duration.durationUnit.unitName;
+    }
+    // console.log('frequencyDefaultsThis', this);
   }
 
   // ****************** Frequency ***************************
@@ -258,9 +309,9 @@ export class FrequencyFormComponent implements OnInit {
       );
     }
 
-    this.maybeResetStartEndTimes();
+    this.maybeResetEndTime();
     // console.log('durationUnitValidationErrors', durationUnitValidationErrors);
-    // console.log('durationThis', this);
+    console.log('durationThis', this);
   }
 
   onDurationUnit(unit: string) {
@@ -277,17 +328,17 @@ export class FrequencyFormComponent implements OnInit {
       );
     }
 
-    this.maybeResetStartEndTimes();
+    this.maybeResetEndTime();
     // console.log('durationValidationErrors', durationValidationErrors);
     // console.log('DurationUnitThis', this);
   }
 
-  maybeResetStartEndTimes(): void {
+  maybeResetEndTime(): void {
     if (
       this.frequencyForm.get('duration').valid &&
       this.frequencyForm.get('durationUnit').valid
     ) {
-      this.frequencyForm.controls['startTime'].setValue('');
+      // this.frequencyForm.controls['startTime'].setValue('');
       this.frequencyForm.controls['endTime'].setValue('');
     }
   }
@@ -373,6 +424,7 @@ export class FrequencyFormComponent implements OnInit {
     }
     return text;
   }
+
   onSelectTime(type: string) {
     if (type === 'start') {
       this.modalService.open(
@@ -386,7 +438,7 @@ export class FrequencyFormComponent implements OnInit {
       );
     } else {
       let dateTime: string;
-      if (this.frequencyForm.controls['endTime'].value == '') {
+      if (this.frequencyForm.controls['endTime'].value === '') {
         dateTime = this.frequencyForm.controls['startTime'].value;
       } else {
         dateTime = this.frequencyForm.controls['endTime'].value;
@@ -402,15 +454,55 @@ export class FrequencyFormComponent implements OnInit {
       );
     }
     this.maybeResetDuration();
-    // console.log('startEndDateTimesThis', this);
+    console.log('startEndDateTimesThis', this);
+  }
+
+  startTimeValidator(control: AbstractControl): { [key: string]: any } | null {
+    // console.log('durationControlValue', control.value);
+    if (!control || !this || !this.frequencyForm) {
+      return null;
+    } else if (!control.value) {
+      return { error: '** Start Time is required' };
+    } else if (!this.validDateTime(control.value)) {
+      return {
+        error:
+          'Invalid date/time or date/time format. Must be DD/MM/YYYY HH:MM format.',
+      };
+    }
+    return null;
+  }
+
+  endTimeValidator(control: AbstractControl): { [key: string]: any } | null {
+    // console.log('durationControlValue', control.value);
+    if (!control || !control.value || !this || !this.frequencyForm) {
+      return null;
+    } else if (!this.validDateTime(control.value)) {
+      return {
+        error:
+          'Invalid date/time or date/time format. Must be DD/MM/YYYY HH:MM format.',
+      };
+    }
+    return null;
+  }
+
+  validDateTime(date: string) {
+    const pattern = new RegExp(
+      '^(1[0-2]|0[1-9])/(3[01]|[12][0-9]|0[1-9])/[0-9]{4} (2[0-3]|[01]?[0-9]):([0-5]?[0-9])$'
+    );
+    if (date.search(pattern) === 0) {
+      return true;
+    }
   }
 
   maybeResetDuration(): void {
+    console.log('maybeResetDuration');
     if (
       // this.frequencyForm.controls['startTime'].value &&
       // this.frequencyForm.controls['endTime'].value &&
       this.frequencyForm.get('startTime').valid &&
-      this.frequencyForm.get('endTime').valid
+      this.frequencyForm.get('endTime').valid &&
+      this.frequencyForm.get('startTime').value &&
+      this.frequencyForm.get('endTime').value
     ) {
       this.selectedDuration = null;
       this.selectedDurationUnit = null;
