@@ -1,5 +1,5 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable, of, Subject } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, map, tap, switchMap } from 'rxjs/operators';
 
@@ -16,47 +16,91 @@ import { SelectorMatcher } from '@angular/compiler';
 
 export class MedOrderService {
 
+  /* URL to WebAPI */
+  private userQuickListsUrl = 'api/userquicklists'
+  private deptPreferredListUrl = '/api/sites/12/departmentPreferredLists'
+  private groupListUrl = '/api/sites/16/groupsrememberedorderslists'
+  private orderUrl = 'api/orders'
+  //private cartUrl = 'api/carts'
+
   private currentOrders: Order[];
   private cartOrders: Order[];
   private quickListOrders: Medication[];
   private dptPreferredOrders: Medication[];
   private groupsOrders: Medication[];
+  
+  //private selectedTab: string = 'B';  //default tab
+  //private tabListTabs = ['Most Used', '#', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+
+
   allergiesInteractionChanged : Subject<any> = new Subject();
   drugsInteractionChanged : Subject<any> = new Subject();
 
   private searchResults: Observable<Medication[]>;
 
-  //constructor( private http: HttpClient ) { 
-  constructor() { 
-    
+  constructor( private http: HttpClient ) { 
+  //constructor() {
     this.currentOrders = ORDERS.slice(0, 6);
     this.cartOrders = ORDERS.slice(5, 9);
 
-    this.quickListOrders = MEDICATIONS.slice(100, 108);
+    //this.quickListOrders = MEDICATIONS.slice(100, 108);
+    this.quickListOrders = MEDICATIONS;
     this.dptPreferredOrders = MEDICATIONS.slice(10, 12);
     this.groupsOrders = MEDICATIONS.slice(30, 40);
   }
+  
+  ngOnInit(): void {
+    // this.currentOrders = ORDERS.slice(0, 6);
+    // this.cartOrders = ORDERS.slice(5, 9);
+
+    // //this.quickListOrders = MEDICATIONS.slice(100, 108);
+    // this.quickListOrders = MEDICATIONS;
+    // this.dptPreferredOrders = MEDICATIONS.slice(10, 12);
+    // this.groupsOrders = MEDICATIONS.slice(30, 40);
+  }
 
   /* Current Orders */
+  //mock data
   getCurrentOrders(): Order[] {
     console.log('MedOrderService: getCurrentOrders: ', this.currentOrders)
     return this.currentOrders;
     //return [];
   }
 
-  /* Cart Orders */
-  getCartOrders(): Order[] {
-    console.log('MedOrderService: getCartOrders: ', this.cartOrders)
-    return this.cartOrders;
-    //return [];
+  //API data  
+  getCurrentOrdersAPI(patientId: number): Observable<any> {
+    const headers = new HttpHeaders({ Accept: 'application/json'})
+    const patientCurOrderUrl = `${this.orderUrl}?patientId=${patientId}`
+    console.log('MedOrderService: getCurrentOrdersAPI: patientCurOrderUrl: ', patientCurOrderUrl)
+
+    return this.http
+      .get<any>(patientCurOrderUrl, { headers })
+      .pipe(catchError(this.handleError<any>('getCurrentOrddrAPI')))
   }
+
+  /* Cart Orders */
+  // getCartOrders(): Order[] {
+  //   console.log('MedOrderService: getCartOrders: ', this.cartOrders)
+  //   return this.cartOrders;
+  //   //return [];
+  // }
+
+  // getCartOrders(patientId: number, userId: number): Observable<any> {
+  //   const headers = new HttpHeaders({ Accept: 'application/json', 'X-User': `${userId}`})
+  //   const cartOrderUrl = `${this.cartUrl}/${patientId}`
+  //   console.log('MedOrderService: getCartOrders: cartOrderUrl: ', cartOrderUrl)
+    
+  //   return this.http
+  //     .get<any>(cartOrderUrl, { headers })
+  //     .pipe(catchError(this.handleError<any>('getCartOrders')))
+  // }
 
   postCartOrder(med: Medication, listType?: string) {
     console.log('postCartOrder: selected med:', med)
     let ord: Order = {
-      id: 99,
+      id: med.id,
       patientId: 2,
-      name: med.name,
+      name: med.brandName,
       startTime: '2019-06-28T14:00:00',
       endTime: '2019-06-30T14:00:00',
       dose: med.dose,
@@ -75,7 +119,7 @@ export class MedOrderService {
     let ord: Order = {
       id: 555,
       patientId: 2,
-      name: med.name,
+      name: med.brandName,
       startTime: '2019-06-28T14:00:00',
       endTime: '2019-06-30T14:00:00',
       dose: med.dose,
@@ -88,30 +132,92 @@ export class MedOrderService {
     console.log('updateCartOrder: updated ord:', ord)
   }
 
-  removeCartOrder(ord: Order) {
-    console.log('MedOrderService: removeCartOrder: ord:', ord);
-    this.cartOrders = this.cartOrders.filter(cartord => cartord.name !== ord.name);
+  // removeCartOrder(ord: Order) {
+  //   console.log('MedOrderService: removeCartOrder: ord:', ord);
+  //   this.cartOrders = this.cartOrders.filter(cartord => cartord.name !== ord.name);
+  // }
+
+  // removeAllCartOrder(patientId: number) {
+  //   console.log('MedOrderService: removeAllCartOrder: patientId: ', patientId);
+  //   this.cartOrders = [];
+  // }
+
+  /* QuickList Tabs */
+  // getTabListTabs() {
+  //   //console.log('MedOrderService: getTabListTabs: ', this.tabListTabs);
+  //   return this.tabListTabs;
+  // }
+
+  getUserQuickLists(): Observable<any> {
+    const headers = new HttpHeaders({ Accept: 'application/json', 'X-User': '5555' })
+
+    return this.http
+      .get<any>(this.userQuickListsUrl, { headers })
+      .pipe(
+        tap(_ => console.log('med-order.service: getUserQuickLists HTTP Client - GET')),
+        catchError(this.handleError<any>('getUserQuickLists')))
   }
 
-  removeAllCartOrder(patientId: number) {
-    console.log('MedOrderService: removeAllCartOrder: patientId: ', patientId);
-    this.cartOrders = [];
+  getMedListBySelectedTab(tab: string) {
+    console.log('MedOrderService: getMedListBySelectedTab: ', tab)
+    //console.log('MedOrderService: getMedListBySelectedTab: return ', this.quickListOrders.filter((m) => m.name.startsWith(tab)).length, ' meds');
+    //this.selectedTab = tab
+    console.log('MedOrderService: getMedListBySelectedTab: selectedTab', tab)
+
+    const headers = new HttpHeaders({ Accept: 'application/json', 'X-User': '5555' })
+    const userQuickListsByTabUrl = `${this.userQuickListsUrl}/tabs/${tab}`
+    console.log('MedOrderService: getMedListBySelectedTab: userQuickListsByTabUrl: ', userQuickListsByTabUrl)
+
+    return this.http
+      .get<any>(userQuickListsByTabUrl, { headers })
+      .pipe(
+        tap(_ => console.log(`med-order.service: getMedListBySelectedTab: ${tab}`)),
+        catchError(this.handleError<any>('getMedListBySelectedTab'))
+      )
+
+    // if (tab === 'Most Used') {
+    //   return this.quickListOrders
+    // } else if (tab === '#') {
+    //   return this.quickListOrders.filter((m) => /^[^A-Za-z]/.test(m.name))
+    // } else {
+    //   return this.quickListOrders.filter((m) => m.name.startsWith(tab))
+    // }
   }
 
   /* QuickList Orders */
-  getQuickListOrders(): Medication[] {
-    console.log('MedOrderService: getQuickListOrders: ', this.quickListOrders);
-    return this.quickListOrders;
-  }
+  // getQuickListOrders(): Medication[] {
+  //   //console.log('MedOrderService: getQuickListOrders: selectedTab? ', selectedTab);
+
+  //   return this.getMedListBySelectedTab();
+  // }
   
   /* Department Orders */
-  getDptPreferredOrders(): Medication[] {
-    return this.dptPreferredOrders;
+  getDeptPreferredOrdersList(): Observable<any> {
+    const headers = new HttpHeaders({ Accept: 'application/json' })
+    
+    return this.http
+      .get<any>(this.deptPreferredListUrl, { headers })
+      .pipe(
+        tap(_ => console.log('med-order.service: getDeptPreferredOrdersList HTTP Client - GET')),
+        catchError(this.handleError<any>('getDeptPreferredOrdersList', []))
+      )
   }
   
   /* Groups Orders */
-  getGroupsOrders(): Medication[] {
-    return this.groupsOrders;
+  getGroupsOrdersList(): Observable<any> {
+    const headers = new HttpHeaders({ Accept: 'application/json' })
+
+    return this.http
+      .get<any>(this.groupListUrl, { headers })
+      .pipe(
+        tap(_ => console.log('med-order.service: getGroupOrdersList HTTP Client - GET')),
+        map(resp => (resp && resp.groups) ? resp.groups.map((group) => ({
+          ...group
+          // displayGroupName: group.groupName,
+          // ...group.orders,
+        })) : []),
+        catchError(this.handleError<any>('getGroupOrdersList', []))
+      )
   }
 
   /* Typeahead Search */
@@ -137,6 +243,16 @@ export class MedOrderService {
   }*/
 
   search(term: string): Medication[] {
-    return MEDICATIONS.filter(med => med.name.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10);
+    return MEDICATIONS.filter(med => med.brandName.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10);
+  }
+
+
+  /* Handle Http failed */
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      console.error('MedOrderService-handleError: ERROR: ', error);
+      console.error('MedOrderService-handleError: STATUS: ', error.status);
+      return of(result as T);
+    };
   }
 }

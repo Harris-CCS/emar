@@ -12,6 +12,8 @@ import { COMPOSER_OPTIONS } from '../../app/mockup/composerOptions';
 import { ComposerOptions } from '../../app/interfaces/composerOptions';
 import { ComposerSchedulerService } from '../../services/composer-scheduler.service';
 
+import { CartStoreService } from '../../services/cart-store.service';
+
 @Component({
   selector: 'composer-med',
   templateUrl: './composer-med.component.html',
@@ -29,6 +31,7 @@ export class ComposerMedComponent implements OnInit {
     private fb: FormBuilder,
     private modalService: ModalService,
     private medOrderService: MedOrderService,
+    private cartStoreService: CartStoreService,
     private composerSchedulerService: ComposerSchedulerService
   ) {}
 
@@ -95,18 +98,23 @@ export class ComposerMedComponent implements OnInit {
         this.saveCartOrder();
       });
     });
+    // this.saveCartOrder()
   };
 
   saveCartOrder = () => {
     if (this.getData().action === 'update') {
-      this.medOrderService.updateCartOrder(this.getMed());
+      console.log('saveCartOrder: PUT: med: ', this.getData())
+      // this.medOrderService.updateCartOrder(this.getMed().med);
+      this.cartStoreService.updateCartOrder(this.getMed(), 1, 5555, '')
       console.log(
-        `UPDATE order: ${this.getMed().id}  name: ${this.getMed().name}`
+        `UPDATE order: ${this.getMed().id}  name: ${this.getMed().brandName}`
       );
     } else {
-      this.medOrderService.postCartOrder(this.getMed());
+      // this.medOrderService.postCartOrder(this.getMed());
+      console.log('saveCartOrder: POST: med: ', this.getData())
+      this.cartStoreService.postCartOrder(this.getMed(), 1, 5555, '')
       console.log(
-        `Add order: ${this.getMed().id}  name: ${this.getMed().name}`
+        `ADD order: ${this.getMed().id}  name: ${this.getMed().brandName}`
       );
     }
 

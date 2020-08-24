@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, tap } from 'rxjs/operators';
 
@@ -11,7 +11,6 @@ import { environment } from '../environments/environment';
 
 import { PATIENTS } from '../app/mockup/patients';
 import { ORDERS } from '../app/mockup/orders';
-import { of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -38,16 +37,16 @@ export class PatientService {
       .pipe(catchError(this.handleError<PatientResponse>('getPatients')));
   }
 
-  // getPatient(patientId: number): Observable<Patient> {
-  //   const headers = new HttpHeaders({ Accept: 'application/json' });
-  //   const url = `${this.patientUrl}/${patientId}`;
+  getPatientAPI(patientId: number): Observable<Patient> {
+    const headers = new HttpHeaders({ Accept: 'application/json' });
+    const url = `${this.patientUrl}/${patientId}`;
 
-  //   console.log('patient.service: getPatient patientId:', patientId);
-  //   console.log('patient.service: getPatient url:', url);
-  //   return this.http
-  //     .get<Patient>(url, { headers })
-  //     .pipe(catchError(this.handleError<Patient>('getPatient')));
-  // }
+    console.log('patient.service: getPatientAPI patientId:', patientId);
+    console.log('patient.service: getPatientAPI url:', url);
+    return this.http
+      .get<Patient>(url, { headers })
+      .pipe(catchError(this.handleError<Patient>('getPatientAPI')));
+  }
 
   getPatientOrders(patientId: number): Order[] {
     const orders = ORDERS.filter((o) => {

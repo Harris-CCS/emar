@@ -16,38 +16,46 @@
             <composer-med-modal></composer-med-modal>
             <div class="orders">
                 <div class="orders-new">
-                    <h3>NEW ORDERS</h3>
+                    <!-- <h3>NEW ORDERS <span class="count">{{cartStoreService.totalCount$ | async}}</span></h3> -->
+                    <h3>NEW ORDERS 
+                        <span [ngClass]="{'count': (cartStoreService.totalCount$ | async)}">
+                            {{(cartStoreService.totalCount$ | async) ? (cartStoreService.totalCount$ | async) : ''}}
+                        </span>
+                    </h3>
                     <span class="no-data" style="display:none">No New Orders</span>
                     <div>
                         <med-search></med-search>
                     </div>
                     <div id="orders-cart">
-                        <order-cart-list [items]="cartListOrders()" [patientId]="patientId"></order-cart-list>
+                        <order-cart-list [patientId]="patientId"></order-cart-list><!--[items]="cartListOrders()" -->
                     </div>
                 </div>
                 <div class="orders-current">
-                    <h3>CURRENT ORDERS</h3>
-                    <ul>
-                        <li *ngFor="let ord of currentOrders">
-                            <span
-                                [ngClass]="{'allergy-dot': ord.allergies?.length, 'placeholder-dot': ord.allergies?.length === 0 || !ord.allergies}"></span>
-                            <span
-                                [ngClass]="{'drug-dot' : ord.drugs?.length, 'placeholder-dot': ord.drugs?.length === 0 || !ord.drugs}"></span>
-                            <span>{{ord.name}} {{ord.route | uppercase}} {{ord.dose}}</span>
-                            <span class="timestamp">{{ord.signedOn | date: "HH:mm"}} on
-                                {{ord.signedOn | date: "MM/dd/yy"}},
-                                Ordering physician: <i>{{ord.signedBy}}</i>
-                            </span>
-                        </li>
-                    </ul>
+                    <h3>CURRENT ORDERS 
+                        <!-- <span [ngClass]="{'count': (cartStoreService.totalCount$ | async)}">
+                            {{(cartStoreService.totalCount$ | async) ? (cartStoreService.totalCount$ | async) : ''}}
+                        </span> -->
+                    </h3>
+                    <div class="orders-current-wrapper">
+                        <ul class="list-group">
+                            <li class="list-group-item" *ngFor="let ord of currentOrders">
+                                <span [ngClass]="{'allergy-dot': ord.allergies?.length, 'placeholder-dot': ord.allergies?.length === 0 || !ord.allergies}" placement="right" ngbTooltip="Allergy Reaction placeholder"></span>
+                                <span [ngClass]="{'drug-dot' : ord.drugs?.length, 'placeholder-dot': ord.drugs?.length === 0 || !ord.drugs}" placement="right" ngbTooltip="Medication Interaction placeholder"></span>
+                                <span>
+                                    {{ord.displayName}} {{ord.displayRoute | uppercase}} {{ord.displayDose}} {{ord.displayDoseUnit}} {{ord.displayFrequency}}
+                                </span>
+                                <span 
+                                    class="details">{{ord.displaySignedOn | date: "HH:mm"}} <span class="minor">on</span> {{ord.displaySignedOn | date: "MM/dd/yy"}}, <span class="minor">Ordering physician:</span> {{ord.displaySignedBy}}
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <div class="lists">
                 <div class="toggle">
-                    <span [ngClass]="{'active': qlSelected}" (click)="onSelectTab('list-quick-orders')">Quick
-                        List</span>
-                    <span [ngClass]="{'active': dpSelected}" (click)="onSelectTab('list-dept-preferred-orders')">Dept
-                        Preferred List</span>
+                    <span [ngClass]="{'active': qlSelected}" (click)="onSelectTab('list-quick-orders')">Quick List</span>
+                    <span [ngClass]="{'active': dpSelected}" (click)="onSelectTab('list-dept-preferred-orders')">Dept Preferred List</span>
                     <span [ngClass]="{'active': gSelected}" (click)="onSelectTab('list-groups-orders')">Groups</span>
                 </div>
 
