@@ -1,21 +1,36 @@
-<ul>
-    <li *ngFor="let item of displayCartItems">
-        <span id="cart_{{item.id}}"></span>
-        <span [ngClass]="{'unresolved allergy-dot': item.allergies?.length, 'placeholder-dot': item.allergies?.length === 0, 'allergy-loader': !item.allergies}"></span>
-        <span [ngClass]="{'unresolved drug-dot' : item.drugs?.length, 'placeholder-dot': item.drugs?.length === 0, 'drug-loader': !item.drugs}"></span>
-        <label for="cart_{{item.id}}" (click)="editCartItem(item)">{{item.name}} {{item.dose}} {{item.route}}</label>
-        <button class="button delete" (click)="removeCartItem(item)"></button>
-    </li>
-</ul>
-<span class="no-data" *ngIf="!displayCartItems.length">No New Orders</span>
+<div class="orders-cart">
+    <ul class="list-group">
+        <!-- <li class="list-group-item" *ngFor="let item of displayCartItems"> -->
+        <li class="list-group-item" *ngFor="let item of cartStoreService.cartOrders$ | async; trackBy: cartOrdersTrackFn">
+            <span id="cart_{{item.id}}"></span>
+            <span [ngClass]="{'unresolved allergy-dot': item.allergies?.length, 'placeholder-dot': item.allergies?.length === 0, 'allergy-loader': !item.allergies}" 
+                  placement="right" 
+                  ngbTooltip="Allergy Reaction placeholder">
+            </span>
+            <span [ngClass]="{'unresolved drug-dot' : item.drugs?.length, 'placeholder-dot': item.drugs?.length === 0, 'drug-loader': !item.drugs}"
+                  placement="right" 
+                  ngbTooltip="Medication Interaction placeholder">
+            </span>
+            <label for="cart_{{item.id}}" (click)="editCartItem(item)">{{item.displayName}} {{item.displayDose}} {{item.displayDoseUnit}} {{item.displayRoute}}</label>
+            <!-- <button class="button delete" (click)="removeCartItem(item)"></button> -->
+            <button class="button delete" (click)="delete(item.id)"></button>
+        </li>
+    </ul>
+</div>
+<!-- <span class="no-data" *ngIf="!displayCartItems.length">No New Orders</span> -->
+<span class="no-data" *ngIf="(cartStoreService.cartOrders$ | async)?.length === 0">No New Orders</span>
 <button 
-    *ngIf="displayCartItems.length" 
+    *ngIf="cartStoreService.cartOrders$" 
     class="button-primary button-raised"
+    (click)="postAll(patientId)"
 >Sign</button>
 <button 
-    *ngIf="displayCartItems.length" 
+    *ngIf="cartStoreService.cartOrders$" 
     class="button-secondary button-raised" 
     title="Delete All" 
-    (click)="showDeleteAllCartOrderModal(patientId)"
->&#9851;</button>
+    (click)="deleteAll(patientId)"
+>🗑</button>
+
+<!-- (click)="showDeleteAllCartOrderModal(patientId)" -->
+
  

@@ -1,10 +1,10 @@
 export interface Medication {
     packagingId: string,
-    name: string,
+    brandName: string,
     drugStrength: string,
     dose: string,
     route: string,
-    id: string,
+    id: number,
     activeId: string,
     activeName: string,
 }
