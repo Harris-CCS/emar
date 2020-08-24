@@ -1,3 +1,13 @@
+.orders-cart {
+    overflow-y: auto;
+    max-height: 15rem;
+    margin-bottom: 1rem;
+
+    ul li:nth-of-type(odd) {
+        background-color: rgba(0, 0, 0, 0.04);
+    }
+}
+
 ul {
     margin: 0;
     padding: 0;
@@ -12,7 +22,7 @@ ul li {
     display: flex;
     cursor: pointer;
     font-weight: 500;
-    margin-bottom: 10px;
+    // margin-bottom: 10px;
 }
 
 ul li label {
@@ -89,4 +99,5 @@ ul li:hover {
     font-size: 14px;
     opacity: 0.5;
     display: block;
+    min-height: 4rem;
 }

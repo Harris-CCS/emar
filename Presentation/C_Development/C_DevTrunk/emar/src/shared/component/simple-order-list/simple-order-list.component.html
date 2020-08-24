@@ -1,13 +1,90 @@
-<div class="">
-    <ul>
-        <li *ngFor="let item of displayItems">
-            <input type="checkbox" id="med_{{item.id}}" (click)="orderOnClick1(item)"/>
-            <!--<label for="med_{{item.id}}">{{item.name}} {{item.dose}} {{item.route}}</label>-->
-            <button type="button" (click)="orderOnClick2(item)">
-                <span class="main">{{item.name}}</span>
-                <br>
-                <span class="addition">{{item.dose}} {{item.route}}</span>
-            </button>
-        </li>
-    </ul>
+<div class="tab-container">
+    <div *ngIf="listName !== 'groups'">
+        <!-- <div class="tab-label">
+            <ngb-pagination 
+                [collectionSize]="totalPages"
+                [(page)]="currentPage" 
+                [directionLinks]=false
+                [maxSize]=28
+                (pageChange)="pageChange()"
+                aria-label="Custom pagination"> -->
+                <!--<ng-template ngbPaginationPrevious>Prev</ng-template>
+                <ng-template ngbPaginationNext>Next</ng-template>-->
+                <!-- <ng-template ngbPaginationNumber let-p>{{ getPageSymbol(p) }}</ng-template>
+            </ngb-pagination>
+            <hr>
+
+            <pre>Current page: {{currentPage}}</pre>
+        </div> -->
+
+        <!-- <ul class="tab-list">
+            <li class="button-tab" *ngFor="let tab of displayTabs">
+                <input type="radio" id={{tab.name}} name="button--tab" value={{tab.name}}>
+                <label for={{tab.name}}>{{tab.name}}</label>
+            </li>
+        </ul>
+        <hr> -->
+
+        <!-- <div class="tab-list-bar invisible-scrollbar"> -->
+        <div class="tab-list-bar" *ngIf="displayTabs">
+            <ul class="tab-list-nowrap">
+                <li class="button-tab" *ngFor="let tab of displayTabs">
+                    <input 
+                        type="radio" id={{tab.name}} name="button--tab" 
+                        value={{tab.name}}
+                        [checked]=tab.isChecked
+                        (click)="tabOnClick(tab.name)"
+                        [attr.disabled]="!tab.isValid ? 'disabled' : null">
+                    <label [ngClass]="{'diag': !tab.isValid}" for={{tab.name}}>{{tab.name}}</label>
+                </li>
+            </ul>
+        </div>
+        <!-- <hr> -->
+        <!-- <pre>total {{selectedTab}} count: {{displayItems.length}}</pre> -->
+        <pre>total <b>{{selectedTab}}</b> count: {{displayItems.length}}</pre>
+
+        <div class="tab-content">
+            <ul class="list-group">
+            <!--<ul>-->
+                <li class="list-group-item" *ngFor="let item of displayItems">
+                <!--<li *ngFor="let item of displayItems">-->
+                    <span [ngClass]="{'control': true, 'enabled': item.hasBeenAdded}" (click)="orderOnClick1(item)"></span>
+                    <!-- <input type="checkbox" id="med_{{item.id}}" (click)="orderOnClick1(item)" [checked]="item.hasBeenAdded" /> -->
+                    <!-- <label for="med_{{item.id}}">{{item.name}} {{item.dose}} {{item.route}}</label> -->
+                    <button type="button" (click)="orderOnClick2(item)">
+                        <span class="main">{{item.displayName}}</span>
+                        <br>
+                        <span class="addition">{{item.displayFrequency}} - {{item.displayDose}} {{item.displayDoseUnit}} - {{item.displayRoute}}</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+    <div *ngIf="listName === 'groups'">
+        <div class="tab-content">
+            <!-- <pre>total <b>{{selectedTab}}</b>count: {{displayItems.length}}</pre> -->
+            <!-- <hr> -->
+            <div *ngFor="let group of displayItems">
+                <button id={{group.displayGroupName}} [ngClass]="{'active': panelToggle[group.displayGroupName], 'accordion': true}" (click)="toggle(group.displayGroupName)">{{group.displayGroupName}}</button>
+                <div [ngClass]="{'active': panelToggle[group.displayGroupName], 'panel': true, 'tab-content': true}" id={{group.displayGroupName}}Panel>
+                    <ul class="list-group">
+                    <!--<ul>-->
+                        <li class="list-group-item" *ngFor="let item of group.orders">
+                        <!--<li *ngFor="let item of displayItems">-->
+                            <span [ngClass]="{'control': true, 'enabled': item.hasBeenAdded}" (click)="orderOnClick1(item)"></span>
+                            <!-- <input type="checkbox" id="med_{{item.id}}" (click)="orderOnClick1(item)" [checked]="item.hasBeenAdded" /> -->
+                            <!-- <label for="med_{{item.id}}">{{item.name}} {{item.dose}} {{item.route}}</label> -->
+                            <button type="button" (click)="orderOnClick2(item)">
+                                <span class="main">{{item.displayName}}</span>
+                                <br>
+                                <span class="addition">{{item.displayFrequency}} - {{item.displayDose}} {{item.displayDoseUnit}} - {{item.displayRoute}}</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div> 
 </div>

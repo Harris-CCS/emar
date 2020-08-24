@@ -51,11 +51,11 @@ export class MedSearchComponent implements OnInit {
     )*/
 
     inputFormat(value: any) {
-      return (value.name) ? value.name : value;
+      return (value.brandName) ? value.brandName : value;
     }
 
     resultFormat(value: any) {
-      return value.name;
+      return value.brandName;
     }
 
     search = (text$: Observable<string>, source: string) =>
@@ -66,7 +66,7 @@ export class MedSearchComponent implements OnInit {
       //catchError(new ErrorInfo().parseObservableResponseError)
       map(term => term.length < 2 
         ? [] //console.log('selectedSource: ', source = this.selectedSource)
-        : MEDICATIONS.filter(m => m.name.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10))
+        : MEDICATIONS.filter(m => m.brandName.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10))
     )
 
     onSelect($event, input) {

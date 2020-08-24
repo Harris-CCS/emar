@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
 import { MedOrderService } from '../../../../services/med-order.service';
+import { CartStoreService } from '../../../../services/cart-store.service';
+
 import { ModalService } from '../../../../services/modal.service';
 
 @Component({
@@ -10,12 +12,17 @@ import { ModalService } from '../../../../services/modal.service';
 })
 export class GroupsComponent implements OnInit {
 
+  private groupPanels = []
+  private groupContent= []
+
   constructor(
     private medOrderService: MedOrderService,
     private modalService: ModalService,
+    private cartStoreService: CartStoreService,
   ) { }
 
   ngOnInit(): void {
+    this.getGroupOrdersList()
   }
 
   groups() {
@@ -23,16 +30,35 @@ export class GroupsComponent implements OnInit {
   }
 
   groupsOrders() {
-    return this.medOrderService.getGroupsOrders();
+    // return this.medOrderService.getGroupsOrders();
+    // console.log('groupOrders: ', this.groupPanels)
+    return this.groupPanels
+  }
+
+  getGroupOrdersList() {
+    this.medOrderService.getGroupsOrdersList().subscribe((g) => {
+      this.groupPanels = g.map((o) => ({
+        displayGroupName: o.groupName,
+        orders: o.orders.map((i) => ({
+          ...i,
+          displayName: i.brandName,
+          displayRoute: i.medicationRoute ? i.medicationRoute.routeName : '',
+          displayFrequency: i.frequencyId,
+          displayDose: i.dose,
+          displayDoseUnit: i.doseUnit ? i.doseUnit.printName : ''
+        })),
+      }))
+    });
   }
 
   addToCart = (med) => {
-    this.medOrderService.postCartOrder(med, this.groups());
-    console.log(`addToCart from Group list: ${med.id}  name: ${med.name}`);
+    this.cartStoreService.postCartOrder(med, 1, 5555, this.groups());
+    med.hasBeenAdded = true
+    console.log(`addToCart from Group list: ${med.id}  name: ${med.brandName}`);
   }
 
   editOrder = (med) => {
     this.modalService.open('medComposer', {action: 'add', med});
-    console.log(`editOrder from Group list: ${med.name}`);
+    console.log(`editOrder from Group list: ${med.brandName}`);
   }
 }
