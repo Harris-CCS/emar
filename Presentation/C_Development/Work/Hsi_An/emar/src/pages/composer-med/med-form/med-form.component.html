@@ -15,7 +15,7 @@
                 </button>
                 <div ngbDropdownMenu aria-labelledby="strength">
                   <button ngbDropdownItem *ngFor="let strength of medOptions.availableFormStrength; let i = index"
-                    [value]="selectedFormStrengthName" (click)="changeSelectedStrength(i)">
+                    [value]="selectedFormStrengthName" (click)="changeSelectedStrength(i, true)">
                     {{ strength.formStrengthName }}
                   </button>
                 </div>
@@ -36,52 +36,39 @@
         <span class="table-container">
           <div class="table-row">
             <div class="table-cell">
-              <span class="requirement" *ngIf="medForm.get('dose').invalid || medForm.get('doseUnitName').invalid">*
+              <span class="requirement" *ngIf="medForm.get('dose').invalid">*&nbsp;
               </span>
               <span>
                 <input type="number" [ngClass]="{'border-danger': medForm.get('dose').invalid || !selectedDose}"
-                  required id="dose" name="dose" min="0" [value]="selectedDose" formControlName="dose" max="9999"
-                  (change)="changeSelectedDose($event.target.value)" [class.is-invalid]="medForm.get('dose').invalid">
+                  formControlName="dose" required id="dose" name="dose" min="1" max="9999"
+                  (change)="changeSelectedDose($event.target.value)" [value]="selectedDose" [ngbPopover]="reqDose"
+                  [openDelay]="1000" placement="bottom-left" triggers="mouseenter:mouseleave"
+                  [disablePopover]="medForm.get('dose').valid">
               </span>
-              <!-- <div ngbDropdown class="d-inline-block dropdown-select">
-                <button class="btn btn-outline-dark" id="doseUnit" [editable]='true' ngbDropdownToggle>
-                  {{ selectedDoseUnitData.unitName? selectedDoseUnitData.unitName: "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;" }}
-                </button>
-                <div ngbDropdownMenu aria-labelledby="doseUnit">
-                  <button ngbDropdownItem *ngFor="let unit of doseUnits" required
-                    (click)="changeSelectedDoseUnit(unit)">
-                    {{ unit.unitName }}
-                  </button>
-                </div>
-              </div> -->
-              <!-- <input type="text" required class="form-control unit-lookup" [ngbTypeahead]="lookupUnit"
-                [inputFormatter]="formatUnit" [resultFormatter]="formatUnit" [editable]='false'
-                [value]="selectedDoseUnit" [ngClass]="{'border-danger': medForm.get('doseUnitData').invalid}"
-                placeholder="{{(!selectedDoseUnitData || !selectedDoseUnitData.unitName) ? 'Select Unit' :selectedDoseUnitData.unitName}}"
-                onfocus="this.placeholder = ''" (selectItem)="changeSelectedDoseUnit($event.item)"
-                (keyup.enter)=" changeSelectedDoseUnitByLookup($event.target.value)" [ngbTooltip]="selectedDU"
-                [(ngModel)]="selectedDoseUnit"> -->
-
+              <span class="requirement" *ngIf="medForm.get('doseUnitName').invalid">*&nbsp;
+              </span>
               <input type="search" required class="form-control unit-lookup" [ngbTypeahead]="searchDoseUnit"
                 [ngClass]="{'border-danger': medForm.get('doseUnitName').invalid}"
                 (selectItem)="changeSelectedDoseUnitByLookup($event.item)"
                 (keyup.enter)="changeSelectedDoseUnitByLookup($event.target.value)"
-                placeholder="{{(!selectedDoseUnitData || !selectedDoseUnitData.unitName || !selectedDoseUnitName) ? '-- unit--' :selectedDoseUnitName}}"
+                placeholder="{{(!selectedDoseUnitData || !selectedDoseUnitData.unitName || !selectedDoseUnitName) ? '' :selectedDoseUnitName}}"
                 (focusout)="changeSelectedDoseUnitByLookup($event.target.value)" [editable]="false"
-                [ngbTooltip]="selectedDU" [disableTooltip]="selectedDoseUnitName && selectedDoseUnitName.length < 7"
+                [ngbTooltip]="selectedDU"
+                [disableTooltip]="!selectedDoseUnitName || (selectedDoseUnitName && selectedDoseUnitName.length < 7)"
                 formControlName="doseUnitName" (focus)="focus$.next($any($event).target.value)"
-                (click)="click$.next($any($event).target.value)" #duInstance="ngbTypeahead"
-                [class.is-invalid]="medForm.get('doseUnitName').invalid">
+                (click)="click$.next($any($event).target.value)" #duInstance="ngbTypeahead" [ngbPopover]="reqDoseUnit"
+                [openDelay]="1000" placement="bottom-left" triggers="mouseenter:mouseleave"
+                [disablePopover]="medForm.get('doseUnitName').valid">
 
               <!-- <div class="requirement" *ngIf="medForm.get('dose').invalid || medForm.get('doseUnitName').invalid">
                 &nbsp; &nbsp; Mandatory Dose/Unit
               </div> -->
-              <div class="requirement" *ngIf="medForm.get('dose').invalid">
+              <!-- <div class="requirement" *ngIf="medForm.get('dose').invalid">
                 {{medForm.getError('error','dose')}}
               </div>
               <div class="requirement" *ngIf="medForm.get('doseUnitName').invalid">
                 {{medForm.getError('error','doseUnitName')}}
-              </div>
+              </div> -->
             </div>
             <div class="table-cell center">
               <button class="btn btn-outline-warning btn-sm preferred happy-button"
@@ -106,35 +93,25 @@
         <span class="table-container">
           <div class="table-row">
             <div class="table-cell">
-              <span class="requirement" *ngIf="medForm.get('routeName').invalid">*
+              <span class="requirement" *ngIf="medForm.get('routeName').invalid">*&nbsp;
               </span>
-              <!-- <div ngbDropdown class="d-inline-block dropdown-select">
-                <button class="btn btn-outline-dark" id="routeOfAdministration" ngbDropdownToggle
-                  [innerText]="getRouteOfAdministrationName()">
-                </button>
-                <div ngbDropdownMenu aria-labelledby="routeOfAdministration">
-                  <button ngbDropdownItem *ngFor="let route of selectedFormStrengthOptions.availableRoutes" required
-                    (click)="changeSelectedRoute(route)">
-                    {{ route.routeName }}
-                  </button>
-                </div>
-              </div> -->
               <input type="search" required class="form-control route-lookup" [ngbTypeahead]="searchRouteOfAdmin"
                 [ngClass]="{'border-danger': medForm.get('routeName').invalid}"
                 (selectItem)="changeSelectedRouteByLookup($event.item)"
-                placeholder="{{(!selectedRouteOfAdministrationData || !selectedRouteOfAdministrationData.routeName || !selectedRouteName) ? '-- route --' :selectedRouteName}}"
+                placeholder="{{(!selectedRouteOfAdministrationData || !selectedRouteOfAdministrationData.routeName || !selectedRouteName) ? '' :selectedRouteName}}"
                 (keyup.enter)="changeSelectedRouteByLookup($event.target.value)" [ngbTooltip]="selectedRoute"
-                [disableTooltip]="selectedRouteName && selectedRouteName.length < 14"
+                [disableTooltip]="!selectedRouteName || (selectedRouteName && selectedRouteName.length < 14)"
                 (focusout)="changeSelectedRouteByLookup($event.target.value)" formControlName="routeName"
                 (focus)="focusRoute$.next($any($event).target.value)" [editable]="false"
                 (click)="clickRoute$.next($any($event).target.value)" #routeInstance="ngbTypeahead"
-                [class.is-invalid]="medForm.get('routeName').invalid">
+                [ngbPopover]="reqRoute" [openDelay]="1000" placement="bottom-left" triggers="mouseenter:mouseleave"
+                [disablePopover]="medForm.get('routeName').valid">
               <!-- <div class="requirement" *ngIf="medForm.get('routeName').invalid">
                 &nbsp; &nbsp; Mandatory Route
               </div> -->
-              <div class="requirement" *ngIf="medForm.get('routeName').invalid">
+              <!-- <div class="requirement" *ngIf="medForm.get('routeName').invalid">
                 {{medForm.getError('error','routeName')}}
-              </div>
+              </div> -->
             </div>
             <div class="table-cell center">
               <button class="btn btn-outline-warning btn-sm preferred happy-button"
@@ -217,6 +194,15 @@
 </div>
 
 <ng-template #selectedDU><span *ngIf="selectedDoseUnitName">{{selectedDoseUnitName}}</span>
-  <span *ngIf="!selectedDoseUnitName">Select Unit</span></ng-template>
+</ng-template>
 <ng-template #selectedRoute><span *ngIf="selectedRouteName">{{selectedRouteName}}</span>
-  <span *ngIf="!selectedRouteName">Select Route</span></ng-template>
+</ng-template>
+<ng-template #reqDose><span class="requirement req-popover">
+    {{medForm.getError('error','dose')}} </span>
+</ng-template>
+<ng-template #reqDoseUnit><span class="requirement req-popover">
+    {{medForm.getError('error','doseUnitName')}} </span>
+</ng-template>
+<ng-template #reqRoute><span class="requirement req-popover">
+    {{medForm.getError('error','routeName')}} </span>
+</ng-template>

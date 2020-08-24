@@ -1,4 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { ComposerSchedulerService } from '../../../services/composer-scheduler.service';
+import { ModalService } from '../../../services/modal.service';
 
 @Component({
   selector: 'composer-med-modal',
@@ -8,7 +10,16 @@ import { Component, OnInit, Input } from '@angular/core';
 export class ComposerMedModalComponent implements OnInit {
   @Input() modalTitle: string;
 
-  constructor() {}
+  constructor(
+    private modalService: ModalService,
+    private composerSchedulerService: ComposerSchedulerService
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.modalService.formClosed.subscribe(() => {
+      if (this.modalService.formClosed.value === 'medComposer') {
+        this.composerSchedulerService.resetForm();
+      }
+    });
+  }
 }

@@ -8,6 +8,7 @@ import {
 } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { ComposerSchedulerService } from 'src/services/composer-scheduler.service';
 
 @Component({
   selector: 'detail-form',
@@ -20,11 +21,14 @@ export class DetailFormComponent implements OnInit {
   diagnoses: string[] = ['Hypertension', 'Diabetes', 'Back pain']; //TODO get from service
   indications: string[] = ['Sepsis', 'Pneumonia']; //TODO get from service
   mandatoryIndication: boolean = true; //TODO get from service
-  selectedDiagnosis: string = '-- diagnosis --'; //TODO from service
-  selectedIndication: string = '-- indication --'; //TODO from service
+  selectedDiagnosis: string = ''; //TODO from service
+  selectedIndication: string = ''; //TODO from service
   otherIndication: string = ''; //TODO get from service
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private composerSchedulerService: ComposerSchedulerService
+  ) {}
 
   ngOnInit() {
     if (this.mandatoryIndication) {
@@ -47,29 +51,37 @@ export class DetailFormComponent implements OnInit {
         diagnosis: new FormControl(null),
       });
     }
-    this.formReady.emit(this.detailForm);
+    // this.formReady.emit(this.detailForm);
+    this.composerSchedulerService.addFormGroup('detail', this.detailForm);
+    this.composerSchedulerService.performFormReset.subscribe(() => {
+      if (this.composerSchedulerService.performFormReset.value) {
+        this.resetDetailForm();
+      }
+    });
+  }
+
+  resetDetailForm(): void {
+    this.selectedDiagnosis = '';
+    this.selectedIndication = '';
   }
 
   changeSelectedDiagnosis(diagnosis: string) {
     this.selectedDiagnosis = diagnosis;
-    if (diagnosis === '-- diagnosis --') {
-      this.detailForm.controls['diagnosis'].setValue('');
-    } else {
-      this.detailForm.controls['diagnosis'].setValue(diagnosis);
-    }
-    // console.log('changeSelectedDiagnosis', this);
+    this.detailForm.controls['diagnosis'].setValue(diagnosis);
+
+    // console.log('changeSelectedDiagnosisThis', this);
   }
 
   changeSelectedIndication(indication: string) {
     this.selectedIndication = indication;
-    if (indication === '-- indication --') {
-      this.detailForm.controls['antimicrobialIndication'].setValue('');
-      this.detailForm.controls['otherAntimicrobialIndication'].setValue('');
-    } else {
-      this.detailForm.controls['antimicrobialIndication'].setValue(indication);
-      this.detailForm.controls['otherAntimicrobialIndication'].setValue('');
-    }
-    // console.log('changeSelectedIndication', this);
+    // if (indication === '-- indication --') {
+    //   this.detailForm.controls['antimicrobialIndication'].setValue('');
+    //   this.detailForm.controls['otherAntimicrobialIndication'].setValue('');
+    // } else {
+    this.detailForm.controls['antimicrobialIndication'].setValue(indication);
+    this.detailForm.controls['otherAntimicrobialIndication'].setValue('');
+
+    // console.log('changeSelectedIndicationThis', this);
   }
 
   changeOtherIndication() {

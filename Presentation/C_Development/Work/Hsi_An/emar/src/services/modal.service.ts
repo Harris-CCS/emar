@@ -1,20 +1,20 @@
 import { Injectable, EventEmitter } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 import { ModalComponent } from '../shared/component/modal/modal.component';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-
 export class ModalService {
   private modals: Array<ModalComponent>;
   modalOpening = new EventEmitter<any>();
+  formClosed: BehaviorSubject<string> = new BehaviorSubject('');
 
   constructor() {
     this.modals = [];
   }
 
-  
   /* close - Closes the selected modal by searching for the component and setting isOpen to false */
   close(modalId: string, checkBlocking = false): void {
     let modal = this.findModal(modalId);
@@ -26,13 +26,15 @@ export class ModalService {
       setTimeout(() => {
         modal.isOpen = false;
       }, 100);
+      if (modal.closebtn) {
+        this.formClosed.next(modal.modalId);
+      }
     }
   }
 
   /* findModal - Locates the specified modal in the modals array */
   findModal(modalId: string): ModalComponent {
     for (let modal of this.modals) {
-
       if (modal.modalId === modalId) {
         return modal;
       }
@@ -45,7 +47,7 @@ export class ModalService {
   open(modalId: string, data?: any, title?: string): void {
     let modal = this.findModal(modalId);
 
-    console.log('ModalService: open: data: ', title, data)
+    console.log('ModalService: open: data: ', title, data);
     if (modal) {
       setTimeout(() => {
         modal.data = data;
