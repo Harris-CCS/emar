@@ -1,7 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 
 import { ModalService } from 'src/services/modal.service';
-import { MedOrderService } from 'src/services/med-order.service';
+import { CartService } from 'src/services/cart.service';
+import { CartStoreService } from 'src/services/cart-store.service';
 
 @Component({
   selector: 'app-delete-all-cart-orders-modal',
@@ -18,10 +19,13 @@ export class DeleteAllCartOrdersModalComponent implements OnInit {
 
   constructor(
     private modalService: ModalService,
-    private medOrdService: MedOrderService,
+    private cartService: CartService,
+    private cartStoreService: CartStoreService,
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.isDone = false
+  }
   
   getData() {
     return this.modalService.retrieveModalData('deleteAllCartOrder') || {}
@@ -31,21 +35,31 @@ export class DeleteAllCartOrdersModalComponent implements OnInit {
     return this.getData().patientId || 0
   }
 
-  cancelDeleteAllCartOrders = () => {
+  cancelDelete = () => {
     this.modalService.close('deleteAllCartOrder');
   }
 
-  deleteAllCartOrders = () => {
-    console.log('deleteAllCartOrders for parientId: ', this.getPatient());
+  confirmedDelete = () => {
+    console.log('confirmedDelete for parientId: ', this.getPatient());
     this.patientId = this.getPatient();
 
     this.isProcessing = true;
-    //mock
-    setTimeout( () => {
-      this.medOrdService.removeAllCartOrder(this.getPatient());
-      //API success
-      this.isDone = true;
-      setTimeout( () => this.modalService.close('deleteAllCartOrder'), 2000)
-    }, 1000)
+
+    setTimeout(() => {
+        this.cartStoreService.deleteAllCartOrders(this.getPatient(), 5555)
+        //API success
+        this.isDone = true;
+        setTimeout( () => this.modalService.close('deleteAllCartOrder'), 2000)
+      }, 1000)
+
+    // setTimeout( () => {
+    //   this.cartService.deleteAllCartOrders(this.getPatient(), 6473).subscribe(
+    //     resp => console.log('DELETE RESP: ', resp),
+    //     err => console.log('DELETE ERR: ', err)
+    //     );
+    //   //API success
+    //   this.isDone = true;
+    //   setTimeout( () => this.modalService.close('deleteAllCartOrder'), 2000)
+    // }, 1000)
   }
 }

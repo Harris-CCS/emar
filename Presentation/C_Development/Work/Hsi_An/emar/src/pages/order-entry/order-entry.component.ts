@@ -16,6 +16,10 @@ import { MedOrderService } from '../../services/med-order.service';
 import { PatientService } from 'src/services/patient.service';
 import { ModalService } from '../../services/modal.service';
 
+
+import { CartService } from '../../services/cart.service';
+import { CartStoreService } from '../../services/cart-store.service';
+
 @Component({
   selector: 'order-entry',
   templateUrl: './order-entry.component.html',
@@ -28,15 +32,20 @@ export class OrderEntryComponent implements OnInit {
   //currentOrders = ORDERS;
   currentOrders: Order[];
   cartOrders: Order[];
+  //cartOrders: Array<Object>;
 
   qlSelected: boolean = true;
   dpSelected: boolean = false;
   gSelected: boolean = false;
 
+
   constructor(
     private route: ActivatedRoute,
     private patientService: PatientService,
     private medOrderService: MedOrderService,
+
+    public cartStoreService: CartStoreService,
+    private cartService: CartService,
     private modalService: ModalService
   ) {}
 
@@ -45,8 +54,9 @@ export class OrderEntryComponent implements OnInit {
     this.patientId = +this.route.snapshot.params['id'];
     console.log('OrderEntry: patientId: ', this.patientId);
     this.patient = this.patientService.getPatient(this.patientId);
-    this.orders = this.patientService.getPatientOrders(this.patientId);
-    this.currentListOrders();
+    //this.orders = this.patientService.getPatientOrders(this.patientId);
+    this.getCurrentListOrders()
+    this.getCartListOrders()
 
     // this.patientService
     //   .getPatient(this.patientId)
@@ -94,12 +104,77 @@ export class OrderEntryComponent implements OnInit {
     }
   }
 
-  currentListOrders() {
-    return (this.currentOrders = this.medOrderService.getCurrentOrders());
+  getCurrentListOrders() {
+    //return (this.currentOrders = this.medOrderService.getCurrentOrders());
+    this.medOrderService.getCurrentOrdersAPI(this.patientId).subscribe((o) => {
+      console.log('getCurrentListOrders: ', o.orders)
+      this.currentOrders = o.orders.map( x => ({
+        ...x,
+        displayName: x.brandName,
+        displayRoute: x.medicationRoute ? x.medicationRoute.routeName : '',
+        displayDose: x.dose ? x.dose : '',
+        displayDoseUnit: x.doseUnit ? x.doseUnit.printName : '',
+        displayFrequency: x.frequencyId,
+        displaySignedOn: x.addDatetime,
+        displaySignedBy: x.orderingPhysicianUser.displayName || '',
+        allergies: [],
+        drugs: []
+      }))
+    })
   }
 
   cartListOrders() {
-    //return ORDERS.slice(2, 5);
-    return (this.cartOrders = this.medOrderService.getCartOrders());
+    return this.cartOrders
   }
+
+  getCartListOrders() {
+    //return ORDERS.slice(2, 5);
+    //return (this.cartOrders = this.medOrderService.getCartOrders());
+    this.cartService.getCartOrders(this.patientId, 5555).subscribe((o) => {
+      if (o) {
+        console.log('OrderEntry: getCartListOrders: ', o.orders)
+        this.cartOrders = o.orders.map((x) => ({
+          ...x,
+          displayName: x.brandName,
+          displayRoute: x.medicationRoute ? x.medicationRoute.routeName : '',
+          displayFrequency: x.frequencyId,
+          displayDose: x.dose,
+          displayDoseUnit: x.doseUnit ? x.doseUnit.printName : '',
+          allergies: [],
+          drugs: []
+        }))
+      }
+    }) 
+  }
+
+
+
+  // getCartListOrders() {
+  //   //return ORDERS.slice(2, 5);
+  //   //return (this.cartOrders = this.medOrderService.getCartOrders());
+  //   this.cartService.getCartOrders(this.patientId, 6473).subscribe((resp) => {
+  //     const keys = resp.headers.keys()
+  //     const headers = keys.map(key =>
+  //        `${key}: ${resp.headers.get(key)}`);
+
+  //     // // access the body directly, which is typed as `Config`.
+  //     // const config = { ... o.body };
+  //     console.log('RESP O: ', resp)
+  //     //console.log('RESP headers: ', headers)
+
+  //     if (resp) {
+  //       console.log('OrderEntry: getCartListOrders: ', resp.body.orders)
+  //       this.cartOrders = resp.body.orders.map((x) => ({
+  //         ...x,
+  //         displayName: x.brandName,
+  //         displayRoute: x.medicationRoute ? x.medicationRoute.routeName : '',
+  //         displayFrequency: x.frequencyId,
+  //         displayDose: x.dose,
+  //         displayDoseUnit: x.doseUnit ? x.doseUnit.printName : '',
+  //         allergies: [],
+  //         drugs: []
+  //       }))
+  //     }
+  //   }) 
+  // }
 }

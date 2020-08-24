@@ -264,7 +264,7 @@ h3 {
     opacity: 0.8;
 }
 */
-
+/*
 .page-content-wrapper .orders-current ul {
   list-style-type: none;
   padding-inline-start: 0.2em;
@@ -275,14 +275,15 @@ h3 {
   margin-bottom: 10px;
 }
 
+ 
 .page-content-wrapper .orders-current ul li .timestamp {
   display: block;
   font-size: 13px;
   opacity: 0.6;
   margin: 0 0 0 3.3em;
-}
+} */
 
-.page-content-wrapper .lists {
+/* .page-content-wrapper .lists {
   font-size: 16px;
   color: #353535;
   width: 40%;
@@ -305,7 +306,7 @@ h3 {
   font-weight: 600;
   text-transform: uppercase;
   text-align: center;
-  /*height: 34px;*/
+ 
   line-height: 39px;
   cursor: pointer;
   flex-grow: 1;
@@ -315,9 +316,9 @@ h3 {
   color: #fff;
   background: #0077ab;
   cursor: default;
-}
+} */
 
-/**/
+/*
 .page-content-wrapper .lists ol {
   margin: 0;
   padding: 0;
@@ -343,6 +344,7 @@ h3 {
   color: #090909;
   text-decoration: underline;
 }
+*/
 /*
 
 .page-content-wrapper .lists ul {

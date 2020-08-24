@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { SharedComponentsModule } from '../../shared/shared.components.module';
 import { OrderEntryComponent } from './order-entry.component';
@@ -28,7 +29,8 @@ import { DeleteAllCartOrdersModalComponent } from './delete-all-cart-orders-moda
     CommonModule,
     SharedComponentsModule,
     ComposerMedModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgbModule,
   ],
   exports: [
     OrderEntryComponent,

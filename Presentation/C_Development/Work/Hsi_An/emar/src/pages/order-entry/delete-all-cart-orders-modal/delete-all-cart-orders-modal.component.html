@@ -8,12 +8,12 @@
         <div class="dialog-footer">
             <button 
                 class="button-secondary button-raised"
-                (click)="cancelDeleteAllCartOrders()"            
+                (click)="cancelDelete()"            
             >Cancel</button>
             <button 
                 [ngClass]="{'button-processing': isProcessing}"
                 class="button-primary button-raised" 
-                (click)="deleteAllCartOrders()"
+                (click)="confirmedDelete()"
             >Confirmed</button>
         </div>
     </div>
