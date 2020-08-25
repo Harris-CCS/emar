@@ -34,15 +34,16 @@ LVL: 001 SEQ: 002 TBL: dbo.antimicrobial_indications
 LVL: 001 SEQ: 003 TBL: dbo.frequency_schedules
 LVL: 001 SEQ: 004 TBL: dbo.medication_routes
 LVL: 001 SEQ: 005 TBL: dbo.medication_units
-LVL: 001 SEQ: 006 TBL: dbo.override_reasons
-LVL: 001 SEQ: 007 TBL: dbo.patients
-LVL: 001 SEQ: 008 TBL: dbo.prompts
-LVL: 001 SEQ: 009 TBL: dbo.site_code_shares
-LVL: 001 SEQ: 010 TBL: dbo.site_formulary
-LVL: 001 SEQ: 011 TBL: dbo.site_formulary_match
-LVL: 001 SEQ: 012 TBL: dbo.site_options
-LVL: 001 SEQ: 013 TBL: dbo.template_prompt_groups
-LVL: 001 SEQ: 014 TBL: dbo.users
+LVL: 001 SEQ: 006 TBL: dbo.order_instructions
+LVL: 001 SEQ: 007 TBL: dbo.override_reasons
+LVL: 001 SEQ: 008 TBL: dbo.patients
+LVL: 001 SEQ: 009 TBL: dbo.prompts
+LVL: 001 SEQ: 010 TBL: dbo.site_code_shares
+LVL: 001 SEQ: 011 TBL: dbo.site_formulary
+LVL: 001 SEQ: 012 TBL: dbo.site_formulary_match
+LVL: 001 SEQ: 013 TBL: dbo.site_options
+LVL: 001 SEQ: 014 TBL: dbo.template_prompt_groups
+LVL: 001 SEQ: 015 TBL: dbo.users
 LVL: 002 SEQ: 001 TBL: dbo.action_route_templates
 LVL: 002 SEQ: 002 TBL: dbo.department_preferred_list_items
 LVL: 002 SEQ: 003 TBL: dbo.frequency_interval_day_times
@@ -52,12 +53,13 @@ LVL: 002 SEQ: 006 TBL: dbo.patient_allergies
 LVL: 002 SEQ: 007 TBL: dbo.patient_home_medications
 LVL: 002 SEQ: 008 TBL: dbo.patient_indicators
 LVL: 002 SEQ: 009 TBL: dbo.patient_orders
-LVL: 002 SEQ: 010 TBL: dbo.preferred_frequency_schedules
-LVL: 002 SEQ: 011 TBL: dbo.preferred_medication_doses
-LVL: 002 SEQ: 012 TBL: dbo.preferred_medication_routes
-LVL: 002 SEQ: 013 TBL: dbo.prompt_choices
-LVL: 002 SEQ: 014 TBL: dbo.user_permissions
-LVL: 002 SEQ: 015 TBL: dbo.user_quick_list_items
+LVL: 002 SEQ: 010 TBL: dbo.patient_problems
+LVL: 002 SEQ: 011 TBL: dbo.preferred_frequency_schedules
+LVL: 002 SEQ: 012 TBL: dbo.preferred_medication_doses
+LVL: 002 SEQ: 013 TBL: dbo.preferred_medication_routes
+LVL: 002 SEQ: 014 TBL: dbo.prompt_choices
+LVL: 002 SEQ: 015 TBL: dbo.user_permissions
+LVL: 002 SEQ: 016 TBL: dbo.user_quick_list_items
 LVL: 003 SEQ: 001 TBL: dbo.order_administrations
 LVL: 003 SEQ: 002 TBL: dbo.patient_cart_orders
 LVL: 004 SEQ: 001 TBL: dbo.cart_order_administrations
@@ -82,6 +84,7 @@ LVL: 005 SEQ: 001 TBL: dbo.order_event_details
 :r ..\Scripts\Data-Loader\site_data\frequency_schedules.sql
 :r ..\Scripts\Data-Loader\site_data\medication_routes.sql
 :r ..\Scripts\Data-Loader\site_data\medication_units.sql
+:r ..\Scripts\Data-Loader\site_data\order_instructions.sql
 :r ..\Scripts\Data-Loader\site_data\override_reasons.sql
 :r ..\Scripts\Data-Loader\phi_data\patients.sql
 :r ..\Scripts\Data-Loader\site_data\site_code_shares.sql
@@ -97,6 +100,7 @@ LVL: 005 SEQ: 001 TBL: dbo.order_event_details
 :r ..\Scripts\Data-Loader\development_data\antoni_data.sql
 --- END: custom data deployments for development
 :r ..\Scripts\Data-Loader\phi_data\patient_orders.sql
+:r ..\Scripts\Data-Loader\phi_data\patient_problems.sql
 :r ..\Scripts\Data-Loader\site_data\preferred_frequency_schedules.sql
 :r ..\Scripts\Data-Loader\site_data\preferred_medication_doses.sql
 :r ..\Scripts\Data-Loader\site_data\preferred_medication_routes.sql
@@ -115,18 +119,32 @@ begin
     drop procedure if exists [dbo].[export_ibex_fdb_allergy_name];
     drop procedure if exists [dbo].[export_ibex_fdb_brand_name];
     drop procedure if exists [dbo].[export_ibex_fdb_ndc_info];
+    drop procedure if exists [dbo].[export_ibex_frequency_calendar];
+    drop procedure if exists [dbo].[export_ibex_frequency_days];
+    drop procedure if exists [dbo].[export_ibex_frequency_interval_day_times];
+    drop procedure if exists [dbo].[export_ibex_frequency_interval_units];
+    drop procedure if exists [dbo].[export_ibex_frequency_minutes];
+    drop procedure if exists [dbo].[export_ibex_frequency_schedules];
+    drop procedure if exists [dbo].[export_ibex_frequency_types];
     drop procedure if exists [dbo].[export_ibex_group_list_items];
     drop procedure if exists [dbo].[export_ibex_medication_routes];
     drop procedure if exists [dbo].[export_ibex_medication_units];
+    drop procedure if exists [dbo].[export_ibex_options];
+    drop procedure if exists [dbo].[export_ibex_order_instructions];
     drop procedure if exists [dbo].[export_ibex_override_reasons];
     drop procedure if exists [dbo].[export_ibex_patient_allergies];
     drop procedure if exists [dbo].[export_ibex_patient_home_medications];
     drop procedure if exists [dbo].[export_ibex_patient_indicators];
     drop procedure if exists [dbo].[export_ibex_patient_orders];
+    drop procedure if exists [dbo].[export_ibex_patient_problems];
     drop procedure if exists [dbo].[export_ibex_patients];
+    drop procedure if exists [dbo].[export_ibex_preferred_frequency_schedules];
+    drop procedure if exists [dbo].[export_ibex_preferred_medication_doses];
+    drop procedure if exists [dbo].[export_ibex_preferred_medication_routes];
     drop procedure if exists [dbo].[export_ibex_site_code_shares];
     drop procedure if exists [dbo].[export_ibex_site_formulary];
     drop procedure if exists [dbo].[export_ibex_site_formulary_match];
+    drop procedure if exists [dbo].[export_ibex_site_options];
     drop procedure if exists [dbo].[export_ibex_sites];
     drop procedure if exists [dbo].[export_ibex_user_quick_list_items];
     drop procedure if exists [dbo].[export_ibex_users];

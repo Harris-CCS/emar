@@ -55,7 +55,7 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'frequency_schedule_id'
+  , @value = N'Foreign Key to frequency_schedules table'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'

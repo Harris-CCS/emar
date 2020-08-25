@@ -16,28 +16,29 @@ create table [#fdb_allergy_name]
         load temporary tables for staging
 ****************************************/
 
+--if '$(load_data)' = 'live'
+--   and exists
+--(
+--    select null
+--    from   [master].[sys].[databases]
+--    where  [name] = 'ibex'
+--)
+--    begin
+
+--        insert into [#fdb_allergy_name]
+--            ([MEDID]
+--           , [med_name]
+--           , [MED_NAME_ID]
+--           , [PC_MED_NAME_ID]
+--           , [HICL_SEQNO]
+--           , [PC_HICL_SEQNO]
+--           , [allergy_name]
+--            )
+--        execute ('execute dbo.export_ibex_fdb_allergy_name');
+--    end;
+
 if '$(load_data)' = 'live'
-   and exists
-(
-    select null
-    from   [master].[sys].[databases]
-    where  [name] = 'ibex'
-)
-    begin
-
-        insert into [#fdb_allergy_name]
-            ([MEDID]
-           , [med_name]
-           , [MED_NAME_ID]
-           , [PC_MED_NAME_ID]
-           , [HICL_SEQNO]
-           , [PC_HICL_SEQNO]
-           , [allergy_name]
-            )
-        execute ('execute dbo.export_ibex_fdb_allergy_name');
-    end;
-
-if '$(load_data)' = 'sample'
+or '$(load_data)' = 'sample'
     begin
 
         bulk insert [#fdb_allergy_name] from '$(current_path)Scripts\Data-Loader\sample_data\fdb_allergy_name.bcp' with(fieldterminator = '|~', rowterminator = '\n');

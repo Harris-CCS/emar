@@ -1,7 +1,7 @@
 create table [dbo].[patient_allergies]
     (
       [id]                 [bigint] identity(1, 1) not null
-    , [patient_id]         [bigint] null
+    , [patient_id]         [bigint] not null
     , [class]              [varchar](32) null
     , [category]           [varchar](32) null
     , [internal_drug_id]   [varchar](32) null
@@ -102,7 +102,7 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'Patient identifier, FKEY to patients table'
+  , @value = N'Patient identifier, Foreign Key to patients table'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -191,7 +191,7 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'Drug NDC (National Drug Code)'
+  , @value = N'National Drug Code that identifies the brand, formulation and packaging of a drug'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'

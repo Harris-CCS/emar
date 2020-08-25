@@ -45,6 +45,7 @@ insert into [#table_order] values
     ('dbo','patient_home_medications','phi_data'),
     ('dbo','patient_indicators','phi_data'),
     ('dbo','patient_orders','phi_data'),
+    ('dbo','patient_problems','phi_data'),
     ('dbo','patients','phi_data'),
     --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ('dbo','antimicrobial_indication_items','site_data'),
@@ -54,6 +55,7 @@ insert into [#table_order] values
     ('dbo','group_list_items','site_data'),
     ('dbo','medication_routes','site_data'),
     ('dbo','medication_units','site_data'),
+    ('dbo','order_instructions','site_data'),
     ('dbo','override_reasons','site_data'),
     ('dbo','preferred_frequency_schedules','site_data'),
     ('dbo','preferred_medication_doses','site_data'),
@@ -217,8 +219,6 @@ from
     where   [table_name] not in(select table_name From [#table_exclude])
 ) as [lst]
 where table_name in(select table_name from [#table_order])
-and table_name not in('site_options','options','preferred_frequency_schedules','preferred_medication_doses','preferred_medication_routes')--"not In Tables" are loaded from static scripts
-and [lst].table_name not like 'frequency%'--"frequency_interval_day_times" combined with frequency_schedules.sql
 order by [schema_name]
        , [table_name];
 
@@ -240,7 +240,16 @@ order by [load_level] asc
        , [table_name];
 
 --- export bcp data into sample_data folder
-select 'call :ek "execute emar_clean.dbo.export_ibex_'+[table_name]+'"'+space(30-len([table_name]))+';'+[table_name]+''+space(30-len([table_name]))+';"|~"'
+select 
+case 
+--"these Tables" are loaded from static scripts
+when table_name in('site_options','options','preferred_frequency_schedules','preferred_medication_doses','preferred_medication_routes') then 'rem '
+--"these Tables" sample data needs to be manually generated
+when table_name in('fdb_allergy_name','fdb_brand_name','fdb_ndc_info') then 'rem '
+--"these Tables" loaded from global data
+when table_name in('frequency_calendar','frequency_days','frequency_interval_units','frequency_minutes','frequency_types') then 'rem '
+else '    ' end +
+'call :ek "execute emar_clean.dbo.export_ibex_'+[table_name]+'"'+space(30-len([table_name]))+';'+[table_name]+''+space(30-len([table_name]))+';"|~"'
 as [commands for 09_bcp.cmd]
 from
 (
@@ -249,8 +258,6 @@ from
     where   [table_name] not in(select table_name From [#table_exclude])
 ) as [lst]
 where table_name in(select table_name from [#table_order])
-and table_name not in('site_options','options','preferred_frequency_schedules','preferred_medication_doses','preferred_medication_routes')--"not In Tables" are loaded from static scripts
-and [lst].table_name not like 'frequency%'--"frequency_interval_day_times" combined with frequency_schedules.sql
 order by [schema_name]
        , [table_name];
 
