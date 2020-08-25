@@ -88,12 +88,6 @@ export const COMPOSER_OPTIONS: ComposerOptions[] = [
             pointInTime: true,
           },
           {
-            id: 9,
-            siteId: -1,
-            routeName: 'orally1',
-            pointInTime: true,
-          },
-          {
             id: 10,
             siteId: -1,
             routeName: 'subcutaneously',

@@ -85,7 +85,7 @@
         </div> -->
         <div class="d-flex form-group">
             <div>
-                <label for="starTime">Start Time</label><br>
+                <label for="startTime">Start Time</label><br>
                 <div class="input-group flex-nowrap">
                     <!--
                     <input type="text"
@@ -103,13 +103,17 @@
                         </span>
                     </div>
                     -->
-                    <input type="text" id="startTime"
-                        [ngClass]="{'disabled-element': this.selectedDuration && this.selectedDurationUnitName}"
-                        formControlName="startTime" aria-describedby="startTimeButton"
-                        [readonly]="this.selectedDuration && this.selectedDurationUnitName">
+                    <span class="requirement" *ngIf="frequencyForm.get('startTime').invalid">&nbsp; * &nbsp;
+                    </span>
+                    <input type="search" id="startTime" formControlName="startTime" aria-describedby="startTimeButton"
+                        [ngClass]="{'danger-border-div': frequencyForm.get('startTime').invalid}"
+                        [ngbPopover]="reqStartTime" [openDelay]="1000" placement="bottom-left" container="body"
+                        triggers="mouseenter:mouseleave" [disablePopover]="frequencyForm.get('startTime').valid">
                     <div class="input-group-append">
                         <button class="input-group-text" id="startTimeButton" (click)="onSelectTime('start')"
-                            [disabled]="this.selectedDuration && this.selectedDurationUnitName">
+                            [ngClass]="{'danger-border-div': frequencyForm.get('startTime').invalid}"
+                            [ngbPopover]="reqStartTime" [openDelay]="1000" placement="bottom-left" container="body"
+                            triggers="mouseenter:mouseleave" [disablePopover]="frequencyForm.get('startTime').valid">
                             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-alarm" fill="currentColor"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd"
@@ -124,14 +128,18 @@
             <div class="spaced">
                 <label>End Time</label><br>
                 <div class="input-group flex-nowrap">
-                    <input type="text"
-                        [ngClass]="{'disabled-element': this.selectedDuration && this.selectedDurationUnitName}"
+                    <input type="search"
+                        [ngClass]="{'disabled-element': this.selectedDuration && this.selectedDurationUnitName, 'danger-border-div': frequencyForm.get('endTime').invalid}"
                         id="endTime" formControlName="endTime" aria-describedby="endTimeButton"
-                        [readonly]="this.selectedDuration && this.selectedDurationUnitName">
+                        [ngbPopover]="reqEndTime" [openDelay]="1000" placement="bottom-left" container="body"
+                        triggers="mouseenter:mouseleave" [disablePopover]="frequencyForm.get('endTime').valid">
                     <div class="input-group-append">
                         <!-- <span class="input-group-text" id="endTimeButton" (click)="de.toggle()"> -->
-                        <button class="input-group-text" id="endTime" (click)="onSelectTime('end')"
-                            [disabled]="this.selectedDuration && this.selectedDurationUnitName">
+                        <button class="input-group-text" id="endTimeButton" (click)="onSelectTime('end')"
+                            [disabled]="this.selectedDuration && this.selectedDurationUnitName"
+                            [ngClass]="{'danger-border-div': frequencyForm.get('endTime').invalid}"
+                            [ngbPopover]="reqEndTime" [openDelay]="1000" placement="bottom-left" container="body"
+                            triggers="mouseenter:mouseleave" [disablePopover]="frequencyForm.get('endTime').valid">
                             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-alarm" fill="currentColor"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd"
@@ -155,4 +163,10 @@
 </ng-template>
 <ng-template #reqDurationUnit><span class="requirement req-popover">
         {{frequencyForm.getError('error','durationUnit')}} </span>
+</ng-template>
+<ng-template #reqStartTime><span class="requirement req-popover">
+        {{frequencyForm.getError('error','startTime')}} </span>
+</ng-template>
+<ng-template #reqEndTime><span class="requirement req-popover">
+        {{frequencyForm.getError('error','endTime')}} </span>
 </ng-template>
