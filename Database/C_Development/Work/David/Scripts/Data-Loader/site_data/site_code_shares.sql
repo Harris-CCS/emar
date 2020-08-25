@@ -92,6 +92,8 @@ with cte_source
              select 'medication_routes' as [entity]
              union all
              select 'frequency_schedules' as [entity]
+             union all
+             select 'order_instructions' as [entity]
          ) as [entities])
      insert into [dbo].[site_code_shares]
          ([source_site_id]

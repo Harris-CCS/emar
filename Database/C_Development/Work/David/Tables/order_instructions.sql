@@ -1,10 +1,10 @@
-create table [dbo].[permissions]
-(
-    [id]          [int] identity(1, 1) not null
-  , [name]        [nvarchar](40) not null
-  , [description] [nvarchar](255) not null
-  , constraint [pk__permissions__id] primary key clustered([id] asc)
-);
+create table [dbo].[order_instructions]
+    (
+      [id]          [int] identity(1, 1) not null
+    , [site_id]     [int] not null
+    , [description] [nvarchar](255) not null
+    , [is_active]   [bit] not null
+    , constraint [pk__order_instructions__id] primary key clustered([id] asc));
 go
 
 /********
@@ -19,6 +19,9 @@ go
 /***********
  Foreign Key
 ***********/
+alter table [dbo].[order_instructions]
+add constraint [fk__order_instructions__sites] foreign key([site_id]) references [dbo].[sites]([id]);
+go
 /***************
  Data Dictionary
     Defaults
@@ -30,13 +33,13 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Primary Key Constraint'
+  , @value = N'Primary Key Column'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'permissions'
+  , @level1name = N'order_instructions'
   , @level2type = N'CONSTRAINT'
-  , @level2name = N'pk__permissions__id';
+  , @level2name = N'pk__order_instructions__id';
 go
 
 /***************
@@ -46,11 +49,11 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'This table contains a list of permissions to be assigned to a user'
+  , @value = N'This table contains: order_instructions'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'permissions';
+  , @level1name = N'order_instructions';
 go
 
 /***************
@@ -64,29 +67,40 @@ execute [sys].[sp_addextendedproperty]
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'permissions'
+  , @level1name = N'order_instructions'
   , @level2type = N'COLUMN'
   , @level2name = N'id';
 go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Permission Name'
+  , @value = N'description'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'permissions'
+  , @level1name = N'order_instructions'
   , @level2type = N'COLUMN'
-  , @level2name = N'name';
+  , @level2name = N'description';
 go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Description including possible valuse.'
+  , @value = N'Hospital identifier foriegn key to site table'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
-  , @level1name = N'permissions'
+  , @level1name = N'order_instructions'
   , @level2type = N'COLUMN'
-  , @level2name = N'description';
+  , @level2name = N'site_id';
+go
+
+execute [sys].[sp_addextendedproperty]
+    @name = N'MS_Description'
+  , @value = N'is_active 1=True 0=False'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'order_instructions'
+  , @level2type = N'COLUMN'
+  , @level2name = N'is_active';
 go
