@@ -10,9 +10,11 @@ namespace Emar.Data.Entities
     {
         public Patient()
         {
+            PatientAllergies = new HashSet<PatientAllergy>();
             PatientCartOrders = new HashSet<PatientCartOrder>();
-            PatientOrders = new HashSet<PatientOrder>();
+            PatientHomeMedications = new HashSet<PatientHomeMedication>();
             PatientIndicators = new HashSet<PatientIndicator>();
+            PatientOrders = new HashSet<PatientOrder>();
         }
 
         [Key]
@@ -142,23 +144,29 @@ namespace Emar.Data.Entities
         [StringLength(25)]
         public string PersonNumber { get; set; }
 
-        [Column("visit_start_datetime", TypeName = "datetimeoffset")]
-        public DateTimeOffset? VisitStartDatetime { get; set; }
-
         [Column("deactivation_datetime", TypeName = "datetimeoffset")]
         public DateTimeOffset? DeactivationDatetime { get; set; }
+
+        [Column("visit_start_datetime", TypeName = "datetimeoffset")]
+        public DateTimeOffset? VisitStartDatetime { get; set; }
 
         [ForeignKey(nameof(SiteId))]
         [InverseProperty(nameof(Entities.Site.Patients))]
         public virtual Site Site { get; set; }
 
         [InverseProperty("Patient")]
+        public virtual ICollection<PatientAllergy> PatientAllergies { get; set; }
+
+        [InverseProperty("Patient")]
         public virtual ICollection<PatientCartOrder> PatientCartOrders { get; set; }
 
         [InverseProperty("Patient")]
-        public virtual ICollection<PatientOrder> PatientOrders { get; set; }
+        public virtual ICollection<PatientHomeMedication> PatientHomeMedications { get; set; }
 
         [InverseProperty("Patient")]
         public virtual ICollection<PatientIndicator> PatientIndicators { get; set; }
+
+        [InverseProperty("Patient")]
+        public virtual ICollection<PatientOrder> PatientOrders { get; set; }
     }
 }

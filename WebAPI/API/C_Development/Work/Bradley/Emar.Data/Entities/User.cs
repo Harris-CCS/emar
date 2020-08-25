@@ -13,7 +13,11 @@ namespace Emar.Data.Entities
             OrderAdministrationsAcknowledgeUser = new HashSet<OrderAdministration>();
             OrderAdministrationAdministeringUser = new HashSet<OrderAdministration>();
             OrderAdministrationStopUser = new HashSet<OrderAdministration>();
+            PatientAllergiesAddUser = new HashSet<PatientAllergy>();
+            PatientAllergiesChangeUser = new HashSet<PatientAllergy>();
             PatientCartOrders = new HashSet<PatientCartOrder>();
+            PatientHomeMedicationsAddUser = new HashSet<PatientHomeMedication>();
+            PatientHomeMedicationsChangeUser = new HashSet<PatientHomeMedication>();
             PatientOrdersAddUser = new HashSet<PatientOrder>();
             PatientOrdersOrderPhysicianUser = new HashSet<PatientOrder>();
             UserQuickListItems = new HashSet<UserQuickListItem>();
@@ -87,6 +91,11 @@ namespace Emar.Data.Entities
         [InverseProperty(nameof(OrderAdministration.StopUser))]
         public virtual ICollection<OrderAdministration> OrderAdministrationStopUser { get; set; }
 
+        [InverseProperty(nameof(PatientAllergy.AddUser))]
+        public virtual ICollection<PatientAllergy> PatientAllergiesAddUser { get; set; }
+
+        [InverseProperty(nameof(PatientAllergy.ChangeUser))]
+        public virtual ICollection<PatientAllergy> PatientAllergiesChangeUser { get; set; }
 
         [InverseProperty(nameof(PatientOrder.AddUser))]
         public virtual ICollection<PatientOrder> PatientOrdersAddUser { get; set; }
@@ -99,5 +108,11 @@ namespace Emar.Data.Entities
 
         [InverseProperty("User")]
         public virtual ICollection<UserQuickListItem> UserQuickListItems { get; set; }
+
+        [InverseProperty(nameof(PatientHomeMedication.AddUser))]
+        public virtual ICollection<PatientHomeMedication> PatientHomeMedicationsAddUser { get; set; }
+
+        [InverseProperty(nameof(PatientHomeMedication.ChangeUser))]
+        public virtual ICollection<PatientHomeMedication> PatientHomeMedicationsChangeUser { get; set; }
     }
 }

@@ -17,9 +17,9 @@ namespace Emar.Data
             //ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
+        public virtual DbSet<Entities.Action> Actions { get; set; }
         public virtual DbSet<CartOrderAdministration> CartOrderAdministrations { get; set; }
         public virtual DbSet<DepartmentPreferredListItem> DepartmentPreferredListItems { get; set; }
-        public virtual DbSet<Entities.Action> Actions { get; set; }
         public virtual DbSet<ExternalIdEntity> ExternalIds { get; set; }
         public virtual DbSet<FrequencySchedule> FrequencySchedules { get; set; }
         public virtual DbSet<GroupListItem> GroupListItems { get; set; }
@@ -28,15 +28,19 @@ namespace Emar.Data
         public virtual DbSet<Option> Options { get; set; }
         public virtual DbSet<OrderAdministration> OrderAdministrations { get; set; }
         public virtual DbSet<OrderEvent> OrderEvents { get; set; }
+        public virtual DbSet<Patient> Patients { get; set; }
+        public virtual DbSet<PatientAllergy> PatientAllergies { get; set; }
         public virtual DbSet<PatientCartOrder> PatientCartOrders { get; set; }
+        public virtual DbSet<PatientHomeMedication> PatientHomeMedications { get; set; }
         public virtual DbSet<PatientIndicator> PatientIndicators { get; set; }
         public virtual DbSet<PatientOrder> PatientOrders { get; set; }
-        public virtual DbSet<Patient> Patients { get; set; }
         public virtual DbSet<Site> Sites { get; set; }
         public virtual DbSet<SiteOption> SiteOptions { get; set; }
-        public virtual DbSet<UserQuickListItem> UserQuickListItems { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<UserQuickListItem> UserQuickListItems { get; set; }
 
+
+        public virtual DbSet<BradNameExample> BradNameExamples { get; set; }
         // Testing Code
 #if  TestingInternalDatatypeProblems
         public virtual DbSet<_ColumnProblemTest> ColumnPropertyTests { get; set; }
@@ -231,6 +235,72 @@ namespace Emar.Data
                     .HasConstraintName("fk__order_events__patient_orders");
             });
 
+            modelBuilder.Entity<PatientAllergy>(entity =>
+            {
+                entity.Property(e => e.AccountNumber)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ActionStatus)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.AllergyDrugId)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Category)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Class)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Comment)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DrugId)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InformationSource)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InternalDrugId)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Ndc)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ParentDrugId)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PersonNumber)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Reaction)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Schedule)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Severity)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.AddUser)
+                    .WithMany(p => p.PatientAllergiesAddUser)
+                    .HasForeignKey(d => d.AddUserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__users__patient_allergies__add_user_id");
+
+                entity.HasOne(d => d.ChangeUser)
+                    .WithMany(p => p.PatientAllergiesChangeUser)
+                    .HasForeignKey(d => d.ChangeUserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__users__patient_allergies__change_user_id");
+
+                entity.HasOne(d => d.Patient)
+                    .WithMany(p => p.PatientAllergies)
+                    .HasForeignKey(d => d.PatientId)
+                    .HasConstraintName("fk__patients__patient_allergies");
+            });
+
             modelBuilder.Entity<PatientCartOrder>(entity =>
             {
                 entity.Property(e => e.DrugId).IsUnicode(false);
@@ -268,6 +338,69 @@ namespace Emar.Data
                     .WithMany(p => p.PatientCartOrders)
                     .HasForeignKey(d => d.UserQuickListItemId)
                     .HasConstraintName("fk__patient_cart_orders__user_quick_list_items");
+            });
+
+            modelBuilder.Entity<PatientHomeMedication>(entity =>
+            {
+                entity.Property(e => e.Category)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Class)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Comment)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DrugId)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InternalDrugId)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.MedicationDrugId)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Ndc)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ParentDrugId)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Reaction)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Schedule)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Severity)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.AddUser)
+                    .WithMany(p => p.PatientHomeMedicationsAddUser)
+                    .HasForeignKey(d => d.AddUserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__users__patient_home_medications__add_user_id");
+
+                entity.HasOne(d => d.ChangeUser)
+                    .WithMany(p => p.PatientHomeMedicationsChangeUser)
+                    .HasForeignKey(d => d.ChangeUserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__users__patient_home_medications__change_user_id");
+
+                entity.HasOne(d => d.MedicationRoute)
+                    .WithMany(p => p.PatientHomeMedications)
+                    .HasForeignKey(d => d.MedicationRouteId)
+                    .HasConstraintName("fk__patient_home_medications__medication_routes");
+
+                entity.HasOne(d => d.MedicationUnit)
+                    .WithMany(p => p.PatientHomeMedications)
+                    .HasForeignKey(d => d.MedicationUnitId)
+                    .HasConstraintName("fk__patient_home_medications__medication_units");
+
+                entity.HasOne(d => d.Patient)
+                    .WithMany(p => p.PatientHomeMedications)
+                    .HasForeignKey(d => d.PatientId)
+                    .HasConstraintName("fk__patients__patient_home_medications");
             });
 
             modelBuilder.Entity<PatientIndicator>(entity =>
