@@ -58,9 +58,10 @@ namespace Emar.Core.Orders.Repository
                     .Include(order => order.OrderPhysicianUser)
                     .Include(order => order.FrequencySchedule)
                     .Include(order => order.Patient)
-                        .ThenInclude(patient => patient.Site)
-                            .ThenInclude(site => site.SiteOptions)
-                                .ThenInclude(siteOptions => siteOptions.Option)
+                    //.Include(order => order.Patient)
+                    //    .ThenInclude(patient => patient.Site)
+                    //        .ThenInclude(site => site.SiteOptions)
+                    //            .ThenInclude(siteOptions => siteOptions.Option)
                     .Where(wherePredicate)
                     .AsEnumerable();
         }
@@ -204,6 +205,16 @@ namespace Emar.Core.Orders.Repository
                 .Include( g => g.MedicationUnit)
                 .Include(g => g.MedicationRoute)
                 .Include(g => g.FrequencySchedule).ToList();
+        }
+
+        public int GetSiteForOrder(long orderId)
+        {
+            var x = _context.PatientOrders.Where(o => o.Id == orderId)
+                .Include(o => o.Patient)
+                .Select(o => o.Patient.SiteId)
+                .FirstOrDefault();
+
+            return x;
         }
 
         #endregion

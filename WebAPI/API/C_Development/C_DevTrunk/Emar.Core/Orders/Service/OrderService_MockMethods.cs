@@ -4,7 +4,7 @@ using Emar.Core.Orders.Model;
 
 namespace Emar.Core.Orders.Service
 {
-    public partial class OrderService : IOrderService
+    public partial class OrderService
     {
         public ComposerOptionsDto GetComposerSetupData(string brandName)
         {

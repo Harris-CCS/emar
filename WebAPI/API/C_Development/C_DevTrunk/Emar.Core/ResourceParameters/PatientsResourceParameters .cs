@@ -41,11 +41,11 @@
         /// <summary>
         /// Include the inactive patients in the list of returned patients.
         /// </summary>
-        public bool IncludeInactive { get; set; } = false;
+        public bool IncludeInactive { get; set; }
         /// <summary>
         /// Include the patients orders in the list of returned patients.
         /// </summary>
-        public bool IncludeOrders { get; set; } = true;
+        public bool IncludeOrders { get; set; }
 
         public bool AskingForLegacyPulseCheckPatient()
         {

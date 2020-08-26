@@ -9,14 +9,12 @@ namespace Emar.Core.Orders.Model.Mappings
 {
     public static class OrderMapper
     {
-        public static PatientOrderDto MapOrder(PatientOrder patientOrder)
+        public static PatientOrderDto MapOrder(PatientOrder patientOrder, string dateFormat)
         {
             if (patientOrder == null)
             {
                 return null;
             }
-
-            var dateFormat = patientOrder.Patient.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == AppConstants.LongDateFormat).OptionValue;
 
             PatientOrderDto patientOrderDto = new PatientOrderDto
             {
@@ -49,7 +47,7 @@ namespace Emar.Core.Orders.Model.Mappings
                 EndDate = DateTimeHelper.GetDate(patientOrder.EndDateTime, dateFormat),
                 EndTime = DateTimeHelper.GetTime(patientOrder.EndDateTime),
                 OrderNotes = patientOrder.OrderNotes,
-                OrderAdministrations = patientOrder.OrderAdministrations?.Select(admin => MapOrderAdministration(admin)).ToList()
+                OrderAdministrations = patientOrder.OrderAdministrations?.Select(admin => MapOrderAdministration(admin, dateFormat)).ToList()
                 ////OrderEvents = patientOrder.OrderEvents?.Select(OrderMapper.MapOrderEvent).Where(@event => @event.AdministrationId == null).ToList()
                 ////OrderEvents = patientOrder.OrderEvents?.Select(ev => OrderMapper.MapOrderEvent(ev)).ToList()
             };
@@ -57,16 +55,14 @@ namespace Emar.Core.Orders.Model.Mappings
             return patientOrderDto;
         }
 
-        public static OrderAdministrationDto MapOrderAdministration(OrderAdministration administration)
+        public static OrderAdministrationDto MapOrderAdministration(OrderAdministration administration, string dateFormat)
         {
             if (administration == null)
             {
                 return null;
             }
 
-            var dateFormat = administration.PatientOrder.Patient.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == AppConstants.LongDateFormat).OptionValue;
-
-            OrderAdministrationDto administrationDto = new OrderAdministrationDto
+             OrderAdministrationDto administrationDto = new OrderAdministrationDto
             {
                 Id = administration.Id,
                 OrderId = administration.PatientOrderId,
@@ -104,14 +100,12 @@ namespace Emar.Core.Orders.Model.Mappings
             return administrationDto;
         }
 
-        public static OrderEventDto MapOrderEvent(OrderEvent @event)
+        public static OrderEventDto MapOrderEvent(OrderEvent @event, string dateFormat)
         {
             if (@event == null)
             {
                 return null;
             }
-
-            var dateFormat = @event.PatientOrder.Patient.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == AppConstants.LongDateFormat).OptionValue;
 
             OrderEventDto eventDto = new OrderEventDto
             {

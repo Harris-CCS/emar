@@ -88,24 +88,28 @@ namespace Emar.Data.Helpers
                 foreach (var fk in entity.GetForeignKeys())
                 {
                     EfForeignKeyAttributes fkObj = new EfForeignKeyAttributes();
-                    fkObj.ICollectionType = fk.DeclaringEntityType;
+                    fkObj.DeclaringEntityType = fk.DeclaringEntityType;
+                    fkObj.DeclaringEntityProperties = fk.Properties;
+                    fkObj.DeclaringEntityNavigationProperty = fk.DependentToPrincipal.Name;
+                    
+                    fkObj.PrincipalEntityType = fk.PrincipalEntityType;
+                    fkObj.PrincipalEntityNavigationProperty = fk.PrincipalToDependent.Name;
+
+
                     fkObj.DeleteBehavior = fk.DeleteBehavior;
+                    fkObj.ConstraintName = fk.GetConstraintName();
+
                     //var DependentToPrincipal = fk.DependentToPrincipal;
-                    //var DeclaringEntityType = DependentToPrincipal.DeclaringEntityType;
                     //var IsOwnership = fk.IsOwnership;
                     //var IsRequired = fk.IsRequired;
                     //var IsUnique = fk.IsUnique;
-                    //var PrincipalEntityType = fk.PrincipalEntityType;
                     //var PrincipalKey = fk.PrincipalKey;
                     //var PrincipalToDependent = fk.PrincipalToDependent;
-                    //var Properties = fk.Properties;
-                    //var x = fk.GetConstraintName();
+                    //string constraintName = fk.GetConstraintName();
                     //var a = fk.AsForeignKey();
                     //var y = fk.GetDefaultName();
                     //var z = fk.GetNavigations();
 
-                    //fkObj.Property = fk.DependentToPrincipal.Name;
-                    //fkObj.DataType = fk.PrincipalEntityType.ClrType;
                     //IEnumerable<INavigation> navigationsFrom = fk.FindNavigationsFrom(entity);
                     //IEnumerable<INavigation> navigationsTo = fk.FindNavigationsTo(entity);
 
@@ -198,14 +202,15 @@ namespace Emar.Data.Helpers
 
         internal class EfForeignKeyAttributes
         {
-            public IEntityType ICollectionType;
-            internal string Name { get; set; }
+            public IEntityType DeclaringEntityType;
+            public IEnumerable<IProperty> DeclaringEntityProperties { get; set; }
+            internal string DeclaringEntityNavigationProperty { get; set; }
 
-            internal Type DataType { get; set; }
-            internal string InversePropertyArgument { get; set; }
-            internal string ForeignKeyArgument { get; set; }
-            internal string Property { get; set; }
+            public IEntityType PrincipalEntityType { get; set; }
+
             public DeleteBehavior DeleteBehavior { get; set; }
+            public string ConstraintName { get; set; }
+            public string PrincipalEntityNavigationProperty { get; set; }
         }
         
         #endregion
@@ -241,6 +246,10 @@ namespace Emar.Data.Helpers
                             }
                         }
                     }
+
+                    //using (var comm = new SqlCommand(string.Format(FOREIGN_KEY_QUERY, tbl.SqlTableName), conn))
+                    //{
+                    //}
                 }
             }
 
@@ -296,12 +305,21 @@ namespace Emar.Data.Helpers
         {
             ReportProblem error;
 
+            if (!string.IsNullOrWhiteSpace(col.SqlDataType) && col.SqlDataType != sqlDataType)
+            {
+                var problemDetails =
+                    $"DB DataType = '{sqlDataType}', but annotations declare the data type to be '{col.SqlDataType}'.";
+                col.SqlDataType = sqlDataType;
+                report.RegisterProblem(col, FileSegment.EntityProperties,
+                    ReportProblem.DbDataTypeNotMatchDefinedSqlType, problemDetails);
+            }
+
             // In case the "Required" property of the col is different from the SQL nullable property,
             // we're saving it to the col object here
             col.SqlNullable = sqlNullable;
 
             if ((error = EntityColumnTypeNotMatchSql(sqlDataType, sqlNullable, col.ClrDataType, col.IsUnicode,
-                col.MaxStringLength, col.IsFixWidth, out string probDetails/*, out bool noteAsRequired*/)) == ReportProblem.None)
+                col.MaxStringLength, col.IsFixWidth, out string probDetails)) == ReportProblem.None)
             {
                 if (col.KeyColumn != keyColumn)
                     error = keyColumn
@@ -535,6 +553,7 @@ namespace Emar.Data.Helpers
                     //    break;
                     case ReportProblem.AnnotationSqlDatatypeNotMatchClrDatatype:
                     case ReportProblem.ColumnNotInDatabase:
+                    case ReportProblem.DbDataTypeNotMatchDefinedSqlType:
                         file = GetFile(problemColumn.Parent.SqlTableName, problemColumn.Parent.EntityName);
                         segmentObj = file.GetFileSegment(FileSegment.EntityProperties);
                         segmentObj.CorrectionFragments.Add(
@@ -715,6 +734,7 @@ namespace Emar.Data.Helpers
                     //case ReportProblem.AnnotationNotMatchClrDataType:
                     //    break;
                     case ReportProblem.AnnotationSqlDatatypeNotMatchClrDatatype:
+                    case ReportProblem.DbDataTypeNotMatchDefinedSqlType:
                         CorrectionCode =
                             "// Update Property in Entity file" + Environment.NewLine + 
                             (string.IsNullOrWhiteSpace(problemDetails) ? ""
@@ -841,7 +861,8 @@ namespace Emar.Data.Helpers
             ContextNotUnicodePropertyMissing,
             ContextNotUnicodePropertyToBeRemoved,
             ContextFixedLengthPropertyMissing,
-            ContextFixedLengthPropertyToBeRemoved
+            ContextFixedLengthPropertyToBeRemoved,
+            DbDataTypeNotMatchDefinedSqlType
         }
 
         #endregion
@@ -941,12 +962,15 @@ namespace Emar.Data.Helpers
         private const string COLUMN_QUERY = "SELECT	c.name, \n\r" +
                                             "TYPE_NAME(system_type_id) + \n\r" +
                                             "CASE\n\r" +
+                                            "WHEN TYPE_NAME(system_type_id) LIKE '%char' and max_length = -1 \n\r" +
+                                            "THEN '(max)' \n\r" +
                                             "WHEN TYPE_NAME(system_type_id) LIKE 'n%char' \n\r" +
                                             "THEN CONCAT('(', max_length / 2, ')')\n\r" +
                                             "WHEN TYPE_NAME(system_type_id) LIKE '%char' \n\r" +
                                             "OR TYPE_NAME(system_type_id) = 'binary'  \n\r" +
                                             "THEN CONCAT('(', max_length, ')')\n\r" +
                                             "WHEN TYPE_NAME(system_type_id) = 'numeric' \n\r" +
+                                            "OR TYPE_NAME(system_type_id) = 'decimal' \n\r" + 
                                             "THEN CONCAT('(', precision, ',', scale, ')')\n\r" +
                                             "ELSE ''\n\r" +
                                             "END AS datatype\n\r" +
@@ -962,6 +986,7 @@ namespace Emar.Data.Helpers
                                             "AND c.column_id = ic.column_id\n\r" +
                                             "WHERE c.object_id = OBJECT_ID('{0}')\n\r";
 
+        private const string FOREIGN_KEY_QUERY = "";
     }
 
     internal enum PropertyDefinitionType

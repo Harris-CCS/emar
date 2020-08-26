@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Emar.Core.Helpers;
+using Emar.Core.HomeMedications.Model;
 using Emar.Core.Orders.Model.Mappings;
 using Emar.Core.Sites.Model.Mappings;
 using Emar.Data.Entities;
@@ -9,13 +10,11 @@ namespace Emar.Core.Patients.Model.Mappings
 {
     public static class PatientMapper
     {
-        public static PatientDto MapPatient(Patient pt)
+        public static PatientDto MapPatient(Patient pt, string dateFormat)
         {
             if (pt == null)
                 return null;
 
-            var dateFormat = pt.Site.SiteOptions.FirstOrDefault(si => si.Option.Name == AppConstants.LongDateFormat).OptionValue;
-            
             PatientDto patientDto = new PatientDto
             {
                 Id = pt.Id,
@@ -67,9 +66,11 @@ namespace Emar.Core.Patients.Model.Mappings
                 VisitStartDatetime = pt.VisitStartDatetime,
                 DeactivationDatetime = pt.DeactivationDatetime,
                 PatientImageSrc = EmarHttpContext.AppBaseUrl + "/" + AppConstants.ImagesRoute + "/patients/" + pt.Id.ToString(),
-                Orders = pt.PatientOrders?.Select(OrderMapper.MapOrder).ToList(),
+                Orders = pt.PatientOrders?.Select(o => OrderMapper.MapOrder(o, dateFormat)).ToList(),
                 Site = SiteMapper.MapSite(pt.Site),
-                PatientIndicators = pt.PatientIndicators?.Select(MapPatientIndicators).ToList()
+                PatientIndicators = pt.PatientIndicators?.Select(MapPatientIndicator).ToList(),
+                PatientAllergies = pt.PatientAllergies?.Select(MapPatientAllergy).ToList(),
+                HomeMedications = pt.PatientHomeMedications?.Select(MapHomeMedication).ToList()
             };
 
             // Calculate the age if the date-of-birth is present
@@ -100,7 +101,7 @@ namespace Emar.Core.Patients.Model.Mappings
             return patientDto;
         }
 
-        public static PatientIndicatorDto MapPatientIndicators(PatientIndicator indicator)
+        private static PatientIndicatorDto MapPatientIndicator(PatientIndicator indicator)
         {
             if (indicator == null)
             {
@@ -122,6 +123,77 @@ namespace Emar.Core.Patients.Model.Mappings
             };
 
             return indicatorDto;
+        }
+
+        private static PatientAllergyDto MapPatientAllergy(PatientAllergy allergy)
+        {
+            if (allergy == null)
+                return null;
+
+            var retDto = new PatientAllergyDto
+            {
+                Id = allergy.Id,
+                PatientId = allergy.PatientId,
+                Class = allergy.Class,
+                Category = allergy.Category,
+                InternalDrugId = allergy.InternalDrugId,
+                Ndc = allergy.Ndc,
+                DrugId = allergy.DrugId,
+                Name = allergy.Name,
+                AlternateName = allergy.AlternateName,
+                AllergyDrugId = allergy.AllergyDrugId,
+                IsActive = allergy.IsActive,
+                Comment = allergy.Comment,
+                Schedule = allergy.Schedule,
+                Reaction = allergy.Reaction,
+                Severity = allergy.Severity,
+                ParentDrugId = allergy.ParentDrugId,
+                ParentDrugName = allergy.ParentDrugName,
+                //AddUserId = allergy.AddUserId,
+                //AddUser = UserMapper.MapUser(allergy.AddUser),
+                //AddDatetime = allergy.AddDatetime,
+                //ChangeUserId = allergy.ChangeUserId,
+                //ChangeUser = UserMapper.MapUser(allergy.ChangeUser),
+                //ChangeDatetime = allergy.ChangeDatetime,
+                ActionStatus = allergy.ActionStatus,
+                InformationSource = allergy.InformationSource
+            };
+
+            return retDto;
+        }
+
+        private static HomeMedicationDto MapHomeMedication(PatientHomeMedication dbObj)
+        {
+            if (dbObj == null)
+                return null;
+
+            var retDto = new HomeMedicationDto
+            {
+                Id = dbObj.Id,
+                PatientId = dbObj.PatientId ?? 0,
+                Class = dbObj.Class,
+                Category = dbObj.Category,
+                InternalDrugId = dbObj.InternalDrugId,
+                Ndc = dbObj.Ndc,
+                DrugId = dbObj.DrugId,
+                Name = dbObj.Name,
+                AlternateName = dbObj.AlternateName,
+                MedicationDrugId = dbObj.MedicationDrugId,
+                IsActive = dbObj.IsActive,
+                Comment = dbObj.Comment,
+                Schedule = dbObj.Schedule,
+                Reaction = dbObj.Reaction,
+                Severity = dbObj.Severity,
+                ParentDrugName = dbObj.ParentDrugName,
+                //AddUserId = allergy.AddUserId,
+                //AddUser = UserMapper.MapUser(allergy.AddUser),
+                //AddDatetime = allergy.AddDatetime,
+                //ChangeUserId = allergy.ChangeUserId,
+                //ChangeUser = UserMapper.MapUser(allergy.ChangeUser),
+                //ChangeDatetime = allergy.ChangeDatetime,
+            };
+
+            return retDto;
         }
     }
 }
