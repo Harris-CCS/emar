@@ -55,7 +55,7 @@
             <div class="lists">
                 <div class="toggle">
                     <span [ngClass]="{'active': qlSelected}" (click)="onSelectTab('list-quick-orders')">Quick List</span>
-                    <span [ngClass]="{'active': dpSelected}" (click)="onSelectTab('list-dept-preferred-orders')">Dept Preferred List</span>
+                    <span [ngClass]="{'active': dpSelected, 'inValid': !hasDeptPreferredDefined}" (click)="onSelectTab('list-dept-preferred-orders')">Dept Preferred List</span>
                     <span [ngClass]="{'active': gSelected}" (click)="onSelectTab('list-groups-orders')">Groups</span>
                 </div>
 
@@ -64,7 +64,7 @@
                         <quick-list></quick-list>
                     </div>
                     <div id="list-dept-preferred-orders" [ngClass]="{'hidden': !dpSelected}">
-                        <dept-preferred></dept-preferred>
+                        <dept-preferred (isTabValid)="isTabValidHandler($event)"></dept-preferred>
                     </div>
                     <div id="list-groups-orders" [ngClass]="{'hidden': !gSelected}">
                         <groups></groups>

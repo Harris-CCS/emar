@@ -38,6 +38,11 @@ export class OrderEntryComponent implements OnInit {
   dpSelected: boolean = false;
   gSelected: boolean = false;
 
+  hasDeptPreferredDefined: boolean = false;
+  isTabValidHandler(event) {
+    this.hasDeptPreferredDefined = event
+    console.log('isTabValidHandler: hasDeptPreferredDefined? ', this.hasDeptPreferredDefined)
+  }
 
   constructor(
     private route: ActivatedRoute,
