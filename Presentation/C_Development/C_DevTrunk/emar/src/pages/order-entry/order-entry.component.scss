@@ -13,12 +13,16 @@
     margin-left: 10px;
     margin-right: 10px;
 }
-  
+
 .page-content-wrapper .lists .toggle {
     display: flex;
     border: solid #0077ab 1px;
     border-radius: 4px;
     height: 36px;
+
+    .inValid {
+        display: none;
+    }
 }
   
 .page-content-wrapper .lists .toggle span {
