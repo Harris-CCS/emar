@@ -13,6 +13,9 @@ namespace Emar.Core.Patients.Model
 
         public bool Active { get; set; }
 
+        internal string DateFormat { get; set; } = "dd/MM/yyyy";
+        internal string TimeFormat { get; set; } = "HH:mm:ss";
+
         private string _accountNumber;
         public string AccountNumber
         {
@@ -70,7 +73,7 @@ namespace Emar.Core.Patients.Model
         }
 
         public DateTime? DateOfBirth { get; set; }
-        public string BirthDate { get; set; }
+        public string BirthDate => DateOfBirth?.ToString(DateFormat);
 
         public int? Age { get; set; }
 
@@ -141,8 +144,8 @@ namespace Emar.Core.Patients.Model
 
         #region vital signs
         public DateTimeOffset? VsDatetime { get; set; }
-        public string VsDatetimeDate { get; set; }
-        public string VsDatetimeTime { get; set; }
+        public string VsDatetimeDate => VsDatetime?.ToString(DateFormat);
+        public string VsDatetimeTime => VsDatetime?.ToString(TimeFormat);
 
         string _vsBloodPressureIndicator;
         public string VsBloodPressureIndicator
