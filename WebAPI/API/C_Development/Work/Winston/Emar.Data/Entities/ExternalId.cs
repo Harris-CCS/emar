@@ -23,9 +23,9 @@ namespace Emar.Data.Entities
         [Column("external_id", TypeName = "varchar(50)")]
         public string ExternalId { get; set; }
 
-        [ForeignKey(nameof(InternalId))]
-        [InverseProperty(nameof(Entities.Patient.ExternalIds))]
-        public virtual Patient Patient { get; set; }
+        //[ForeignKey(nameof(InternalId))]
+        //[InverseProperty(nameof(Entities.Patient.ExternalIds))]
+        //public virtual Patient Patient { get; set; }
 
         //  This foreign key is not in the database, and can't be enforceable if it were:
         //    - The datatypes don't line up, and 

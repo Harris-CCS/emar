@@ -81,6 +81,10 @@ namespace Emar.Data.Entities
         [InverseProperty(nameof(User.PatientOrdersAddUser))]
         public virtual User AddUser { get; set; }
 
+        [ForeignKey(nameof(FrequencyScheduleId))]
+        [InverseProperty(nameof(Entities.FrequencySchedule.PatientOrders))]
+        public virtual FrequencySchedule FrequencySchedule { get; set; }
+
         [ForeignKey(nameof(MedicationRouteId))]
         [InverseProperty(nameof(Entities.MedicationRoute.PatientOrders))]
         public virtual MedicationRoute MedicationRoute { get; set; }

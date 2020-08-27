@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
-using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 using Emar.Core.Helpers;
 using Emar.Core.Patients.Model;
@@ -21,7 +19,6 @@ namespace Emar.Core.Patients.Repository
 
         public PatientRepository()
         {
-
         }
 
         public PatientRepository(EmarContext emarContext, IPropertyMappingService propertyMappingService)
@@ -36,7 +33,8 @@ namespace Emar.Core.Patients.Repository
 
             if (!resourceParameters.IncludeInactive)
             {
-                whereLambda = whereLambda.And(pt => pt.Active == true);
+                whereLambda = //whereLambda.And(pt => pt.Active == true);
+                    pt => pt.Active;
             }
 
             if (resourceParameters.SiteId != null)
@@ -94,26 +92,32 @@ namespace Emar.Core.Patients.Repository
                         .Include(patient => patient.PatientOrders)
                             .ThenInclude(order => order.MedicationUnit)
                         .Include(patient => patient.PatientOrders)
+                            .ThenInclude(order => order.FrequencySchedule)
+                        .Include(patient => patient.PatientOrders)
                             .ThenInclude(order => order.AddUser)
                         .Include(patient => patient.PatientOrders)
                             .ThenInclude(order => order.OrderPhysicianUser)
-                        .Include(patient => patient.Site)
-                            .ThenInclude(site => site.SiteOptions)
-                                .ThenInclude(siteOptions => siteOptions.Option)
-                        .Include(patient => patient.ExternalIds)
+                        //.Include(patient => patient.Site)
+                        //    .ThenInclude(site => site.SiteOptions)
+                        //        .ThenInclude(siteOptions => siteOptions.Option)
+                        //.Include(patient => patient.ExternalIds)
                         .Include(patient => patient.PatientIndicators)
+                        .Include(p => p.PatientAllergies)
+                        .Include(p => p.PatientHomeMedications)
                         .Where(wherePredicate)
                         .ToList();
             }
 
             return _context.Patients
-                    .Include(patient => patient.Site)
-                        .ThenInclude(site => site.SiteOptions)
-                            .ThenInclude(siteOptions => siteOptions.Option)
-                        .Include(patient => patient.ExternalIds)
-                        .Include(patient => patient.PatientIndicators)
-                        .Where(wherePredicate)
-                        .ToList();
+                //.Include(patient => patient.Site)
+                //    .ThenInclude(site => site.SiteOptions)
+                //        .ThenInclude(siteOptions => siteOptions.Option)
+                //.Include(patient => patient.ExternalIds)
+                .Include(patient => patient.PatientIndicators)
+                .Include(p => p.PatientAllergies)
+                .Include(p=>p.PatientHomeMedications)
+                .Where(wherePredicate)
+                .ToList();
         }
         //IEnumerable<Patient> GetPatients(Func<Patient, bool> wherePredicate, bool includeOrders = true)
         //{
@@ -154,12 +158,10 @@ namespace Emar.Core.Patients.Repository
                 (resourceParameters.ExtId2 != null))
             {
                 patientId = _context.ExternalIds
-                                .Where(@x_id =>
-                                        @x_id.ExternalId.Equals(resourceParameters.ExtId1 + "|" + resourceParameters.ExtId2) &&
-                                        @x_id.Entity.ToLower().Equals(@"patients") &&
-                                        @x_id.Vendor.ToLower().Equals(@"pulsecheck"))
-                                .FirstOrDefault()
-                                .InternalId;
+                    .FirstOrDefault(xId => xId.ExternalId.Equals(resourceParameters.ExtId1 + "|" + resourceParameters.ExtId2) &&
+                                             xId.Entity.ToLower().Equals(@"patients") &&
+                                             xId.Vendor.ToLower().Equals(@"pulsecheck"))
+                    .InternalId;
             }
 
             return patientId;
@@ -352,9 +354,9 @@ namespace Emar.Core.Patients.Repository
             //return externalRootSitePatientId;
          }
 
-        public Patient GetPatientByNumber(string number, GetPatientBy getPatientBy)
+        public Patient GetPatientByNumber(string number, GetPatientBy getPatientBy, bool includeOrders)
         {
-            return GetPatients(GetWherePredicate(number, getPatientBy))
+            return GetPatients(GetWherePredicate(number, getPatientBy), includeOrders)
                     .FirstOrDefault();
         }
 

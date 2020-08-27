@@ -55,6 +55,11 @@ namespace Emar.Data.Entities
         [Column("weekly_usage_rolling_average", TypeName = "decimal(9, 3)")]
         public decimal? WeeklyUsageRollingAverage { get; set; }
 
+
+        [ForeignKey(nameof(FrequencyScheduleId))]
+        [InverseProperty(nameof(Entities.FrequencySchedule.UserQuickListItems))]
+        public virtual FrequencySchedule FrequencySchedule { get; set; }
+
         [ForeignKey(nameof(MedicationRouteId))]
         [InverseProperty(nameof(Entities.MedicationRoute.UserQuickListItems))]
         public virtual MedicationRoute MedicationRoute { get; set; }

@@ -12,6 +12,9 @@ namespace Emar.Data.Entities
         [Column("site_id", TypeName = "int"), Required]
         public int SiteId { get; set; }
 
+        [Column("department_code", TypeName = "varchar(15)")]
+        public string DepartmentCode { get; set; }
+
         [Column("group_name", TypeName = "nvarchar(255)"), Required]
         public string GroupName { get; set; }
 
@@ -39,9 +42,10 @@ namespace Emar.Data.Entities
         [Column("order_notes", TypeName = "nvarchar(MAX)")]
         public string OrderNotes { get; set; }
 
-        [Column("department_code", TypeName = "varchar(15)")]
-        public string DepartmentCode { get; set; }
 
+        [ForeignKey(nameof(FrequencyScheduleId))]
+        [InverseProperty(nameof(Entities.FrequencySchedule.GroupListItems))]
+        public virtual FrequencySchedule FrequencySchedule { get; set; }
 
         [ForeignKey(nameof(MedicationRouteId))]
         [InverseProperty(nameof(Entities.MedicationRoute.GroupListItems))]

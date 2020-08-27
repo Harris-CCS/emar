@@ -31,11 +31,15 @@ namespace Emar.Core.Carts.Repository
 
         public PagedList<PatientCartOrder> GetOrders(long? patientId, OrdersResourceParameters resourceParameters)
         {
-            Expression<Func<PatientCartOrder, bool>> _whereLambda = null;
-            _whereLambda = _whereLambda.And(order => order.UserId == resourceParameters.UserId);
-            _whereLambda = _whereLambda.And(order => order.PatientId == (patientId ?? resourceParameters.PatientId));
+            Expression<Func<PatientCartOrder, bool>> whereLambda;
+            if (patientId == null)
+                whereLambda = order =>
+                    order.UserId == resourceParameters.UserId && order.PatientId == resourceParameters.PatientId;
+            else
+                whereLambda = order =>
+                    order.UserId == resourceParameters.UserId && patientId == resourceParameters.PatientId;
 
-            var orders = GetCartOrders(_whereLambda.Compile());
+            var orders = GetCartOrders(whereLambda);
 
             if (resourceParameters.OrderBy != null)
             {
@@ -48,11 +52,12 @@ namespace Emar.Core.Carts.Repository
             return PagedList<PatientCartOrder>.Create(orders.AsQueryable(), resourceParameters.PageNumber, resourceParameters.PageSize);
         }
 
-        IEnumerable<PatientCartOrder> GetCartOrders(Func<PatientCartOrder, bool> wherePredicate = null)
+        IEnumerable<PatientCartOrder> GetCartOrders(Expression<Func<PatientCartOrder, bool>> wherePredicate)
         {
             var orders = _context.PatientCartOrders
                 .Include(order => order.CartOrderAdministrations)
                 .Include(order => order.MedicationRoute)
+                .Include(order=> order.FrequencySchedule)
                 .Include(order => order.User)
                 .Include(order => order.Patient)
                     .ThenInclude(patient => patient.Site)

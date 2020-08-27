@@ -144,7 +144,7 @@ namespace Emar.Api.Controllers
                 WardCodes = wardCodes,
                 RoomBedCode = roomBedCode,
                 IncludeInactive = bool.TryParse(includeInactive, out bool incInactive) ? incInactive : false,
-                IncludeOrders = bool.TryParse(includeOrders, out bool incOrders) ? incInactive : false,
+                IncludeOrders = bool.TryParse(includeOrders, out bool incOrders) ? incOrders : false,
                 ExtId1 = extId1,
                 ExtId2 = extId2
             };
@@ -153,7 +153,7 @@ namespace Emar.Api.Controllers
             {
                 if (extId1 != null)
                 {
-                    PatientDto pt = _patientService.GetPatient(short.Parse(extId1), extId2);
+                    PatientDto pt = _patientService.GetPatient(short.Parse(extId1), extId2, resourceParameters.IncludeOrders);
 
                     if (pt == null)
                     {
@@ -166,7 +166,7 @@ namespace Emar.Api.Controllers
 
             if (resourceParameters.AskingForPatientByAccountNumber())
             {
-                var pt = _patientService.GetPatientByNumber(accountNumber, GetPatientBy.AccountNumber);
+                var pt = _patientService.GetPatientByNumber(accountNumber, GetPatientBy.AccountNumber, resourceParameters.IncludeOrders);
 
                 if (pt == null)
                 {
@@ -178,7 +178,7 @@ namespace Emar.Api.Controllers
 
             if (resourceParameters.AskingForPatientByCustomNumber())
             {
-                var pt = _patientService.GetPatientByNumber(customNumber, GetPatientBy.CustomNumber);
+                var pt = _patientService.GetPatientByNumber(customNumber, GetPatientBy.CustomNumber, resourceParameters.IncludeOrders);
 
                 if (pt == null)
                 {
@@ -190,7 +190,7 @@ namespace Emar.Api.Controllers
 
             if (resourceParameters.AskingForPatientByPersonNumber())
             {
-                var pt = _patientService.GetPatientByNumber(personNumber, GetPatientBy.PersonNumber);
+                var pt = _patientService.GetPatientByNumber(personNumber, GetPatientBy.PersonNumber, resourceParameters.IncludeOrders);
 
                 if (pt == null)
                 {
@@ -321,37 +321,40 @@ namespace Emar.Api.Controllers
             return Ok(patient);
         }
 
-        [HttpGet("{patientId}/orders/{orderId}", Name = nameof(GetPatientOrder))]
-        [ProducesResponseType(200)] // (OK) - the resource is sent in the response
-        [ProducesResponseType(400)] // (bad request) - indicates a bad request (e.g. wrong parameter)
-        [ProducesResponseType(404)] // (not found) - the resource does not exits
-        [ProducesResponseType(406)] // (not acceptable) - the server does not support the required representation
-        public IActionResult GetPatientOrder(
-            [FromHeader(Name = "Accept")] string mediaType,
-            [FromQuery] PatientsResourceParameters resourceParameters,
-            long? patientId,
-            long orderId
-            )
-        {
-            if (!MediaTypes.IsValidMediaType(mediaType))
-            {
-                return BadRequest("Unsupported media type header provided.");
-            }
 
-            PatientDto patient = CheckPatient(patientId, null, true);
+        /* Commenting out the following call - doesn't use orderId, and dosen't really make sense,
+         * so more prudent to comment it out than to fix it */ 
+        //[HttpGet("{patientId}/orders/{orderId}", Name = nameof(GetPatientOrder))]
+        //[ProducesResponseType(200)] // (OK) - the resource is sent in the response
+        //[ProducesResponseType(400)] // (bad request) - indicates a bad request (e.g. wrong parameter)
+        //[ProducesResponseType(404)] // (not found) - the resource does not exits
+        //[ProducesResponseType(406)] // (not acceptable) - the server does not support the required representation
+        //public IActionResult GetPatientOrder(
+        //    [FromHeader(Name = "Accept")] string mediaType,
+        //    [FromQuery] PatientsResourceParameters resourceParameters,
+        //    long? patientId,
+        //    long orderId
+        //    )
+        //{
+        //    if (!MediaTypes.IsValidMediaType(mediaType))
+        //    {
+        //        return BadRequest("Unsupported media type header provided.");
+        //    }
 
-            if (error.Equals(Errors.BadRequest))
-            {
-                return BadRequest();
-            }
+        //    PatientDto patient = CheckPatient(patientId, null, true);
 
-            if (error.Equals(Errors.PatientNotFound) || (patient == null))
-            {
-                return NotFound($"Patient with id '{patientId}' was not found");
-            }
+        //    if (error.Equals(Errors.BadRequest))
+        //    {
+        //        return BadRequest();
+        //    }
 
-            return Ok(patient);
-        }
+        //    if (error.Equals(Errors.PatientNotFound) || (patient == null))
+        //    {
+        //        return NotFound($"Patient with id '{patientId}' was not found");
+        //    }
+
+        //    return Ok(patient);
+        //}
 
         private PatientDto CheckPatient(long? patientId, PatientsResourceParameters resourceParameters, bool includeOrders)
         {
@@ -457,3 +460,4 @@ namespace Emar.Api.Controllers
         }
     }
 }
+ 

@@ -26,5 +26,6 @@ namespace Emar.Core.Orders.Repository
 
         // Group Remembered Order List
         List<GroupListItem> GetGroupRememberedOrderItems(int siteId, string departmentCode, string linkBase);
+        int GetSiteForOrder(long orderId);
     }
 }
