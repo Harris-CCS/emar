@@ -70,13 +70,13 @@ if '$(load_data)' in('sample', 'live')
                       , count(*) as [cnt]
                  from   [dbo].[user_quick_list_items]
                  group by [site_id]
-                        )
+                        , user_id)
              insert into [dbo].[department_preferred_list_items]
-             select distinct [q].[site_id]
+             select [q].[site_id]
                   , [department_code] = case
                                             when row_number() over(partition by [q].[site_id]
                                                  order by [q].[site_id]
-                                                        , [brand_name]) % 2.0 =0
+                                                        , [brand_name]) < ([cnt].[cnt] / 2.0)
                                                 then 'Main ED'
                                             else 'Fast Track'
                                         end
