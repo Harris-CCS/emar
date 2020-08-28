@@ -206,14 +206,15 @@ body .popover .arrow {
 
   &.button-raised {
       color: #fff !important;
-      background: #F31C38;
+      // background: #F31C38;
+      background: $primary-button;
       box-shadow: 0 10px 18px 0 rgba(243, 28, 56, 0.54);
       transition: all 300ms;
       border: none;
   }
 
   &.button-raised:hover {
-      background: #f3374f;
+      background: $primary-button-hover; // #f3374f;
       box-shadow: 0 3px 12px 0 rgba(243, 28, 56, 0.54);
   }
 }
@@ -241,14 +242,15 @@ body .popover .arrow {
 
   &.button-raised {
       color: #fff !important;
-      background: #f08080;
+      // background: $e-secondary-button-color; // #f08080;
+      background: $secondary-button;
       box-shadow: 0 10px 18px 0 rgba(243, 28, 56, 0.54);
       transition: all 300ms;
       border: none;
   }
 
   &.button-raised:hover {
-      background: #f08080;
+      background: $secondary-button-hover;// #f08080;
       box-shadow: 0 3px 12px 0 rgba(243, 28, 56, 0.54);
   }
 }
