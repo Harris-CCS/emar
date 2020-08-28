@@ -29,7 +29,7 @@ namespace Emar.Api.Controllers
         }
 
         [HttpGet("frequencies/{siteId}", Name = nameof(GetComposerFrequencies))]
-        public ActionResult<IEnumerable<FrequencyDto>> GetComposerFrequencies(int siteId)
+        public ActionResult<IEnumerable<MockFrequencyDto>> GetComposerFrequencies(int siteId)
         {
             var ret = _orderService.GetFrequencies(siteId);
             if (ret == null)
@@ -38,9 +38,9 @@ namespace Emar.Api.Controllers
         }
 
         [HttpGet("units/{siteId}", Name = nameof(GetComposerUnits))]
-        public ActionResult<IEnumerable<UnitDto>> GetComposerUnits(int siteId)
+        public ActionResult<IEnumerable<MockUnitDto>> GetComposerUnits(int siteId)
         {
-            IEnumerable<UnitDto> ret = _orderService.GetUnits(siteId);
+            IEnumerable<MockUnitDto> ret = _orderService.GetUnits(siteId);
             if (ret == null)
                 return NotFound($"Found no Units for Site ID: {siteId}");
             return Ok(ret);

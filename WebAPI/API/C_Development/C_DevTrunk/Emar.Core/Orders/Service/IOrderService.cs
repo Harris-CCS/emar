@@ -27,7 +27,7 @@ namespace Emar.Core.Orders.Service
 
         // Mock Methods
         ComposerOptionsDto GetComposerSetupData(string brandName);
-        IEnumerable<FrequencyDto> GetFrequencies(int siteId);
-        IEnumerable<UnitDto> GetUnits(in int siteId);
+        IEnumerable<MockFrequencyDto> GetFrequencies(int siteId);
+        IEnumerable<MockUnitDto> GetUnits(in int siteId);
     }
 }
