@@ -12,7 +12,9 @@ export class SimpleOrderListComponent implements OnInit {
   private tabListTabsFull = ['Most Used', '#', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
   displayTabs: Array<Object>;
   // displayItems: Medication[];
-  displayItems: [];
+  displayItems: Array<{
+    displayGroupName: string
+  }>;
   panelToggle: {};
 
 
@@ -27,8 +29,9 @@ export class SimpleOrderListComponent implements OnInit {
     if (this.listName === 'groups') {
       // this.panelToggle = this.displayItems.reduce((o, key) => Object.assign(o, {[key]: false}), {})
 
+      const idx = 0 //default
       this.panelToggle = (this.displayItems && this.displayItems.length) ? {
-        [this.displayItems[0].displayGroupName]: true
+        [this.displayItems?.[idx].displayGroupName]: true
       } : {}
       console.log('Input set items - panelToggle: ', this.panelToggle)
     }
