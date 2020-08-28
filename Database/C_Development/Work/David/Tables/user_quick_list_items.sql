@@ -13,6 +13,7 @@ create table [dbo].[user_quick_list_items]
     , [order_notes]                  [nvarchar](max) null
     , [usages_this_week]             [int] null
     , [weekly_usage_rolling_average] [decimal](9, 3) null
+    , [medication_id]                [int] null
     , constraint [pk__user_quick_list_items__id] primary key clustered([id] asc));
 go
 
@@ -26,6 +27,10 @@ go
 
 alter table [dbo].[user_quick_list_items]
 add constraint [df__user_quick_list_items__weekly_usage_rolling_average] default((-1)) for [weekly_usage_rolling_average];
+go
+
+alter table [dbo].[user_quick_list_items]
+add constraint [fk__user_quick_list_items__medications] foreign key([medication_id]) references [dbo].[medications]([id]);
 go
 
 /*****************
@@ -63,7 +68,7 @@ go
     Defaults
 ***************/
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'default usages_this_week to 0'
   , @level0type = N'SCHEMA'
@@ -74,7 +79,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'df__user_quick_list_items__usages_this_week';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'default weekly_usage_rolling_average to -1'
   , @level0type = N'SCHEMA'
@@ -90,7 +95,7 @@ go
     Indexes
 ***************/
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Primary Key Column'
   , @level0type = N'SCHEMA'
@@ -106,7 +111,7 @@ go
     Table
 ***************/
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'This table contains medications preferred list for the department preferred list tab'
   , @level0type = N'SCHEMA'
@@ -120,7 +125,7 @@ go
     Columns
 ***************/
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Auto increment table ID'
   , @level0type = N'SCHEMA'
@@ -131,7 +136,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Hospital identifier foriegn key to site table'
   , @level0type = N'SCHEMA'
@@ -142,7 +147,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'site_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Person Idendifier that owns this medication list record (Foreign Key to users table)'
   , @level0type = N'SCHEMA'
@@ -153,7 +158,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'user_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'National Drug Code that identifies the brand, formulation and packaging of a drug'
   , @level0type = N'SCHEMA'
@@ -164,7 +169,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'ndc';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'External Vendor Drug Database Identifier
     FDB: MEDID (MED Medication ID (Stable ID))
@@ -181,7 +186,7 @@ this will aid in display and lookup performance.
   , @level2name = N'drug_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Brand name'
   , @level0type = N'SCHEMA'
@@ -192,7 +197,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'brand_name';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Route of administration; Foreign Key to medication_routes table'
   , @level0type = N'SCHEMA'
@@ -203,7 +208,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'medication_route_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Medication Dose: numeric portion of dose/medication_unit_id pair'
   , @level0type = N'SCHEMA'
@@ -214,7 +219,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'dose';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Medication Unit: unit portion of dose/medication_unit_id pair'
   , @level0type = N'SCHEMA'
@@ -225,7 +230,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'medication_unit_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Foreign Key to frequency_schedules table'
   , @level0type = N'SCHEMA'
@@ -236,7 +241,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'frequency_schedule_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'order_notes'
   , @level0type = N'SCHEMA'
@@ -247,7 +252,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'order_notes';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Number of times this quick list items has been used this week'
   , @level0type = N'SCHEMA'
@@ -258,7 +263,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'usages_this_week';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Rolling Avreage of weekly usage used to set a most used priority sort order'
   , @level0type = N'SCHEMA'
