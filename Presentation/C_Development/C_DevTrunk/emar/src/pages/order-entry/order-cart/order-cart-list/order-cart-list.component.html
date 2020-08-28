@@ -11,7 +11,7 @@
                   placement="right" 
                   ngbTooltip="Medication Interaction placeholder">
             </span>
-            <label for="cart_{{item.id}}" (click)="editCartItem(item)">{{item.displayName}} {{item.displayDose}} {{item.displayDoseUnit}} {{item.displayRoute}}</label>
+            <label for="cart_{{item.id}}" (click)="editCartItem(item)">{{item.displayName}} {{item.displayDose}} {{item.displayDoseUnit}} {{item.displayFrequency}} {{item.displayRoute}}</label>
             <!-- <button class="button delete" (click)="removeCartItem(item)"></button> -->
             <button class="button delete" (click)="delete(item.id)"></button>
         </li>
