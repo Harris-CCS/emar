@@ -5,10 +5,10 @@ Default Values for Site Options
 *******************************/
 
 declare 
-    @LONG_DATE_FORMAT               varchar(25) = 'mm/dd/yyyy'
-  , @SHORT_DATE_FORMAT              varchar(25) = 'mm/dd/yy'
+    @LONG_DATE_FORMAT               varchar(25) = 'MM/dd/yyyy'
+  , @SHORT_DATE_FORMAT              varchar(25) = 'MM/dd/yy'
   , @SCHEDULE_FUTURE_ITEMS          varchar(25) = '3'
-  , @RXALERT                        varchar(25) = 'ALL';
+  , @RXALERT                        varchar(25) = '0';
 
 drop table if exists [#site_options];
 

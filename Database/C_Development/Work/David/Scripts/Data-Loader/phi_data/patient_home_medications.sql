@@ -26,7 +26,8 @@ create table [#patient_home_medications]
     , [add_user_id]         [varchar](50) null
     , [add_datetime]        [varchar](50) null
     , [change_user_id]      [varchar](50) null
-    , [change_datetime]     [varchar](50) null);
+    , [change_datetime]     [varchar](50) null
+    , [action_status]       [char](1) null);
 
 if '$(load_data)' = 'live'
    and exists
@@ -61,6 +62,7 @@ if '$(load_data)' = 'live'
            , [add_datetime]
            , [change_user_id]
            , [change_datetime]
+           , [action_status]
             )
         execute ('execute dbo.export_ibex_patient_home_medications');
     end;
@@ -156,6 +158,7 @@ if
            , [add_datetime]
            , [change_user_id]
            , [change_datetime]
+           , [action_status]
             )
         select isnull([internal_patient_id].[id], -1) as                                                [patient_id]
              , [source].[class]
@@ -179,6 +182,7 @@ if
              , [dbo].[ibex_date_to_offset_date]([source].[add_datetime], [site].[time_zone_name]) as    [add_datetime]
              , isnull([internal_change_user_id].[id], 0) as                                             [change_user_id]
              , [dbo].[ibex_date_to_offset_date]([source].[change_datetime], [site].[time_zone_name]) as [change_datetime]
+             , [source].[action_status]
         from   [#patient_home_medications] as [source]
                outer apply [dbo].[get_internal_id]('pulsecheck', 'patients', [source].[patient_id]) as [internal_patient_id]
                left join [dbo].[patients] as [patients] on [patients].[id] = [internal_patient_id].[id]

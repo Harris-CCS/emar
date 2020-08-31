@@ -1,7 +1,7 @@
 use master;
 
 declare 
-    @show_all bit = 1;
+    @show_all bit = 0;
 
 with cte_database_count
      as (select 'emar_bacpac' as               [database_name]
@@ -56,6 +56,19 @@ with cte_database_count
          group by [so].schema_id
                 , [so].[name]
          union all
+         select 'emar_bacpac_final' as         [database_name]
+              , schema_name([so].schema_id) as [schema_name]
+              , [so].[name] as                 [table_name]
+              , sum([spt].[Rows]) as           [row_count]
+         from     [emar_bacpac_final].[sys].[objects] as [so]
+                  inner join [emar_bacpac_final].[sys].[partitions] as [spt] on [so].object_id = [spt].object_id
+         where   [so].[type] = 'U'
+                 and [so].[is_ms_shipped] = 0x0
+                 and [index_id] < 2 -- 0:Heap, 1:Clustered
+                 and [so].[name] not in('__RefactorLog', 'sysdiagrams')
+         group by [so].schema_id
+                , [so].[name]
+         union all
          select 'emar_dacpac_sample' as        [database_name]
               , schema_name([so].schema_id) as [schema_name]
               , [so].[name] as                 [table_name]
@@ -70,9 +83,10 @@ with cte_database_count
                 , [so].[name])
      select [schema_name]
           , [table_name]
+          , [emar_clean]
           , [emar_bacpac]
           , [emar_bacpac2]
-          , [emar_clean]
+          , [emar_bacpac_final]
           , [emar_dacpac_live]
           , [emar_dacpac_sample]
      from
@@ -82,35 +96,37 @@ with cte_database_count
               , [table_name]
               , [row_count]
          from   [cte_database_count]
-     ) as [source] pivot(max([row_count]) for [database_name] in([emar_bacpac]
+     ) as [source] pivot(max([row_count]) for [database_name] in([emar_clean]
+                                                               , [emar_bacpac]
                                                                , [emar_bacpac2]
-                                                               , [emar_clean]
+                                                               , [emar_bacpac_final]
                                                                , [emar_dacpac_live]
                                                                , [emar_dacpac_sample])) as [pivot_table]
      where  [emar_bacpac] <> [emar_bacpac2]
             or [emar_bacpac2] <> [emar_clean]
             or [emar_clean] <> [emar_dacpac_live]
             or [emar_dacpac_live] <> [emar_dacpac_sample]
-            or [emar_dacpac_sample] <> [emar_bacpac]
+            or [emar_dacpac_sample] <> [emar_bacpac_final]
+            or [emar_bacpac_final] <> [emar_bacpac]
             or @show_all = 1
      order by [schema_name]
             , [table_name];
 
-/**************************************************************************************************************
+/****************************************************************************************************************
 use emar_bacpac;
 
-select *
+select *, right(Path,len(Path)-charindex('.',Path,charindex('.',Path)+1))
 from   [SchemaDictionary]
 where  path not in('dbo.LoadLevels', 'tool.ScriptDiagram', 'dbo.load_levels', 'dbo.__RefactorLog.OperationKey')
---       and cast([path] as varchar(500)) like '%key%'
-       and cast([description] as varchar(500)) like '%key%'
-order by 3
+--       and cast([path] as varchar(500)) like '%patient_id%'
+--       and cast([description] as varchar(500)) like '%patient_id%'
+order by 4,3
        , 2
        , 1;
 
 select *
 from   [SchemaDictionary]
-where  path not in('dbo.LoadLevels', 'tool.ScriptDiagram', 'dbo.load_levels', 'dbo.__RefactorLog.OperationKey')
+--where  path not in('dbo.LoadLevels', 'tool.ScriptDiagram', 'dbo.load_levels', 'dbo.__RefactorLog.OperationKey')
 --       and cast([path] as varchar(500)) like '%drug_id%'
 order by 2
        , 1
@@ -128,6 +144,20 @@ order by 1
        , 2
        , 3
        , 4;
-**************************************************************************************************************/
+****************************************************************************************************************/
+/**************************************************************************************************
+use master;
 
-
+         select 'emar' as               [database_name]
+              , schema_name([so].schema_id) as [schema_name]
+              , [so].[name] as                 [table_name]
+              , sum([spt].[Rows]) as           [row_count]
+         from     [emar].[sys].[objects] as [so]
+                  inner join [emar].[sys].[partitions] as [spt] on [so].object_id = [spt].object_id
+         where   [so].[type] = 'U'
+                 and [so].[is_ms_shipped] = 0x0
+                 and [index_id] < 2 -- 0:Heap, 1:Clustered
+                 and [so].[name] not in('__RefactorLog', 'sysdiagrams')
+         group by [so].schema_id
+                , [so].[name]
+**************************************************************************************************/

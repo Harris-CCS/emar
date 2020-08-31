@@ -29,6 +29,7 @@ These are the scripts to run
     09_bcp.cmd
     10_extract_emar_dacpac.cmd
     11_import_emar_bacpac.cmd
+    12_test_bacpac_release.txt
 
 If no new tables are being added preform script 00 then start at script 05
 

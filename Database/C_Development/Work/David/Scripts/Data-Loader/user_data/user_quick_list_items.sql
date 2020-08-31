@@ -107,7 +107,7 @@ if
              , [source].[order_notes]
         from   [#user_quick_list_items] as [source]
                outer apply [dbo].[get_internal_id]('pulsecheck', 'sites', [source].[site_id]) as [internal_site_site]
-               outer apply [dbo].[get_internal_id]('pulsecheck', 'users', [source].[site_id]) as [internal_site_user]
+               outer apply [dbo].[get_internal_id]('pulsecheck', 'users', [source].[user_id]) as [internal_site_user]
                cross apply [dbo].[get_code_share_site]([internal_site_site].[id], 'medication_units') as [mu_site]
                cross apply [dbo].[get_code_share_site]([internal_site_site].[id], 'medication_routes') as [mr_site]
                left join [dbo].[medication_routes] as [mr] on [mr].[site_id] = [mr_site].[site_id]
