@@ -11,9 +11,9 @@ as
         from      [ibex].[dbo].[pat] as [pat]
                   inner join [ibex].[dbo].[pat_indicators] as [pi] on [pat].[ibex] = [pi].[ibex]
                                                                       and [pat].[site] = [pi].[site]
-                  inner join [ibex].[dbo].[custom_indicators] as [ci] on [ci].[code] = [pi].[type]
+                  inner join [ibex].[dbo].[custom_indicators] as [ci] on [pi].[type] = [ci].[code] and [pi].[site] = [ci].[site]
                   left join [ibex].[dbo].[current_custom_indicators] as [cci] on [cci].[custom_indicator_id] = [ci].[id]
-                                                                                 and [cci].[site] = [ci].[site]
+                                                                                 and [cci].[site] = [pi].[site]
                   cross apply
                   (
                     select [js].[code]

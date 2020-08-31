@@ -47,6 +47,20 @@ if exists
 (
     select null
     from   [sys].[databases]
+    where  [name] = 'emar_bacpac_final'
+)
+    begin
+        alter database [emar_bacpac_final] set single_user with rollback immediate;
+    end;
+go
+
+drop database if exists [emar_bacpac_final];
+go
+
+if exists
+(
+    select null
+    from   [sys].[databases]
     where  [name] = 'emar_dacpac_live'
 )
     begin

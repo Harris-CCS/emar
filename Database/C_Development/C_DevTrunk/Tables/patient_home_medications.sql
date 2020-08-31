@@ -1,7 +1,7 @@
 create table [dbo].[patient_home_medications]
     (
       [id]                  [bigint] identity(1, 1) not null
-    , [patient_id]          [bigint] null
+    , [patient_id]          [bigint] not null
     , [class]               [varchar](32) null
     , [category]            [varchar](32) null
     , [internal_drug_id]    [varchar](32) null
@@ -24,6 +24,7 @@ create table [dbo].[patient_home_medications]
     , [add_datetime]        [datetimeoffset](7) null
     , [change_user_id]      [int] not null
     , [change_datetime]     [datetimeoffset](7) null
+    , [action_status]       [char](1) null
     , constraint [pk__patient_home_medications__id] primary key clustered([id] asc));
 go
 
@@ -372,4 +373,15 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'patient_home_medications'
   , @level2type = N'COLUMN'
   , @level2name = N'change_datetime';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'Action taken status. V = Viewed, R = Rejected, C = Confirmed, U=Unconfirmed'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'patient_home_medications'
+  , @level2type = N'COLUMN'
+  , @level2name = N'action_status';
 go
