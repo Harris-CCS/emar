@@ -150,16 +150,10 @@ namespace Emar.Data.Helpers
         {
             internal EfTableAttributes Parent { get; set; }
 
-            internal bool KeyColumn { get; private set; }
-
-            internal bool Required { get; set; }
-
+            // Properties from the Annotations
             internal string SqlName { get; set; }
-
-            internal string ClrName { get; set; }
-
-            internal int? MaxStringLength { get; set; }
-
+            internal bool KeyColumn { get; private set; }
+            internal bool Required { get; set; }
             private string _sqlDataType;
             public string SqlDataType
             {
@@ -167,12 +161,20 @@ namespace Emar.Data.Helpers
                 set => _sqlDataType = value.ToLower().Replace(" ", "");
             }
 
+            // ClrProperties
+            internal string ClrName { get; set; }
             internal Type ClrDataType { get; set; }
-
+            internal int? MaxStringLength { get; set; }
             internal bool? IsUnicode { get; set; } = true;
-            internal bool IsFixWidth { get; set; }
-            public bool ExistsInDb { get; set; }
-            public bool? SqlNullable { get; set; }
+            internal bool? IsFixWidth { get; set; }
+
+            // DB Properties
+            private string _dbDataType;
+            private bool? _dbNullable;
+            private bool? _dbPrimaryKey;
+            //public bool? SqlNullable { get; set; }
+
+            public bool ExistsInDb => _dbNullable != null;
 
             internal void SetKeyColumn()
             {
@@ -180,23 +182,218 @@ namespace Emar.Data.Helpers
                 KeyColumn = true;
             }
 
-            public string PropertyDefinition(PropertyDefinitionType definitionType)
+            public string PropertyDefinition()
             {
-                switch(definitionType)
-                {
-                    case PropertyDefinitionType.CorrectClrDataType:
-                        bool nullable = SqlNullable ?? !Required;
-                        var clrDataType = SqlToClrDataTypeString(SqlDataType, nullable, out bool includeRequired);
-                        var keyRequiredText = KeyColumn ? ", Key" : (includeRequired ? ", Required" : "");
+                bool nullable = _dbNullable ?? !Required;
+                var sqlDataType = _dbDataType ?? SqlDataType 
+                    ?? throw new ArgumentException("Don't have either a DbDataType or an AnnotationSqlDataType in EfColumnAttributes.PropertyDefinition()");
+                
+                bool includeRequired = false;
+                string clrDataType;
+                if (_dbDataType != null)
+                    clrDataType = SqlToClrDataTypeString(_dbDataType, nullable, out includeRequired);
+                else if (SqlDataType != null)
+                    clrDataType = SqlToClrDataTypeString(SqlDataType, nullable, out includeRequired);
+                else
+                    clrDataType = ClrDataTypeToString(ClrDataType);
 
-                        return $"[Column(\"{SqlName}\", TypeName = \"{SqlDataType}\"){keyRequiredText}]"
-                               + Environment.NewLine +
-                               $"public {clrDataType} {ClrName} {{ get; set; }}";
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(definitionType), definitionType,
-                            "From EfColumnAttributes.PropertyDefinition()");
+                var keyRequiredText = KeyColumn ? ", Key" : (includeRequired ? ", Required" : "");
+
+                return $"[Column(\"{SqlName}\", TypeName = \"{sqlDataType}\"){keyRequiredText}]"
+                       + Environment.NewLine +
+                       $"public {clrDataType} {ClrName} {{ get; set; }}";
+            }
+
+            public void RecordDbPropertiesAndConfirm(string dataType, in bool nullable, in bool primaryKey,
+                EfDiscrepancyReport report)
+            {
+                _dbDataType = dataType;
+                _dbNullable = nullable;
+                _dbPrimaryKey = primaryKey;
+                ReportProblem error;
+
+                if (!string.IsNullOrWhiteSpace(SqlDataType) && SqlDataType != _dbDataType)
+                    report.RegisterProblem(this, FileSegment.EntityProperties,
+                        ReportProblem.DbDataTypeNotMatchDefinedSqlType,
+                        $"DB DataType = '{_dbDataType}', but annotations declare the data type to be '{SqlDataType}'.");
+
+                if ((error = EntityColumnTypeNotMatchSql(out string probDetails)) == ReportProblem.None)
+                {
+                    if (KeyColumn != _dbPrimaryKey)
+                    {
+                        error = primaryKey
+                            ? ReportProblem.PropertyNotFlaggedAsKey
+                            : ReportProblem.PropertyImproperlyFlaggedAsKey;
+                        probDetails = primaryKey
+                            ? "Property is a Key Field, but not marked as such."
+                            : "Property is not a Key Field, but is marked as such.";
+                    }
+                    else if (Required == nullable)
+                    {
+                        error = nullable
+                            ? ReportProblem.DataTypeNotNullableButColumnTakesNulls
+                            : ReportProblem.DataTypeNullableButColumnDoesntTakeNulls;
+                        probDetails = nullable
+                            ? "Data Type won't allow nulls, but Column Nullable."
+                            : "Data Type allows nulls, but Column Not Nullable";
+                    }
                 }
 
+                if (error == ReportProblem.None) return;
+                report.RegisterProblem(this, FileSegment.EntityProperties, error, probDetails);
+            }
+
+            internal ReportProblem EntityColumnTypeNotMatchSql(out string probDetails)
+            {
+                //former parameters:
+                //sqlDataType, sqlNullable, col.ClrDataType, col.IsUnicode,
+                //col.MaxStringLength, col.IsFixWidth, out string probDetails
+
+                ReportProblem returnProblem = ReportProblem.None;
+                probDetails = "";
+                //noteAsRequired = false;
+
+                if (SqlDataType == null)
+                    return returnProblem;
+
+                var typeParts = SqlDataType.Split(new[] { '(', ')', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                switch (typeParts[0].Trim().ToLower())
+                {
+                    case "binary":
+                    case "varbinary":
+                        if (!(IsFixWidth ?? false) && (typeParts[0] == "binary"))
+                        {
+                            probDetails = "binary not identified as Fixed Length";
+                            returnProblem = ReportProblem.ContextFixedLengthPropertyMissing;
+                        }
+                        else if ((IsFixWidth ?? false) && (typeParts[0] == "varbinary"))
+                        {
+                            probDetails = "varbinary identified as Fixed Length";
+                            returnProblem = ReportProblem.ContextFixedLengthPropertyToBeRemoved;
+                        }
+                        else if (MaxStringLength != null && typeParts.Length > 1 && MaxStringLength.ToString() != typeParts[1])
+                        {
+                            probDetails = "[var]binary length doesn't match CLR MaxLength annotation";
+                            returnProblem = ReportProblem.AnnotationSqlDatatypeNotMatchClrDatatype;
+                        }
+                        break;
+                    case "varchar":
+                    case "char":
+                    case "nvarchar":
+                    case "nchar":
+                        if (ClrDataType != typeof(string))
+                        {
+                            probDetails = $"{typeParts[0]} SQL data type not identified as 'String'.";
+                            returnProblem = ReportProblem.AnnotationSqlDatatypeNotMatchClrDatatype;
+                            break;
+                        }
+                        if (MaxStringLength != null && MaxStringLength.ToString() != typeParts[1].Trim())
+                        {
+                            probDetails = $"{typeParts[0]} max length doesn't match SQL data type.";
+                            returnProblem = ReportProblem.AnnotationSqlDatatypeNotMatchClrDatatype;
+                            break;
+                        }
+
+                        bool bFixed;
+                        bool bUnicode;
+                        switch (typeParts[0].Trim().ToLower())
+                        {
+                            case "varchar":
+                                bFixed = false;
+                                bUnicode = false;
+                                break;
+                            case "char":
+                                bFixed = true;
+                                bUnicode = false;
+                                break;
+                            case "nvarchar":
+                                bFixed = false;
+                                bUnicode = true;
+                                break;
+                            //case "nchar":
+                            default:
+                                bFixed = true;
+                                bUnicode = true;
+                                break;
+                        }
+                        if (bFixed != (IsFixWidth ?? false))
+                        {
+                            probDetails = (IsFixWidth ?? false)
+                                ? $"Properties incorrectly declare '{typeParts[0]}' value as Fixed Length."
+                                : $"Properties don't declare {typeParts[0]} value as Fixed Length.";
+                            returnProblem = (IsFixWidth ?? false)
+                                ? ReportProblem.ContextFixedLengthPropertyToBeRemoved
+                                : ReportProblem.ContextFixedLengthPropertyMissing;
+                        }
+                        else if (bUnicode != (IsUnicode ?? true))
+                        {
+                            probDetails = (bUnicode)
+                                ? $"Properties incorrectly declare {typeParts[0]} value as Non-Unicode."
+                                : $"Properties don't declare '{typeParts[0]}' value as Non-Unicode.";
+                            returnProblem = (bUnicode)
+                                ? ReportProblem.ContextNotUnicodePropertyToBeRemoved
+                                : ReportProblem.ContextNotUnicodePropertyMissing;
+                        }
+                        break;
+                    case "bigint":
+                        CheckRequiredAssumedType(typeParts[0].Trim().ToLower(), ClrDataType,
+                            typeof(long), typeof(long?), _dbNullable, out probDetails);
+                        break;
+                    case "int":
+                        CheckRequiredAssumedType(typeParts[0].Trim().ToLower(), ClrDataType,
+                            typeof(int), typeof(int?), _dbNullable, out probDetails);
+                        break;
+                    case "smallint":
+                        CheckRequiredAssumedType(typeParts[0].Trim().ToLower(), ClrDataType,
+                            typeof(short), typeof(short?), _dbNullable, out probDetails);
+                        break;
+                    case "tinyint":
+                        CheckRequiredAssumedType(typeParts[0].Trim().ToLower(), ClrDataType,
+                            typeof(byte), typeof(byte?), _dbNullable, out probDetails);
+                        break;
+                    case "bit":
+                        CheckRequiredAssumedType(typeParts[0].Trim().ToLower(), ClrDataType,
+                            typeof(bool), typeof(bool?), _dbNullable, out probDetails);
+                        break;
+                    case "decimal":
+                    case "numeric":
+                        CheckRequiredAssumedType(typeParts[0].Trim().ToLower(), ClrDataType,
+                            typeof(decimal), typeof(decimal?), _dbNullable, out probDetails);
+                        break;
+                    case "datetimeoffset":
+                        CheckRequiredAssumedType(typeParts[0].Trim().ToLower(), ClrDataType,
+                            typeof(DateTimeOffset), typeof(DateTimeOffset?), _dbNullable, out probDetails);
+                        break;
+                    case "date":
+                        CheckRequiredAssumedType(typeParts[0].Trim().ToLower(), ClrDataType,
+                            typeof(DateTime), typeof(DateTime?), _dbNullable, out probDetails);
+                        break;
+                    case "time":
+                        CheckRequiredAssumedType(typeParts[0].Trim().ToLower(), ClrDataType,
+                            typeof(TimeSpan), typeof(TimeSpan?), _dbNullable, out probDetails);
+                        break;
+                    default:
+                        throw new NotImplementedException($"EntityColumnTypeNotMatchSql case missing '{typeParts[0]}'");
+                }
+
+                return returnProblem != ReportProblem.None || probDetails == ""
+                    ? returnProblem
+                    : ReportProblem.AnnotationSqlDatatypeNotMatchClrDatatype;
+            }
+
+            private void CheckRequiredAssumedType(string sqlType, Type clrDataType,
+                Type clrNonNullTarget, Type clrNullTarget, bool? sqlNullable, out string probDetails)
+            {
+                probDetails = "";
+                if (_dbNullable == null)
+                {
+                    if (Required && clrDataType != clrNonNullTarget)
+                        probDetails =
+                            $"NON NULLABLE '{sqlType}' SQL data type doesn't have a property data type of \"{ClrDataTypeToString(clrNonNullTarget)}\"";
+                    else if (!Required && clrDataType != clrNullTarget)
+                        probDetails =
+                            $"NULLABLE '{sqlType}' SQL data type doesn't have a property data type of \"{ClrDataTypeToString(clrNullTarget)}\"";
+                }
             }
         }
 
@@ -219,29 +416,39 @@ namespace Emar.Data.Helpers
 
         private void CompareSurveyToDatabase(List<EfTableAttributes> tables, EfDiscrepancyReport report)
         {
+            // Create a list of tables that need to be removed from the model because they don't exist in the DB
+            var tablesToRemove = new List<EfTableAttributes>();
             using (var conn = new SqlConnection(_context.Database.GetDbConnection().ConnectionString))
             {
                 conn.Open();
                 foreach (var tbl in tables)
                 {
-                    using (var comm = new SqlCommand(string.Format(COLUMN_QUERY, tbl.SqlTableName), conn))
+                    using (var comm = new SqlCommand($"SELECT count(*) FROM sys.tables WHERE name = '{tbl.SqlTableName}'",
+                        conn))
                     {
-                        using (var reader = comm.ExecuteReader())
+                        var x = Convert.ToInt16(comm.ExecuteScalar());
+                        if (x == 0)
                         {
-                            while (reader.Read())
+                            RegisterTableNotExists(tbl, report);
+                            tablesToRemove.Add(tbl);
+                        }
+                        else
+                        {
+                            comm.CommandText = string.Format(COLUMN_QUERY, tbl.SqlTableName);
+                            using (var reader = comm.ExecuteReader())
                             {
-                                ReadTheReader(reader, out string colName, out string sqlDataType, out bool sqlNullable,
-                                    out bool primaryKey);
-                                // Find the record in the list of columns
-                                var col = tbl.Columns.FirstOrDefault(c => c.SqlName == colName);
-                                if (col?.SqlName == null)
-                                    RegisterMissingColumn(tbl, colName, sqlDataType, sqlNullable, primaryKey, report);
-                                //tbl.Columns.Add(col = RegisterMissingColumn(tbl.SqlTableName, tbl.EntityName, colName,
-                                //    sqlDataType, sqlNullable, primaryKey, report));
-                                else
+                                while (reader.Read())
                                 {
-                                    ConfirmColumnPropertiesMatchDb(col, sqlDataType, sqlNullable, primaryKey, report);
-                                    col.ExistsInDb = true;
+                                    ReadTheReader(reader, out string colName, out string sqlDataType,
+                                        out bool sqlNullable,
+                                        out bool primaryKey);
+                                    // Find the record in the list of columns
+                                    var col = tbl.Columns.FirstOrDefault(c => c.SqlName == colName);
+                                    if (col?.SqlName == null)
+                                        RegisterMissingColumn(tbl, colName, sqlDataType, sqlNullable, primaryKey,
+                                            report);
+                                    else
+                                        col.RecordDbPropertiesAndConfirm(sqlDataType, sqlNullable, primaryKey, report);
                                 }
                             }
                         }
@@ -253,6 +460,9 @@ namespace Emar.Data.Helpers
                 }
             }
 
+            foreach (var table in tablesToRemove) 
+                tables.Remove(table);
+
             foreach (var table in tables)
             {
                 foreach (var column in table.Columns)
@@ -263,7 +473,8 @@ namespace Emar.Data.Helpers
                 }
             }
         }
-        
+
+
         private void ReadTheReader(SqlDataReader reader, out string colName, out string dataType, out bool nullable,
             out bool primaryKey)
         {
@@ -300,202 +511,25 @@ namespace Emar.Data.Helpers
             return report.Files.Any();
         }
 
-        private static void ConfirmColumnPropertiesMatchDb(EfColumnAttributes col,
-            string sqlDataType, bool? sqlNullable, bool keyColumn, EfDiscrepancyReport report)
-        {
-            ReportProblem error;
-
-            if (!string.IsNullOrWhiteSpace(col.SqlDataType) && col.SqlDataType != sqlDataType)
-            {
-                var problemDetails =
-                    $"DB DataType = '{sqlDataType}', but annotations declare the data type to be '{col.SqlDataType}'.";
-                col.SqlDataType = sqlDataType;
-                report.RegisterProblem(col, FileSegment.EntityProperties,
-                    ReportProblem.DbDataTypeNotMatchDefinedSqlType, problemDetails);
-            }
-
-            // In case the "Required" property of the col is different from the SQL nullable property,
-            // we're saving it to the col object here
-            col.SqlNullable = sqlNullable;
-
-            if ((error = EntityColumnTypeNotMatchSql(sqlDataType, sqlNullable, col.ClrDataType, col.IsUnicode,
-                col.MaxStringLength, col.IsFixWidth, out string probDetails)) == ReportProblem.None)
-            {
-                if (col.KeyColumn != keyColumn)
-                    error = keyColumn
-                        ? ReportProblem.PropertyNotFlaggedAsKey
-                        : ReportProblem.PropertyImproperlyFlaggedAsKey;
-                else if (col.Required == sqlNullable)
-                    error = sqlNullable ?? true
-                        ? ReportProblem.PropertyFlaggedRequiredButColumnNullable
-                        : ReportProblem.PropertyNotFlaggedRequiredButColumnNotNullable;
-            }
-
-            if (error == ReportProblem.None) return;
-            col.SqlDataType = sqlDataType;
-            report.RegisterProblem(col, FileSegment.EntityProperties, error, probDetails);
-        }
-
         private static void ConfirmColumnPropertiesMatchSqlAnnotations(EfColumnAttributes col,
             string sqlDataType, bool? sqlNullable, bool keyColumn, EfDiscrepancyReport report)
         {
             ReportProblem error;
 
-            if ((error = EntityColumnTypeNotMatchSql(sqlDataType, sqlNullable, col.ClrDataType, col.IsUnicode,
-                col.MaxStringLength, col.IsFixWidth, out string probDetails)) == ReportProblem.None)
+            if ((error = col.EntityColumnTypeNotMatchSql(out string probDetails)) == ReportProblem.None)
                 return;
 
             report.RegisterProblem(col, FileSegment.EntityProperties, error, probDetails);
         }
 
-        private static ReportProblem EntityColumnTypeNotMatchSql(string sqlDataType, bool? sqlNullable,
-            Type clrDataType, bool? isUnicode, int? maxLength, bool? fixedLength, out string probDetails)//, out bool noteAsRequired)
-        {
-            ReportProblem returnProblem = ReportProblem.None;
-            probDetails = "";
-            //noteAsRequired = false;
-
-            if (sqlDataType == null)
-                return returnProblem;
-
-            var typeParts = sqlDataType.Split(new[] {'(', ')', ' '}, StringSplitOptions.RemoveEmptyEntries);
-            switch (typeParts[0].Trim().ToLower())
-            {
-                case "binary":
-                case "varbinary":
-                    if (!(fixedLength ?? false) && (typeParts[0] == "binary"))
-                    {
-                        probDetails = "binary not identified as Fixed Length";
-                        returnProblem = ReportProblem.ContextFixedLengthPropertyMissing;
-                    }
-                    else if((fixedLength ?? false) && (typeParts[0] == "varbinary"))
-                    {
-                        probDetails = "varbinary identified as Fixed Length";
-                        returnProblem = ReportProblem.ContextFixedLengthPropertyToBeRemoved;
-                    }
-                    else if (maxLength != null && typeParts.Length > 1 && maxLength.ToString() != typeParts[1])
-                    {
-                        probDetails = "[var]binary length doesn't match CLR MaxLength annotation";
-                        returnProblem = ReportProblem.AnnotationSqlDatatypeNotMatchClrDatatype;
-                    }
-                    break;
-                case "varchar":
-                case "char":
-                case "nvarchar":
-                case "nchar":
-                    if (clrDataType != typeof(string))
-                    {
-                        probDetails = $"{typeParts[0]} SQL data type not identified as 'String'.";
-                        returnProblem = ReportProblem.AnnotationSqlDatatypeNotMatchClrDatatype;
-                        break;
-                    }
-                    if (maxLength != null && maxLength.ToString() != typeParts[1].Trim())
-                    {
-                        probDetails = $"{typeParts[0]} max length doesn't match SQL data type.";
-                        returnProblem = ReportProblem.AnnotationSqlDatatypeNotMatchClrDatatype;
-                        break;
-                    }
-
-                    bool bFixed ;
-                    bool bUnicode;
-                    switch (typeParts[0].Trim().ToLower())
-                    {
-                        case "varchar":
-                            bFixed = false;
-                            bUnicode = false;
-                            break;
-                        case "char":
-                            bFixed = true;
-                            bUnicode = false;
-                            break;
-                        case "nvarchar":
-                            bFixed = false;
-                            bUnicode = true;
-                            break;
-                        //case "nchar":
-                        default:
-                            bFixed = true;
-                            bUnicode = true;
-                            break;
-                    }
-                    if (bFixed != (fixedLength ?? false))
-                    {
-                        probDetails = (fixedLength ?? false)
-                            ? $"Properties incorrectly declare '{typeParts[0]}' value as Fixed Length."
-                            : $"Properties don't declare {typeParts[0]} value as Fixed Length.";
-                        returnProblem = (fixedLength ?? false)
-                            ? ReportProblem.ContextFixedLengthPropertyToBeRemoved
-                            : ReportProblem.ContextFixedLengthPropertyMissing;
-                    }
-                    else if (bUnicode != (isUnicode ?? true))
-                    {
-                        probDetails = (bUnicode)
-                            ? $"Properties incorrectly declare {typeParts[0]} value as Non-Unicode."
-                            : $"Properties don't declare '{typeParts[0]}' value as Non-Unicode.";
-                        returnProblem = (bUnicode)
-                            ? ReportProblem.ContextNotUnicodePropertyToBeRemoved
-                            : ReportProblem.ContextNotUnicodePropertyMissing;
-                    }
-                    break;
-                case "bigint":
-                    CheckRequiredAssumedType(typeParts[0].Trim().ToLower(), clrDataType,
-                        typeof(long), typeof(long?), sqlNullable, out probDetails);
-                    break;
-                case "int":
-                    CheckRequiredAssumedType(typeParts[0].Trim().ToLower(), clrDataType,
-                        typeof(int), typeof(int?), sqlNullable, out probDetails);
-                    break;
-                case "smallint":
-                    CheckRequiredAssumedType(typeParts[0].Trim().ToLower(), clrDataType,
-                        typeof(short), typeof(short?), sqlNullable, out probDetails);
-                    break;
-                case "tinyint":
-                    CheckRequiredAssumedType(typeParts[0].Trim().ToLower(), clrDataType,
-                        typeof(byte), typeof(byte?), sqlNullable, out probDetails);
-                    break;
-                case "bit":
-                    CheckRequiredAssumedType(typeParts[0].Trim().ToLower(), clrDataType,
-                        typeof(bool), typeof(bool?), sqlNullable, out probDetails);
-                    break;
-                case "decimal":
-                case "numeric":
-                    CheckRequiredAssumedType(typeParts[0].Trim().ToLower(), clrDataType,
-                        typeof(decimal), typeof(decimal?), sqlNullable, out probDetails);
-                    break;
-                case "datetimeoffset":
-                    CheckRequiredAssumedType(typeParts[0].Trim().ToLower(), clrDataType,
-                        typeof(DateTimeOffset), typeof(DateTimeOffset?), sqlNullable, out probDetails);
-                    break;
-                case "date":
-                    CheckRequiredAssumedType(typeParts[0].Trim().ToLower(), clrDataType,
-                        typeof(DateTime), typeof(DateTime?), sqlNullable, out probDetails);
-                    break;
-                case "time":
-                    CheckRequiredAssumedType(typeParts[0].Trim().ToLower(), clrDataType,
-                        typeof(TimeSpan), typeof(TimeSpan?), sqlNullable, out probDetails);
-                    break;
-                default:
-                    throw new NotImplementedException($"EntityColumnTypeNotMatchSql case missing '{typeParts[0]}'");
-            }
-
-            return returnProblem != ReportProblem.None || probDetails == ""
-                ? returnProblem
-                : ReportProblem.AnnotationSqlDatatypeNotMatchClrDatatype;
-        }
-
-        private static void CheckRequiredAssumedType(string sqlType, Type clrDataType,
-            Type clrNonNullTarget, Type clrNullTarget, bool? sqlNullable, out string probDetails)
-        {
-            probDetails = "";
-            if ((sqlNullable ?? true) && clrDataType != clrNullTarget)
-                probDetails = $"NULLABLE '{sqlType}' SQL data type doesn't have a property data type of \"{ClrDataTypeToString(clrNullTarget)}\"";
-            else if (!(sqlNullable ?? false) && clrDataType != clrNonNullTarget)
-                probDetails = $"NON NULLABLE '{sqlType}' SQL data type doesn't have a property data type of \"{ClrDataTypeToString(clrNonNullTarget)}\"";
-        }
-
         #endregion
 
         #region Error Reporting
+
+        private void RegisterTableNotExists(EfTableAttributes tblObj, EfDiscrepancyReport report)
+        {
+            report.RegisterProblemTableNotExists(tblObj);
+        }
 
         private void RegisterMissingColumn(EfTableAttributes tblObj, string colName,
             string sqlDataType, bool nullable, bool keyColumn, EfDiscrepancyReport report)
@@ -554,6 +588,7 @@ namespace Emar.Data.Helpers
                     case ReportProblem.AnnotationSqlDatatypeNotMatchClrDatatype:
                     case ReportProblem.ColumnNotInDatabase:
                     case ReportProblem.DbDataTypeNotMatchDefinedSqlType:
+                    case ReportProblem.DataTypeNullableButColumnDoesntTakeNulls:
                         file = GetFile(problemColumn.Parent.SqlTableName, problemColumn.Parent.EntityName);
                         segmentObj = file.GetFileSegment(FileSegment.EntityProperties);
                         segmentObj.CorrectionFragments.Add(
@@ -568,18 +603,6 @@ namespace Emar.Data.Helpers
                         segmentObj.CorrectionFragments.Add(
                                 new EfDiscrepancyCodeCorrectionFragment(problemColumn, problem, problemDetails));
                         break;
-                    //case ReportProblem.DbColumnMissing:
-                    //    break;
-                    //case ReportProblem.PropertyNotFlaggedAsKey:
-                    //    break;
-                    //case ReportProblem.PropertyImproperlyFlaggedAsKey:
-                    //    break;
-                    //case ReportProblem.None:
-                    //    break;
-                    //case ReportProblem.PropertyFlaggedRequiredButColumnNullable:
-                    //    break;
-                    //case ReportProblem.PropertyNotFlaggedRequiredButColumnNotNullable:
-                    //    break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(problem), problem, "From EfDiscrepancyReport.RegisterProblem() -- switch didn't cover...");
                 }
@@ -596,6 +619,18 @@ namespace Emar.Data.Helpers
                 var segment = file.GetFileSegment(fSegment);
                 segment.CorrectionFragments.Add(new EfDiscrepancyCodeCorrectionFragment(sqlColumnName, sqlDataType,
                     sqlNullable, sqlKeyColumn, problem));
+            }
+
+            /// <summary>
+            /// Used for SQL Table Not Exists
+            /// </summary>
+            /// <param name="tblObj">Table object which points to SQL table that doesn't exist</param>
+            internal void RegisterProblemTableNotExists(EfTableAttributes tblObj)
+            {
+                var file = GetFile(tblObj.SqlTableName, tblObj.EntityName);
+                var segmentObj = file.GetFileSegment(FileSegment.TableLevel);
+                segmentObj.CorrectionFragments.Add(new EfDiscrepancyCodeCorrectionFragment(ReportProblem.DbTableMissing,
+                    tblObj.SqlTableName));
             }
 
             public string CreateOutputText()
@@ -620,8 +655,12 @@ namespace Emar.Data.Helpers
                         lastSegment = segment.Segment;
                         lastEntity = segment.EntityName;
 
-                        sb.AppendLine();
-                        sb.AppendLine($"{SegmentName(segment, ref contextOnModelCreatingPrinted)}");
+                        string line;
+                        if((line = $"{SegmentName(segment, ref contextOnModelCreatingPrinted)}") != "")
+                        {
+                            sb.AppendLine();
+                            sb.AppendLine(line);
+                        }
 
                         foreach (var fragment in segment.CorrectionFragments)
                         {
@@ -658,8 +697,10 @@ namespace Emar.Data.Helpers
 
                         contextOnModelCreatingPrinted = true;
                         return ret;
+                    case FileSegment.TableLevel:
+                        return "";
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(segment), segment, null);
+                        throw new ArgumentOutOfRangeException(nameof(segment), segment, "From EfDiscrepancyReport.SegmentName()");
                 }
             }
         }
@@ -735,18 +776,19 @@ namespace Emar.Data.Helpers
                     //    break;
                     case ReportProblem.AnnotationSqlDatatypeNotMatchClrDatatype:
                     case ReportProblem.DbDataTypeNotMatchDefinedSqlType:
+                    case ReportProblem.DataTypeNullableButColumnDoesntTakeNulls:
                         CorrectionCode =
                             "// Update Property in Entity file" + Environment.NewLine + 
                             (string.IsNullOrWhiteSpace(problemDetails) ? ""
                             : $"// Problem: {problemDetails}" + Environment.NewLine + Environment.NewLine) +
-                            colObj.PropertyDefinition(PropertyDefinitionType.CorrectClrDataType);
+                            colObj.PropertyDefinition();
                         break;
                     case ReportProblem.ColumnNotInDatabase:
                         CorrectionCode =
                             "// This column is no longer in the database" + Environment.NewLine +
                             (string.IsNullOrWhiteSpace(problemDetails) ? ""
                                 : $"// Problem: {problemDetails}" + Environment.NewLine + Environment.NewLine) +
-                            colObj.PropertyDefinition(PropertyDefinitionType.CorrectClrDataType);
+                            colObj.PropertyDefinition();
                         break;
                     case ReportProblem.ContextFixedLengthPropertyMissing:
                         CorrectionCode =
@@ -803,48 +845,25 @@ namespace Emar.Data.Helpers
                     Environment.NewLine +
                     $"public {clrType} {propertyName} {{ get; set; }}";
             }
-            //public static List<ProblemDto> CreateCorrectionCode(string entityName, string sqlColName,
-            //    string sqlDataType, in bool keyColumn, in bool nullable, string clrType, string propertyName,
-            //    bool? unicode, bool noteAsRequired, ReportProblem problem)
-            //{
-               
 
-            //    //if (problem == ReportProblem.ColumnNotInDatabase)
-            //    //{
-            //    //    return new List<ProblemDto>
-            //    //    {
-            //    //        new ProblemDto
-            //    //        {
-            //    //            Instruction = instruction,
-            //    //            Which = WhichFile.TargetFile,
-            //    //            Code = propertyName
-            //    //        }
-            //    //    };
-            //    //}
-
-            //    var keyRequiredText = keyColumn ? ", Key" : (nullable ? "" : ", Required");
-            //    var ret = new List<ProblemDto>
-            //    {
-            //        new ProblemDto
-            //        {
-            //       //     Instruction = instruction,
-            //            Which = WhichFile.TargetFile,
-            //            Code = @"[Column(""" + sqlColName + @""", TypeName = """ + sqlDataType + @""")" +
-            //                   $"{keyRequiredText}]" + $"public {clrType} {propertyName} {{ get; set; }}"
-            //        }
-            //    };
-
-            //    if (!(unicode ?? true))
-            //        ret.Add(new ProblemDto
-            //        {
-            //            Instruction = "Add this property to the 'modelBuilder.Entity<{entityName}>(entity =>' section",
-            //            Which = WhichFile.ContextFile,
-            //            Code = $"    entity.Property(e => e.{propertyName}).IsUnicode(false);"
-            //        });
-
-            //    return ret;
-            //}
-
+            public EfDiscrepancyCodeCorrectionFragment(ReportProblem reportProblem, string problemDetails)
+            {
+                switch (reportProblem)
+                {
+                    case ReportProblem.DbTableMissing:
+                        CorrectionCode =
+                            $"The DB Table {problemDetails} doesn't exist.  Remove this file from the project." +
+                            Environment.NewLine +
+                            $"This will also cause you to have to update the {CONTEXT_NAME} to remove the corresponding DB Set" +
+                            Environment.NewLine +
+                            $"and possibly an OnModelCreating() \"modelBuilder.Entity<{problemDetails}>(entity => \" section." +
+                            Environment.NewLine;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(reportProblem), reportProblem, 
+                            "From EfDiscrepancyCodeFragment.ctor (the one with 2 args)");
+                }   
+            }
         }
 
        public enum ReportProblem
@@ -855,14 +874,15 @@ namespace Emar.Data.Helpers
             PropertyNotFlaggedAsKey,
             PropertyImproperlyFlaggedAsKey,
             None,
-            PropertyFlaggedRequiredButColumnNullable,
-            PropertyNotFlaggedRequiredButColumnNotNullable,
+            DataTypeNotNullableButColumnTakesNulls,
+            DataTypeNullableButColumnDoesntTakeNulls,
             ColumnNotInDatabase,
             ContextNotUnicodePropertyMissing,
             ContextNotUnicodePropertyToBeRemoved,
             ContextFixedLengthPropertyMissing,
             ContextFixedLengthPropertyToBeRemoved,
-            DbDataTypeNotMatchDefinedSqlType
+            DbDataTypeNotMatchDefinedSqlType,
+            DbTableMissing
         }
 
         #endregion
@@ -932,23 +952,30 @@ namespace Emar.Data.Helpers
                     return "long";
                 case "System.Boolean":
                     return "bool";
-                //    "varchar":
-                //case "char":
-                //case "nvarchar":
-                //case "nchar":
-                //    return typeof(System.String);
+                case "System.Nullable`1[System.Boolean]":
+                    return "bool?";
                 case "System.Nullable`1[System.Int64]":
                     return "long?";
+                case "System.Int32":
+                    return "int";
+                case "System.Nullable`1[System.Int32]":
+                    return "int?";
+                case "System.Int16":
+                    return "short";
+                case "System.Nullable`1[System.Int16]":
+                    return "short?";
+                case "System.Byte":
+                    return "byte";
+                case "System.Nullable`1[System.Byte]":
+                    return "byte?";
                 case "System.Nullable`1[System.DateTimeOffset]":
                     return "DateTimeOffset?";
+                case "System.Nullable`1[System.TimeSpan]":
+                    return "TimeSpan?";
                 case "System.DateTimeOffset":
                     return "DateTimeOffset";
                 case "System.DateTime":
                     return "DateTime";
-                case "System.Int32":
-                    return "int";
-                //case "int?":
-                //    return typeof(int?);
                 case "System.Decimal":
                     return "decimal";
                 default:
@@ -989,61 +1016,18 @@ namespace Emar.Data.Helpers
         private const string FOREIGN_KEY_QUERY = "";
     }
 
-    internal enum PropertyDefinitionType
-    {
-        CorrectClrDataType
-    }
-
     public enum FileSegment
     {
         EntityProperties,
         ContextOnModelCreating,
-        None
+        None,
+        TableLevel
     }
 
 #if TestingInternalDatatypeProblems
 
-    // SQL to create test table
-    IF OBJECT_ID('dbo.column_problem_tests') IS NOT NULL
-    DROP TABLE column_problem_tests
-    GO
-    CREATE TABLE column_problem_tests
-    (
-    col_bigint_null bigint NULL,
-    col_bigint_not_null bigint NOT NULL,
-    col_bit_null bit NULL,
-    col_bit_not_null bit NOT NULL,
-    col_date_null date NULL,
-    col_date_not_null date NOT NULL,
-    col_datetimeoffset_null datetimeoffset NULL,
-    col_datetimeoffset_not_null datetimeoffset NOT NULL,
-    col_decimal_null decimal NULL,
-    col_decimal_not_null decimal NOT NULL,
-    col_int_null int NULL,
-    col_int_not_null int NOT NULL,
-    col_numeric_null numeric NULL,
-    col_numeric_not_null numeric NOT NULL,
-    col_smallint_null smallint NULL,
-    col_smallint_not_null smallint NOT NULL,
-    col_time_null time NULL,
-    col_time_not_null time NOT NULL,
-    col_tinyint_null tinyint NULL,
-    col_tinyint_not_null tinyint NOT NULL,
-
-    col_binary_null binary(12) NULL,
-    col_binary_not_null binary(12) NOT NULL,
-    col_varbinary_null varbinary(12) NULL,
-    col_varbinary_not_null varbinary(12) NOT NULL,
-
-    col_char_null char (10) NULL,
-    col_char_not_null char (10) NOT NULL,
-    col_nchar_null nchar(10) NULL,
-    col_nchar_not_null nchar(10) NOT NULL,
-    col_nvarchar_null nvarchar(10) NULL,
-    col_nvarchar_not_null nvarchar(10) NOT NULL,
-    col_varchar_null varchar(10) NULL,
-    col_varchar_not_null varchar(10) NOT NULL
-    )
+/**** Go to "C:\Users\bm70142\OneDrive - harriscomputer\Documents\PulseCheck work\Testing Data for EfToDbSynchHelper.sql"
+ **** for SQL data to create sample tables */
 
     // Output from API call with test data (model checking only)
         File:  _ColumnProblemTest.cs

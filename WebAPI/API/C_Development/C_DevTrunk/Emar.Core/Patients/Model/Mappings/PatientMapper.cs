@@ -173,7 +173,7 @@ namespace Emar.Core.Patients.Model.Mappings
             var retDto = new HomeMedicationDto
             {
                 Id = dbObj.Id,
-                PatientId = dbObj.PatientId ?? 0,
+                PatientId = dbObj.PatientId,
                 Class = dbObj.Class,
                 Category = dbObj.Category,
                 InternalDrugId = dbObj.InternalDrugId,

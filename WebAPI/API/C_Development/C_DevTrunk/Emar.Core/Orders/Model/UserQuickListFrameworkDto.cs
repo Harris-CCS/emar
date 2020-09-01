@@ -8,7 +8,7 @@ namespace Emar.Core.Orders.Model
         public IEnumerable<UserQuickListItemDto> CurrentTabContents;
         public List<UserQuickListTabDto> TabListing;
 
-        public UserQuickListFrameworkDto(IEnumerable<UserQuickListItemDto> firstTabOrders, List<string> tabListing,
+        public UserQuickListFrameworkDto(IEnumerable<UserQuickListItemDto> firstTabOrders, List<KeyValuePair<string, int>> tabListing,
             string linkBase)
         {
             CurrentTabContents = firstTabOrders;
