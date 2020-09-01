@@ -28,6 +28,7 @@
   <ItemGroup>
     <Folder Include="Medications\Repository\" />
     <Folder Include="Medications\Service\" />
+    <Folder Include="Templates\Model\Mappings\" />
   </ItemGroup>
 
 </Project>
