@@ -23,6 +23,8 @@ namespace Emar.Data
         public virtual DbSet<ExternalIdEntity> ExternalIds { get; set; }
         public virtual DbSet<FrequencySchedule> FrequencySchedules { get; set; }
         public virtual DbSet<GroupListItem> GroupListItems { get; set; }
+        public virtual DbSet<MedicationRoute> MedicationRoutes { get; set; }
+        public virtual DbSet<MedicationUnit> MedicationUnits { get; set; }
         public virtual DbSet<Option> Options { get; set; }
         public virtual DbSet<OrderAdministration> OrderAdministrations { get; set; }
         public virtual DbSet<OrderEvent> OrderEvents { get; set; }
@@ -37,6 +39,8 @@ namespace Emar.Data
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserQuickListItem> UserQuickListItems { get; set; }
 
+        //SP entities
+        public virtual DbSet<DoseRangeCheckingInfo> DoseRangeCheckingInfos { get; set; }
 
         // Testing Code
 #if  TestingInternalDatatypeProblems
@@ -107,6 +111,11 @@ namespace Emar.Data
                     .HasForeignKey(d => d.SiteId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk__department_preferred_list_items__sites");
+            });
+
+            modelBuilder.Entity<DoseRangeCheckingInfo>(entity =>
+            {
+                entity.HasNoKey();
             });
 
             modelBuilder.Entity<ExternalIdEntity>(entity =>
