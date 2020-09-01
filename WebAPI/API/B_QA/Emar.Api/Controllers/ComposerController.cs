@@ -2,6 +2,8 @@
 using Emar.Api.Helpers;
 using Emar.Core.Orders.Model;
 using Emar.Core.Orders.Service;
+using Emar.Core.Templates.Model;
+using Emar.Core.Templates.Service;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Emar.Api.Controllers
@@ -13,10 +15,12 @@ namespace Emar.Api.Controllers
     public class ComposerController : ControllerBase
     {
         private readonly IOrderService _orderService;
+        private readonly ITemplateService _templateService;
 
-        public ComposerController(IOrderService orderService)
+        public ComposerController(IOrderService orderService, ITemplateService templateService)
         {
             _orderService = orderService;
+            _templateService = templateService;
         }
 
         [HttpGet("{brandName}", Name = nameof(GetComposerOptions))]
@@ -29,7 +33,7 @@ namespace Emar.Api.Controllers
         }
 
         [HttpGet("frequencies/{siteId}", Name = nameof(GetComposerFrequencies))]
-        public ActionResult<IEnumerable<FrequencyDto>> GetComposerFrequencies(int siteId)
+        public ActionResult<IEnumerable<MockFrequencyDto>> GetComposerFrequencies(int siteId)
         {
             var ret = _orderService.GetFrequencies(siteId);
             if (ret == null)
@@ -38,12 +42,22 @@ namespace Emar.Api.Controllers
         }
 
         [HttpGet("units/{siteId}", Name = nameof(GetComposerUnits))]
-        public ActionResult<IEnumerable<UnitDto>> GetComposerUnits(int siteId)
+        public ActionResult<IEnumerable<MockUnitDto>> GetComposerUnits(int siteId)
         {
-            IEnumerable<UnitDto> ret = _orderService.GetUnits(siteId);
+            IEnumerable<MockUnitDto> ret = _orderService.GetUnits(siteId);
             if (ret == null)
                 return NotFound($"Found no Units for Site ID: {siteId}");
             return Ok(ret);
         }
+
+        [HttpGet("templates/{templateId}", Name = nameof(GetTemplateDefinition))]
+        public ActionResult<TemplateDto> GetTemplateDefinition(int templateId)
+        {
+            TemplateDto ret = _templateService.GetTemplateDefinition(templateId);
+
+            return Ok(ret);
+        }
     }
 }
+
+    

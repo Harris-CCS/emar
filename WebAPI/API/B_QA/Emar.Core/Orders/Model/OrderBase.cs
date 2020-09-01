@@ -49,10 +49,12 @@ namespace Emar.Core.Orders.Model
         /// </summary>
         public MedicationRouteDto MedicationRoute { get; set; }
 
-        /// <summary>
-        /// Unique order frequency identifier.
-        /// </summary>
         public int? FrequencyId { get; set; }
+
+        /// <summary>
+        /// DTO of the Frequency Schedule
+        /// </summary>
+        public FrequencyScheduleDto FrequencySchedule { get; set; }
 
         /// <summary>
         /// Indicates whether the order is Point-In-Time.

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "f2aa7deb-394b-4fe9-9bbf-6b29cb57387b",
+		"_postman_id": "1a8177a0-3f4b-455a-bce7-2745858b680e",
 		"name": "UserQuickList API Tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -11,7 +11,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "042e8afc-5718-4ce1-be69-08955ab88a21",
+						"id": "5773f759-63d4-49ab-b48e-a4334b6499cc",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
@@ -20,7 +20,7 @@
 							"var jsonData = pm.response.json();\r",
 							"\r",
 							"pm.test(\"Correct Name returned\", function() {\r",
-							"    pm.expect(jsonData.displayName).to.eql(\"Michele Eyre, LPN\");\r",
+							"    pm.expect(jsonData.displayName).to.eql(\"Joe Admin He\");\r",
 							"});\r",
 							"\r",
 							"pm.environment.set(\"QuickListUserId\", jsonData.id);\r",
@@ -46,7 +46,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{URL}}/api/users?extId=36",
+					"raw": "{{URL}}/api/users?extId=10147",
 					"host": [
 						"{{URL}}"
 					],
@@ -57,7 +57,7 @@
 					"query": [
 						{
 							"key": "extId",
-							"value": "36"
+							"value": "10147"
 						}
 					]
 				}
@@ -143,7 +143,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "7f23096a-7455-4327-9d5e-629a336fab8a",
+						"id": "a8330d4a-1b89-401e-886f-73f742ea12ea",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
@@ -155,13 +155,42 @@
 							"    pm.expect(jsonData.currentTabContents.length).to.eql(80);\r",
 							"});\r",
 							"\r",
-							"pm.test(\"Returns 27 tabs\", function() {\r",
-							"    pm.expect(jsonData.tabListing.length).to.eql(27);\r",
+							"pm.test(\"Returns 24 tabs\", function() {\r",
+							"    pm.expect(jsonData.tabListing.length).to.eql(24);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Correct Tab Name returned\", function() {\r",
 							"    pm.expect(jsonData.currentTab.tabName).to.eql(\"Most Used\");\r",
-							"});"
+							"});\r",
+							"\r",
+							"const validFrequencyScheduleExists = (order) => {\r",
+							"    return order.frequencySchedule.id !== 0 && order.frequencySchedule.scheduleName !== undefined && order.frequencySchedule.scheduleName !== \"\";\r",
+							"}\r",
+							"\r",
+							"const validRouteExists = (order) => {\r",
+							"    if (order.medicationRoute === null)\r",
+							"        return false;\r",
+							"    return order.medicationRoute.id !== 0 && order.medicationRoute.routeName !== undefined && order.medicationRoute.routeName !== \"\";\r",
+							"}\r",
+							"\r",
+							"const validUnitExists = (order) => {\r",
+							"    if (order.doseUnit === null)\r",
+							"        return false;\r",
+							"    return order.doseUnit.id !== 0 && order.doseUnit.unitName !== undefined && order.doseUnit.unitName !== \"\";\r",
+							"}\r",
+							"\r",
+							"pm.test(\"All orders have a valid frequency\", function() {\r",
+							"    pm.expect(jsonData.currentTabContents.all(validFrequencyScheduleExists)).to.be.true;\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Some orders have a valid Route\", function() {\r",
+							"    pm.expect(jsonData.currentTabContents.any(validRouteExists)).to.be.true;\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Some orders have a valid Unit\", function() {\r",
+							"    pm.expect(jsonData.currentTabContents.any(validUnitExists)).to.be.true;\r",
+							"})\r",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -216,7 +245,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "d83ff9d0-b2a1-4886-8dad-12a7a24937c0",
+						"id": "a403e6ff-051b-4c5b-9845-6578914685b7",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
@@ -224,9 +253,37 @@
 							"\r",
 							"var jsonData = pm.response.json();\r",
 							"\r",
-							"pm.test(\"Returns 1 record\", function() {\r",
-							"    pm.expect(jsonData.length).to.eql(1);\r",
+							"pm.test(\"Returns 2 records\", function() {\r",
+							"    pm.expect(jsonData.length).to.eql(2);\r",
 							"});\r",
+							"\r",
+							"const validFrequencyScheduleExists = (order) => {\r",
+							"    return order.frequencySchedule.id !== 0 && order.frequencySchedule.scheduleName !== undefined && order.frequencySchedule.scheduleName !== \"\";\r",
+							"}\r",
+							"\r",
+							"const validRouteExists = (order) => {\r",
+							"    if (order.medicationRoute === null)\r",
+							"        return false;\r",
+							"    return order.medicationRoute.id !== 0 && order.medicationRoute.routeName !== undefined && order.medicationRoute.routeName !== \"\";\r",
+							"}\r",
+							"\r",
+							"const validUnitExists = (order) => {\r",
+							"    if (order.doseUnit === null)\r",
+							"        return false;\r",
+							"    return order.doseUnit.id !== 0 && order.doseUnit.unitName !== undefined && order.doseUnit.unitName !== \"\";\r",
+							"}\r",
+							"\r",
+							"pm.test(\"All orders have a valid frequency\", function() {\r",
+							"    pm.expect(jsonData.all(validFrequencyScheduleExists)).to.be.true;\r",
+							"})\r",
+							"\r",
+							"pm.test(\"No orders have a valid Route\", function() {\r",
+							"    pm.expect(jsonData.any(validRouteExists)).to.be.false;\r",
+							"})\r",
+							"\r",
+							"pm.test(\"No orders have a valid Unit\", function() {\r",
+							"    pm.expect(jsonData.any(validUnitExists)).to.be.false;\r",
+							"})\r",
 							""
 						],
 						"type": "text/javascript"
@@ -253,7 +310,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{URL}}/api/userquicklists/tabs/%23?SiteId=16",
+					"raw": "{{URL}}/api/userquicklists/tabs/%23?SiteId=28",
 					"host": [
 						"{{URL}}"
 					],
@@ -266,7 +323,7 @@
 					"query": [
 						{
 							"key": "SiteId",
-							"value": "16"
+							"value": "28"
 						}
 					]
 				}
@@ -279,12 +336,12 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "f379ac79-5afd-423a-8e15-74582875aa2f",
+						"id": "014fcfac-2849-400e-a7af-a60461d3db42",
 						"exec": [
 							"var jsonData = pm.response.json();\r",
 							"\r",
-							"pm.test(\"Returns 91 records\", function () {\r",
-							"    pm.expect(jsonData.length).to.eql(91);\r",
+							"pm.test(\"Returns 53 records\", function () {\r",
+							"    pm.expect(jsonData.length).to.eql(53);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Status code is 200\", function () {\r",
@@ -295,7 +352,37 @@
 							"    var quicklistId = jsonData[0].id;\r",
 							"    var expectedLink = pm.environment.get(\"URL\") + \"/api/userquicklists/\" + quicklistId + \"/cartOrders/12345\";\r",
 							"    pm.expect(jsonData[0].links[0].href).to.eql(expectedLink);\r",
-							"});"
+							"});\r",
+							"\r",
+							"\r",
+							"const validFrequencyScheduleExists = (order) => {\r",
+							"    return order.frequencySchedule.id !== 0 && order.frequencySchedule.scheduleName !== undefined && order.frequencySchedule.scheduleName !== \"\";\r",
+							"}\r",
+							"\r",
+							"const validRouteExists = (order) => {\r",
+							"    if (order.medicationRoute === null)\r",
+							"        return false;\r",
+							"    return order.medicationRoute.id !== 0 && order.medicationRoute.routeName !== undefined && order.medicationRoute.routeName !== \"\";\r",
+							"}\r",
+							"\r",
+							"const validUnitExists = (order) => {\r",
+							"    if (order.doseUnit === null)\r",
+							"        return false;\r",
+							"    return order.doseUnit.id !== 0 && order.doseUnit.unitName !== undefined && order.doseUnit.unitName !== \"\";\r",
+							"}\r",
+							"\r",
+							"pm.test(\"All orders have a valid frequency\", function() {\r",
+							"    pm.expect(jsonData.all(validFrequencyScheduleExists)).to.be.true;\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Some orders have a valid Route\", function() {\r",
+							"    pm.expect(jsonData.any(validRouteExists)).to.be.true;\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Some orders have a valid Unit\", function() {\r",
+							"    pm.expect(jsonData.any(validUnitExists)).to.be.true;\r",
+							"})\r",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -321,7 +408,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{URL}}/api/userquicklists/tabs/C?SiteId=16&patientId=12345",
+					"raw": "{{URL}}/api/userquicklists/tabs/C?SiteId=28&patientId=12345",
 					"host": [
 						"{{URL}}"
 					],
@@ -334,7 +421,7 @@
 					"query": [
 						{
 							"key": "SiteId",
-							"value": "16"
+							"value": "28"
 						},
 						{
 							"key": "patientId",
@@ -351,19 +438,46 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "89be110a-8a84-4193-94df-d6632fe95fe4",
+						"id": "740857c9-5609-4997-9df1-37125087e496",
 						"exec": [
 							"var jsonData = pm.response.json();\r",
 							"\r",
-							"pm.test(\"Returns 91 records\", function() {\r",
-							"    pm.expect(jsonData.length).to.eql(91);\r",
+							"pm.test(\"Returns 53 records\", function() {\r",
+							"    pm.expect(jsonData.length).to.eql(53);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
 							"});\r",
 							"\r",
-							""
+							"\r",
+							"const validFrequencyScheduleExists = (order) => {\r",
+							"    return order.frequencySchedule.id !== 0 && order.frequencySchedule.scheduleName !== undefined && order.frequencySchedule.scheduleName !== \"\";\r",
+							"}\r",
+							"\r",
+							"const validRouteExists = (order) => {\r",
+							"    if (order.medicationRoute === null)\r",
+							"        return false;\r",
+							"    return order.medicationRoute.id !== 0 && order.medicationRoute.routeName !== undefined && order.medicationRoute.routeName !== \"\";\r",
+							"}\r",
+							"\r",
+							"const validUnitExists = (order) => {\r",
+							"    if (order.doseUnit === null)\r",
+							"        return false;\r",
+							"    return order.doseUnit.id !== 0 && order.doseUnit.unitName !== undefined && order.doseUnit.unitName !== \"\";\r",
+							"}\r",
+							"\r",
+							"pm.test(\"All orders have a valid frequency\", function() {\r",
+							"    pm.expect(jsonData.all(validFrequencyScheduleExists)).to.be.true;\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Some orders have a valid Route\", function() {\r",
+							"    pm.expect(jsonData.any(validRouteExists)).to.be.true;\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Some orders have a valid Unit\", function() {\r",
+							"    pm.expect(jsonData.any(validUnitExists)).to.be.true;\r",
+							"})"
 						],
 						"type": "text/javascript"
 					}
@@ -416,7 +530,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "491452c2-5e6a-4b16-b462-bd88641e1fdf",
+						"id": "2ad62562-86dd-442e-be1c-fc99f3b2f4b1",
 						"exec": [
 							"// pm.test(\"Returns 91 records\", function() {\r",
 							"//     pm.expect(jsonData.length).to.eql(91);\r",

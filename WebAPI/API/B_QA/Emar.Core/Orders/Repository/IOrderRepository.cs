@@ -18,7 +18,7 @@ namespace Emar.Core.Orders.Repository
 
         // User Quick List
         IEnumerable<UserQuickListItem> GetUserQuickListMostUsed(int userId, int? siteId);
-        List<string> GetUserQuickListTabs(int userId, int? siteId);
+        Dictionary<string, int> GetUserQuickListTabs(int userId, int? siteId);
         IEnumerable<UserQuickListItem> GetUserQuickListTabItems(int userId, int? siteId, string tab);
         
         // Department Preferred List
@@ -26,5 +26,6 @@ namespace Emar.Core.Orders.Repository
 
         // Group Remembered Order List
         List<GroupListItem> GetGroupRememberedOrderItems(int siteId, string departmentCode, string linkBase);
+        int GetSiteForOrder(long orderId);
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Emar.Core.Helpers;
+using Emar.Core.Options.Repository;
 using Emar.Core.Orders.Model;
 using Emar.Core.Orders.Model.Mappings;
 using Emar.Core.Orders.Repository;
@@ -13,10 +14,12 @@ namespace Emar.Core.Orders.Service
     public partial class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly IOptionRepository _optionRepository;
 
-        public OrderService(IOrderRepository orderRepository)
+        public OrderService(IOrderRepository orderRepository, IOptionRepository optionRepository)
         {
             _orderRepository = orderRepository;
+            _optionRepository = optionRepository ?? throw new ArgumentNullException(nameof(optionRepository));
         }
 
         public PagedList<PatientOrderDto> GetOrders(long? patientId, OrdersResourceParameters resourceParameters)
@@ -29,7 +32,9 @@ namespace Emar.Core.Orders.Service
                 return null;
             }
 
-            var ordersList = orders.Select(order => OrderMapper.MapOrder(order)).ToList();
+            var dateFormat = _optionRepository.GetOption(orders[0].Patient.SiteId, AppConstants.LongDateFormat);
+
+            var ordersList = orders.Select(order => OrderMapper.MapOrder(order, dateFormat)).ToList();
 
             return new PagedList<PatientOrderDto>(ordersList, orders.TotalCount, orders.CurrentPage, orders.PageSize);
         }
@@ -43,87 +48,97 @@ namespace Emar.Core.Orders.Service
                 return null;
             }
 
-            var orderDto = OrderMapper.MapOrder(order);
+            int siteId = order.Patient.SiteId;
+            var dateFormat = _optionRepository.GetOption(siteId, AppConstants.LongDateFormat);
+
+            var orderDto = OrderMapper.MapOrder(order, dateFormat);
 
             return orderDto;
         }
 
         public IEnumerable<OrderAdministrationDto> GetAdministrations(long orderId)
         {
+            // Get the Site's LongDateFormat Option
+            var siteId = _orderRepository.GetSiteForOrder(orderId);
+            var dateFormat = _optionRepository.GetOption(siteId, AppConstants.LongDateFormat);
             var administrations = _orderRepository.GetAdministrations(orderId);
-            var administrationsList = new List<OrderAdministrationDto>();
 
-            foreach (var administration in administrations)
-            {
-                administrationsList.Add(OrderMapper.MapOrderAdministration(administration));
-            }
-
-            return administrationsList;
+            return administrations
+                .Select(administration => OrderMapper.MapOrderAdministration(administration, dateFormat)).ToList();
         }
 
         public OrderAdministrationDto GetAdministration(long administrationId)
         {
             var administration = _orderRepository.GetAdministration(administrationId);
-            var administrationDto = OrderMapper.MapOrderAdministration(administration);
+            var siteId = _orderRepository.GetSiteForOrder(administration.PatientOrderId);
+            var administrationDto = OrderMapper.MapOrderAdministration(administration,
+                _optionRepository.GetOption(siteId, AppConstants.LongDateFormat));
 
             return administrationDto;
         }
 
         public IEnumerable<OrderEventDto> GetEvents(long orderId)
         {
+            // Get the Site's LongDateFormat Option
+            var siteId = _orderRepository.GetSiteForOrder(orderId);
+            var dateFormat = _optionRepository.GetOption(siteId, AppConstants.LongDateFormat);
+
             var events = _orderRepository.GetEvents(orderId);
-            var eventsList = new List<OrderEventDto>();
 
-            foreach (var @event in events)
-            {
-                eventsList.Add(OrderMapper.MapOrderEvent(@event));
-            }
-
-            return eventsList;
+            return events.Select(@event => OrderMapper.MapOrderEvent(@event, dateFormat)).ToList();
         }
 
         public OrderEventDto GetEvent(long eventId)
         {
             var @event = _orderRepository.GetEvent(eventId);
-            var eventDto = OrderMapper.MapOrderEvent(@event);
+
+            // Get the Site's LongDateFormat Option
+            var siteId = _orderRepository.GetSiteForOrder(@event.PatientOrderId);
+            var dateFormat = _optionRepository.GetOption(siteId, AppConstants.LongDateFormat);
+
+            var eventDto = OrderMapper.MapOrderEvent(@event, dateFormat);
 
             return eventDto;
         }
 
         public IEnumerable<OrderEventDto> GetAdministrationEvents(long administrationId)
         {
-            var events = _orderRepository.GetAdministrationEvents(administrationId);
-            var eventsList = new List<OrderEventDto>();
+            var events = _orderRepository.GetAdministrationEvents(administrationId).ToList();
 
-            foreach (var @event in events)
+            string dateFormat = "";
+            if (events.Any())
             {
-                eventsList.Add(OrderMapper.MapOrderEvent(@event));
+                // Get the Site's LongDateFormat Option
+                var siteId = _orderRepository.GetSiteForOrder(events[0].PatientOrderId);
+                dateFormat = _optionRepository.GetOption(siteId, AppConstants.LongDateFormat);
             }
 
-            return eventsList;
+            return events.Select(@event => OrderMapper.MapOrderEvent(@event, dateFormat)).ToList();
         }
 
         #region User Quick List Services
 
-        public UserQuickListFrameworkDto GetInitialUserQuickList(in int userId, int? siteId, 
+        public UserQuickListFrameworkDto GetInitialUserQuickList(in int userId, int? siteId,
             string tabLinkBase, string orderLinkBase)
         {
-            List<string> tabList = _orderRepository.GetUserQuickListTabs(userId, siteId).OrderBy(i => i).ToList();
-            // Compress all non-alpha values into "#"
+            var tabList = _orderRepository.GetUserQuickListTabs(userId, siteId).OrderBy(i => i.Key).ToList();
+
             if (!tabList.Any())
                 return null;
 
-            var foundNonAlpha = false;
+            // Compress all non-alpha values into "#"
+            int numAlphas = 0;
             for (int i = tabList.Count - 1; i >= 0; i--)
             {
-                if (!char.IsLetter(Convert.ToChar(tabList[i])))
+                if (!char.IsLetter(Convert.ToChar(tabList[i].Key)))
                 {
-                    foundNonAlpha = true;
+                    numAlphas += tabList[i].Value;
                     tabList.RemoveAt(i);
                 }
             }
-            if (foundNonAlpha)
-                tabList.Add("#");
+
+            if (numAlphas > 0)
+                tabList.Add(new KeyValuePair<string, int>("#", numAlphas));
 
             var mostUsedItems = _orderRepository.GetUserQuickListMostUsed(userId, siteId).ToList();
             List<UserQuickListItemDto> firstTabContents;
@@ -131,11 +146,11 @@ namespace Emar.Core.Orders.Service
             {
                 firstTabContents = mostUsedItems.Select(item => OrderMapper.MapUserQuickListItem(item, orderLinkBase))
                     .OrderBy(i => i.BrandName).ToList();
-                tabList.Insert(0, Constants.MostUsedTabTitle);
+                tabList.Insert(0, new KeyValuePair<string, int>(Constants.MostUsedTabTitle, mostUsedItems.Count()));
             }
             else
             {
-                var items = _orderRepository.GetUserQuickListTabItems(userId, siteId, tabList[0]).ToList();
+                var items = _orderRepository.GetUserQuickListTabItems(userId, siteId, tabList[0].Key).ToList();
 
                 firstTabContents = items.Select(dbObj => OrderMapper.MapUserQuickListItem(dbObj, orderLinkBase))
                     .OrderBy(i => i.BrandName).ToList();
@@ -145,13 +160,13 @@ namespace Emar.Core.Orders.Service
             return ret;
         }
 
-        public IEnumerable<UserQuickListItemDto> GetQuickListTab(in int userId, int? siteId, string orderLinkBase, string tab)
+        public IEnumerable<UserQuickListItemDto> GetQuickListTab(in int userId, int? siteId, string orderLinkBase,
+            string tab)
         {
             List<UserQuickListItem> tabItems;
-            if (tab == Constants.MostUsedTabTitle)
-                tabItems = _orderRepository.GetUserQuickListMostUsed(userId, siteId).ToList();
-            else
-                tabItems = _orderRepository.GetUserQuickListTabItems(userId, siteId, tab).ToList();
+            tabItems = tab == Constants.MostUsedTabTitle
+                ? _orderRepository.GetUserQuickListMostUsed(userId, siteId).ToList()
+                : _orderRepository.GetUserQuickListTabItems(userId, siteId, tab).ToList();
 
             if (!tabItems.Any())
                 return null;
