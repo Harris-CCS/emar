@@ -99,6 +99,7 @@ namespace Emar.Core.Orders.Repository
         }
 
         #region UserQuickList Section
+
         /// <summary>
         /// 
         /// </summary>
@@ -123,7 +124,7 @@ namespace Emar.Core.Orders.Repository
                     .ToList();
         }
 
-        public List<string> GetUserQuickListTabs(int userId, int? siteId)
+        public Dictionary<string, int> GetUserQuickListTabs(int userId, int? siteId)
         {
             Expression<Func<UserQuickListItem, bool>> whereExpression;
             if (siteId == null)
@@ -131,11 +132,12 @@ namespace Emar.Core.Orders.Repository
             else
                 whereExpression = i => i.UserId == userId && i.SiteId == siteId;
 
-            return _context.UserQuickListItems
+            var stuff =  _context.UserQuickListItems
                 .Where(whereExpression)
                 .GroupBy(i => i.BrandName.Substring(0, 1).ToUpper())
-                .Select(i => i.Key)
-                .ToList();
+                .Select(i => new {name = i.Key, count = i.Count()}).ToList();
+
+            return stuff.ToDictionary(s => s.name, s => s.count);
         }
 
         IEnumerable<UserQuickListItem> IOrderRepository.GetUserQuickListTabItems(int userId, int? siteId, string tab)
@@ -145,32 +147,29 @@ namespace Emar.Core.Orders.Repository
             if (tab == "#")
             {
                 if (siteId == null)
-                    whereExpression = i => i.UserId == userId;
+                    whereExpression = i => i.UserId == userId && !EF.Functions.Like(i.BrandName, "[a-zA-Z]%");
                 else
-                    whereExpression = i => i.UserId == userId && i.SiteId == siteId;
+                    whereExpression = i =>
+                        i.UserId == userId && i.SiteId == siteId && !EF.Functions.Like(i.BrandName, "[a-zA-Z]%");
+                ;
+            }
+            else
+            {
+                if (siteId == null)
+                    whereExpression = i => i.UserId == userId
+                                           && EF.Functions.Like(i.BrandName, $"[{tab.ToLower()}{tab.ToUpper()}]%");
+                else
+                    whereExpression = i => i.UserId == userId 
+                                           && i.SiteId == siteId
+                                           && EF.Functions.Like(i.BrandName, $"[{tab.ToLower()}{tab.ToUpper()}]%");
+            }
 
-                return _context.UserQuickListItems
+            return _context.UserQuickListItems
                     .Where(whereExpression)
                     .Include(i => i.MedicationRoute)
                     .Include(i => i.MedicationUnit)
                     .Include(i => i.FrequencySchedule)
-                    .ToList()
-                    .Where(i => !char.IsLetter(i.BrandName.Substring(0, 1).ToCharArray()[0]));
-            }
-
-            if (siteId == null)
-                whereExpression = i => i.UserId == userId
-                                       && i.BrandName.Substring(0, 1).ToUpper() == tab;
-            else
-                whereExpression = i => i.UserId == userId && i.SiteId == siteId
-                                                          && i.BrandName.Substring(0, 1).ToUpper() == tab;
-
-            return _context.UserQuickListItems
-                .Where(whereExpression)
-                .Include(i => i.MedicationRoute)
-                .Include(i => i.MedicationUnit)
-                .Include(i => i.FrequencySchedule)
-                .ToList();
+                    .ToList();
         }
 
         #endregion

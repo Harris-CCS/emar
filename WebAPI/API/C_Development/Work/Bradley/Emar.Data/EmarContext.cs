@@ -23,8 +23,6 @@ namespace Emar.Data
         public virtual DbSet<ExternalIdEntity> ExternalIds { get; set; }
         public virtual DbSet<FrequencySchedule> FrequencySchedules { get; set; }
         public virtual DbSet<GroupListItem> GroupListItems { get; set; }
-        public virtual DbSet<MedicationRoute> MedicationRoutes { get; set; }
-        public virtual DbSet<MedicationUnit> MedicationUnits { get; set; }
         public virtual DbSet<Option> Options { get; set; }
         public virtual DbSet<OrderAdministration> OrderAdministrations { get; set; }
         public virtual DbSet<OrderEvent> OrderEvents { get; set; }
@@ -40,7 +38,6 @@ namespace Emar.Data
         public virtual DbSet<UserQuickListItem> UserQuickListItems { get; set; }
 
 
-        public virtual DbSet<BradNameExample> BradNameExamples { get; set; }
         // Testing Code
 #if  TestingInternalDatatypeProblems
         public virtual DbSet<_ColumnProblemTest> ColumnPropertyTests { get; set; }
@@ -126,6 +123,16 @@ namespace Emar.Data
                 entity.Property(e => e.Entity).IsUnicode(false);
 
                 entity.Property(e => e.ExternalId).IsUnicode(false);
+            });
+
+            modelBuilder.Entity<FrequencySchedule>(entity =>
+            {
+                entity.HasIndex(e => new { e.Name, e.SiteId })
+                    .HasName("uk__frequency_schedules__name_site_id")
+                    .IsUnique();
+                
+                entity.Property(e => e.IsActive)
+                    .HasDefaultValueSql("((1))");
             });
 
             modelBuilder.Entity<GroupListItem>(entity =>
@@ -373,6 +380,10 @@ namespace Emar.Data
                     .IsUnicode(false);
 
                 entity.Property(e => e.Severity)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ActionStatus)
+                    .IsFixedLength()
                     .IsUnicode(false);
 
                 entity.HasOne(d => d.AddUser)

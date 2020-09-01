@@ -1,23 +1,27 @@
-﻿using Emar.Core.Helpers;
+﻿using System.Collections.Generic;
+using Emar.Core.Helpers;
 
 namespace Emar.Core.Orders.Model
 {
     public class UserQuickListTabDto
     {
         public string TabName;
+        public int NumberItems { get; set; }
 
         public HateOasLinkDto Link;
-        public UserQuickListTabDto(string tabName, string linkBase)
-        {
-            TabName = tabName;
 
-            switch (tabName)
+        public UserQuickListTabDto(KeyValuePair<string, int> tab, string linkBase)
+        {
+            TabName = tab.Key;
+            NumberItems = tab.Value;
+
+            switch (TabName)
             {
                 case "#":
                     linkBase += "%23";
                     break;
                 default:
-                    linkBase += tabName;
+                    linkBase += TabName;
                     break;
             }
 
