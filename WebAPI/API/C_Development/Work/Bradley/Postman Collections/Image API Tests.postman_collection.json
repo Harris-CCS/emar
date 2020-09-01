@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "86d02295-bff2-4265-a2a2-12f14b74c9de",
+		"_postman_id": "adbfb9d1-fbf9-4da8-b579-f84365ec1c8d",
 		"name": "Image API Tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -11,11 +11,16 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "d328e747-30da-43ed-b515-b59b3c3da3e6",
+						"id": "c723e1cf-7d62-45f7-8f68-b1c7f62f67d1",
 						"exec": [
 							"var jsonData = pm.response.json();\r",
 							"pm.environment.set(\"BammeId\", jsonData.id);\r",
-							"pm.environment.set(\"BammeCustomNumber\", jsonData.customNumber);"
+							"pm.environment.set(\"BammeCustomNumber\", jsonData.customNumber);\r",
+							"\r",
+							"pm.test(\"Includes 4 Allergies\", function () {\r",
+							"    pm.expect(jsonData.patientAllergies.length).to.eql(4);\r",
+							"})\r",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -133,7 +138,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "0c768ac2-3ae8-40d0-a10d-6c900b6ebc4f",
+						"id": "9010ee82-49ce-43ed-8123-fb71ddf0b1f3",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
@@ -195,10 +200,10 @@
 							]
 						}
 					},
-					"_postman_previewlanguage": null,
-					"header": null,
+					"_postman_previewlanguage": "Text",
+					"header": [],
 					"cookie": [],
-					"body": null
+					"body": ""
 				}
 			]
 		},
@@ -208,7 +213,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "10ba0145-d71f-4728-a7dc-8f62544ba69c",
+						"id": "f38a6fda-f394-4c6d-85b6-dba37d237174",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
@@ -288,10 +293,10 @@
 							]
 						}
 					},
-					"_postman_previewlanguage": null,
-					"header": null,
+					"_postman_previewlanguage": "Text",
+					"header": [],
 					"cookie": [],
-					"body": null
+					"body": ""
 				}
 			]
 		},
@@ -301,7 +306,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "fdd4f338-dcda-4079-ad86-83e66bf35796",
+						"id": "b963d7c4-1d21-41fc-8bd9-c3391158143a",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
@@ -370,10 +375,10 @@
 							]
 						}
 					},
-					"_postman_previewlanguage": null,
-					"header": null,
+					"_postman_previewlanguage": "Text",
+					"header": [],
 					"cookie": [],
-					"body": null
+					"body": ""
 				}
 			]
 		}
