@@ -5,7 +5,7 @@ drop table if exists [#antimicrobial_indication_items];
 create table [#antimicrobial_indication_items]
     (
       [site_id]      [varchar](25) not null
-    , [sub_category] [varchar](25) not null, );
+    , [sub_category] [varchar](25) not null);
 
 if '$(load_data)' = 'live'
    and exists

@@ -191,6 +191,28 @@
     <Build Include="Programmability\Stored Procedures\frequency_calendar_build.sql" />
     <Build Include="Programmability\Stored Procedures\frequency_minutes_build.sql" />
     <Build Include="Programmability\Stored Procedures\get_frequency_schedule_items.sql" />
+    <Build Include="Tables\medication_interactions.sql" />
+    <Build Include="Tables\order_interactions.sql" />
+    <Build Include="Programmability\Stored Procedures\export_ibex_override_reasons.sql" />
+    <None Include="Scripts\Data-Loader\site_data\override_reasons.sql" />
+    <Build Include="Tables\preferred_frequency_schedules.sql" />
+    <Build Include="Tables\preferred_medication_doses.sql" />
+    <Build Include="Tables\preferred_medication_routes.sql" />
+    <Build Include="Programmability\Functions\Table-values Functions\escape_sql.sql" />
+    <Build Include="Programmability\Stored Procedures\pc_fdb_meds_search.sql" />
+    <None Include="Scripts\Data-Loader\site_data\preferred_frequency_schedules.sql" />
+    <None Include="Scripts\Data-Loader\site_data\preferred_medication_doses.sql" />
+    <None Include="Scripts\Data-Loader\site_data\preferred_medication_routes.sql" />
+    <Build Include="Tables\patient_problems.sql" />
+    <Build Include="Programmability\Stored Procedures\export_ibex_order_instructions.sql" />
+    <Build Include="Tables\order_instructions.sql" />
+    <Build Include="Programmability\Stored Procedures\export_ibex_patient_problems.sql" />
+    <None Include="Scripts\Data-Loader\site_data\order_instructions.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Data-Loader\phi_data\patient_problems.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />
@@ -250,6 +272,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Scripts\Data-Loader\sample_data\antimicrobial_indications.bcp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Data-Loader\sample_data\override_reasons.bcp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Data-Loader\sample_data\order_instructions.bcp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Data-Loader\sample_data\patient_problems.bcp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

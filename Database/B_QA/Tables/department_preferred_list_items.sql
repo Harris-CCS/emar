@@ -52,7 +52,7 @@ go
     Indexes
 ***************/
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Primary Key Column'
   , @level0type = N'SCHEMA'
@@ -68,7 +68,7 @@ go
     Table
 ***************/
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'This table contains medications preferred list for the department preferred list tab'
   , @level0type = N'SCHEMA'
@@ -82,7 +82,7 @@ go
     Columns
 ***************/
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Auto increment table ID'
   , @level0type = N'SCHEMA'
@@ -93,7 +93,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Hospital identifier foriegn key to site table'
   , @level0type = N'SCHEMA'
@@ -104,7 +104,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'site_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Department location for grouping medications'
   , @level0type = N'SCHEMA'
@@ -115,9 +115,9 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'department_code';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Drug NDC (National Drug Code)'
+  , @value = N'National Drug Code that identifies the brand, formulation and packaging of a drug'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -126,7 +126,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'ndc';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'External Vendor Drug Database Identifier
     FDB: MEDID (MED Medication ID (Stable ID))
@@ -143,7 +143,7 @@ this will aid in display and lookup performance.
   , @level2name = N'drug_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Brand name'
   , @level0type = N'SCHEMA'
@@ -154,9 +154,9 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'brand_name';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Route of administration'
+  , @value = N'Route of administration; Foreign Key to medication_routes table'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -165,7 +165,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'medication_route_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Medication Dose: numeric portion of dose/medication_unit_id pair'
   , @level0type = N'SCHEMA'
@@ -176,7 +176,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'dose';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Medication Unit: unit portion of dose/medication_unit_id pair'
   , @level0type = N'SCHEMA'
@@ -187,7 +187,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'medication_unit_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Foreign Key to frequency_schedules table'
   , @level0type = N'SCHEMA'
@@ -198,7 +198,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'frequency_schedule_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'order_notes'
   , @level0type = N'SCHEMA'

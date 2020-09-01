@@ -129,7 +129,7 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'Drug NDC (National Drug Code)'
+  , @value = N'National Drug Code that identifies the brand, formulation and packaging of a drug'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -168,7 +168,7 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'Route of administration'
+  , @value = N'Route of administration; Foreign Key to medication_routes table'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'

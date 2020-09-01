@@ -13,6 +13,11 @@ go
 /*****************
  Unique constraint
 *****************/
+
+alter table [dbo].[site_options]
+add constraint [uc__site_options__site_id__option_id] unique([site_id],[option_id]);
+go
+
 /*******
  Indexes
 *******/
@@ -64,6 +69,17 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'site_options'
   , @level2type = N'INDEX'
   , @level2name = N'site_options__option_id_site_id';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'Constraint to enforce Site / Option uniqueness'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'site_options'
+  , @level2type = N'CONSTRAINT'
+  , @level2name = N'uc__site_options__site_id__option_id';
 go
 
 /***************

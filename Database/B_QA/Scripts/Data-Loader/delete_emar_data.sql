@@ -23,52 +23,59 @@ create table [#table_order]
     , [table_name]    sysname
     , [has_identity]  bit);
 
-insert into [#table_order] values(0,1,'dbo','actions',0);                                                                                                                                                                                                                                                          
-insert into [#table_order] values(0,2,'dbo','fdb_allergy_name',0);                                                                                                                                                                                                                                                 
-insert into [#table_order] values(0,3,'dbo','fdb_brand_name',0);                                                                                                                                                                                                                                                   
-insert into [#table_order] values(0,4,'dbo','fdb_ndc_info',0);                                                                                                                                                                                                                                                     
-insert into [#table_order] values(0,5,'dbo','frequency_calendar',0);                                                                                                                                                                                                                                               
-insert into [#table_order] values(0,6,'dbo','frequency_days',0);                                                                                                                                                                                                                                                   
-insert into [#table_order] values(0,7,'dbo','frequency_interval_units',0);                                                                                                                                                                                                                                         
-insert into [#table_order] values(0,8,'dbo','frequency_minutes',0);                                                                                                                                                                                                                                                
-insert into [#table_order] values(0,9,'dbo','frequency_types',0);                                                                                                                                                                                                                                                  
-insert into [#table_order] values(0,10,'dbo','options',0);                                                                                                                                                                                                                                                         
-insert into [#table_order] values(0,11,'dbo','permissions',0);                                                                                                                                                                                                                                                     
-insert into [#table_order] values(0,12,'dbo','prompt_groups',0);                                                                                                                                                                                                                                                   
-insert into [#table_order] values(0,13,'dbo','sites',0);                                                                                                                                                                                                                                                           
-insert into [#table_order] values(0,14,'dbo','templates',0);                                                                                                                                                                                                                                                       
-insert into [#table_order] values(1,1,'dbo','antimicrobial_indication_items',0);                                                                                                                                                                                                                                   
-insert into [#table_order] values(1,2,'dbo','antimicrobial_indications',0);                                                                                                                                                                                                                                        
-insert into [#table_order] values(1,3,'dbo','frequency_schedules',0);                                                                                                                                                                                                                                              
-insert into [#table_order] values(1,4,'dbo','medication_routes',0);                                                                                                                                                                                                                                                
-insert into [#table_order] values(1,5,'dbo','medication_units',0);                                                                                                                                                                                                                                                 
-insert into [#table_order] values(1,6,'dbo','override_reasons',0);                                                                                                                                                                                                                                                 
-insert into [#table_order] values(1,7,'dbo','patients',0);                                                                                                                                                                                                                                                         
-insert into [#table_order] values(1,8,'dbo','prompts',0);                                                                                                                                                                                                                                                          
-insert into [#table_order] values(1,9,'dbo','site_code_shares',0);                                                                                                                                                                                                                                                 
-insert into [#table_order] values(1,10,'dbo','site_formulary',0);                                                                                                                                                                                                                                                  
-insert into [#table_order] values(1,11,'dbo','site_formulary_match',0);                                                                                                                                                                                                                                            
-insert into [#table_order] values(1,12,'dbo','site_options',0);                                                                                                                                                                                                                                                    
-insert into [#table_order] values(1,13,'dbo','template_prompt_groups',0);                                                                                                                                                                                                                                          
-insert into [#table_order] values(1,14,'dbo','users',0);                                                                                                                                                                                                                                                           
-insert into [#table_order] values(2,1,'dbo','action_route_templates',0);                                                                                                                                                                                                                                           
-insert into [#table_order] values(2,2,'dbo','department_preferred_list_items',0);                                                                                                                                                                                                                                  
-insert into [#table_order] values(2,3,'dbo','frequency_interval_day_times',0);                                                                                                                                                                                                                                     
-insert into [#table_order] values(2,4,'dbo','group_list_items',0);                                                                                                                                                                                                                                                 
-insert into [#table_order] values(2,5,'dbo','patient_allergies',0);                                                                                                                                                                                                                                                
-insert into [#table_order] values(2,6,'dbo','patient_home_medications',0);                                                                                                                                                                                                                                         
-insert into [#table_order] values(2,7,'dbo','patient_indicators',0);                                                                                                                                                                                                                                               
-insert into [#table_order] values(2,8,'dbo','patient_orders',0);                                                                                                                                                                                                                                                   
-insert into [#table_order] values(2,9,'dbo','prompt_choices',0);                                                                                                                                                                                                                                                   
-insert into [#table_order] values(2,10,'dbo','user_permissions',0);                                                                                                                                                                                                                                                
-insert into [#table_order] values(2,11,'dbo','user_quick_list_items',0);                                                                                                                                                                                                                                           
-insert into [#table_order] values(3,1,'dbo','order_administrations',0);                                                                                                                                                                                                                                            
-insert into [#table_order] values(3,2,'dbo','patient_cart_orders',0);                                                                                                                                                                                                                                              
-insert into [#table_order] values(4,1,'dbo','cart_order_administrations',0);                                                                                                                                                                                                                                       
-insert into [#table_order] values(4,2,'dbo','order_administration_notes',0);                                                                                                                                                                                                                                       
-insert into [#table_order] values(4,3,'dbo','order_events',0);                                                                                                                                                                                                                                                     
-insert into [#table_order] values(5,1,'dbo','order_event_details',0);                                                                                                                                                                                                                                              
-insert into [#table_order] values(99,1,'dbo','external_ids',0);                                                                                                                                                                                                                                                    
+insert into [#table_order] values(0,1,'dbo','actions',0);
+insert into [#table_order] values(0,2,'dbo','fdb_allergy_name',0);
+insert into [#table_order] values(0,3,'dbo','fdb_brand_name',0);
+insert into [#table_order] values(0,4,'dbo','fdb_ndc_info',0);
+insert into [#table_order] values(0,5,'dbo','frequency_calendar',0);
+insert into [#table_order] values(0,6,'dbo','frequency_days',0);
+insert into [#table_order] values(0,7,'dbo','frequency_interval_units',0);
+insert into [#table_order] values(0,8,'dbo','frequency_minutes',0);
+insert into [#table_order] values(0,9,'dbo','frequency_types',0);
+insert into [#table_order] values(0,10,'dbo','options',0);
+insert into [#table_order] values(0,11,'dbo','permissions',0);
+insert into [#table_order] values(0,12,'dbo','prompt_groups',0);
+insert into [#table_order] values(0,13,'dbo','sites',0);
+insert into [#table_order] values(0,14,'dbo','templates',0);
+insert into [#table_order] values(1,1,'dbo','antimicrobial_indication_items',0);
+insert into [#table_order] values(1,2,'dbo','antimicrobial_indications',0);
+insert into [#table_order] values(1,3,'dbo','frequency_schedules',0);
+insert into [#table_order] values(1,4,'dbo','medication_routes',0);
+insert into [#table_order] values(1,5,'dbo','medication_units',0);
+insert into [#table_order] values(1,6,'dbo','order_instructions',0);
+insert into [#table_order] values(1,7,'dbo','override_reasons',0);
+insert into [#table_order] values(1,8,'dbo','patients',0);
+insert into [#table_order] values(1,9,'dbo','prompts',0);
+insert into [#table_order] values(1,10,'dbo','site_code_shares',0);
+insert into [#table_order] values(1,11,'dbo','site_formulary',0);
+insert into [#table_order] values(1,12,'dbo','site_formulary_match',0);
+insert into [#table_order] values(1,13,'dbo','site_options',0);
+insert into [#table_order] values(1,14,'dbo','template_prompt_groups',0);
+insert into [#table_order] values(1,15,'dbo','users',0);
+insert into [#table_order] values(2,1,'dbo','action_route_templates',0);
+insert into [#table_order] values(2,2,'dbo','department_preferred_list_items',0);
+insert into [#table_order] values(2,3,'dbo','frequency_interval_day_times',0);
+insert into [#table_order] values(2,4,'dbo','group_list_items',0);
+insert into [#table_order] values(2,5,'dbo','medication_interactions',0);
+insert into [#table_order] values(2,6,'dbo','patient_allergies',0);
+insert into [#table_order] values(2,7,'dbo','patient_home_medications',0);
+insert into [#table_order] values(2,8,'dbo','patient_indicators',0);
+insert into [#table_order] values(2,9,'dbo','patient_orders',0);
+insert into [#table_order] values(2,10,'dbo','patient_problems',0);
+insert into [#table_order] values(2,11,'dbo','preferred_frequency_schedules',0);
+insert into [#table_order] values(2,12,'dbo','preferred_medication_doses',0);
+insert into [#table_order] values(2,13,'dbo','preferred_medication_routes',0);
+insert into [#table_order] values(2,14,'dbo','prompt_choices',0);
+insert into [#table_order] values(2,15,'dbo','user_permissions',0);
+insert into [#table_order] values(2,16,'dbo','user_quick_list_items',0);
+insert into [#table_order] values(3,1,'dbo','order_administrations',0);
+insert into [#table_order] values(3,2,'dbo','patient_cart_orders',0);
+insert into [#table_order] values(4,1,'dbo','cart_order_administrations',0);
+insert into [#table_order] values(4,2,'dbo','order_administration_notes',0);
+insert into [#table_order] values(4,3,'dbo','order_events',0);
+insert into [#table_order] values(4,4,'dbo','order_interactions',0);
+insert into [#table_order] values(5,1,'dbo','order_event_details',0);
+insert into [#table_order] values(99,1,'dbo','external_ids',0);
 
 with cte_identity
      as (select [schema] = [s].[name]
@@ -122,7 +129,14 @@ while @@FETCH_STATUS = 0
             end;
         else
             begin
-                set @sql_cmd = N'if exists (select null from sys.tables where name=''' + @table_name + ''') dbcc checkident(''[' + @schema_name + '].[' + @table_name + ']'',reseed,0) with no_infomsgs;';
+                --- once a table seed value has been used the next ID will be seed+1
+                --- truncate table will reset to seed
+                --- delete table will remain seed+1
+                set @sql_cmd = N'if exists (select null from sys.tables where name=''' + @table_name + ''')
+    begin
+        if (select IDENT_CURRENT(''[' + @schema_name + '].[' + @table_name + ']''))>1
+            dbcc checkident(''[' + @schema_name + '].[' + @table_name + ']'',reseed,0) with no_infomsgs;
+    end;';
                 execute [sp_executeSQL] @sql_cmd;
             end;
 

@@ -107,7 +107,7 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'medication_route_id'
+  , @value = N'Route of administration; Foreign Key to medication_routes table'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'

@@ -1,46 +1,163 @@
+use master;
+
+declare 
+    @show_all bit = 0;
+
+with cte_database_count
+     as (select 'emar_bacpac' as               [database_name]
+              , schema_name([so].schema_id) as [schema_name]
+              , [so].[name] as                 [table_name]
+              , sum([spt].[Rows]) as           [row_count]
+         from     [emar_bacpac].[sys].[objects] as [so]
+                  inner join [emar_bacpac].[sys].[partitions] as [spt] on [so].object_id = [spt].object_id
+         where   [so].[type] = 'U'
+                 and [so].[is_ms_shipped] = 0x0
+                 and [index_id] < 2 -- 0:Heap, 1:Clustered
+                 and [so].[name] not in('__RefactorLog', 'sysdiagrams')
+         group by [so].schema_id
+                , [so].[name]
+         union all
+         select 'emar_bacpac2' as              [database_name]
+              , schema_name([so].schema_id) as [schema_name]
+              , [so].[name] as                 [table_name]
+              , sum([spt].[Rows]) as           [row_count]
+         from     [emar_bacpac2].[sys].[objects] as [so]
+                  inner join [emar_bacpac2].[sys].[partitions] as [spt] on [so].object_id = [spt].object_id
+         where   [so].[type] = 'U'
+                 and [so].[is_ms_shipped] = 0x0
+                 and [index_id] < 2 -- 0:Heap, 1:Clustered
+                 and [so].[name] not in('__RefactorLog', 'sysdiagrams')
+         group by [so].schema_id
+                , [so].[name]
+         union all
+         select 'emar_clean' as                [database_name]
+              , schema_name([so].schema_id) as [schema_name]
+              , [so].[name] as                 [table_name]
+              , sum([spt].[Rows]) as           [row_count]
+         from     [emar_clean].[sys].[objects] as [so]
+                  inner join [emar_clean].[sys].[partitions] as [spt] on [so].object_id = [spt].object_id
+         where   [so].[type] = 'U'
+                 and [so].[is_ms_shipped] = 0x0
+                 and [index_id] < 2 -- 0:Heap, 1:Clustered
+                 and [so].[name] not in('__RefactorLog', 'sysdiagrams')
+         group by [so].schema_id
+                , [so].[name]
+         union all
+         select 'emar_dacpac_live' as          [database_name]
+              , schema_name([so].schema_id) as [schema_name]
+              , [so].[name] as                 [table_name]
+              , sum([spt].[Rows]) as           [row_count]
+         from     [emar_dacpac_live].[sys].[objects] as [so]
+                  inner join [emar_dacpac_live].[sys].[partitions] as [spt] on [so].object_id = [spt].object_id
+         where   [so].[type] = 'U'
+                 and [so].[is_ms_shipped] = 0x0
+                 and [index_id] < 2 -- 0:Heap, 1:Clustered
+                 and [so].[name] not in('__RefactorLog', 'sysdiagrams')
+         group by [so].schema_id
+                , [so].[name]
+         union all
+         select 'emar_bacpac_final' as         [database_name]
+              , schema_name([so].schema_id) as [schema_name]
+              , [so].[name] as                 [table_name]
+              , sum([spt].[Rows]) as           [row_count]
+         from     [emar_bacpac_final].[sys].[objects] as [so]
+                  inner join [emar_bacpac_final].[sys].[partitions] as [spt] on [so].object_id = [spt].object_id
+         where   [so].[type] = 'U'
+                 and [so].[is_ms_shipped] = 0x0
+                 and [index_id] < 2 -- 0:Heap, 1:Clustered
+                 and [so].[name] not in('__RefactorLog', 'sysdiagrams')
+         group by [so].schema_id
+                , [so].[name]
+         union all
+         select 'emar_dacpac_sample' as        [database_name]
+              , schema_name([so].schema_id) as [schema_name]
+              , [so].[name] as                 [table_name]
+              , sum([spt].[Rows]) as           [row_count]
+         from   [emar_dacpac_sample].[sys].[objects] as [so]
+                inner join [emar_dacpac_sample].[sys].[partitions] as [spt] on [so].object_id = [spt].object_id
+         where  [so].[type] = 'U'
+                and [so].[is_ms_shipped] = 0x0
+                and [index_id] < 2 -- 0:Heap, 1:Clustered
+                and [so].[name] not in('__RefactorLog', 'sysdiagrams')
+         group by [so].schema_id
+                , [so].[name])
+     select [schema_name]
+          , [table_name]
+          , [emar_clean]
+          , [emar_bacpac]
+          , [emar_bacpac2]
+          , [emar_bacpac_final]
+          , [emar_dacpac_live]
+          , [emar_dacpac_sample]
+     from
+     (
+         select [database_name]
+              , [schema_name]
+              , [table_name]
+              , [row_count]
+         from   [cte_database_count]
+     ) as [source] pivot(max([row_count]) for [database_name] in([emar_clean]
+                                                               , [emar_bacpac]
+                                                               , [emar_bacpac2]
+                                                               , [emar_bacpac_final]
+                                                               , [emar_dacpac_live]
+                                                               , [emar_dacpac_sample])) as [pivot_table]
+     where  [emar_bacpac] <> [emar_bacpac2]
+            or [emar_bacpac2] <> [emar_clean]
+            or [emar_clean] <> [emar_dacpac_live]
+            or [emar_dacpac_live] <> [emar_dacpac_sample]
+            or [emar_dacpac_sample] <> [emar_bacpac_final]
+            or [emar_bacpac_final] <> [emar_bacpac]
+            or @show_all = 1
+     order by [schema_name]
+            , [table_name];
+
+/****************************************************************************************************************
 use emar_bacpac;
 
-select quotename(schema_name([so].schema_id)) + '.' + quotename([so].[name]) as [TableName]
-     , sum([spt].[Rows]) as                                                     [RowCount]
-from   [sys].[objects] as [so]
-       inner join [sys].[partitions] as [spt] on [so].object_id = [spt].object_id
-where  [so].[type] = 'U'
-       and [so].[is_ms_shipped] = 0x0
-       and [index_id] < 2 -- 0:Heap, 1:Clustered
-       and [so].[name] not in('__RefactorLog', 'sysdiagrams')
-       and [spt].[Rows] > 0
-group by [so].schema_id
-       , [so].[name]
-order by [TableName];
+select *, right(Path,len(Path)-charindex('.',Path,charindex('.',Path)+1))
+from   [SchemaDictionary]
+where  path not in('dbo.LoadLevels', 'tool.ScriptDiagram', 'dbo.load_levels', 'dbo.__RefactorLog.OperationKey')
+--       and cast([path] as varchar(500)) like '%patient_id%'
+--       and cast([description] as varchar(500)) like '%patient_id%'
+order by 4,3
+       , 2
+       , 1;
 
+select *
+from   [SchemaDictionary]
+--where  path not in('dbo.LoadLevels', 'tool.ScriptDiagram', 'dbo.load_levels', 'dbo.__RefactorLog.OperationKey')
+--       and cast([path] as varchar(500)) like '%drug_id%'
+order by 2
+       , 1
+       , 3;
+    
+select [col].[TABLE_CATALOG]
+     , [col].[TABLE_SCHEMA]
+     , [col].[TABLE_NAME]
+     , [col].[COLUMN_NAME]
+     , [col].[DATA_TYPE]
+     , [col].[CHARACTER_MAXIMUM_LENGTH]
+from   [INFORMATION_SCHEMA].[COLUMNS] as [col]
+where  ([COLUMN_NAME] like '%drug_id%') --and left(DATA_TYPE,1) not in ('n','b')
+order by 1
+       , 2
+       , 3
+       , 4;
+****************************************************************************************************************/
+/**************************************************************************************************
+use master;
 
-use emar_bacpac;
-
-select * from SchemaDictionary where path not in('dbo.LoadLevels','tool.ScriptDiagram','dbo.load_levels','dbo.__RefactorLog.OperationKey')
-and cast([path] as varchar(500)) like '%frequency%'
-order by 3,2,1
-
-
-select * from SchemaDictionary where path not in('dbo.LoadLevels','tool.ScriptDiagram','dbo.load_levels','dbo.__RefactorLog.OperationKey')
-and cast([path] as varchar(500)) like '%frequency_id%'
-order by 2,1,3
-
-    select [col].[TABLE_CATALOG]
-         , [col].[TABLE_SCHEMA]
-         , [col].[TABLE_NAME]
-         , [col].[COLUMN_NAME]
-         , [col].[DATA_TYPE]
-    from   [INFORMATION_SCHEMA].[COLUMNS] as [col]
-    where  ([COLUMN_NAME] like '%frequency_id%')and left(DATA_TYPE,1) not in ('n','b')
-    order by 1
-           , 2
-           , 3
-           , 4;
-
-
-
-select 'rename: ['+ISNULL([emar_live].TABLE_NAME,'')+'].['+ISNULL([emar_live].COLUMN_NAME,'')+'  >>>  ['+ISNULL([emar].TABLE_NAME,'')+'].['+ISNULL([emar].COLUMN_NAME,'')+']'
-from   emar.[INFORMATION_SCHEMA].[COLUMNS] as [emar]
-full outer join emar_live.[INFORMATION_SCHEMA].[COLUMNS] as [emar_live] on [emar_live].TABLE_NAME=[emar].TABLE_NAME and [emar_live].ORDINAL_POSITION=[emar].ORDINAL_POSITION
-WHERE ISNULL([emar].COLUMN_NAME,'')<>ISNULL([emar_live].COLUMN_NAME,'') and ISNULL([emar_live].COLUMN_NAME,'')>''
-ORDER BY 1
+         select 'emar' as               [database_name]
+              , schema_name([so].schema_id) as [schema_name]
+              , [so].[name] as                 [table_name]
+              , sum([spt].[Rows]) as           [row_count]
+         from     [emar].[sys].[objects] as [so]
+                  inner join [emar].[sys].[partitions] as [spt] on [so].object_id = [spt].object_id
+         where   [so].[type] = 'U'
+                 and [so].[is_ms_shipped] = 0x0
+                 and [index_id] < 2 -- 0:Heap, 1:Clustered
+                 and [so].[name] not in('__RefactorLog', 'sysdiagrams')
+         group by [so].schema_id
+                , [so].[name]
+**************************************************************************************************/

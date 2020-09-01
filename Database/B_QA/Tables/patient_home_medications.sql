@@ -1,7 +1,7 @@
 create table [dbo].[patient_home_medications]
     (
       [id]                  [bigint] identity(1, 1) not null
-    , [patient_id]          [bigint] null
+    , [patient_id]          [bigint] not null
     , [class]               [varchar](32) null
     , [category]            [varchar](32) null
     , [internal_drug_id]    [varchar](32) null
@@ -24,6 +24,7 @@ create table [dbo].[patient_home_medications]
     , [add_datetime]        [datetimeoffset](7) null
     , [change_user_id]      [int] not null
     , [change_datetime]     [datetimeoffset](7) null
+    , [action_status]       [char](1) null
     , constraint [pk__patient_home_medications__id] primary key clustered([id] asc));
 go
 
@@ -66,7 +67,7 @@ go
     Indexes
 ***************/
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Primary Key Column'
   , @level0type = N'SCHEMA'
@@ -82,7 +83,7 @@ go
     Table
 ***************/
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Table stores patient home medications'
   , @level0type = N'SCHEMA'
@@ -96,7 +97,7 @@ go
     Columns
 ***************/
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Auto increment table ID'
   , @level0type = N'SCHEMA'
@@ -107,9 +108,9 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Patient identifier, FKEY to patients table'
+  , @value = N'Patient identifier, Foreign Key to patients table'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -118,7 +119,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'patient_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Drug class proprietary to the installed drug database
     FDB: Allergy cross-sensitivity
@@ -131,7 +132,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'class';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Drug category proprietary to the installed drug database
     FDB: Allergy group
@@ -144,7 +145,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'category';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Formulation ID proprietary to the installed drug database
     FDB: Routed Generic ID (RHICL), HICL, HIC
@@ -157,7 +158,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'internal_drug_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Description of medication'
   , @level0type = N'SCHEMA'
@@ -168,7 +169,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'name';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Alternate Name'
   , @level0type = N'SCHEMA'
@@ -179,7 +180,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'alternate_name';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'External Vendor Drug Database Identifier
     FDB: MEDID (MED Medication ID (Stable ID))
@@ -196,9 +197,9 @@ this will aid in display and lookup performance.
   , @level2name = N'drug_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Drug NDC (National Drug Code)'
+  , @value = N'National Drug Code that identifies the brand, formulation and packaging of a drug'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -207,7 +208,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'ndc';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Medication drug ID proprietary to the installed drug database
     FDB: HICL, HIC
@@ -220,7 +221,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'medication_drug_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'is_active 1=True 0=False'
   , @level0type = N'SCHEMA'
@@ -231,7 +232,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'is_active';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Comment area for additional comments on medication'
   , @level0type = N'SCHEMA'
@@ -242,7 +243,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'comment';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Medication Unit: unit portion of dose/medication_unit_id pair'
   , @level0type = N'SCHEMA'
@@ -253,9 +254,9 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'medication_unit_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'Medication route'
+  , @value = N'Route of administration; Foreign Key to medication_routes table'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -264,7 +265,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'medication_route_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Medication schedule'
   , @level0type = N'SCHEMA'
@@ -275,7 +276,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'schedule';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Medication Dose: numeric portion of dose/medication_unit_id pair'
   , @level0type = N'SCHEMA'
@@ -286,7 +287,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'dose';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Medication reaction'
   , @level0type = N'SCHEMA'
@@ -297,7 +298,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'reaction';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Medication severity'
   , @level0type = N'SCHEMA'
@@ -308,7 +309,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'severity';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Parent drug id'
   , @level0type = N'SCHEMA'
@@ -319,7 +320,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'parent_drug_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Parent drug name'
   , @level0type = N'SCHEMA'
@@ -330,7 +331,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'parent_drug_name';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Person Idendifier that created this record (Foreign Key to users table)'
   , @level0type = N'SCHEMA'
@@ -341,7 +342,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'add_user_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Date and time when record added YYYYMMDDHHMM'
   , @level0type = N'SCHEMA'
@@ -352,7 +353,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'add_datetime';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Person Idendifier that last changed this record (Foreign Key to users table)'
   , @level0type = N'SCHEMA'
@@ -363,7 +364,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'change_user_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
+execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
   , @value = N'Date and time when record changed YYYYMMDDHHMM'
   , @level0type = N'SCHEMA'
@@ -372,4 +373,15 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'patient_home_medications'
   , @level2type = N'COLUMN'
   , @level2name = N'change_datetime';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'Action taken status. V = Viewed, R = Rejected, C = Confirmed, U=Unconfirmed'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'patient_home_medications'
+  , @level2type = N'COLUMN'
+  , @level2name = N'action_status';
 go

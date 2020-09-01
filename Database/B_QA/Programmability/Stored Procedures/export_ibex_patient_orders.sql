@@ -9,7 +9,7 @@ as
                      as (select [med].[ibex]
                               , [med].[site]
                               , [med].[losecs]
-                              , [med].status
+                              , [med].[status]
                               , [med].[name]
                               , [med].[route]
                               , [med].[unit]
@@ -61,7 +61,7 @@ as
                      as (select [med].[ibex]
                               , [med].[site]
                               , [med].[losecs]
-                              , [med].status
+                              , [med].[status]
                               , [med].[name]
                               , [med].[route]
                               , [med].[unit]

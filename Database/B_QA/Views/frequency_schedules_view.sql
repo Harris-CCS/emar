@@ -16,18 +16,18 @@ as
               end as         [continuous]
             , [fs].[frequency_type_id]
             , [ft].[name] as [frequency_type_description]
-            , [fs].[frequency_type_recuring]
+            , [fs].[frequency_type_recurring]
             , case
                   when [ft].[name] = 'STAT'
                       then 'Right Now'
                   when [ft].[name] = 'Interval'
                       then 'See interval description'
                   when [ft].[name] = 'Daily'
-                      then 'Every ' + cast([fs].[frequency_type_recuring] as varchar(15)) + ' day(s)'
+                      then 'Every ' + cast([fs].[frequency_type_recurring] as varchar(15)) + ' day(s)'
                   when [ft].[name] = 'Weekly'
-                      then 'Every ' + cast([fs].[frequency_type_recuring] as varchar(15)) + ' week(s)'
+                      then 'Every ' + cast([fs].[frequency_type_recurring] as varchar(15)) + ' week(s)'
                   else ''
-              end as         [frequency_type_recuring_description]
+              end as         [frequency_type_recurring_description]
             , [fs].[frequency_interval]
             , [fs].[frequency_interval_unit_id]
             , case

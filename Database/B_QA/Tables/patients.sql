@@ -44,6 +44,7 @@ create table [dbo].[patients]
     , [custom_number]                  [varchar](25) null
     , [person_number]                  [varchar](25) null
     , [deactivation_datetime]          [datetimeoffset](7) null
+    , [visit_start_datetime]           [datetimeoffset](7) null
     , constraint [pk__patients__id] primary key clustered([id] asc));
 go
 
@@ -582,4 +583,15 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'patients'
   , @level2type = N'COLUMN'
   , @level2name = N'deactivation_datetime';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'Datatime pateint visit / encounter began'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'patients'
+  , @level2type = N'COLUMN'
+  , @level2name = N'visit_start_datetime';
 go

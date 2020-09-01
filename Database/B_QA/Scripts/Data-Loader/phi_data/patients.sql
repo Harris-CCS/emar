@@ -45,7 +45,8 @@ create table [#patients]
     , [vs_pain_scale_indicator]        [char](1) null
     , [vs_pain_scale]                  [char](14) null
     , [custom_number]                  [varchar](25) null
-    , [person_number]                  [varchar](25) null);
+    , [person_number]                  [varchar](25) null
+    , [visit_start_datetime]           [varchar](25) null);
 
 if '$(load_data)' = 'live'
    and exists
@@ -99,6 +100,7 @@ if '$(load_data)' = 'live'
            , [vs_pain_scale]
            , [custom_number]
            , [person_number]
+           , [visit_start_datetime]
             )
         execute ('execute dbo.export_ibex_patients');
     end;
@@ -195,6 +197,7 @@ if
            , [is_active]
            , [custom_number]
            , [person_number]
+           , [visit_start_datetime]
             )
         select [source].[target_id]
              , isnull([internal_site].[id], -1) as [site_id]
@@ -239,6 +242,7 @@ if
              , cast(1 as bit) as                   [is_active]
              , [source].[custom_number]
              , [source].[person_number]
+             , [dbo].[ibex_date_to_offset_date]([source].[visit_start_datetime],[site].[time_zone_name]) [visit_start_datetime]
         from   [#patients] as [source]
                outer apply [dbo].[get_internal_id]('pulsecheck', 'sites', [source].[site_id]) as [internal_site]
                left join [dbo].[sites] as [site] on [site].[id] = [internal_site].[id]

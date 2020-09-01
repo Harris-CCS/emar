@@ -3,7 +3,7 @@ create table [dbo].[override_reasons]
       [id]            [int] identity(1, 1) not null
     , [site_id]       [int] not null
     , [is_medication] [bit] not null
-	, [description]   [varchar](80) not null
+    , [description]   [varchar](80) not null
     , constraint [pk__override_reasons__id] primary key clustered([id] asc));
 go
 
@@ -33,7 +33,7 @@ go
     Indexes
 ***************/
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Primary Key Constraint'
   , @level0type = N'SCHEMA'
@@ -49,7 +49,7 @@ go
     Table
 ***************/
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'This table contains a list of override reasons'
   , @level0type = N'SCHEMA'
@@ -63,7 +63,7 @@ go
     Columns
 ***************/
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Auto increment table ID'
   , @level0type = N'SCHEMA'
@@ -74,9 +74,9 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'id';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'Hospital identifier foreign key to sites table'
+  , @value = N'Hospital identifier foreign key to site table'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
@@ -85,7 +85,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'site_id';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'is_medication 1=true 0=false (allergy)'
   , @level0type = N'SCHEMA'
@@ -96,7 +96,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'is_medication';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'description'
   , @level0type = N'SCHEMA'
