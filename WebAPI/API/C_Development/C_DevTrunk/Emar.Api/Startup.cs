@@ -5,6 +5,8 @@ using System.Reflection;
 using Emar.Core.Carts.Repository;
 using Emar.Core.Carts.Service;
 using Emar.Core.Helpers;
+using Emar.Core.Medications.Repository;
+using Emar.Core.Medications.Service;
 using Emar.Core.Options.Repository;
 using Emar.Core.Options.Service;
 using Emar.Core.Orders.Repository;
@@ -28,6 +30,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
+
 
 namespace Emar.Api
 {
@@ -144,6 +147,9 @@ namespace Emar.Api
 
             services.AddScoped<ICartOrderService, CartOrderService>();
             services.AddScoped<ICartOrderRepository, CartOrderRepository>();
+
+            services.AddScoped<IDoseRangeCheckingInfoService, DoseRangeCheckingInfoService>();
+            services.AddScoped<IDoseRangeCheckingInfoRepository, DoseRangeCheckingInfoRepository>();
 
             services.AddScoped<IOptionService, OptionService>();
             services.AddScoped<IOptionRepository, OptionRepository>();

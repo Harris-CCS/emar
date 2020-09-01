@@ -25,9 +25,4 @@
     <ProjectReference Include="..\Emar.Data\Emar.Data.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Medications\Repository\" />
-    <Folder Include="Medications\Service\" />
-  </ItemGroup>
-
 </Project>

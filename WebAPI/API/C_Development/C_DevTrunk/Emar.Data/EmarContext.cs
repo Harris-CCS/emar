@@ -39,6 +39,10 @@ namespace Emar.Data
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserQuickListItem> UserQuickListItems { get; set; }
 
+        //SP entities
+        public virtual DbSet<DoseRangeCheckingInfo> DoseRangeCheckingInfos { get; set; }
+
+
 
         public virtual DbSet<BradNameExample> BradNameExamples { get; set; }
         // Testing Code
@@ -110,6 +114,11 @@ namespace Emar.Data
                     .HasForeignKey(d => d.SiteId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk__department_preferred_list_items__sites");
+            });
+
+            modelBuilder.Entity<DoseRangeCheckingInfo>(entity =>
+            {
+                entity.HasNoKey();
             });
 
             modelBuilder.Entity<ExternalIdEntity>(entity =>
