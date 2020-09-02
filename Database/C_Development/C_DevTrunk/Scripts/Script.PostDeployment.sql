@@ -107,6 +107,7 @@ LVL: 005 SEQ: 001 TBL: dbo.order_event_details
 :r ..\Scripts\Data-Loader\user_data\user_quick_list_items.sql
 --- BEGIN: custom data deployments for development
 :r ..\Scripts\Data-Loader\development_data\bradley_data.sql
+:r ..\Scripts\Data-Loader\development_data\hsi-an.sql
 --- END: custom data deployments for development
 
 -- External References are not allowed in a bacpac file.
@@ -168,3 +169,6 @@ declare @outputs table([Id] int not null);
 --- it worked several times, but now causes ssms to crash. so removing for the moment.
 ---:r ..\Scripts\Post-Deployment\diagram_patients.sql
 ---:r ..\Scripts\Post-Deployment\diagram_security.sql
+---
+--- Create SQL Agent job for calculating user_quick_list most used
+:r ..\Scripts\Post-Deployment\sql_agent_job.sql
