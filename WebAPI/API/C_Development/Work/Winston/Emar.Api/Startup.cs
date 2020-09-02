@@ -15,6 +15,8 @@ using Emar.Core.Patients.Repository;
 using Emar.Core.Patients.Service;
 using Emar.Core.Sites.Service;
 using Emar.Core.Sites.Repository;
+using Emar.Core.Templates.Service;
+using Emar.Core.Templates.Repository;
 using Emar.Core.Users.Repository;
 using Emar.Core.Users.Service;
 using Emar.Data;
@@ -165,6 +167,9 @@ namespace Emar.Api
 
             services.AddScoped<ISiteService, SiteService>();
             services.AddScoped<ISiteRepository, SiteRepository>();
+
+            services.AddScoped<ITemplateService, TemplateService>();
+            services.AddScoped<ITemplateRepository, TemplateRepository>();
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();

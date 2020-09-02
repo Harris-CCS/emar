@@ -118,25 +118,27 @@ namespace Emar.Core.Orders.Service
 
         #region User Quick List Services
 
-        public UserQuickListFrameworkDto GetInitialUserQuickList(in int userId, int? siteId, 
+        public UserQuickListFrameworkDto GetInitialUserQuickList(in int userId, int? siteId,
             string tabLinkBase, string orderLinkBase)
         {
-            List<string> tabList = _orderRepository.GetUserQuickListTabs(userId, siteId).OrderBy(i => i).ToList();
-            // Compress all non-alpha values into "#"
+            var tabList = _orderRepository.GetUserQuickListTabs(userId, siteId).OrderBy(i => i.Key).ToList();
+
             if (!tabList.Any())
                 return null;
 
-            var foundNonAlpha = false;
+            // Compress all non-alpha values into "#"
+            int numAlphas = 0;
             for (int i = tabList.Count - 1; i >= 0; i--)
             {
-                if (!char.IsLetter(Convert.ToChar(tabList[i])))
+                if (!char.IsLetter(Convert.ToChar(tabList[i].Key)))
                 {
-                    foundNonAlpha = true;
+                    numAlphas += tabList[i].Value;
                     tabList.RemoveAt(i);
                 }
             }
-            if (foundNonAlpha)
-                tabList.Add("#");
+
+            if (numAlphas > 0)
+                tabList.Add(new KeyValuePair<string, int>("#", numAlphas));
 
             var mostUsedItems = _orderRepository.GetUserQuickListMostUsed(userId, siteId).ToList();
             List<UserQuickListItemDto> firstTabContents;
@@ -144,11 +146,11 @@ namespace Emar.Core.Orders.Service
             {
                 firstTabContents = mostUsedItems.Select(item => OrderMapper.MapUserQuickListItem(item, orderLinkBase))
                     .OrderBy(i => i.BrandName).ToList();
-                tabList.Insert(0, Constants.MostUsedTabTitle);
+                tabList.Insert(0, new KeyValuePair<string, int>(Constants.MostUsedTabTitle, mostUsedItems.Count()));
             }
             else
             {
-                var items = _orderRepository.GetUserQuickListTabItems(userId, siteId, tabList[0]).ToList();
+                var items = _orderRepository.GetUserQuickListTabItems(userId, siteId, tabList[0].Key).ToList();
 
                 firstTabContents = items.Select(dbObj => OrderMapper.MapUserQuickListItem(dbObj, orderLinkBase))
                     .OrderBy(i => i.BrandName).ToList();

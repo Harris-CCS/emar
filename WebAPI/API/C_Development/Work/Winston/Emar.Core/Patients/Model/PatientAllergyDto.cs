@@ -11,8 +11,8 @@ namespace Emar.Core.Patients.Model
         public long Id { get; set; }
 
         public long PatientId { get; set; }
-        public string Class { get; set; }
-        public string Category { get; set; }
+        internal string Class { get; set; }
+        internal string Category { get; set; }
         public string InternalDrugId { get; set; }
         public string Ndc { get; set; }
         public string DrugId { get; set; }
@@ -24,6 +24,7 @@ namespace Emar.Core.Patients.Model
         public string Schedule { get; set; }
         public string Reaction { get; set; }
         public string Severity { get; set; }
+
         public string ParentDrugId { get; set; }
         public string ParentDrugName { get; set; }
 
@@ -31,12 +32,26 @@ namespace Emar.Core.Patients.Model
         //public int AddUserId { get; set; }
         //public UserDto AddUser { get; set; }
         //public DateTimeOffset? AddDatetime { get; set; }
-        
+
         //public int ChangeUserId { get; set; }
         //public UserDto ChangeUser { get; set; }
         //public DateTimeOffset? ChangeDatetime { get; set; }
 
         public string ActionStatus { get; set; }
-        public string InformationSource { get; set; }
+        public string InformationSourceCode { get; set; }
+        public string InformationSource
+        {
+            get
+            {
+                switch (InformationSourceCode)
+                {
+                    case "PC": return "PulseCheck";
+                    case "HIE": return "HIE/CCD";
+                    case "ADT": return "Interface";
+                    default:
+                        return InformationSourceCode;
+                }
+            }
+        }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using Emar.Core.Medications.Model;
+using Emar.Core.Orders.Model;
 
 namespace Emar.Core.HomeMedications.Model
 {
@@ -58,9 +60,11 @@ namespace Emar.Core.HomeMedications.Model
             set => _alternateName = value?.Trim();
         }
 
-        //public decimal? Dose { get; set; }
-        //public int? MedicationUnitId { get; set; }
-        //public int? MedicationRouteId { get; set; }
+        public decimal? Dose { get; set; }
+        internal int? MedicationUnitId { get; set; }
+        public MedicationUnitDto MedicationUnit { get; set; }
+        internal int? MedicationRouteId { get; set; }
+        public MedicationRouteDto MedicationRoute { get; set; }
 
         string _medicationDrugId;
         public string MedicationDrugId

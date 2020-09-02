@@ -2,6 +2,8 @@
 using System.Linq;
 using Emar.Core.Helpers;
 using Emar.Core.HomeMedications.Model;
+using Emar.Core.Medications.Model;
+using Emar.Core.Medications.Model.Mappings;
 using Emar.Core.Orders.Model.Mappings;
 using Emar.Core.Sites.Model.Mappings;
 using Emar.Data.Entities;
@@ -17,6 +19,7 @@ namespace Emar.Core.Patients.Model.Mappings
 
             PatientDto patientDto = new PatientDto
             {
+                DateFormat = dateFormat,
                 Id = pt.Id,
                 SiteId = pt.SiteId,
                 Active = pt.Active,
@@ -28,7 +31,7 @@ namespace Emar.Core.Patients.Model.Mappings
                 MedicalRecordNumber = pt.MedicalRecordNumber,
                 Gender = pt.Gender,
                 DateOfBirth = pt.DateOfBirth,
-                BirthDate = DateTimeHelper.GetDate(pt.DateOfBirth, dateFormat),
+                //BirthDate = DateTimeHelper.GetDate(pt.DateOfBirth, dateFormat),
                 Age = pt.Age,
                 AgeUnits = pt.AgeUnits,
                 Complaint = pt.Complaint,
@@ -42,8 +45,8 @@ namespace Emar.Core.Patients.Model.Mappings
                 NameAlert = pt.NameAlert,
                 WithdrawConsent = pt.WithdrawConsent,
                 VsDatetime = pt.VsDatetime,
-                VsDatetimeDate = DateTimeHelper.GetDate(pt.VsDatetime, dateFormat),
-                VsDatetimeTime = DateTimeHelper.GetTime(pt.VsDatetime),
+                //VsDatetimeDate = DateTimeHelper.GetDate(pt.VsDatetime, dateFormat),
+                //VsDatetimeTime = DateTimeHelper.GetTime(pt.VsDatetime),
                 VsBloodPressureIndicator = pt.VsBloodPressureIndicator,
                 VsSystolic = pt.VsSystolic,
                 VsDiastolic = pt.VsDiastolic,
@@ -156,7 +159,7 @@ namespace Emar.Core.Patients.Model.Mappings
                 //ChangeUser = UserMapper.MapUser(allergy.ChangeUser),
                 //ChangeDatetime = allergy.ChangeDatetime,
                 ActionStatus = allergy.ActionStatus,
-                InformationSource = allergy.InformationSource
+                InformationSourceCode = allergy.InformationSource
             };
 
             return retDto;
@@ -170,7 +173,7 @@ namespace Emar.Core.Patients.Model.Mappings
             var retDto = new HomeMedicationDto
             {
                 Id = dbObj.Id,
-                PatientId = dbObj.PatientId ?? 0,
+                PatientId = dbObj.PatientId,
                 Class = dbObj.Class,
                 Category = dbObj.Category,
                 InternalDrugId = dbObj.InternalDrugId,
@@ -185,6 +188,12 @@ namespace Emar.Core.Patients.Model.Mappings
                 Reaction = dbObj.Reaction,
                 Severity = dbObj.Severity,
                 ParentDrugName = dbObj.ParentDrugName,
+                Dose = dbObj.Dose,
+                MedicationUnitId = dbObj.MedicationUnitId,
+                MedicationUnit = MedicationMapper.MapMedicationUnit(dbObj.MedicationUnit),
+                MedicationRouteId = dbObj.MedicationRouteId,
+                MedicationRoute = MedicationMapper.MapMedicationRoute(dbObj.MedicationRoute)
+
                 //AddUserId = allergy.AddUserId,
                 //AddUser = UserMapper.MapUser(allergy.AddUser),
                 //AddDatetime = allergy.AddDatetime,
@@ -192,6 +201,12 @@ namespace Emar.Core.Patients.Model.Mappings
                 //ChangeUser = UserMapper.MapUser(allergy.ChangeUser),
                 //ChangeDatetime = allergy.ChangeDatetime,
             };
+
+            if (retDto.MedicationRoute == null && retDto.MedicationRouteId != null)
+                retDto.MedicationRoute = new MedicationRouteDto {Id = retDto.MedicationRouteId.Value};
+
+            if (retDto.MedicationUnit == null && retDto.MedicationUnitId != null)
+                retDto.MedicationUnit = new MedicationUnitDto { Id = retDto.MedicationUnitId.Value };
 
             return retDto;
         }
