@@ -312,10 +312,14 @@ select [site].[site_id]
 from   [#frequency_schedules] as [fs]
        cross join
 (
-    select [id] as [site_id] from [get_internal_id]('pulsecheck', 'sites', 19) union all
-    select [id] as [site_id] from [get_internal_id]('pulsecheck', 'sites', 23) union all
     select [id] as [site_id] from [get_internal_id]('pulsecheck', 'sites',  1) union all
-    select [id] as [site_id] from [get_internal_id]('pulsecheck', 'sites', 36)
+    select [id] as [site_id] from [get_internal_id]('pulsecheck', 'sites',  5) union all
+    select [id] as [site_id] from [get_internal_id]('pulsecheck', 'sites', 11) union all
+    select [id] as [site_id] from [get_internal_id]('pulsecheck', 'sites', 36) union all
+    select [id] as [site_id] from [get_internal_id]('pulsecheck', 'sites', 39) union all
+    select [id] as [site_id] from [get_internal_id]('pulsecheck', 'sites', 40) union all
+    select [id] as [site_id] from [get_internal_id]('pulsecheck', 'sites', 19) union all
+    select [id] as [site_id] from [get_internal_id]('pulsecheck', 'sites', 23)
 ) as [site]
 order by [site_id]
        , [frequency_type_id]
@@ -331,10 +335,14 @@ into [#frequency_interval_day_times_resolve]
 from   [#frequency_interval_day_times] as [fidt]
        cross join
 (
-    select [id] as [site_id] from [get_internal_id]('pulsecheck', 'sites', 19) union all
-    select [id] as [site_id] from [get_internal_id]('pulsecheck', 'sites', 23) union all
     select [id] as [site_id] from [get_internal_id]('pulsecheck', 'sites',  1) union all
-    select [id] as [site_id] from [get_internal_id]('pulsecheck', 'sites', 36)
+    select [id] as [site_id] from [get_internal_id]('pulsecheck', 'sites',  5) union all
+    select [id] as [site_id] from [get_internal_id]('pulsecheck', 'sites', 11) union all
+    select [id] as [site_id] from [get_internal_id]('pulsecheck', 'sites', 36) union all
+    select [id] as [site_id] from [get_internal_id]('pulsecheck', 'sites', 39) union all
+    select [id] as [site_id] from [get_internal_id]('pulsecheck', 'sites', 40) union all
+    select [id] as [site_id] from [get_internal_id]('pulsecheck', 'sites', 19) union all
+    select [id] as [site_id] from [get_internal_id]('pulsecheck', 'sites', 23)
 ) as [site]
 order by [site_id]
        , [name]
