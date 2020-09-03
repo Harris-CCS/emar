@@ -52,7 +52,11 @@ yyyy-> Year, (e.g. 2015)'                                                       
     (6, 'RXALERT'                     , 'Possible Values:
   - 0 = Show All
   - 5 = Show Moderate, Severe and Contraindicated Only
-  - 6 = Show Severe and Contraindicated Only'                                                                              );
+  - 6 = Show Severe and Contraindicated Only'                                                                              ),
+    (7, 'MEDINPAT'                    , 'Possible Values: Y / N'                                                           ),
+    (8, 'MEDOUTPAT'                   , 'Possible Values: Y / N'                                                           ),
+    (9, 'MEDPYXIS'                    , 'Possible Values: Y / N'                                                           ),
+    (10,'MEDEXACTMATCH'               , 'Possible Values: Y / N'                                                           );
 
 /*************************************
         begin loading permanent tables
