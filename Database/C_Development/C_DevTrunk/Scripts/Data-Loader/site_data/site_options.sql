@@ -5,10 +5,14 @@ Default Values for Site Options
 *******************************/
 
 declare 
-    @LONG_DATE_FORMAT               varchar(25) = 'MM/dd/yyyy'
-  , @SHORT_DATE_FORMAT              varchar(25) = 'MM/dd/yy'
-  , @SCHEDULE_FUTURE_ITEMS          varchar(25) = '3'
-  , @RXALERT                        varchar(25) = '0';
+    @LONG_DATE_FORMAT      varchar(25) = 'MM/dd/yyyy'
+  , @SHORT_DATE_FORMAT     varchar(25) = 'MM/dd/yy'
+  , @SCHEDULE_FUTURE_ITEMS varchar(25) = '3'
+  , @RXALERT               varchar(25) = '0'
+  , @MEDINPAT              varchar(25) = 'N'
+  , @MEDOUTPAT             varchar(25) = 'N'
+  , @MEDPYXIS              varchar(25) = 'N'
+  , @MEDEXACTMATCH         varchar(25) = 'N';
 
 drop table if exists [#site_options];
 
@@ -38,6 +42,14 @@ select [site].[id] as   [site_id]
                then @SCHEDULE_FUTURE_ITEMS
            when [option].[name] = 'RXALERT'
                then @RXALERT
+           when [option].[name] = 'MEDINPAT'
+               then @MEDINPAT
+           when [option].[name] = 'MEDOUTPAT'
+               then @MEDOUTPAT
+           when [option].[name] = 'MEDPYXIS'
+               then @MEDPYXIS
+           when [option].[name] = 'MEDEXACTMATCH'
+               then @MEDEXACTMATCH
            else 'DEFAULT_NOT_DEFINED'
        end as           [option_value]
 from   [dbo].[sites] as [site]
@@ -53,11 +65,11 @@ from [#site_options] as [source]
                                                     and [target].[option_id] = [source].[option_id]
 where  [source].[site_id] is null;
 
-/***********************
+/************************
 update goes here
 but this script requires 
 no update statement
-***********************/
+************************/
 
 insert into [dbo].[site_options]
     ([site_id]

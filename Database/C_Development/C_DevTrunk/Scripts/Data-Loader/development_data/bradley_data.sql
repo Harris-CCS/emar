@@ -29,7 +29,7 @@ if '$(load_data)' in('sample', 'live')
         (
             select [internal_id]
             from   [dbo].[external_ids]
-            where  [external_id] = '36'
+            where  [external_id] = '10147'
                    and [vendor] = 'pulsecheck'
                    and [entity] = 'users'
         );

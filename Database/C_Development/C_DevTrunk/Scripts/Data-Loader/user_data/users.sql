@@ -83,7 +83,7 @@ if
         select @max_id = max([id])
         from   [dbo].[users];
 
-        set @max_id = isnull(@max_id, 0);
+        set @max_id = isnull(@max_id, 1);
 
         update [source] set    
             [target_id] = [source].[id] + @max_id
@@ -94,6 +94,27 @@ if
 *************************************/
 
         set identity_insert [dbo].[users] on;
+
+        insert into [dbo].[users]
+            ([id]
+           , [site_id]
+           , [type]
+           , [is_active]
+           , [initials_display]
+           , [first_name]
+           , [last_name]
+           , [middle_name]
+           , [name_suffix]
+           , [ordering_only_physician]
+           , [name_display_initials]
+           , [login_name]
+           , [login_password]
+           , [salt]
+           , [last_login_time]
+           , [failed_login_attempts]
+            )
+        values
+            ('1', '-1', '', 0, 0, 'DEV PLACE HOLDER', 'DEV PLACE HOLDER', '', '', '0', '0', 'dev_user', '', 0x00, null, '0');
 
         insert into [dbo].[users]
             ([id]

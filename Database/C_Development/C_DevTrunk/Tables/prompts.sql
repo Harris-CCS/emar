@@ -26,6 +26,11 @@ go
 /*****************
  Unique constraint
 *****************/
+
+alter table [dbo].[prompts]
+add constraint [uc__prompts__name] unique([prompt_group_id],[prompt]);
+go
+
 /*******
  Indexes
 *******/

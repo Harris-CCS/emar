@@ -7,7 +7,7 @@ if '$(load_data)' in('sample', 'live')
             [site_id] = [sites].[id]
         from   [dbo].[users]
                cross join [dbo].[sites]
-        where  [users].[login_name] = 'ordonly-AZR3'
+        where  [users].[login_name] = 'dev_user'
                and [sites].[name] = 'Automation Test_Multum';
 
         insert into [dbo].[user_quick_list_items]
@@ -41,7 +41,7 @@ if '$(load_data)' in('sample', 'live')
                cross join [dbo].[users] as [target_user]
                cross join [dbo].[sites] as [source_sites]
                cross join [dbo].[sites] as [target_sites]
-        where  [target_user].[login_name] = 'ordonly-AZR3'
+        where  [target_user].[login_name] = 'dev_user'
                and [target_user].[site_id] = [target_sites].[id]
                and [source_user].[login_name] = 'jedi'
                and [source_user].[site_id] = [source_sites].[id]

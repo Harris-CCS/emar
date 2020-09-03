@@ -1,9 +1,8 @@
 create table [dbo].[prompt_groups]
     (
       [id]         [int] identity(1, 1) not null
-    , [group_name] [varchar](20) not null
+    , [name] [varchar](20) not null
     , [title]      [varchar](50) not null
-    , [site_id]    [int] not null
     , constraint [pk__prompt_groups__id] primary key clustered([id] asc));
 go
 
@@ -13,6 +12,11 @@ go
 /*****************
  Unique constraint
 *****************/
+
+alter table [dbo].[prompt_groups]
+add constraint [uc__prompt_groups__name] unique([name]);
+go
+
 /*******
  Indexes
 *******/
@@ -70,13 +74,13 @@ go
 
 execute [sys].[sp_addextendedproperty]
     @name = N'MS_Description'
-  , @value = N'group_name'
+  , @value = N'group name'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
   , @level1name = N'prompt_groups'
   , @level2type = N'COLUMN'
-  , @level2name = N'group_name';
+  , @level2name = 'name';
 go
 
 execute [sys].[sp_addextendedproperty]
@@ -88,15 +92,4 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'prompt_groups'
   , @level2type = N'COLUMN'
   , @level2name = N'title';
-go
-
-execute [sys].[sp_addextendedproperty]
-    @name = N'MS_Description'
-  , @value = N'Hospital identifier foriegn key to site table'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'prompt_groups'
-  , @level2type = N'COLUMN'
-  , @level2name = N'site_id';
 go

@@ -107,6 +107,7 @@ LVL: 005 SEQ: 001 TBL: dbo.order_event_details
 :r ..\Scripts\Data-Loader\user_data\user_quick_list_items.sql
 --- BEGIN: custom data deployments for development
 :r ..\Scripts\Data-Loader\development_data\bradley_data.sql
+:r ..\Scripts\Data-Loader\development_data\bradley_data_II.sql
 :r ..\Scripts\Data-Loader\development_data\hsi-an.sql
 --- END: custom data deployments for development
 

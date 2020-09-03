@@ -19,6 +19,11 @@ go
 /*****************
  Unique constraint
 *****************/
+
+alter table [dbo].[templates]
+add constraint [uc__templates__name] unique([name]);
+go
+
 /*******
  Indexes
 *******/
