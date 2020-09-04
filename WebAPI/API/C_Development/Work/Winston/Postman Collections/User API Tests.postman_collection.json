@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "a36493a8-de59-4021-aa23-9c494b508462",
+		"_postman_id": "afb73d50-f719-4746-9093-6673281936d2",
 		"name": "User API Tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -11,7 +11,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "af0e2922-086d-4859-bc07-eca4f1456985",
+						"id": "a329cf3f-fb5a-47b3-8dbe-db17889dcede",
 						"exec": [
 							"pm.test(\"Status code is 204\", function () {\r",
 							"    pm.response.to.have.status(204);\r",
@@ -117,7 +117,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "06eaf743-b4c6-47ba-90ea-95552579e81f",
+						"id": "1883c1ee-e3f2-4702-9970-abf651d8d353",
 						"exec": [
 							"var jsonData = pm.response.json();\r",
 							"pm.environment.set(\"HeatherId\", jsonData.id);\r",
@@ -246,7 +246,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "3d0fcdb8-4333-48d4-b295-d418af721a8a",
+						"id": "83e54746-b352-471d-a93e-7f982a886d6b",
 						"exec": [
 							"pm.test(\"Correct Name returned\", function() {\r",
 							"    var jsonData = pm.response.json();\r",
@@ -363,7 +363,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "b3606eb6-e106-4247-a3b2-952e964c3ea4",
+						"id": "de15cfee-5833-44f6-b753-7627cd993ee0",
 						"exec": [
 							"pm.test(\"User was not found\", function () {\r",
 							"    let expectedStrings = ['User with id', 'was not found'];\r",
@@ -474,7 +474,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "e8e069dd-03e4-4348-9249-c0ff9b008717",
+						"id": "b0e54a00-7e50-47d1-aa79-aadf36c0fe3b",
 						"exec": [
 							"pm.test(\"User was not found\", function () {\r",
 							"    let expectedStrings = ['User with external id', 'was not found'];\r",
@@ -485,7 +485,9 @@
 							"pm.test(\"Status code is 404\", function () {\r",
 							"    pm.response.to.have.status(404);\r",
 							"});\r",
-							""
+							"\r",
+							"\r",
+							"pm.environment.unset(\"HeatherId\");"
 						],
 						"type": "text/javascript"
 					}

@@ -14,7 +14,7 @@ namespace Emar.Core.Patients.Service
     public class PatientService : IPatientService
     {
         private readonly IPatientRepository _patientRepository;
-        private IOptionRepository _optionRepository;
+        private readonly IOptionRepository _optionRepository;
 
         public PatientService(IPatientRepository patientRepository, IOptionRepository optionRepository)
         {

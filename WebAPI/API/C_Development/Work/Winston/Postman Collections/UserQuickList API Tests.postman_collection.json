@@ -20,7 +20,7 @@
 							"var jsonData = pm.response.json();\r",
 							"\r",
 							"pm.test(\"Correct Name returned\", function() {\r",
-							"    pm.expect(jsonData.displayName).to.eql(\"Michele Eyre, LPN\");\r",
+							"    pm.expect(jsonData.displayName).to.eql(\"Joe Admin He\");\r",
 							"});\r",
 							"\r",
 							"pm.environment.set(\"QuickListUserId\", jsonData.id);\r",
@@ -46,7 +46,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{URL}}/api/users?extId=36",
+					"raw": "{{URL}}/api/users?extId=10147",
 					"host": [
 						"{{URL}}"
 					],
@@ -57,7 +57,7 @@
 					"query": [
 						{
 							"key": "extId",
-							"value": "36"
+							"value": "10147"
 						}
 					]
 				}
@@ -155,8 +155,8 @@
 							"    pm.expect(jsonData.currentTabContents.length).to.eql(80);\r",
 							"});\r",
 							"\r",
-							"pm.test(\"Returns 27 tabs\", function() {\r",
-							"    pm.expect(jsonData.tabListing.length).to.eql(27);\r",
+							"pm.test(\"Returns 24 tabs\", function() {\r",
+							"    pm.expect(jsonData.tabListing.length).to.eql(24);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Correct Tab Name returned\", function() {\r",
@@ -253,8 +253,8 @@
 							"\r",
 							"var jsonData = pm.response.json();\r",
 							"\r",
-							"pm.test(\"Returns 1 records\", function() {\r",
-							"    pm.expect(jsonData.length).to.eql(1);\r",
+							"pm.test(\"Returns 2 records\", function() {\r",
+							"    pm.expect(jsonData.length).to.eql(2);\r",
 							"});\r",
 							"\r",
 							"const validFrequencyScheduleExists = (order) => {\r",
@@ -310,7 +310,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{URL}}/api/userquicklists/tabs/%23?SiteId=16",
+					"raw": "{{URL}}/api/userquicklists/tabs/%23?SiteId=28",
 					"host": [
 						"{{URL}}"
 					],
@@ -323,7 +323,7 @@
 					"query": [
 						{
 							"key": "SiteId",
-							"value": "16"
+							"value": "28"
 						}
 					]
 				}
@@ -340,8 +340,8 @@
 						"exec": [
 							"var jsonData = pm.response.json();\r",
 							"\r",
-							"pm.test(\"Returns 91 records\", function () {\r",
-							"    pm.expect(jsonData.length).to.eql(91);\r",
+							"pm.test(\"Returns 53 records\", function () {\r",
+							"    pm.expect(jsonData.length).to.eql(53);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Status code is 200\", function () {\r",
@@ -408,7 +408,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{URL}}/api/userquicklists/tabs/C?SiteId=16&patientId=12345",
+					"raw": "{{URL}}/api/userquicklists/tabs/C?SiteId=28&patientId=12345",
 					"host": [
 						"{{URL}}"
 					],
@@ -421,7 +421,7 @@
 					"query": [
 						{
 							"key": "SiteId",
-							"value": "16"
+							"value": "28"
 						},
 						{
 							"key": "patientId",
@@ -442,8 +442,8 @@
 						"exec": [
 							"var jsonData = pm.response.json();\r",
 							"\r",
-							"pm.test(\"Returns 91 records\", function() {\r",
-							"    pm.expect(jsonData.length).to.eql(91);\r",
+							"pm.test(\"Returns 53 records\", function() {\r",
+							"    pm.expect(jsonData.length).to.eql(53);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Status code is 200\", function () {\r",

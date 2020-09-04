@@ -6,6 +6,7 @@ using Emar.Core.Options.Repository;
 using Emar.Core.Orders.Model;
 using Emar.Core.Orders.Model.Mappings;
 using Emar.Core.Orders.Repository;
+using Emar.Core.Patients.Repository;
 using Emar.Core.ResourceParameters;
 using Emar.Data.Entities;
 
@@ -15,16 +16,20 @@ namespace Emar.Core.Orders.Service
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IOptionRepository _optionRepository;
+        private readonly IPatientRepository _patientRepository;
 
-        public OrderService(IOrderRepository orderRepository, IOptionRepository optionRepository)
+        public OrderService(IOrderRepository orderRepository, IOptionRepository optionRepository, IPatientRepository patientRepository)
         {
             _orderRepository = orderRepository;
             _optionRepository = optionRepository ?? throw new ArgumentNullException(nameof(optionRepository));
+            _patientRepository = patientRepository;
         }
 
         public PagedList<PatientOrderDto> GetOrders(long? patientId, OrdersResourceParameters resourceParameters)
         {
             var orders = _orderRepository.GetOrders(patientId, resourceParameters);
+            throw new NotImplementedException("Paging Disabled - to re-enable, make AssignNextActionTimeToOrders() work with a paged list of orders");
+            //AssignNextActionTimeToOrders(orders);
 
             if ((orders == null) ||
                 (!orders.Any()))
@@ -39,6 +44,20 @@ namespace Emar.Core.Orders.Service
             return new PagedList<PatientOrderDto>(ordersList, orders.TotalCount, orders.CurrentPage, orders.PageSize);
         }
 
+        public IEnumerable<PatientOrderDto> GetOrders(long patientId)
+        {
+            var orders = _orderRepository.GetOrders(patientId).ToList();
+
+            var siteId = _patientRepository.GetSiteIdForPatient(patientId);
+
+            var dateFormat = _optionRepository.GetOption(siteId, AppConstants.LongDateFormat);
+
+            return orders.Select(order => OrderMapper.MapOrder(order, dateFormat)).ToList()
+                // sort all the orders that don't have a "Next Action Time" to the bottom of the list
+                .OrderBy(o => o.NextActionTime == null ? 1 : 0)
+                .ThenBy(o => o.NextActionTime);
+        }
+
         public PatientOrderDto GetOrder(long orderId, OrdersResourceParameters resourceParameters)
         {
             var order = _orderRepository.GetOrder(orderId, resourceParameters);
@@ -48,7 +67,7 @@ namespace Emar.Core.Orders.Service
                 return null;
             }
 
-            int siteId = order.Patient.SiteId;
+            var siteId = _patientRepository.GetSiteIdForPatient(order.PatientId);
             var dateFormat = _optionRepository.GetOption(siteId, AppConstants.LongDateFormat);
 
             var orderDto = OrderMapper.MapOrder(order, dateFormat);
@@ -215,6 +234,5 @@ namespace Emar.Core.Orders.Service
         }
 
         #endregion
-
     }
 }

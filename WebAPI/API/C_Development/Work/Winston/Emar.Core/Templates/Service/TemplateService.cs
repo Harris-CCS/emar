@@ -1,24 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Emar.Core.Medications.Model.Mappings;
 using Emar.Core.Templates.Model;
+using Emar.Core.Templates.Model.Mappings;
+using Emar.Core.Templates.Repository;
+using Emar.Data.Entities;
 
 namespace Emar.Core.Templates.Service
 {
     public class TemplateService : ITemplateService
     {
+        private readonly ITemplateRepository _repository;
+
+
+        public TemplateService(ITemplateRepository repository)
+        {
+            _repository = repository;
+        }
+
         public TemplateDto GetTemplateDefinition(int templateId)
         {
-            var ret = new TemplateDto();
-            ret.Id = 1234;
-            ret.Name = "Ear";
-            ret.PromptGroups = new List<PromptGroupDto>
-            {
+            Template template = _repository.GetTemplate(templateId);
 
-            }
-                ;
-
-            return ret;
+            return TemplateMapper.MapTemplate(template);
         }
     }
 }

@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <None Remove="Emar.Data.csproj.bak" />
+    <None Remove="EmarContext.cs.bak" />
   </ItemGroup>
 
   <ItemGroup>

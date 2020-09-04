@@ -42,6 +42,12 @@ namespace Emar.Core.Orders.Repository
             return PagedList<PatientOrder>.Create(orders.AsQueryable(), resourceParameters.PageNumber, resourceParameters.PageSize);
         }
 
+        public IEnumerable<PatientOrder> GetOrders(long patientId)
+        {
+            return GetOrders(order => order.PatientId == patientId)
+                .ToList();
+        }
+
         public PatientOrder GetOrder(long orderId, OrdersResourceParameters resourceParameters)
         {
             return GetOrders(order => order.Id == orderId)
@@ -57,7 +63,6 @@ namespace Emar.Core.Orders.Repository
                     .Include(order => order.AddUser)
                     .Include(order => order.OrderPhysicianUser)
                     .Include(order => order.FrequencySchedule)
-                    .Include(order => order.Patient)
                     //.Include(order => order.Patient)
                     //    .ThenInclude(patient => patient.Site)
                     //        .ThenInclude(site => site.SiteOptions)
@@ -151,7 +156,6 @@ namespace Emar.Core.Orders.Repository
                 else
                     whereExpression = i =>
                         i.UserId == userId && i.SiteId == siteId && !EF.Functions.Like(i.BrandName, "[a-zA-Z]%");
-                ;
             }
             else
             {
