@@ -213,6 +213,10 @@
     <None Include="Scripts\Data-Loader\phi_data\patient_problems.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Scripts\Post-Deployment\sql_agent_job.sql" />
+    <Build Include="Programmability\Stored Procedures\update_weekly_usage_rolling_average.sql" />
+    <None Include="Scripts\Data-Loader\development_data\hsi-an.sql" />
+    <None Include="Scripts\Data-Loader\development_data\bradley_data_II.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />
