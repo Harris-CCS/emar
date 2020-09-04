@@ -1,25 +1,485 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { ComposerSchedulerService } from '../../../services/composer-scheduler.service';
+import {
+  Component,
+  OnInit,
+  Input,
+  ViewChild,
+  AfterViewInit,
+} from '@angular/core';
 import { ModalService } from '../../../services/modal.service';
+import { ThrowStmt } from '@angular/compiler';
+import { ComposerMedComponent } from 'src/pages/composer-med/composer-med.component';
+import { ModalHeaderParameters } from '../../../../src/app/interfaces/modalHeaderParameters';
+import { MedOrderService } from 'src/services/med-order.service';
+import { CartStoreService } from 'src/services/cart-store.service';
+import { ComposerSchedulerService } from '../../../services/composer-scheduler.service';
+import {
+  NgbAccordion,
+  NgbPanelChangeEvent,
+  NgbPanel,
+} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'composer-med-modal',
   templateUrl: './composer-med-modal.component.html',
   styleUrls: ['./composer-med-modal.component.scss'],
 })
-export class ComposerMedModalComponent implements OnInit {
-  @Input() modalTitle: string;
+export class ComposerMedModalComponent implements OnInit, AfterViewInit {
+  // @Input() modalTitle: string;
+  @ViewChild('acc') accordionComponent: NgbAccordion;
+  modalTitle: string = '';
+  modalHeaderParameters: ModalHeaderParameters = {};
+  isModalTitleParamsSet: boolean = false;
+  composerMedComponents: Array<ComposerMedComponent>;
+  addNewMedComponent: boolean = false;
+  overallOrderValid: boolean = false;
 
   constructor(
     private modalService: ModalService,
-    private composerSchedulerService: ComposerSchedulerService
-  ) {}
+    private composerSchedulerService: ComposerSchedulerService,
+    private medOrderService: MedOrderService,
+    private cartStoreService: CartStoreService
+  ) {
+    this.continueOrder = this.continueOrder.bind(this);
+    this.cancelOrder = this.cancelOrder.bind(this);
+    this.checkOrder = this.checkOrder.bind(this);
+    this.validOrder = this.validOrder.bind(this);
+  }
 
   ngOnInit(): void {
-    this.modalService.formClosed.subscribe(() => {
-      if (this.modalService.formClosed.value === 'medComposer') {
-        this.composerSchedulerService.resetForm();
+    this.modalService.modalClosed.subscribe(() => {
+      if (this.modalService.modalClosed.value === 'medComposer') {
+        this.composerSchedulerService.resetAllComponentMedForms();
+        this.resetMedModal();
       }
     });
+    this.composerSchedulerService.shouldCheckOverallMedOrderValidity.subscribe(
+      () => {
+        if (
+          this.composerSchedulerService.shouldCheckOverallMedOrderValidity.value
+        ) {
+          this.overallOrderValid = this.composerSchedulerService.checkOverallMedOrderValidity();
+        }
+      }
+    );
+    if (
+      (!this.composerMedComponents ||
+        this.composerMedComponents.length === 0) &&
+      this.getMed()
+    ) {
+      this.composerSchedulerService.addNewComposerMedComponent();
+      // console.log('componentAddAttempt');
+    }
+    this.composerSchedulerService.addNewMedComponent.subscribe(() => {
+      if (this.composerSchedulerService.addNewMedComponent.value) {
+        // console.log('addNewComponentMedEventHeard');
+        this.addNewMedComponent = true;
+      }
+    });
+    this.composerSchedulerService.newMedComponentAdded.subscribe(() => {
+      if (this.composerSchedulerService.newMedComponentAdded.value) {
+        // console.log('ComponentAddedMedEventHeard');
+        this.addNewMedComponent = false;
+        this.composerMedComponents = this.composerSchedulerService.getComposerMedComponents();
+        this.composerSchedulerService.shouldCheckOverallMedOrderValidity.next(
+          true
+        );
+        // console.log('ComponentAddedCheckArray');
+      }
+    });
+    this.composerSchedulerService.changeDiagnosis.subscribe(() => {
+      if (this.composerSchedulerService.changeDiagnosis.value) {
+        this.setModalHeaderParameter(
+          'diagnosis',
+          'Diagnosis: ',
+          this.composerMedComponents[0].composerMedForm.value.detail.diagnosis
+        );
+      }
+    });
+    this.composerSchedulerService.changeIndication.subscribe(() => {
+      if (this.composerSchedulerService.changeIndication.value) {
+        this.setModalHeaderParameter(
+          'indication',
+          'Indication: ',
+          this.composerMedComponents[0].composerMedForm.value.detail
+            .antimicrobialIndication
+        );
+      }
+    });
+  }
+
+  ngAfterViewInit() {
+    if (this.accordionComponent) {
+      this.accordionComponent.panelChange.subscribe(
+        (panelChangeEvent: NgbPanelChangeEvent) => {
+          // console.log('this.accordion', this.accordionComponent);
+          // console.log('panelChangeEvent', panelChangeEvent);
+          // if (!panelChangeEvent.nextState && panelChangeEvent.panelId) {
+          // this.composerMedComponents = this.composerSchedulerService.getComposerMedComponents();
+          if (panelChangeEvent.panelId) {
+            // console.log(
+            //   'this.composerMedComponents',
+            //   this.composerMedComponents
+            // );
+            this.accordionComponent.panels.forEach((panel) => {
+              // console.log('panel: ', panel.id, panel.isOpen);
+              if (panel.isOpen) {
+                const medComponentId: number = parseInt(
+                  panel.id.split('-').pop(),
+                  10
+                );
+
+                this.setMedComponentText(medComponentId);
+                // console.log(
+                //   'updatedMedComponent',
+                //   this.composerMedComponents[medComponentId].title
+                // );
+                // console.log('updatedPanel: ', panel.id, panel);
+              }
+            });
+          }
+        }
+      );
+    }
+  }
+
+  resetMedModal(): void {
+    this.modalTitle = ' ';
+    this.isModalTitleParamsSet = false;
+    this.modalHeaderParameters = {};
+    this.composerMedComponents = this.composerSchedulerService.getComposerMedComponents();
+    this.composerSchedulerService.addNewComposerMedComponent();
+    // console.log('medModalReset');
+  }
+
+  resetComposerMedComponent(id): void {
+    alert(`resetComposerMedComponent - ${id}`);
+    this.composerSchedulerService.resetComponentMedFormById(id);
+  }
+
+  getData() {
+    return this.modalService.retrieveModalData('medComposer') || {};
+  }
+
+  getMed() {
+    return this.getData().med || {};
+  }
+
+  getLatestMedComponentDOMId(): string {
+    // this.addNewMedComponent = false;
+    // console.log('addNewMedComponent', this.addNewMedComponent);
+    return !this.composerMedComponents ||
+      this.composerMedComponents.length === 0
+      ? 'medComponent-0'
+      : `medComponent-${this.composerMedComponents.length}`;
+  }
+
+  setMedComponentText(id: number): string {
+    if (this.composerMedComponents && this.composerMedComponents[id]) {
+      const data = this.composerMedComponents[id].composerMedForm.value;
+      let textLine1: string;
+      let textLine2: string;
+
+      // Check Text Line #1
+      textLine1 = `${this.getCompData(data, 'dose')} ${this.getCompData(
+        data,
+        'duration'
+      )} ${this.getCompData(data, 'route')} ${this.getCompData(
+        data,
+        'priority'
+      )} ${this.getCompData(data, 'frequency')}`
+        //   ${this.getCompData(data, 'diagnosis')} ${this.getCompData(
+        //   data,
+        //   'indication'
+        // )} `
+        .split('  ')
+        .join(' ');
+      textLine1 = new RegExp(`^[\s]$`).test(textLine1) ? '' : textLine1;
+      // Check Text Line #2
+      textLine2 = `${this.getCompData(data, 'startTime')} ${this.getCompData(
+        data,
+        'endTime'
+      )}`
+        .split('  ')
+        .join(' ');
+      textLine2 = new RegExp(`^[\s]$`).test(textLine2) ? '' : textLine2;
+
+      this.composerMedComponents[id].title =
+        textLine1 || textLine2 ? `${textLine1}\n${textLine2}` : `Order #${id}`;
+    } else {
+      return `Order #${id}`;
+    }
+  }
+
+  getCompData(data: any, name: string): string {
+    // console.log('getCompData', data);
+    switch (name) {
+      case 'dose': {
+        if (!data.med.dose || !data.med.doseUnitName) {
+          return '';
+        } else {
+          return `${data.med.dose} ${data.med.doseUnitName}`;
+        }
+      }
+      case 'route': {
+        if (!data.med.routeName) {
+          return '';
+        } else {
+          return `${data.med.routeName}`;
+        }
+      }
+      case 'priority': {
+        if (!data.med.priority) {
+          return '';
+        } else {
+          return `${data.med.priority}`;
+        }
+      }
+      case 'diagnosis': {
+        if (!data.detail.diagnosis) {
+          return '';
+        } else {
+          return `${data.detail.diagnosis}`;
+        }
+      }
+      case 'indication': {
+        if (!data.detail.antimicrobialIndication) {
+          return '';
+        } else {
+          return `${data.detail.antimicrobialIndication}`;
+        }
+      }
+      case 'frequency': {
+        if (!data.frequency.frequency) {
+          return '';
+        } else {
+          return `${data.frequency.frequency}`;
+        }
+      }
+      case 'duration': {
+        if (!data.frequency.duration || !data.frequency.durationUnit) {
+          return '';
+        } else {
+          return `[${data.frequency.duration} ${data.frequency.durationUnit}]`;
+        }
+      }
+      case 'startTime': {
+        if (!data.frequency.startTime) {
+          return '';
+        } else {
+          return `Start On: ${data.frequency.startTime}`;
+        }
+      }
+      case 'endTime': {
+        if (!data.frequency.endTime) {
+          return '';
+        } else {
+          return `End On: ${data.frequency.endTime}`;
+        }
+      }
+      default: {
+        return '';
+      }
+    }
+  }
+
+  isMedComponentPanelSelected(id: string): boolean {
+    const panel = this.accordionComponent.panels.find((pn) => pn.id === id);
+    // console.log('isPanelOpen', panel && panel.isOpen);
+    return (panel && panel.isOpen) || false;
+  }
+
+  setModalHeaderParameter(id: string, label: string, value: string) {
+    // console.log('setModalHeaderParameterStart', id, label, value);
+    if (this.modalHeaderParameters && value !== undefined) {
+      let fieldIndex: number;
+      if (!this.modalHeaderParameters.fields) {
+        this.modalHeaderParameters.fields = [];
+      }
+      const field = this.modalHeaderParameters.fields.find((fld, index) => {
+        if (fld.id === id) {
+          fieldIndex = index;
+          return true;
+        }
+      });
+      if (field) {
+        this.modalHeaderParameters.fields.splice(fieldIndex, 1, {
+          id,
+          label,
+          value,
+        });
+      } else {
+        this.modalHeaderParameters.fields.push({
+          id,
+          label,
+          value,
+        });
+      }
+      // console.log(`setModalHeaderParameter ${id}`, this.modalHeaderParameters);
+    }
+  }
+
+  setModalHeaderParameters(): string {
+    // this.composerMedComponents = this.composerSchedulerService.getComposerMedComponents();
+    // console.log('composerMedComponentsSMT', this.composerMedComponents);
+    if (!this.isModalTitleParamsSet && this.getData().med) {
+      this.modalHeaderParameters = {
+        label: 'New Order: ',
+        title: this.getData().med.brandName,
+        class: ['dialog-title', 'order-med-name'],
+        toolTip: 'Dosing Information',
+        onTitleClick: this.onTitleClick,
+        buttons: [
+          {
+            id: 'quicklist',
+            name: 'Add To Quick List',
+            onClick: this.addOrderToQuickList,
+            toolTip: 'Add Order To Quick List',
+          },
+          {
+            id: 'continue',
+            name: 'Continue',
+            onClick: this.continueOrder,
+            toolTip: 'Create additional order component',
+          },
+          {
+            id: 'cancel',
+            name: 'Cancel Order',
+            onClick: this.cancelOrder,
+            toolTip: 'Cancel Order',
+          },
+          {
+            id: 'checkOrder',
+            name: this.getActionText(),
+            onClick: this.checkOrder,
+            toolTip: 'Add Order to Cart',
+          },
+          {
+            id: 'validOrder',
+            name: 'Valid Order',
+            onClick: this.validOrder,
+            toolTip: 'Order Validity/Status',
+          },
+        ],
+      };
+      this.modalService.assignModalHeaderParameters(
+        'medComposer',
+        this.modalHeaderParameters
+      );
+      // this.modalTitle = medData.brandName;
+      this.isModalTitleParamsSet = true;
+      // console.log('modalHeaderParameters', this.modalHeaderParameters);
+    }
+    return this.modalTitle;
+  }
+
+  onTitleClick(): void {
+    alert('Dosage Table to go here when clicked!');
+  }
+
+  addOrderToQuickList(): void {
+    alert('Add To Quick List!');
+  }
+
+  continueOrder(): void {
+    // console.log('continueThis', this);
+    this.composerSchedulerService.addNewComposerMedComponent();
+    // console.log('componentAddAttemptFromContinueButton');
+  }
+
+  cancelOrder(): void {
+    // this.composerSchedulerService.resetAllComponentMedForms();
+    this.modalService.close('medComposer');
+  }
+
+  checkOrder(): void {
+    // alert('Check Order!');
+    this.composerMedComponents.forEach((medComponent, index) => {
+      const closeModal: boolean =
+        this.composerMedComponents.length - 1 === 0 ||
+        index === this.composerMedComponents.length - 1;
+      medComponent.saveCartOrder(closeModal);
+      // console.log('processCartOrder');
+    });
+  }
+
+  validOrder(): string {
+    // alert('Valid Order!');
+    return this.overallOrderValid ? 'VALID' : 'INVALID';
+  }
+
+  isMedComposerFormInvalid(id: number) {
+    return this.composerMedComponents[id].isMedComposerFormInvalid();
+  }
+
+  getMedComponentValidityText(id: number): string {
+    return this.isMedComposerFormInvalid(id) ? 'INVALID' : 'VALID';
+  }
+
+  removeMedComponent(id: number): void {
+    // console.log('removeComposerMedComponentsStart', this.composerMedComponents);
+    this.composerSchedulerService.removeMedComponent(id);
+    this.composerMedComponents = this.composerSchedulerService.getComposerMedComponents();
+    this.composerSchedulerService.shouldCheckOverallMedOrderValidity.next(true);
+    // console.log('removeComposerMedComponentsDone', this.composerMedComponents);
+  }
+
+  getActionText() {
+    let action = this.getData().action || 'add';
+    return action === 'update' ? 'Update Order' : 'Add Order';
+  }
+
+  processCartOrder = () => {
+    if (`${this.getMed().allergies}`) {
+      this.modalService.open(
+        'interaction-modal',
+        { order: this.getMed(), type: 'allergies' },
+        'Allergy Reaction'
+      );
+    } else {
+      this.medOrderService.allergiesInteractionChanged.next({});
+    }
+    this.medOrderService.allergiesInteractionChanged.subscribe((reasons) => {
+      console.log('COMPOSER-MED subscribe allergies', reasons);
+      if (`${this.getMed().drugs}`) {
+        this.modalService.open(
+          'interaction-modal',
+          { order: this.getMed(), type: 'drugs' },
+          'Medication Interaction'
+        );
+      } else {
+        this.medOrderService.drugsInteractionChanged.next({});
+      }
+      this.medOrderService.drugsInteractionChanged.subscribe((reasons) => {
+        console.log('COMPOSER-MED subscribe drugs', reasons);
+        this.saveCartOrder();
+      });
+    });
+    // this.saveCartOrder()
+  };
+
+  saveCartOrder = () => {
+    if (this.getData().action === 'update') {
+      console.log('saveCartOrder: PUT: med: ', this.getData());
+      // this.medOrderService.updateCartOrder(this.getMed().med);
+      this.cartStoreService.updateCartOrder(this.getMed(), 1, 5555, '');
+      console.log(
+        `UPDATE order: ${this.getMed().id}  name: ${this.getMed().brandName}`
+      );
+    } else {
+      // this.medOrderService.postCartOrder(this.getMed());
+      console.log('saveCartOrder: POST: med: ', this.getData());
+      this.cartStoreService.postCartOrder(this.getMed(), 1, 5555, '');
+      console.log(
+        `ADD order: ${this.getMed().id}  name: ${this.getMed().brandName}`
+      );
+    }
+
+    this.modalService.close('medComposer');
+    console.log('addToCart from SEARCH NEW: modal closed');
+  };
+
+  handleToggle(event: Event) {
+    console.log('handleToggleEvent', event);
+    // alert('handle toggle!');
   }
 }

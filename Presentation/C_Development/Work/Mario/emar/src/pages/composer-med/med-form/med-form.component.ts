@@ -39,6 +39,7 @@ import { UNITS } from '../../../app/mockup/doseUnits';
 export class MedFormComponent implements OnInit {
   @Input() medOptions: ComposerOptions;
   @Input() initLowestMedStrengthData: boolean = true;
+  @Input() medComponentId: number;
 
   @ViewChild('duInstance', { static: true }) duInstance: NgbTypeahead;
   focus$ = new Subject<string>();
@@ -112,9 +113,17 @@ export class MedFormComponent implements OnInit {
       );
       // console.log('medOptionsThis', this);
     }
-    this.composerSchedulerService.addFormGroup('med', this.medForm);
-    this.composerSchedulerService.performFormReset.subscribe(() => {
-      if (this.composerSchedulerService.performFormReset.value) {
+    this.composerSchedulerService.addFormGroup(
+      this.medComponentId,
+      'med',
+      this.medForm
+    );
+    this.composerSchedulerService.resetComponentMedFormId.subscribe(() => {
+      if (
+        this.composerSchedulerService.resetComponentMedFormId &&
+        this.composerSchedulerService.resetComponentMedFormId.value ===
+          this.medComponentId
+      ) {
         this.resetMedForm();
       }
     });
@@ -149,6 +158,8 @@ export class MedFormComponent implements OnInit {
       }
     }
 
+    this.medForm.patchValue({ priority: this.selectedPriority });
+
     this.selectedAdministrationInstructionsData = [];
 
     if (!this.selectedFormStrengthName) {
@@ -166,10 +177,13 @@ export class MedFormComponent implements OnInit {
       this.medOptions.availableFormStrength[strengthIndex].formStrengthName ===
         this.selectedFormStrengthName
     ) {
-      '';
+      ('');
     } else {
       if (this.medForm && callReset) {
-        this.composerSchedulerService.resetForm();
+        // this.composerSchedulerService.resetForm();
+        this.composerSchedulerService.resetComponentMedFormById(
+          this.medComponentId
+        );
       }
 
       this.selectedFormStrengthOptions = this.medOptions.availableFormStrength[
@@ -226,6 +240,10 @@ export class MedFormComponent implements OnInit {
     }
 
     // console.log('changeDoseUnitThis', this);
+    // console.log(
+    // 'changeDoseUnitMedComponentsThis',
+    // this.composerSchedulerService
+    // );
   }
 
   changeSelectedDoseUnitByLookup(unitName: string): void {
