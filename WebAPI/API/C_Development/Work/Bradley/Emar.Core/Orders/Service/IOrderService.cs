@@ -8,6 +8,7 @@ namespace Emar.Core.Orders.Service
     public interface IOrderService
     {
         PagedList<PatientOrderDto> GetOrders(long? patientId, OrdersResourceParameters resourceParameters);
+        IEnumerable<PatientOrderDto> GetOrders(long patientId);
         PatientOrderDto GetOrder(long orderId, OrdersResourceParameters resourceParameters);
         IEnumerable<OrderAdministrationDto> GetAdministrations(long orderId);
         OrderAdministrationDto GetAdministration(long administrationId);

@@ -98,23 +98,69 @@ namespace Emar.Core.Orders.Model
         /// </summary>
         public bool MissedDose { get; set; }
 
-        public string AdministrationStatus
+        /**** CHECK CONSTRAINTs on the OrderAdministration in the DB ***
+         * •	IF [point_in_time] = 1
+         *      o	[stop_scheduled_datetime], [stop_input_datetime] and [stop_datetime] must all be NULL.
+         *      o	can only have one of the following (if 2 or more of them, then CHECK constraint fails)
+         *          	[missed_dose] = 1
+         *          	[on_hold ] = 1
+         *          	[administration_input_datetime] NOT NULL
+         * •	IF [point_in_time] = 0,
+         *      o	[on_hold] must = 0.
+         *      o	[missed_dose] must = 0
+         *      o	IF [stop_input_datetime] is not NULL, [administration_input_datetime] must not be NULL
+         */
+
+        public enum AdministrationStatuses
+        {
+            OnHold,
+            Missed,
+            Pending,
+            Late,
+            Given,
+            OnGoing
+        }
+
+        private AdministrationStatuses AdministrationStatusCode
         {
             get
             {
                 if (OnHold)
-                    return "OnHold";
+                    return AdministrationStatuses.OnHold;
                 if (MissedDose)
-                    return "Missed";
+                    return AdministrationStatuses.Missed;
                 if (AdministrationInputDatetime == null)
                 {
                     if (AdministrationScheduledDatetime > DateTimeOffset.Now)
-                        return "Pending";
-                    return "Late";
+                        return AdministrationStatuses.Pending;
+                    return AdministrationStatuses.Late;
                 }
                 if (PointInTime)
-                    return "Given";
-                return StopInputDatetime == null ? "OnGoing" : "Given";
+                    return AdministrationStatuses.Given;
+                return StopInputDatetime == null ? AdministrationStatuses.OnGoing : AdministrationStatuses.Given;
+            }
+        }
+
+        public string AdministrationStatus => AdministrationStatusCode.ToString();
+
+        public DateTimeOffset? TimeNeedingAction 
+        {
+            get
+            {
+                switch (AdministrationStatusCode)
+                {
+                    case AdministrationStatuses.Given:
+                    case AdministrationStatuses.Missed:
+                        return null;
+                    case AdministrationStatuses.Late:
+                    case AdministrationStatuses.Pending:
+                    case AdministrationStatuses.OnHold:
+                        return AdministrationScheduledDatetime;
+                    case AdministrationStatuses.OnGoing:
+                        return StopScheduledDatetime;
+                    default:
+                        throw new ArgumentOutOfRangeException(null, AdministrationStatusCode, "From OrderAdministrationDto.TimeNeedingAction Property.");
+                }
             }
         }
 
@@ -123,4 +169,5 @@ namespace Emar.Core.Orders.Model
         /// </summary>
         public IEnumerable<OrderEventDto> AdministrationEvents { get; set; }
     }
+
 }
