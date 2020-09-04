@@ -228,7 +228,7 @@
             <param name="propertyMappingService"></param>
             <param name="propertyCheckerService"></param>
         </member>
-        <member name="M:Emar.Api.Controllers.OrdersController.GetOrders(System.String,System.String,System.String,System.String)">
+        <member name="M:Emar.Api.Controllers.OrdersController.GetOrders(System.String,System.String)">
             <summary>
             Get a list of orders in the system.
             </summary>

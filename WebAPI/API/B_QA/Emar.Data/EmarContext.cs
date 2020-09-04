@@ -34,8 +34,13 @@ namespace Emar.Data
         public virtual DbSet<PatientHomeMedication> PatientHomeMedications { get; set; }
         public virtual DbSet<PatientIndicator> PatientIndicators { get; set; }
         public virtual DbSet<PatientOrder> PatientOrders { get; set; }
+        public virtual DbSet<Prompt> Prompts { get; set; }
+        public virtual DbSet<PromptChoice> PromptChoices { get; set; }
+        public virtual DbSet<PromptGroup> PromptGroups { get; set; }
         public virtual DbSet<Site> Sites { get; set; }
         public virtual DbSet<SiteOption> SiteOptions { get; set; }
+        public virtual DbSet<Template> Templates { get; set; }
+        public virtual DbSet<TemplatePromptGroup> TemplatePromptGroups { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserQuickListItem> UserQuickListItems { get; set; }
 
@@ -43,7 +48,7 @@ namespace Emar.Data
         public virtual DbSet<DoseRangeCheckingInfo> DoseRangeCheckingInfos { get; set; }
 
         // Testing Code
-#if  TestingInternalDatatypeProblems
+#if  TestingEfUtility
         public virtual DbSet<_ColumnProblemTest> ColumnPropertyTests { get; set; }
 #endif
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -116,6 +121,26 @@ namespace Emar.Data
             modelBuilder.Entity<DoseRangeCheckingInfo>(entity =>
             {
                 entity.HasNoKey();
+
+                entity.Property(e => e.AgeDdescription).IsUnicode(false);
+
+                entity.Property(e => e.AmountHigh).IsUnicode(false);
+
+                entity.Property(e => e.AmountLow).IsUnicode(false);
+
+                entity.Property(e => e.Condition1Description).IsUnicode(false);
+
+                entity.Property(e => e.MaxFrequency).IsUnicode(false);
+
+                entity.Property(e => e.RenalDescription).IsUnicode(false);
+
+                entity.Property(e => e.RouteDescription).IsUnicode(false);
+
+                entity.Property(e => e.TypeDescription).IsUnicode(false);
+
+                entity.Property(e => e.UnitDoseAbbreviation).IsUnicode(false);
+
+                entity.Property(e => e.WeightDescription).IsUnicode(false);
             });
 
             modelBuilder.Entity<ExternalIdEntity>(entity =>
@@ -571,6 +596,39 @@ namespace Emar.Data
                     .HasConstraintName("fk__patients__sites");
             });
 
+            modelBuilder.Entity<Prompt>(entity =>
+            {
+                entity.Property(e => e.IsActive).HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.PromptDefault).IsUnicode(false);
+
+                entity.Property(e => e.PromptType).IsUnicode(false);
+
+                entity.HasOne(d => d.PromptGroup)
+                    .WithMany(p => p.Prompts)
+                    .HasForeignKey(d => d.PromptGroupId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__prompts__prompt_groups");
+            });
+
+            modelBuilder.Entity<PromptChoice>(entity =>
+            {
+                entity.Property(e => e.ChoiceText).IsUnicode(false);
+
+                entity.HasOne(d => d.Prompt)
+                    .WithMany(p => p.PromptChoices)
+                    .HasForeignKey(d => d.PromptId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__prompt_choices__prompts");
+            });
+
+            modelBuilder.Entity<PromptGroup>(entity =>
+            {
+                entity.Property(e => e.Name).IsUnicode(false);
+
+                entity.Property(e => e.Title).IsUnicode(false);
+            });
+
             modelBuilder.Entity<Site>(entity =>
             {
                 entity.HasIndex(e => e.Name)
@@ -597,6 +655,30 @@ namespace Emar.Data
                     .HasForeignKey(d => d.SiteId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk__site_options__sites");
+            });
+
+            modelBuilder.Entity<Template>(entity =>
+            {
+                entity.Property(e => e.IsActive).HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.Title).IsUnicode(false);
+            });
+
+            modelBuilder.Entity<TemplatePromptGroup>(entity =>
+            {
+                //entity.HasKey(t => new {t.TemplateId, t.PromptGroupId});
+
+                entity.HasOne(d => d.PromptGroup)
+                    .WithMany(p => p.TemplatePromptGroups)
+                    .HasForeignKey(d => d.PromptGroupId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__template_prompt_groups__prompt_groups");
+
+                entity.HasOne(d => d.Template)
+                    .WithMany(p => p.TemplatePromptGroups)
+                    .HasForeignKey(d => d.TemplateId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__template_prompt_groups__templates");
             });
 
             modelBuilder.Entity<UserQuickListItem>(entity =>

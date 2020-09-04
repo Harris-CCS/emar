@@ -52,6 +52,18 @@ namespace Emar.Core.Orders.Model.Mappings
                 ////OrderEvents = patientOrder.OrderEvents?.Select(ev => OrderMapper.MapOrderEvent(ev)).ToList()
             };
 
+            patientOrderDto.NextActionTime = null;
+            if (patientOrderDto.OrderAdministrations != null)
+                foreach (var admin in patientOrderDto.OrderAdministrations.Where(admin =>
+                    admin.TimeNeedingAction.HasValue))
+                {
+                    if (!patientOrderDto.NextActionTime.HasValue ||
+                        patientOrderDto.NextActionTime > admin.TimeNeedingAction)
+                    {
+                        patientOrderDto.NextActionTime = admin.TimeNeedingAction;
+                    }
+                }
+
             return patientOrderDto;
         }
 

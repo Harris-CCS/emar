@@ -366,6 +366,12 @@ namespace Emar.Core.Patients.Repository
                     .FirstOrDefault();
         }
 
+        public int GetSiteIdForPatient(long patientId)
+        {
+            return _context.Patients.Where(p => p.Id == patientId)
+                .Select(p => p.SiteId).FirstOrDefault();
+        }
+
         Expression<Func<Patient, bool>> GetWherePredicate(string number, GetPatientBy getPatientBy)
         {
             switch (getPatientBy)
