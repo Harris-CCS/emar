@@ -122,5 +122,7 @@ namespace Emar.Core.Orders.Model
         /// Provider who ordered the order.
         /// </summary>
         public UserDto OrderingPhysicianUser { get; set; }
+
+        public DateTimeOffset? NextActionTime { get; set; }
     }
 }

@@ -14,5 +14,6 @@ namespace Emar.Core.Patients.Repository
         long GetInternalPatientId(short extId1, string extId2);
         Dictionary<string, string> GetExternalRootSitePatientId(string number, GetPatientBy getPatientBy, string rootType);
         Patient GetPatientByNumber(string number, GetPatientBy getPatientBy, bool includeOrders = false);
+        int GetSiteIdForPatient(long patientId);
     }
 }

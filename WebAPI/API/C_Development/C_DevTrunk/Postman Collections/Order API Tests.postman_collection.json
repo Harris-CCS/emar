@@ -744,6 +744,339 @@
 			"protocolProfileBehavior": {}
 		},
 		{
+			"name": "Order Administration Testing",
+			"item": [
+				{
+					"name": "GET patient (site / ibex)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c71333c7-4cd8-48d6-bd9b-e6b9d3017724",
+								"exec": [
+									"pm.test(\"Correct account number returned\", function() {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.accountNumber).to.eql(\"6544872\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.test(\"no orders retrieved\", function () {\r",
+									"    pm.expect(jsonData.orders.length).to.eql(0);\r",
+									"})\r",
+									"\r",
+									"pm.environment.set(\"OrderAdminPatientId\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json,text/plain"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/patients?extId1=39&extId2=20190416171800",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"patients"
+							],
+							"query": [
+								{
+									"key": "extId1",
+									"value": "39"
+								},
+								{
+									"key": "extId2",
+									"value": "20190416171800"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "GET patient (site / ibex) exists",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json,text/plain",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{URL}}/api/patients?extId1=1&extId2=20190524094230",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"api",
+										"patients"
+									],
+									"query": [
+										{
+											"key": "extId1",
+											"value": "1"
+										},
+										{
+											"key": "extId2",
+											"value": "20190524094230"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Sat, 18 Jul 2020 02:00:03 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1098"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "public,max-age=60,must-revalidate"
+								},
+								{
+									"key": "Expires",
+									"value": "Sat, 18 Jul 2020 02:01:03 GMT"
+								},
+								{
+									"key": "Last-Modified",
+									"value": "Sat, 18 Jul 2020 02:00:03 GMT"
+								},
+								{
+									"key": "ETag",
+									"value": "\"90A1AE9FE2E495931A87CC635063E98C\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept, Accept-Language, Accept-Encoding"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 7,\n    \"active\": true,\n    \"accountNumber\": \"a483578578537 \",\n    \"firstName\": \"Perseus\",\n    \"middleName\": \"\",\n    \"lastName\": \"Abingdon\",\n    \"nameSuffix\": \"\",\n    \"fullName\": \"Perseus Abingdon\",\n    \"gender\": \"M\",\n    \"dateOfBirth\": \"2012-09-01T00:00:00\",\n    \"age\": 7,\n    \"ageUnits\": \"years\",\n    \"chiefComplaint\": \"\",\n    \"heightInCm\": 116.84,\n    \"weightInKg\": 27.22,\n    \"siteId\": 28,\n    \"departmentCode\": \"ED  \",\n    \"wardCode\": \"HOLD    \",\n    \"roomBedCode\": \"            \",\n    \"urgencyColor\": \" \",\n    \"nameAlert\": false,\n    \"withdrawConsent\": false,\n    \"vsDatetime\": null,\n    \"vsBloodPressureIndicator\": \" \",\n    \"vsSystolic\": \"              \",\n    \"vsDiastolic\": \"              \",\n    \"vsPulseIndicator\": \" \",\n    \"vsPulse\": \"              \",\n    \"vsMapLevel\": \" \",\n    \"vsMap\": \"\",\n    \"vsRespiratoryIndicator\": \" \",\n    \"vsRespiratory\": \"              \",\n    \"vsTemperatureIndicator\": \" \",\n    \"vsTemperature\": \"              \",\n    \"vsEndTidalLevel\": \" \",\n    \"vsEndTidal\": \"\",\n    \"vsOxygenSaturationIndicator\": \" \",\n    \"vsOxygenSaturation\": \"\",\n    \"vsPainScaleIndicator\": \" \",\n    \"vsPainScale\": \"              \",\n    \"orders\": null,\n    \"site\": {\n        \"id\": 28,\n        \"name\": \"Pulsecheck Hospital                     \",\n        \"active\": true,\n        \"timeZoneName\": \"Central Standard Time\"\n    },\n    \"siteName\": \"Pulsecheck Hospital                     \"\n}"
+						}
+					]
+				},
+				{
+					"name": "GET orders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b62238d2-7429-40a1-9973-a65556ac2aa3",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"returns 8 orders\", function() {\r",
+									"    pm.expect(jsonData.length).to.eql(8);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"const validAdminCountAndNextAction = (order) => {\r",
+									"    var addTime = order.addTime;\r",
+									"    var expectedAdminCount;\r",
+									"    var expectedNextAction;\r",
+									"\r",
+									"    switch(addTime)\r",
+									"    {\r",
+									"        case \"17:21:12\":\r",
+									"            expectedAdminCount = 0;\r",
+									"            expectedNextAction = null;\r",
+									"            break;\r",
+									"        case \"17:22:13\":\r",
+									"            expectedAdminCount = 6;\r",
+									"            expectedNextAction = null;\r",
+									"            break;\r",
+									"        case \"17:28:52\":\r",
+									"            expectedAdminCount = 5;\r",
+									"            expectedNextAction = \"03:00\";\r",
+									"            break;\r",
+									"        case \"17:32:35\":\r",
+									"        case \"17:33:18\":\r",
+									"            expectedAdminCount = 4;\r",
+									"            expectedNextAction = \"15:00\";\r",
+									"            break;\r",
+									"        case \"17:33:44\":\r",
+									"            expectedAdminCount = 1;\r",
+									"            expectedNextAction = \"15:00\";\r",
+									"            break;\r",
+									"        case \"17:35:04\":\r",
+									"            expectedAdminCount = 1;\r",
+									"            expectedNextAction = \"17:00\";\r",
+									"            break;\r",
+									"        case \"10:06:43\":\r",
+									"            expectedAdminCount = 1;\r",
+									"            expectedNextAction = null;\r",
+									"            break;\r",
+									"        default:\r",
+									"            return true;\r",
+									"    }\r",
+									"\r",
+									"    var orderNextActionTime;\r",
+									"    if(order.nextActionTime === null)\r",
+									"        orderNextActionTime = null;\r",
+									"    else\r",
+									"        orderNextActionTime = order.nextActionTime.substring(11,16);\r",
+									"\r",
+									"    if(order.orderAdministrations.length != expectedAdminCount)\r",
+									"        return false;\r",
+									"    if(orderNextActionTime != expectedNextAction)\r",
+									"        return false;\r",
+									"    return true;\r",
+									"}\r",
+									"\r",
+									"pm.test(\"All orders have valid Admin Count and Next Action Time\", function() {\r",
+									"    pm.expect(jsonData.all(validAdminCountAndNextAction)).to.be.true;\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json,text/plain"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/orders?patientId={{OrderAdminPatientId}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "patientId",
+									"value": "{{OrderAdminPatientId}}"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "GET orders",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json,text/plain",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{URL}}/api/orders",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"api",
+										"orders"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Sat, 18 Jul 2020 01:50:05 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Content-Length",
+									"value": "4075"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "public,max-age=60,must-revalidate"
+								},
+								{
+									"key": "Expires",
+									"value": "Sat, 18 Jul 2020 01:51:05 GMT"
+								},
+								{
+									"key": "Last-Modified",
+									"value": "Sat, 18 Jul 2020 01:50:05 GMT"
+								},
+								{
+									"key": "ETag",
+									"value": "\"B5946EB46369A437D5654F532E3E3AC6\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept, Accept-Language, Accept-Encoding"
+								},
+								{
+									"key": "X-Pagination",
+									"value": "{\"totalCount\":4,\"pageSize\":10,\"currentPage\":1,\"totalPages\":1}"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"orders\": [\n        {\n            \"patientId\": 1,\n            \"createdDateTime\": \"2020-06-19T17:00:00+05:00\",\n            \"beginDateTime\": \"2020-06-19T17:30:00+05:00\",\n            \"endDateTime\": null,\n            \"priority\": 0,\n            \"prn\": false,\n            \"orderStatusCode\": 1,\n            \"orderStatus\": \"Pending\",\n            \"orderType\": \"Scheduled\",\n            \"orderingProviderId\": 313,\n            \"orderAdministrations\": [\n                {\n                    \"id\": 1,\n                    \"orderId\": 1,\n                    \"pointInTime\": false,\n                    \"onHold\": false,\n                    \"missedDose\": false,\n                    \"administrationScheduledDatetime\": \"2020-06-19T17:45:00+05:00\",\n                    \"administrationInputDatetime\": \"2020-06-19T17:44:28+05:00\",\n                    \"administeringUserId\": 123,\n                    \"administrationDatetime\": \"2020-06-19T17:44:30+05:00\",\n                    \"stopScheduledDatetime\": \"2020-06-19T17:59:23+05:00\",\n                    \"stopInputDatetime\": \"2020-06-19T18:00:00+05:00\",\n                    \"stopUserId\": 456,\n                    \"stopDatetime\": \"2020-06-19T18:00:03+05:00\",\n                    \"acknowledgeUserId\": 789,\n                    \"acknowledgeDatetime\": \"2020-06-19T17:44:35+05:00\",\n                    \"events\": [\n                        {\n                            \"id\": 1,\n                            \"orderId\": 1,\n                            \"administrationId\": 1,\n                            \"eventDateTime\": \"2020-06-19T17:02:33+05:00\",\n                            \"addUserId\": 1,\n                            \"addDatetime\": \"2020-06-19T17:02:30+05:00\",\n                            \"actionId\": 1\n                        },\n                        {\n                            \"id\": 3,\n                            \"orderId\": 1,\n                            \"administrationId\": 1,\n                            \"eventDateTime\": \"2020-06-19T17:17:23+05:00\",\n                            \"addUserId\": 1,\n                            \"addDatetime\": \"2020-06-19T17:17:17+05:00\",\n                            \"actionId\": 1\n                        }\n                    ]\n                },\n                {\n                    \"id\": 2,\n                    \"orderId\": 1,\n                    \"pointInTime\": false,\n                    \"onHold\": false,\n                    \"missedDose\": false,\n                    \"administrationScheduledDatetime\": \"2020-06-19T17:45:00+05:00\",\n                    \"administrationInputDatetime\": \"2020-06-19T17:44:28+05:00\",\n                    \"administeringUserId\": 123,\n                    \"administrationDatetime\": \"2020-06-19T17:44:30+05:00\",\n                    \"stopScheduledDatetime\": \"2020-06-19T17:59:23+05:00\",\n                    \"stopInputDatetime\": \"2020-06-19T18:00:00+05:00\",\n                    \"stopUserId\": 456,\n                    \"stopDatetime\": \"2020-06-19T18:00:03+05:00\",\n                    \"acknowledgeUserId\": 789,\n                    \"acknowledgeDatetime\": \"2020-06-19T17:44:35+05:00\",\n                    \"events\": []\n                }\n            ],\n            \"orderEvents\": [\n                {\n                    \"id\": 2,\n                    \"orderId\": 1,\n                    \"administrationId\": null,\n                    \"eventDateTime\": \"2020-06-19T17:17:17+05:00\",\n                    \"addUserId\": 1,\n                    \"addDatetime\": \"2020-06-19T17:17:16+05:00\",\n                    \"actionId\": 2\n                }\n            ],\n            \"id\": 1,\n            \"ndc\": null,\n            \"drugId\": \"MED0001\",\n            \"brandName\": \"tylenol\",\n            \"dose\": null,\n            \"doseUnit\": null,\n            \"medicationRouteId\": 3,\n            \"medicationRoute\": null,\n            \"frequencyId\": 456,\n            \"pointInTime\": true,\n            \"orderNotes\": \"This is a humongous blob of text!!! Και λίγα Ελληνικά!!!\",\n            \"links\": [\n                {\n                    \"href\": \"http://localhost:51044/api/orders/1\",\n                    \"rel\": \"self\",\n                    \"method\": \"GET\"\n                }\n            ]\n        },\n        {\n            \"patientId\": 1,\n            \"createdDateTime\": \"2020-06-19T17:10:00+05:00\",\n            \"beginDateTime\": \"2020-06-19T17:15:00+05:00\",\n            \"endDateTime\": null,\n            \"priority\": 0,\n            \"prn\": true,\n            \"orderStatusCode\": 1,\n            \"orderStatus\": \"Pending\",\n            \"orderType\": \"Prn\",\n            \"orderingProviderId\": 313,\n            \"orderAdministrations\": [],\n            \"orderEvents\": [],\n            \"id\": 2,\n            \"ndc\": null,\n            \"drugId\": \"MED0002\",\n            \"brandName\": \"tylenol\",\n            \"dose\": null,\n            \"doseUnit\": null,\n            \"medicationRouteId\": 2,\n            \"medicationRoute\": null,\n            \"frequencyId\": 444,\n            \"pointInTime\": false,\n            \"orderNotes\": \"More text!!! Κι άλλο κείμενο!!!\",\n            \"links\": [\n                {\n                    \"href\": \"http://localhost:51044/api/orders/2\",\n                    \"rel\": \"self\",\n                    \"method\": \"GET\"\n                }\n            ]\n        },\n        {\n            \"patientId\": 1,\n            \"createdDateTime\": \"2020-06-19T17:11:20+05:00\",\n            \"beginDateTime\": \"2020-06-19T17:11:30+05:00\",\n            \"endDateTime\": null,\n            \"priority\": 0,\n            \"prn\": true,\n            \"orderStatusCode\": 1,\n            \"orderStatus\": \"Pending\",\n            \"orderType\": \"Prn\",\n            \"orderingProviderId\": 342,\n            \"orderAdministrations\": [],\n            \"orderEvents\": [],\n            \"id\": 3,\n            \"ndc\": null,\n            \"drugId\": \"MED4571\",\n            \"brandName\": \"tylenol\",\n            \"dose\": null,\n            \"doseUnit\": null,\n            \"medicationRouteId\": 2,\n            \"medicationRoute\": null,\n            \"frequencyId\": 444,\n            \"pointInTime\": true,\n            \"orderNotes\": \"More more text!!! Κι άλλο άλλο κείμενο!!!\",\n            \"links\": [\n                {\n                    \"href\": \"http://localhost:51044/api/orders/3\",\n                    \"rel\": \"self\",\n                    \"method\": \"GET\"\n                }\n            ]\n        },\n        {\n            \"patientId\": 2,\n            \"createdDateTime\": \"2020-06-20T08:00:00+05:00\",\n            \"beginDateTime\": \"2020-06-20T08:00:23+05:00\",\n            \"endDateTime\": null,\n            \"priority\": 0,\n            \"prn\": false,\n            \"orderStatusCode\": 1,\n            \"orderStatus\": \"Pending\",\n            \"orderType\": \"Continuous\",\n            \"orderingProviderId\": 313,\n            \"orderAdministrations\": [],\n            \"orderEvents\": [],\n            \"id\": 4,\n            \"ndc\": null,\n            \"drugId\": \"MED9524\",\n            \"brandName\": \"aspirin\",\n            \"dose\": null,\n            \"doseUnit\": null,\n            \"medicationRouteId\": 3,\n            \"medicationRoute\": null,\n            \"frequencyId\": 852,\n            \"pointInTime\": false,\n            \"orderNotes\": \"Is this the end? Εδώ είναι το τέλος;\",\n            \"links\": [\n                {\n                    \"href\": \"http://localhost:51044/api/orders/4\",\n                    \"rel\": \"self\",\n                    \"method\": \"GET\"\n                }\n            ]\n        }\n    ],\n    \"links\": [\n        {\n            \"href\": \"http://localhost:51044/api/orders?PatientId=-1&PageSize=10&PageNumber=1\",\n            \"rel\": \"self\",\n            \"method\": \"GET\"\n        }\n    ]\n}"
+						}
+					]
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
 			"name": "GET orders",
 			"event": [
 				{
@@ -757,8 +1090,8 @@
 							"\r",
 							"var jsonData = pm.response.json();\r",
 							"\r",
-							"pm.test(\"returns 5 orders\", function() {\r",
-							"    pm.expect(jsonData.orders.length).to.eql(6);\r",
+							"pm.test(\"returns 6 orders\", function() {\r",
+							"    pm.expect(jsonData.length).to.eql(6);\r",
 							"});\r",
 							"\r",
 							"const frequencyScheduleExists = (order) => {\r",
@@ -766,7 +1099,7 @@
 							"}\r",
 							"\r",
 							"pm.test(\"any orders have frequency\", function() {\r",
-							"    pm.expect(jsonData.orders.any(frequencyScheduleExists)).to.be.true;\r",
+							"    pm.expect(jsonData.any(frequencyScheduleExists)).to.be.true;\r",
 							"});\r",
 							""
 						],
@@ -1460,7 +1793,9 @@
 							"\r",
 							"pm.test(\"Status code is 406\", function () {\r",
 							"    pm.response.to.have.status(406);\r",
-							"});"
+							"});\r",
+							"\r",
+							"pm.environment.unset(\"OrderAdminPatientId\");"
 						],
 						"type": "text/javascript"
 					}
