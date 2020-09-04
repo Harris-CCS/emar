@@ -16,6 +16,7 @@ import { ComposerSchedulerService } from 'src/services/composer-scheduler.servic
   styleUrls: ['../composer-med.component.scss'],
 })
 export class DetailFormComponent implements OnInit {
+  @Input() medComponentId: number;
   @Output() formReady = new EventEmitter<FormGroup>();
   detailForm: FormGroup;
   diagnoses: string[] = ['Hypertension', 'Diabetes', 'Back pain']; //TODO get from service
@@ -31,6 +32,7 @@ export class DetailFormComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.mandatoryIndication = this.medComponentId === 0 ? true : false;
     if (this.mandatoryIndication) {
       this.detailForm = this.fb.group(
         {
@@ -39,8 +41,9 @@ export class DetailFormComponent implements OnInit {
           // otherAntimicrobialIndication: null,
           diagnosis: new FormControl(null),
           antimicrobialIndication: new FormControl(null, [
-            Validators.required,
+            // Validators.required,
             this.indicationValidator,
+            this.indicationValidator.bind(this),
           ]),
           otherAntimicrobialIndication: new FormControl(null),
         }
@@ -52,12 +55,22 @@ export class DetailFormComponent implements OnInit {
       });
     }
     // this.formReady.emit(this.detailForm);
-    this.composerSchedulerService.addFormGroup('detail', this.detailForm);
-    this.composerSchedulerService.performFormReset.subscribe(() => {
-      if (this.composerSchedulerService.performFormReset.value) {
+    this.composerSchedulerService.addFormGroup(
+      this.medComponentId,
+      'detail',
+      this.detailForm
+    );
+
+    this.composerSchedulerService.resetComponentMedFormId.subscribe(() => {
+      if (
+        this.composerSchedulerService.resetComponentMedFormId &&
+        this.composerSchedulerService.resetComponentMedFormId.value ===
+          this.medComponentId
+      ) {
         this.resetDetailForm();
       }
     });
+    // console.log('detailMedComponentId', this.medComponentId);
   }
 
   resetDetailForm(): void {
@@ -68,6 +81,9 @@ export class DetailFormComponent implements OnInit {
   changeSelectedDiagnosis(diagnosis: string) {
     this.selectedDiagnosis = diagnosis;
     this.detailForm.controls['diagnosis'].setValue(diagnosis);
+    if (diagnosis !== undefined) {
+      this.composerSchedulerService.changeDiagnosis.next(true);
+    }
 
     // console.log('changeSelectedDiagnosisThis', this);
   }
@@ -80,6 +96,9 @@ export class DetailFormComponent implements OnInit {
     // } else {
     this.detailForm.controls['antimicrobialIndication'].setValue(indication);
     this.detailForm.controls['otherAntimicrobialIndication'].setValue('');
+    if (indication !== undefined) {
+      this.composerSchedulerService.changeIndication.next(true);
+    }
 
     // console.log('changeSelectedIndicationThis', this);
   }
@@ -105,7 +124,9 @@ export class DetailFormComponent implements OnInit {
   }
 
   indicationValidator(control: AbstractControl): { [key: string]: any } | null {
-    if (!control.value) {
+    if (!this) {
+      return null;
+    } else if (!control.value && this.medComponentId === 0) {
       return { error: '** Indication is required' };
     }
     return null;

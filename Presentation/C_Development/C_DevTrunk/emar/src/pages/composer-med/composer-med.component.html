@@ -4,27 +4,17 @@
         <form id="createOrderForm">
             <div class="form-group">
                 <div class="partialDiv">
-                    <div class="dialog-title">
-                        <span>New Order: </span>
-                        <span id="order-med-name" ngbTooltip="Dosing Information">
-                            {{getMed().brandName}}</span>
-                    </div>
                     <div class="form-part">
                         <div class="form-column">
-                            <med-form [medOptions]="options">
+                            <med-form [medOptions]="options" [medComponentId]="composerMedFormIndex">
                             </med-form>
-                            <!-- <detail-form (formReady)="formInitialized('detail', $event)"></detail-form> -->
-                            <detail-form></detail-form>
+                            <detail-form [medComponentId]="composerMedFormIndex"></detail-form>
                         </div>
                         <div class="form-column">
-                            <!-- <frequency-form (formReady)="formInitialized('frequency', $event)"
-                                [preferredFrequencies]="options.availableFormStrength[selectedFormStrength].preferredFrequencies">
-                            </frequency-form> -->
-                            <frequency-form
+                            <frequency-form [medComponentId]="composerMedFormIndex"
                                 [preferredFrequencies]="options.availableFormStrength[selectedFormStrength].preferredFrequencies">
                             </frequency-form>
-                            <!-- <calendar-form [composerMedForm]="composerMedForm"></calendar-form> -->
-                            <calendar-form></calendar-form>
+                            <calendar-form [composerMedForm]="composerMedForm"></calendar-form>
                             <date-time-modal></date-time-modal>
                         </div>
                     </div>
@@ -32,32 +22,6 @@
             </div>
         </form>
         <div class="dialog-footer">
-            <ng-template #tipInvalid>
-                <!-- <div *ngIf="composerMedForm.get('detail').invalid">Other details section</div>
-                  <div *ngIf="composerMedForm.get('frequency').invalid">Frequency section</div> -->
-                <div *ngIf="isMedComposerPropertyInvalid('detail')">Other details section</div>
-                <div *ngIf="isMedComposerPropertyInvalid('frequency')">Frequency section</div>
-            </ng-template>
-            <!-- <div class="requirement requirement-global" *ngIf="!composerMedForm.valid" [ngbTooltip]="tipInvalid">Invalid
-                Form</div>
-             <button class="button-secondary button-raised" title="Add to Quick List">&#10025;</button>&nbsp;
-            <button class="button-secondary button-raised" title="Continue">Continue</button>&nbsp;
-            <button [disabled]="!composerMedForm.valid" class="button-primary button-raised" title={{getActionText()}}
-                (click)="processCartOrder()">
-                {{getActionText()}}
-            </button> -->
-            <div class="requirement requirement-global" *ngIf="isMedComposerFormInvalid()" [ngbTooltip]="tipInvalid">
-                Invalid
-                Form</div>
-            <button class="button-secondary button-raised" title="Add to Quick List">&#10025;</button>&nbsp;
-            <button class="button-secondary button-raised" title="Continue">Continue</button>&nbsp;
-            <button class="button-primary button-raised" title='Cancel' (click)="resetMedComposerForm()">
-                Cancel
-            </button>
-            <button [disabled]="isMedComposerFormInvalid()" class="button-primary button-raised"
-                title={{getActionText()}} (click)="processCartOrder()">
-                {{getActionText()}}
-            </button>
         </div>
         <!-- <div><small><i>{{ composerMedForm.value | json }}</i></small></div> -->
     </div>
