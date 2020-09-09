@@ -10,16 +10,20 @@ import { ORDERS } from '../app/mockup/orders';
 import { MEDICATIONS } from '../app/mockup/medications';
 import { SelectorMatcher } from '@angular/compiler';
 
+import { UserStoreService } from '../services/user-store.service';
+
 @Injectable({
   providedIn: 'root'
 })
 
 export class MedOrderService {
 
+  private siteId = this.userStoreService.userSiteId
+
   /* URL to WebAPI */
   private userQuickListsUrl = 'api/userquicklists'
-  private deptPreferredListUrl = '/api/sites/12/departmentPreferredLists'
-  private groupListUrl = '/api/sites/16/groupsrememberedorderslists'
+  private deptPreferredListUrl = `/api/sites/${this.siteId}/departmentPreferredLists`
+  private groupListUrl = `/api/sites/${this.siteId}/groupsrememberedorderslists`
   private orderUrl = 'api/orders'
   //private cartUrl = 'api/carts'
 
@@ -38,8 +42,11 @@ export class MedOrderService {
 
   private searchResults: Observable<Medication[]>;
 
-  constructor( private http: HttpClient ) { 
-  //constructor() {
+  constructor( 
+    private http: HttpClient,
+    private userStoreService: UserStoreService,
+  ) { 
+  
     this.currentOrders = ORDERS.slice(0, 6);
     this.cartOrders = ORDERS.slice(5, 9);
 
@@ -47,6 +54,7 @@ export class MedOrderService {
     this.quickListOrders = MEDICATIONS;
     this.dptPreferredOrders = MEDICATIONS.slice(10, 12);
     this.groupsOrders = MEDICATIONS.slice(30, 40);
+    // console.log('MedOrderService: OOOOOOOOOOOO siteId: ', this.userStoreService.userSiteId)
   }
   
   ngOnInit(): void {
@@ -57,18 +65,19 @@ export class MedOrderService {
     // this.quickListOrders = MEDICATIONS;
     // this.dptPreferredOrders = MEDICATIONS.slice(10, 12);
     // this.groupsOrders = MEDICATIONS.slice(30, 40);
+    // console.log('MedOrderService: XXXXXXXXXXXX siteId: ', this.userStoreService.userSiteId)
   }
 
   /* Current Orders */
   //mock data
-  getCurrentOrders(): Order[] {
-    console.log('MedOrderService: getCurrentOrders: ', this.currentOrders)
-    return this.currentOrders;
-    //return [];
-  }
+  // getCurrentOrders(): Order[] {
+  //   console.log('MedOrderService: getCurrentOrders: ', this.currentOrders)
+  //   return this.currentOrders;
+  //   //return [];
+  // }
 
   //API data  
-  getCurrentOrdersAPI(patientId: number): Observable<any> {
+  getCurrentOrders(patientId: number): Observable<any> {
     const headers = new HttpHeaders({ Accept: 'application/json'})
     const patientCurOrderUrl = `${this.orderUrl}?patientId=${patientId}`
     console.log('MedOrderService: getCurrentOrdersAPI: patientCurOrderUrl: ', patientCurOrderUrl)
@@ -95,42 +104,42 @@ export class MedOrderService {
   //     .pipe(catchError(this.handleError<any>('getCartOrders')))
   // }
 
-  postCartOrder(med: Medication, listType?: string) {
-    console.log('postCartOrder: selected med:', med)
-    let ord: Order = {
-      id: med.id,
-      patientId: 2,
-      name: med.brandName,
-      startTime: '2019-06-28T14:00:00',
-      endTime: '2019-06-30T14:00:00',
-      dose: med.dose,
-      route: med.route,
-      frequency: {id: 1 , frequencyName: "ONCE"},
-      signedOn: '2019-06-28T14:11:00',
-      signedBy: 'mePost',
-    };
+  // postCartOrder(med: Medication, listType?: string) {
+  //   console.log('postCartOrder: selected med:', med)
+  //   let ord: Order = {
+  //     id: med.id,
+  //     patientId: 2,
+  //     name: med.brandName,
+  //     startTime: '2019-06-28T14:00:00',
+  //     endTime: '2019-06-30T14:00:00',
+  //     dose: med.dose,
+  //     route: med.route,
+  //     frequency: {id: 1 , frequencyName: "ONCE"},
+  //     signedOn: '2019-06-28T14:11:00',
+  //     signedBy: 'mePost',
+  //   };
 
-    console.log('postCartOrder: new added ord:', ord)
-    this.cartOrders.unshift(ord);
-  }
+  //   console.log('postCartOrder: new added ord:', ord)
+  //   this.cartOrders.unshift(ord);
+  // }
 
-  updateCartOrder(med: Medication, listType?: string) {
-    console.log('updateCartOrder: selected med:', med)
-    let ord: Order = {
-      id: 555,
-      patientId: 2,
-      name: med.brandName,
-      startTime: '2019-06-28T14:00:00',
-      endTime: '2019-06-30T14:00:00',
-      dose: med.dose,
-      route: med.route,
-      frequency: {id: 2 , frequencyName: "2TIMESDAILY"},
-      signedOn: '2019-06-28T14:11:00',
-      signedBy: 'meUpdate'
-    };
+  // updateCartOrder(med: Medication, listType?: string) {
+  //   console.log('updateCartOrder: selected med:', med)
+  //   let ord: Order = {
+  //     id: 555,
+  //     patientId: 2,
+  //     name: med.brandName,
+  //     startTime: '2019-06-28T14:00:00',
+  //     endTime: '2019-06-30T14:00:00',
+  //     dose: med.dose,
+  //     route: med.route,
+  //     frequency: {id: 2 , frequencyName: "2TIMESDAILY"},
+  //     signedOn: '2019-06-28T14:11:00',
+  //     signedBy: 'meUpdate'
+  //   };
 
-    console.log('updateCartOrder: updated ord:', ord)
-  }
+  //   console.log('updateCartOrder: updated ord:', ord)
+  // }
 
   // removeCartOrder(ord: Order) {
   //   console.log('MedOrderService: removeCartOrder: ord:', ord);
@@ -149,7 +158,9 @@ export class MedOrderService {
   // }
 
   getUserQuickLists(): Observable<any> {
-    const headers = new HttpHeaders({ Accept: 'application/json', 'X-User': '5555' })
+    const xuser = this.userStoreService.userId?.toString()
+    console.log('XXXXXXXXXXXX xuser:', xuser)
+    const headers = new HttpHeaders({ Accept: 'application/json', 'X-User': xuser })
 
     return this.http
       .get<any>(this.userQuickListsUrl, { headers })
@@ -164,7 +175,7 @@ export class MedOrderService {
     //this.selectedTab = tab
     console.log('MedOrderService: getMedListBySelectedTab: selectedTab', tab)
 
-    const headers = new HttpHeaders({ Accept: 'application/json', 'X-User': '5555' })
+    const headers = new HttpHeaders({ Accept: 'application/json', 'X-User': this.userStoreService.userId?.toString() })
     const userQuickListsByTabUrl = `${this.userQuickListsUrl}/tabs/${tab}`
     console.log('MedOrderService: getMedListBySelectedTab: userQuickListsByTabUrl: ', userQuickListsByTabUrl)
 

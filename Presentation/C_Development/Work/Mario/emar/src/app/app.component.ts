@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 
 import { User } from './interfaces/user';
-import { UserService } from '../services/user.service';
+// import { UserService } from '../services/user.service';
+import { UserStoreService} from '../services/user-store.service';
 
 import { USER } from 'src/app/mockup/user';
 import { Observable, TimeoutError } from 'rxjs';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { filter, map, mergeMap } from 'rxjs/operators';
+import { async } from 'rxjs/internal/scheduler/async';
 
 @Component({
   selector: 'app-root',
@@ -21,7 +23,8 @@ export class AppComponent implements OnInit {
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private userService: UserService
+    // private userService: UserService,
+    public userStoreService: UserStoreService,
   ) {
     // https://stackoverflow.com/questions/49632152/angular-2-how-to-access-active-route-outside-router-outlet
     this.pageTitle$ = this.router.events.pipe(
@@ -40,24 +43,26 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loginUser();
+    // this.loginUser();
   }
 
-  loginUser() {
-    // this.user = USER;
-    const userId: number = 27;
-    // Mock Data
-    // this.user = this.userService.getUser(userId);
+  // loginUser() {
+  //   // this.user = USER;
+  //   const userId: number = 27;
+  //   // Mock Data
+  //   // this.user = this.userService.getUser(userId);
 
-    // API
-    this.userService.getUser(userId).subscribe((user) => {
-      this.user = user;
-    });
+  //   // API
+  //   this.userService.getUser(userId).subscribe((user) => {
+  //     this.user = user;
+  //   });
 
-    /* this.userService.fetchUser(244).subscribe(user => {
-      console.log('USER');console.log(user)
-    });
-    */
-    return this.user;
-  }
+  //   /* this.userService.fetchUser(244).subscribe(user => {
+  //     console.log('USER');console.log(user)
+  //   });
+  //   */
+
+  //   return this.user;
+
+  // }
 }

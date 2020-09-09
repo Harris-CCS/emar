@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 
 import { MedOrderService } from '../../../../services/med-order.service';
 import { CartStoreService } from '../../../../services/cart-store.service';
-
+import { UserStoreService } from '../../../../services/user-store.service';
+import { PatientStoreService } from '../../../../services/patient-store.service';
 import { ModalService } from '../../../../services/modal.service';
 
 
@@ -19,10 +20,24 @@ export class QuickListComponent implements OnInit {
   // private tabListTabs = ['Most Used', '#', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
   private tabListTabs = []
   private currentTabContents = []
-
+  private userId = this.userStoreService.userId
+  private patientId = this.patientStoreService.patientId
   
+  constructor(
+    private medOrderService: MedOrderService,
+    private modalService: ModalService,
+    private cartStoreService: CartStoreService,
+    private userStoreService: UserStoreService,
+    private patientStoreService: PatientStoreService,
+    //private patientService: PatientService,
+  ) {}
+  
+  ngOnInit(): void {
+    this.getQuickListTabList()
+  }
+
   quickList() {
-    return 'ql';
+    return 'quicklist';
   }
 
   quickListSelectedTab() {
@@ -66,7 +81,7 @@ export class QuickListComponent implements OnInit {
     // this.medOrderService.postCartOrder(med, this.quickList());
     console.log('addToCart from quick list: med: ', med);
 
-    this.cartStoreService.postCartOrder(med, 1, 5555, this.quickList())
+    this.cartStoreService.postCartOrder(med, this.patientId, this.userId, this.quickList())
     console.log(`addToCart from quick list: ${med.id}  name: ${med.brandName}`);
     med.hasBeenAdded = true
   }
@@ -76,12 +91,6 @@ export class QuickListComponent implements OnInit {
     console.log(`editOrder from quick list: ${med.brandName}`);
   }
 
-  constructor(
-    private medOrderService: MedOrderService,
-    private modalService: ModalService,
-    private cartStoreService: CartStoreService,
-    //private patientService: PatientService,
-  ) {}
 
 
 
@@ -109,10 +118,6 @@ export class QuickListComponent implements OnInit {
     });
 
     //return this.medOrderService.getTabListTabs();
-  }
-
-  ngOnInit(): void {
-    this.getQuickListTabList()
   }
 
 }

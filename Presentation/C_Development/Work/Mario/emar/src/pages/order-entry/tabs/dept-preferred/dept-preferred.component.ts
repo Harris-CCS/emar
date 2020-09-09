@@ -3,6 +3,8 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 //import { MEDICATIONS } from '../../../../app/mockup/medications';
 import { MedOrderService } from '../../../../services/med-order.service';
 import { CartStoreService } from '../../../../services/cart-store.service';
+import { UserStoreService } from '../../../../services/user-store.service';
+import { PatientStoreService } from '../../../../services/patient-store.service';
 import { ModalService } from '../../../../services/modal.service';
 
 @Component({
@@ -14,11 +16,15 @@ export class DeptPreferredComponent implements OnInit {
 
   @Output() isTabValid: EventEmitter<boolean> = new EventEmitter()
   private listContents = []
+  private userId = this.userStoreService.userId
+  private patientId = this.patientStoreService.patientId
 
   constructor(
     private medOrderService: MedOrderService,
     private modalService: ModalService,
     private cartStoreService: CartStoreService,
+    private userStoreService: UserStoreService,
+    private patientStoreService: PatientStoreService,
   ) { }
 
   ngOnInit(): void {
@@ -26,7 +32,7 @@ export class DeptPreferredComponent implements OnInit {
   }
 
   deptPreferred() {
-    return 'dp';
+    return 'deptpreferredlist';
   }
 
   deptPreferredOrders() {
@@ -57,7 +63,7 @@ export class DeptPreferredComponent implements OnInit {
     console.log('addToCart from dept preferred list: med: ', med);
 
     // this.medOrderService.postCartOrder(med, this.deptPreferred());
-    this.cartStoreService.postCartOrder(med, 1, 5555, this.deptPreferred())
+    this.cartStoreService.postCartOrder(med, this.patientId, this.userId, this.deptPreferred())
     console.log(`addToCart from dept preferred list: ${med.id}  name: ${med.brandName}`);
     med.hasBeenAdded = true
   }

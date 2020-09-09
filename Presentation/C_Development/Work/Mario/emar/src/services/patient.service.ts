@@ -48,6 +48,18 @@ export class PatientService {
       .pipe(catchError(this.handleError<Patient>('getPatientAPI')));
   }
 
+  /* Initial - Get patient JSON by extId1 (site id) and extId2 (patient id - PCED ibex) */
+  getPatientByExtIds(extId1: string, extId2: string): Observable<Patient> {
+    const headers = new HttpHeaders({ Accept: 'application/json' });
+    const url = `${this.patientUrl}?extId1=${extId1}&extId2=${extId2}`;
+
+    console.log('patient.service: getPatientAPIByExtIds extId1:', extId1, ' extId2: ', extId2);
+    console.log('patient.service: getPatientAPIByExtIds url:', url);
+    return this.http
+      .get<Patient>(url, { headers })
+      .pipe(catchError(this.handleError<Patient>('getPatientAPIByExtIds')));
+  }
+
   getPatientOrders(patientId: number): Order[] {
     const orders = ORDERS.filter((o) => {
       return o.patientId === patientId;

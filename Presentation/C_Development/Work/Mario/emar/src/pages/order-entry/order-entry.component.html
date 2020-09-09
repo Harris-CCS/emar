@@ -1,6 +1,7 @@
 <div class="page-content patient-details" [ngStyle]="{'overflow':'hidden', 'overflow-y':'hidden'}">
     <div>
-        <header-patient [patient]="selectedPatient()"></header-patient>
+        <!-- <header-patient [patient]="selectedPatient()"></header-patient> -->
+        <header-patient [patient]="patientStoreService.patient$ | async"></header-patient>
     </div>
     <!--
         * Need the 'position': relative so that the modal container will only encompass
@@ -38,14 +39,17 @@
                     </h3>
                     <div class="orders-current-wrapper">
                         <ul class="list-group">
-                            <li class="list-group-item" *ngFor="let ord of currentOrders">
+                            <!-- <li class="list-group-item" *ngFor="let ord of currentOrders"> -->
+                            <li class="list-group-item" *ngFor="let ord of patientMedOrderStoreService.patientMedOrder$ | async">
                                 <span [ngClass]="{'allergy-dot': ord.allergies?.length, 'placeholder-dot': ord.allergies?.length === 0 || !ord.allergies}" placement="right" ngbTooltip="Allergy Reaction placeholder"></span>
                                 <span [ngClass]="{'drug-dot' : ord.drugs?.length, 'placeholder-dot': ord.drugs?.length === 0 || !ord.drugs}" placement="right" ngbTooltip="Medication Interaction placeholder"></span>
+                                <span class="status">{{ord.orderStatus}}</span>
                                 <span>
-                                    {{ord.displayName}} {{ord.displayRoute | uppercase}} {{ord.displayDose}} {{ord.displayDoseUnit}} {{ord.displayFrequency}}
+                                    {{ord.brandName}} {{ord.medicationRoute?.routeName | uppercase}} {{ord.dose}} {{ord.doseUnit?.unitName}} {{ord.frequencySchedule?.scheduleName}} 
+                                    <!-- {{ord.displayName}} {{ord.displayRoute | uppercase}} {{ord.displayDose}} {{ord.displayDoseUnit}} {{ord.displayFrequency}} -->
                                 </span>
                                 <span 
-                                    class="details">{{ord.displaySignedOn | date: "HH:mm"}} <span class="minor">on</span> {{ord.displaySignedOn | date: "MM/dd/yy"}}, <span class="minor">Ordering physician:</span> {{ord.displaySignedBy}}
+                                    class="details">{{ord.addTime}} <span class="minor">on</span> {{ord.addDate | date: "MM/dd/yy"}}, <span class="minor">Ordering physician:</span> {{ord.orderingPhysicianUser?.displayName}}
                                 </span>
                             </li>
                         </ul>
