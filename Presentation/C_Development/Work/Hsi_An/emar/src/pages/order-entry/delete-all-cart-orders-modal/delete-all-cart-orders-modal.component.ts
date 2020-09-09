@@ -3,6 +3,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ModalService } from 'src/services/modal.service';
 import { CartService } from 'src/services/cart.service';
 import { CartStoreService } from 'src/services/cart-store.service';
+import { UserStoreService } from 'src/services/user-store.service';
 
 @Component({
   selector: 'app-delete-all-cart-orders-modal',
@@ -21,6 +22,7 @@ export class DeleteAllCartOrdersModalComponent implements OnInit {
     private modalService: ModalService,
     private cartService: CartService,
     private cartStoreService: CartStoreService,
+    private userStoreService: UserStoreService,
   ) {}
 
   ngOnInit(): void {
@@ -46,7 +48,7 @@ export class DeleteAllCartOrdersModalComponent implements OnInit {
     this.isProcessing = true;
 
     setTimeout(() => {
-        this.cartStoreService.deleteAllCartOrders(this.getPatient(), 5555)
+        this.cartStoreService.deleteAllCartOrders(this.getPatient(), this.userStoreService.userId)
         //API success
         this.isDone = true;
         setTimeout( () => this.modalService.close('deleteAllCartOrder'), 2000)

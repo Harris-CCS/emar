@@ -13,12 +13,15 @@ import { MEDICATIONS } from '../../app/mockup/medications';
 
 //import { ORDERS } from '../../app/mockup/orders';
 import { MedOrderService } from '../../services/med-order.service';
-import { PatientService } from 'src/services/patient.service';
+// import { PatientService } from 'src/services/patient.service';
 import { ModalService } from '../../services/modal.service';
 
 
 import { CartService } from '../../services/cart.service';
 import { CartStoreService } from '../../services/cart-store.service';
+import { UserStoreService } from '../../services/user-store.service';
+import { PatientStoreService } from '../../services/patient-store.service';
+import { PatientMedOrderStoreService} from '../../services/patient-med-order-store.service';
 
 @Component({
   selector: 'order-entry',
@@ -30,7 +33,7 @@ export class OrderEntryComponent implements OnInit {
   patient: Patient;
   orders: Order[];
   //currentOrders = ORDERS;
-  currentOrders: Order[];
+  // currentOrders: Order[];
   cartOrders: Order[];
   //cartOrders: Array<Object>;
 
@@ -46,21 +49,24 @@ export class OrderEntryComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private patientService: PatientService,
+    // private patientService: PatientService,
     private medOrderService: MedOrderService,
-
+    private userStoreService: UserStoreService,
+    public patientStoreService: PatientStoreService,
     public cartStoreService: CartStoreService,
+    public patientMedOrderStoreService: PatientMedOrderStoreService,
     private cartService: CartService,
     private modalService: ModalService
   ) {}
 
   ngOnInit(): void {
     //const patientId:number = +this.route.snapshot.params['id'];
-    this.patientId = +this.route.snapshot.params['id'];
+    // this.patientId = +this.route.snapshot.params['id'];
+    this.patientId = this.patientStoreService.patientId
     console.log('OrderEntry: patientId: ', this.patientId);
-    this.patient = this.patientService.getPatient(this.patientId);
+    // this.patient = this.patientService.getPatient(this.patientId);
     //this.orders = this.patientService.getPatientOrders(this.patientId);
-    this.getCurrentListOrders()
+    // this.getCurrentListOrders()
     this.getCartListOrders()
 
     // this.patientService
@@ -109,24 +115,24 @@ export class OrderEntryComponent implements OnInit {
     }
   }
 
-  getCurrentListOrders() {
-    //return (this.currentOrders = this.medOrderService.getCurrentOrders());
-    this.medOrderService.getCurrentOrdersAPI(this.patientId).subscribe((o) => {
-      console.log('getCurrentListOrders: ', o.orders)
-      this.currentOrders = o.orders.map( x => ({
-        ...x,
-        displayName: x.brandName,
-        displayRoute: x.medicationRoute ? x.medicationRoute.routeName : '',
-        displayDose: x.dose ? x.dose : '',
-        displayDoseUnit: x.doseUnit ? x.doseUnit.printName : '',
-        displayFrequency: x.frequencyId,
-        displaySignedOn: x.addDatetime,
-        displaySignedBy: x.orderingPhysicianUser.displayName || '',
-        allergies: [],
-        drugs: []
-      }))
-    })
-  }
+  // getCurrentListOrders() {
+  //   //return (this.currentOrders = this.medOrderService.getCurrentOrders());
+  //   this.medOrderService.getCurrentOrders(this.patientId).subscribe((o) => {
+  //     console.log('getCurrentListOrders: ', o.orders)
+  //     this.currentOrders = o.orders.map( x => ({
+  //       ...x,
+  //       displayName: x.brandName,
+  //       displayRoute: x.medicationRoute ? x.medicationRoute.routeName : '',
+  //       displayDose: x.dose ? x.dose : '',
+  //       displayDoseUnit: x.doseUnit ? x.doseUnit.printName : '',
+  //       displayFrequency: x.frequencyId,
+  //       displaySignedOn: x.addDatetime,
+  //       displaySignedBy: x.orderingPhysicianUser.displayName || '',
+  //       allergies: [],
+  //       drugs: []
+  //     }))
+  //   })
+  // }
 
   cartListOrders() {
     return this.cartOrders
@@ -135,7 +141,7 @@ export class OrderEntryComponent implements OnInit {
   getCartListOrders() {
     //return ORDERS.slice(2, 5);
     //return (this.cartOrders = this.medOrderService.getCartOrders());
-    this.cartService.getCartOrders(this.patientId, 5555).subscribe((o) => {
+    this.cartService.getCartOrders(this.patientId, this.userStoreService.userId).subscribe((o) => {
       if (o) {
         console.log('OrderEntry: getCartListOrders: ', o.orders)
         this.cartOrders = o.orders.map((x) => ({

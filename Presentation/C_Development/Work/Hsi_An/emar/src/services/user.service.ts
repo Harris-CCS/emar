@@ -38,9 +38,18 @@ export class UserService {
   getUser(userId: number): Observable<User> {
     const headers = new HttpHeaders({ Accept: 'application/json' });
     const url = `${this.userUrl}/${userId}`;
-    console.log('userId', userId);
+    console.log('userId:', userId);
     return this.http
       .get<User>(url, { headers })
       .pipe(catchError(this.handleError<User>('getUser')));
+  }
+
+  getUserByExtId(extId: number): Observable<User> {
+    const headers = new HttpHeaders({ Accept: 'application/json' });
+    const url = `${this.userUrl}?extId=${extId}`;
+    console.log('extId:', extId);
+    return this.http
+      .get<User>(url, { headers })
+      .pipe(catchError(this.handleError<User>('getUserByExtId')));
   }
 }
