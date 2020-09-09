@@ -12,7 +12,10 @@ import { COMPOSER_OPTIONS } from '../../app/mockup/composerOptions';
 import { ComposerOptions } from '../../app/interfaces/composerOptions';
 import { ComposerSchedulerService } from '../../services/composer-scheduler.service';
 
+import { UserStoreService } from '../../services/user-store.service';
+import { PatientStoreService } from '../../services/patient-store.service';
 import { CartStoreService } from '../../services/cart-store.service';
+
 
 @Component({
   selector: 'composer-med',
@@ -32,13 +35,18 @@ export class ComposerMedComponent implements OnInit {
   // performFormReset: BehaviorSubject<boolean> = new BehaviorSubject(false);
   title: string = '';
   isMedComponentInvalid: boolean = true;
+  private userId = this.userStoreService.userId
+  private patientId = this.patientStoreService.patientId
 
   constructor(
     private fb: FormBuilder,
     private modalService: ModalService,
     private medOrderService: MedOrderService,
     private cartStoreService: CartStoreService,
-    private composerSchedulerService: ComposerSchedulerService
+    private userStoreService: UserStoreService,
+    private patientStoreService: PatientStoreService,
+    private composerSchedulerService: ComposerSchedulerService,
+
   ) {}
 
   ngOnInit(): void {
@@ -132,14 +140,14 @@ export class ComposerMedComponent implements OnInit {
     if (this.getData().action === 'update') {
       console.log('saveCartOrder: PUT: med: ', this.getData());
       // this.medOrderService.updateCartOrder(this.getMed().med);
-      this.cartStoreService.updateCartOrder(this.getMed(), 1, 5555, '');
+      this.cartStoreService.updateCartOrder(this.getMed(), this.patientId, this.userId, '')
       console.log(
         `UPDATE order: ${this.getMed().id}  name: ${this.getMed().brandName}`
       );
     } else {
       // this.medOrderService.postCartOrder(this.getMed());
-      console.log('saveCartOrder: POST: med: ', this.getData());
-      this.cartStoreService.postCartOrder(this.getMed(), 1, 5555, '');
+      console.log('saveCartOrder: POST: med: ', this.getData())
+      this.cartStoreService.postCartOrder(this.getMed(), this.patientId, this.userId, '')
       console.log(
         `ADD order: ${this.getMed().id}  name: ${this.getMed().brandName}`
       );
