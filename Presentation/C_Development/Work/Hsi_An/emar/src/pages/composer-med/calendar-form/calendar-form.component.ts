@@ -79,7 +79,7 @@ export class CalendarFormComponent implements OnInit {
   events: AdministrationEvent[]; // TODO API
   selectedEvent: AdministrationEvent = null;
   setEvent = new EventEmitter<string>();
-  // @Input() composerMedForm: FormGroup;
+  @Input() composerMedForm: FormGroup;
 
   constructor(
     private modalService: ModalService,
@@ -111,7 +111,7 @@ export class CalendarFormComponent implements OnInit {
     this.weeks = this.group(this.events);
 
     this.setEvent.subscribe((dateTime: string) => {
-      console.log(dateTime, this.selectedEvent);
+      // console.log(dateTime, this.selectedEvent);
       if (
         dateTime !==
         this.selectedEvent.eventDate + ' ' + this.selectedEvent.eventTime
@@ -182,13 +182,13 @@ export class CalendarFormComponent implements OnInit {
         });
       }
     }
-    console.log(weeks);
+    // console.log(weeks);
     return weeks;
   }
 
   // transform MM/DD/YYYY HH:MM to YYYY-MM-DD HH:MM
   local2ISO(dateTime: string) {
-    console.log('DDDDDDDD', dateTime);
+    // console.log('DDDDDDDD', dateTime);
     let regexp = /(..)\/(..)\/(....) (..):(..)/;
     let match = regexp.exec(dateTime);
     return `${match[3]}-${match[1]}-${match[2]} ${match[4]}:${match[5]}`;
@@ -210,9 +210,8 @@ export class CalendarFormComponent implements OnInit {
         minDateTime = eltPrev.eventDate + ' ' + eltPrev.eventTime;
       } else {
         // minDateTime = this.composerMedForm.controls['frequency'].value.startTime;
-        minDateTime = this.composerSchedulerService.composerMedForm.controls[
-          'frequency'
-        ].value.startTime;
+        minDateTime = this.composerMedForm.controls['frequency'].value
+          .startTime;
       }
       if (event.idNext >= 0) {
         const eltNext: AdministrationEvent = this.events.find(
@@ -221,9 +220,7 @@ export class CalendarFormComponent implements OnInit {
         maxDateTime = eltNext.eventDate + ' ' + eltNext.eventTime;
       } else {
         // maxDateTime = this.composerMedForm.controls['frequency'].value.endTime;
-        maxDateTime = this.composerSchedulerService.composerMedForm.controls[
-          'frequency'
-        ].value.endTime;
+        maxDateTime = this.composerMedForm.controls['frequency'].value.endTime;
       }
 
       this.selectedEvent = elt;

@@ -59,16 +59,6 @@
                 (click)="click$.next($any($event).target.value)" #duInstance="ngbTypeahead" [ngbPopover]="reqDoseUnit"
                 [openDelay]="1000" placement="bottom-left" triggers="mouseenter:mouseleave"
                 [disablePopover]="medForm.get('doseUnitName').valid">
-
-              <!-- <div class="requirement" *ngIf="medForm.get('dose').invalid || medForm.get('doseUnitName').invalid">
-                &nbsp; &nbsp; Mandatory Dose/Unit
-              </div> -->
-              <!-- <div class="requirement" *ngIf="medForm.get('dose').invalid">
-                {{medForm.getError('error','dose')}}
-              </div>
-              <div class="requirement" *ngIf="medForm.get('doseUnitName').invalid">
-                {{medForm.getError('error','doseUnitName')}}
-              </div> -->
             </div>
             <div class="table-cell center">
               <button class="btn btn-outline-warning btn-sm preferred happy-button"
@@ -106,12 +96,6 @@
                 (click)="clickRoute$.next($any($event).target.value)" #routeInstance="ngbTypeahead"
                 [ngbPopover]="reqRoute" [openDelay]="1000" placement="bottom-left" triggers="mouseenter:mouseleave"
                 [disablePopover]="medForm.get('routeName').valid">
-              <!-- <div class="requirement" *ngIf="medForm.get('routeName').invalid">
-                &nbsp; &nbsp; Mandatory Route
-              </div> -->
-              <!-- <div class="requirement" *ngIf="medForm.get('routeName').invalid">
-                {{medForm.getError('error','routeName')}}
-              </div> -->
             </div>
             <div class="table-cell center">
               <button class="btn btn-outline-warning btn-sm preferred happy-button"

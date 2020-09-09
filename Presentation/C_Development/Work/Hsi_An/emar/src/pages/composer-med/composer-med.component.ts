@@ -5,7 +5,7 @@ import {
   Validators,
   FormBuilder,
 } from '@angular/forms';
-
+import { Observable, of, Subject, BehaviorSubject } from 'rxjs';
 import { ModalService } from '../../services/modal.service';
 import { MedOrderService } from '../../services/med-order.service';
 import { COMPOSER_OPTIONS } from '../../app/mockup/composerOptions';
@@ -24,8 +24,14 @@ import { CartStoreService } from '../../services/cart-store.service';
 export class ComposerMedComponent implements OnInit {
   @Input() resetForm: boolean;
   // composerMedForm: FormGroup;
+  @Input() composerMedForm: FormGroup;
+  @Input() composerMedFormIndex: number;
   options: ComposerOptions = COMPOSER_OPTIONS[0]; // TODO API call
   selectedFormStrength = 0;
+  isOpen: boolean = false;
+  // performFormReset: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  title: string = '';
+  isMedComponentInvalid: boolean = true;
 
   constructor(
     private fb: FormBuilder,
@@ -36,23 +42,43 @@ export class ComposerMedComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // this.composerMedForm = this.fb.group({
-    //   orderNotes: null, // this is here for test
-    // });
+    if (
+      this.composerMedFormIndex === undefined ||
+      this.composerMedFormIndex === null
+    ) {
+      // console.log('onInitMedComponentCreated', this.composerMedForm);
+      this.composerMedForm = this.fb.group({});
+      this.composerMedFormIndex = this.composerSchedulerService.registerComposerMedComponent(
+        this
+      );
+      // console.log('onInitMedComponent', this.composerMedForm);
+      // console.log('onInitMedComposerScheduler', this.composerSchedulerService);
+    }
+    this.composerSchedulerService.resetComponentMedFormId.subscribe(() => {
+      if (
+        this.composerSchedulerService.resetComponentMedFormId &&
+        this.composerSchedulerService.resetComponentMedFormId.value ===
+          this.composerMedFormIndex
+      ) {
+        this.composerMedForm.reset();
+      }
+    });
   }
 
-  // formInitialized(name: string, form: FormGroup) {
-  //   this.composerMedForm.setControl(name, form);
-  // }
-
   isMedComposerFormInvalid(): boolean {
-    return this.composerSchedulerService.composerMedForm.invalid ? true : false;
+    const isInvalid: boolean = this.composerMedForm.invalid ? true : false;
+    // console.log('isMedComponentValid', isInvalid, this.isMedComponentInvalid);
+    if (this.isMedComponentInvalid !== isInvalid) {
+      this.isMedComponentInvalid = isInvalid;
+      this.composerSchedulerService.shouldCheckOverallMedOrderValidity.next(
+        true
+      );
+    }
+    return isInvalid;
   }
 
   isMedComposerPropertyInvalid(property: string): boolean {
-    return this.composerSchedulerService.composerMedForm.get(property).invalid
-      ? true
-      : false;
+    return this.composerMedForm.get(property).invalid ? true : false;
   }
 
   resetMedComposerForm() {
@@ -73,52 +99,55 @@ export class ComposerMedComponent implements OnInit {
   }
 
   processCartOrder = () => {
-    if (`${this.getMed().allergies}`) {
-      this.modalService.open(
-        'interaction-modal',
-        { order: this.getMed(), type: 'allergies' },
-        'Allergy Reaction'
-      );
-    } else {
-      this.medOrderService.allergiesInteractionChanged.next({});
-    }
-    this.medOrderService.allergiesInteractionChanged.subscribe((reasons) => {
-      console.log('COMPOSER-MED subscribe allergies', reasons);
-      if (`${this.getMed().drugs}`) {
-        this.modalService.open(
-          'interaction-modal',
-          { order: this.getMed(), type: 'drugs' },
-          'Medication Interaction'
-        );
-      } else {
-        this.medOrderService.drugsInteractionChanged.next({});
-      }
-      this.medOrderService.drugsInteractionChanged.subscribe((reasons) => {
-        console.log('COMPOSER-MED subscribe drugs', reasons);
-        this.saveCartOrder();
-      });
-    });
-    // this.saveCartOrder()
+    // if (`${this.getMed().allergies}`) {
+    //   this.modalService.open(
+    //     'interaction-modal',
+    //     { order: this.getMed(), type: 'allergies' },
+    //     'Allergy Reaction'
+    //   );
+    // } else {
+    //   this.medOrderService.allergiesInteractionChanged.next({});
+    // }
+    // this.medOrderService.allergiesInteractionChanged.subscribe((reasons) => {
+    //   console.log('COMPOSER-MED subscribe allergies', reasons);
+    //   if (`${this.getMed().drugs}`) {
+    //     this.modalService.open(
+    //       'interaction-modal',
+    //       { order: this.getMed(), type: 'drugs' },
+    //       'Medication Interaction'
+    //     );
+    //   } else {
+    //     this.medOrderService.drugsInteractionChanged.next({});
+    //   }
+    //   this.medOrderService.drugsInteractionChanged.subscribe((reasons) => {
+    //     console.log('COMPOSER-MED subscribe drugs', reasons);
+    //     this.saveCartOrder();
+    //   });
+    // });
+    this.saveCartOrder();
   };
 
-  saveCartOrder = () => {
+  // saveCartOrder(closeModal: boolean = false) {
+  saveCartOrder = (closeModal: boolean = false) => {
     if (this.getData().action === 'update') {
-      console.log('saveCartOrder: PUT: med: ', this.getData())
+      console.log('saveCartOrder: PUT: med: ', this.getData());
       // this.medOrderService.updateCartOrder(this.getMed().med);
-      this.cartStoreService.updateCartOrder(this.getMed(), 1, 5555, '')
+      this.cartStoreService.updateCartOrder(this.getMed(), 1, 5555, '');
       console.log(
         `UPDATE order: ${this.getMed().id}  name: ${this.getMed().brandName}`
       );
     } else {
       // this.medOrderService.postCartOrder(this.getMed());
-      console.log('saveCartOrder: POST: med: ', this.getData())
-      this.cartStoreService.postCartOrder(this.getMed(), 1, 5555, '')
+      console.log('saveCartOrder: POST: med: ', this.getData());
+      this.cartStoreService.postCartOrder(this.getMed(), 1, 5555, '');
       console.log(
         `ADD order: ${this.getMed().id}  name: ${this.getMed().brandName}`
       );
     }
 
-    this.modalService.close('medComposer');
+    if (closeModal) {
+      this.modalService.close('medComposer');
+    }
     console.log('addToCart from SEARCH NEW: modal closed');
   };
 }
