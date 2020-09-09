@@ -4,9 +4,9 @@ import { Order } from 'src/app/interfaces/order';
 // import { MedOrderService } from '../../../../services/med-order.service';
 
 import { ModalService } from 'src/services/modal.service';
-
-import { CartStoreService } from '../../../../services/cart-store.service';
 import { CartService } from '../../../../services/cart.service';
+import { CartStoreService } from '../../../../services/cart-store.service';
+import { UserStoreService } from '../../../../services/user-store.service';
 
 @Component({
   selector: 'order-cart-list',
@@ -25,12 +25,23 @@ export class OrderCartListComponent implements OnInit {
   //   this.displayCartItems = data || [];
   // }
 
+  constructor(
+    // private medOrdService: MedOrderService,
+    private modalService: ModalService,
+    private cartService: CartService,
+    public cartStoreService: CartStoreService,
+    private userStoreService: UserStoreService,
+  ) { }
+
+  ngOnInit(): void {
+  }
+
   delete(cartOrderId: number): void {
     // this.cartService.deleteCartOrder(cartOrderId, 6473).subscribe()
     // this.displayCartItems = this.displayCartItems.filter(item => item.id !== cartOrderId)
-    this.cartStoreService.deleteCartOrder(cartOrderId, 5555)
+    this.cartStoreService.deleteCartOrder(cartOrderId, this.userStoreService.userId)
 
-    console.log('deleting...cartOrderId=', cartOrderId, ' userId=5555')
+    console.log('deleting...cartOrderId=', cartOrderId, ' userId= ', this.userStoreService.userId)
   }
 
   deleteAll(patientId: number): void {
@@ -42,8 +53,8 @@ export class OrderCartListComponent implements OnInit {
 
   postAll(patientId: number): void {
     // this.cartService.postAllCartOrders(patientId, 6473).subscribe()
-    this.cartStoreService.postAllCartOrders(patientId, 5555)
-    console.log('posting... patientId=', patientId, ' userId=5555')
+    this.cartStoreService.postAllCartOrders(patientId, this.userStoreService.userId)
+    console.log('posting... patientId=', patientId, ' userId= ', this.userStoreService.userId)
   }
 
   showDeleteAllCartOrderModal = (patientId: number) => {
@@ -62,15 +73,4 @@ export class OrderCartListComponent implements OnInit {
   editCartItem = (item: Order) => {
     this.modalService.open('medComposer', {action: 'update', med: item});
   }
-
-  constructor(
-    // private medOrdService: MedOrderService,
-    private modalService: ModalService,
-    public cartStoreService: CartStoreService,
-    private cartService: CartService,
-  ) { }
-
-  ngOnInit(): void {
-  }
-
 }

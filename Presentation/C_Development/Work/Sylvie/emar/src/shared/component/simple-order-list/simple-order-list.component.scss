@@ -159,7 +159,7 @@ pre b{
     .control {
         &::after {
             content: "+";
-            color: #0077ab;
+            color: darken($blue, 10%);// #0077ab;
             border-radius: 0.25rem;
             font-weight: 800;
             padding: 0.2rem;
@@ -208,8 +208,8 @@ pre b{
 
     & input[type="radio"]:checked + label {
         color: #fff;
-        background-color: $e-blue-yonder;// #007bff;
-        border-color: $e-blue-yonder; // #007bff;
+        background-color: $primary-tab;  //$e-blue-yonder;// #007bff;
+        border-color: $primary-tab; //$e-blue-yonder; // #007bff;
     }
 
     & label {
@@ -220,7 +220,7 @@ pre b{
         text-align: center;
         margin-left: -1px;
         line-height: 1.25;
-        color: $e-blue-yonder; // #007bff;
+        color: darken($blue, 10%); //$e-blue-yonder; // #007bff;
         background-color: #fff;
         border: 1px solid #dee2e6;
         font-weight: 700;
@@ -247,7 +247,7 @@ pre b{
 
 
 .accordion {
-    background-color: rgba(50,146,187, 0.95);
+    background-color: $primary-tab;// rgba(50,146,187, 0.95);
     color: #fff;
     cursor: pointer;
     padding: 0.6rem;
@@ -263,7 +263,7 @@ pre b{
         // color: #0056b3;
         // text-decoration: none;
         // background-color: #e9ecef;
-        border-color: $e-blue-yonder;
+        border-color: $blue-L-10;
 
         // box-shadow: 10px 6px 12px 6px rgba(204, 227, 238, 0.54);
     }

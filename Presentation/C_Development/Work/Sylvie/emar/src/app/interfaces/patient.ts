@@ -1,3 +1,6 @@
+import { Allergy } from './allergy';
+import { HomeMedication } from './home-medication';
+
 export interface Patient {
   id: number;
   active: boolean; // not in patients table, but in API returned data
@@ -49,6 +52,8 @@ export interface Patient {
   customIndicators?: Array<IIndicators>;
   allergies?: Array<IAllergies>;
   homeMeds?: Array<IHomeMeds>;
+  patientAllergies?: Array<Allergy>;
+  homeMedications?: Array<HomeMedication>;
 }
 
 interface IIndicators {

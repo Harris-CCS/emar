@@ -2,8 +2,11 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { shareReplay, map } from 'rxjs/operators';
 
+import { UserStoreService } from '../services/user-store.service';
+import { PatientStoreService } from '../services/patient-store.service';
+import { PatientMedOrderStoreService } from '../services/patient-med-order-store.service';
 import { CartService } from './cart.service';
-import { OrderCartListComponent } from 'src/pages/order-entry/order-cart/order-cart-list/order-cart-list.component';
+// import { OrderCartListComponent } from 'src/pages/order-entry/order-cart/order-cart-list/order-cart-list.component';
 
 import { CartOrder } from '../app/interfaces/cart-order';
 import { uuid } from '../shared/functions/uuid';
@@ -17,10 +20,18 @@ interface Order {
 })
 export class CartStoreService {
 
-  constructor( private cartService: CartService ) {
-    this.fetchAll()
+  constructor( 
+    private cartService: CartService,
+    private userStoreService: UserStoreService,
+    private patientStoreService: PatientStoreService,
+    private patientMedOrderStoreService: PatientMedOrderStoreService,
+  ) {
+    // this.fetchAll()
+    this.fetchPatientCartOrders(this.patientId, this.userId)
   }
 
+  private userId = this.userStoreService.userId
+  private patientId = this.patientStoreService.patientId
   private readonly _cart = new BehaviorSubject<any>({});
   readonly cart$ = this._cart.asObservable();
   readonly cartLinks$ = this.cart$.pipe(
@@ -184,6 +195,10 @@ export class CartStoreService {
     try {
       await this.cartService.postAllCartOrders(patientId, userId).toPromise()
       console.log('CartStore: POSTED ALL')
+
+      //update patient current order
+      await this.patientMedOrderStoreService.fetchPatientMedOrder(patientId)
+      console.log('CartStore: patientMedOrderStoreService: fetchPatientMedOrder')
     } catch (e) {
       console.log('CartStore: POST ALL ERROR: ', e)
       this.cartOrders = orders
@@ -295,19 +310,27 @@ export class CartStoreService {
     }
   }
 
-  async fetchAll() {
-    this.cart = await this.cartService.getCartOrders(1, 5555).toPromise();
-    // const response = await this.cartService.getCartOrders(1, 6473).toPromise();
-    // this.cart = response
-
-    // const xPagination = JSON.parse(response.headers.get('X-Pagination'))
-    // this.totalCount = xPagination.totalCount
-
-    console.log('CartStore - fetch all: cart: ', this.cart)
-    // console.log('CartStore - fetch all: cart XXXXXX X-Pagination: ', response.headers.get('X-Pagination'))
-    // console.log('CartStore - fetch all: cart XXXXXX X-Pagination obj: ', xPagination)
-
-    // console.log('CartStore - fetch all: status: ', response.status)
-    // console.log('CartStore - fetch all: body: ', response.body)
+  async fetchPatientCartOrders(patientId, userId) {
+    console.log('CartStore - fetchPatientCartOrder: userId: ', this.userStoreService.userId)
+    this.cart = await this.cartService.getCartOrders(patientId, userId).toPromise();
+    console.log('CartStore - fetchPatientCartOrder: cart: ', this.cart)
   }
+
+  // async fetchAll() {
+  //   console.log('CartStore - fetch all: userId: ', this.userStoreService.userId)
+  //   // console.log('CartStore - fetch all: userSiteId: ', this.userStoreService.userSiteId)
+  //   this.cart = await this.cartService.getCartOrders(1, this.userStoreService.userId).toPromise();
+  //   // const response = await this.cartService.getCartOrders(1, 6473).toPromise();
+  //   // this.cart = response
+
+  //   // const xPagination = JSON.parse(response.headers.get('X-Pagination'))
+  //   // this.totalCount = xPagination.totalCount
+
+  //   console.log('CartStore - fetch all: cart: ', this.cart)
+  //   // console.log('CartStore - fetch all: cart XXXXXX X-Pagination: ', response.headers.get('X-Pagination'))
+  //   // console.log('CartStore - fetch all: cart XXXXXX X-Pagination obj: ', xPagination)
+
+  //   // console.log('CartStore - fetch all: status: ', response.status)
+  //   // console.log('CartStore - fetch all: body: ', response.body)
+  // }
 }

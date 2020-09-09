@@ -1,3 +1,5 @@
+@import '../../variables';
+
 .page-content-wrapper .lists .lists-wrapper {
     font-size: 14px;
     margin-top: 20px;
@@ -13,12 +15,16 @@
     margin-left: 10px;
     margin-right: 10px;
 }
-  
+
 .page-content-wrapper .lists .toggle {
     display: flex;
     border: solid #0077ab 1px;
     border-radius: 4px;
     height: 36px;
+
+    .inValid {
+        display: none;
+    }
 }
   
 .page-content-wrapper .lists .toggle span {
@@ -81,6 +87,19 @@
 .page-content-wrapper .orders-current ul li {
     font-size: 1rem;
     // margin-bottom: 10px;
+
+    & .status {
+        // font-weight: 800;
+        font-size: 11px;
+        color: #fff;
+        background-color: $blue-D-10;
+        border-radius: 7px;
+        display: inline-block;
+        padding: 3px;
+        min-width: 14px;
+        box-sizing: content-box;
+        text-align: center;
+    }
 }
 
 .page-content-wrapper .orders-current ul li .details {

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 
 import { MedOrderService } from '../../../../services/med-order.service';
 import { CartStoreService } from '../../../../services/cart-store.service';
+import { UserStoreService } from '../../../../services/user-store.service';
+import { PatientStoreService } from '../../../../services/patient-store.service';
 
 import { ModalService } from '../../../../services/modal.service';
 
@@ -14,11 +16,15 @@ export class GroupsComponent implements OnInit {
 
   private groupPanels = []
   private groupContent= []
+  private userId = this.userStoreService.userId
+  private patientId = this.patientStoreService.patientId
 
   constructor(
     private medOrderService: MedOrderService,
     private modalService: ModalService,
     private cartStoreService: CartStoreService,
+    private userStoreService: UserStoreService,
+    private patientStoreService: PatientStoreService,
   ) { }
 
   ngOnInit(): void {
@@ -52,7 +58,7 @@ export class GroupsComponent implements OnInit {
   }
 
   addToCart = (med) => {
-    this.cartStoreService.postCartOrder(med, 1, 5555, this.groups());
+    this.cartStoreService.postCartOrder(med, this.patientId, this.userId, this.groups());
     med.hasBeenAdded = true
     console.log(`addToCart from Group list: ${med.id}  name: ${med.brandName}`);
   }

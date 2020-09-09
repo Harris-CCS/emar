@@ -9,7 +9,7 @@ import { ModalComponent } from '../shared/component/modal/modal.component';
 export class ModalService {
   private modals: Array<ModalComponent>;
   modalOpening = new EventEmitter<any>();
-  formClosed: BehaviorSubject<string> = new BehaviorSubject('');
+  modalClosed: BehaviorSubject<string> = new BehaviorSubject('');
 
   constructor() {
     this.modals = [];
@@ -17,6 +17,7 @@ export class ModalService {
 
   /* close - Closes the selected modal by searching for the component and setting isOpen to false */
   close(modalId: string, checkBlocking = false): void {
+    // console.log('closeModal', modalId);
     let modal = this.findModal(modalId);
 
     if (modal) {
@@ -27,7 +28,9 @@ export class ModalService {
         modal.isOpen = false;
       }, 100);
       if (modal.closebtn) {
-        this.formClosed.next(modal.modalId);
+        this.modalClosed.next(modal.modalId);
+        modal.modalTitle = ' ';
+        modal.data = {};
       }
     }
   }
@@ -80,5 +83,14 @@ export class ModalService {
     }
 
     return null;
+  }
+
+  assignModalHeaderParameters(modalId: string, parameters: any): void {
+    const modal = this.findModal(modalId);
+    if (modal && parameters) {
+      modal.modalTitle = parameters.name;
+      modal.modalHeaderParameters = parameters;
+      // console.log('modalHeaderParameters', modal);
+    }
   }
 }

@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 // basic color
 $e-red: #FF0000;
 $e-yellow: #FBEC5D;
@@ -23,3 +25,46 @@ $e-body-background-color: #EDEDED;
 $e-page-gray-background: #FBFBFB;
 $e-primary-button-color: $e-red;
 $e-secondary-button-color: $e-gray;
+
+
+
+/* Customizing */
+
+/* Harris Color Palette*/
+$blue:         #009ade;
+$blueGreen:    #3eae89;
+$blueViolet:   #4672bc;
+$violet:       #8050a0;
+$red:          #cc3e3d;
+$redViolet:    #a9466a;
+$brown:        #735940;
+$orange:       #f58424;
+$yellow:       #fdcd28;
+$yellowOrange: #f9a527;
+$yellowGreen:  #bdc734;
+$green:        #71bf43;
+$gray:         #7f7f7f;
+$black:        #000000;
+$white:        #ffffff;
+
+/* tints and shades */
+$blue-L-20: lighten($blue, 20%);
+$blue-L-10: lighten($blue, 10%);
+$blue-D-10: darken($blue, 10%);
+$blue-D-20: draken($blue, 20%);
+
+$red-L-20: lighten($red, 20%);
+$red-L-10: lighten($red, 10%);
+$red-D-10: darken($red, 10%);
+$red-D-20: draken($red, 20%);
+
+/* button effects */
+$primary-button: $red-D-10;
+$primary-button-hover: $red;
+
+$secondary-button: $red-L-10;
+$secondary-button-hover: $red;
+
+/* tab effects */
+$primary-tab: $blue-D-10;
+$secondary-tab: color.adjust($blue-D-10, $lightness: 8%);

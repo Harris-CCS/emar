@@ -41,6 +41,7 @@ const DURATION_UNITS: string[] = ['Dose(s)', 'Hour(s)', 'Day(s)'];
 export class FrequencyFormComponent implements OnInit {
   @Output() formReady = new EventEmitter<FormGroup>();
   frequencyForm: FormGroup;
+  @Input() medComponentId: number;
   @Input() preferredFrequencies: Frequency[] = [];
 
   @ViewChild('frequencyInstance', { static: true })
@@ -112,12 +113,10 @@ export class FrequencyFormComponent implements OnInit {
       ]),
       frequencyData: new FormControl(this.selectedFrequencyData),
       duration: new FormControl(this.selectedDuration, [
-        // Validators.required,
         this.durationValidator,
         this.durationValidator.bind(this),
       ]),
       durationUnit: new FormControl(this.selectedDurationUnit, [
-        // Validators.required,
         this.durationUnitValidator,
         this.durationUnitValidator.bind(this),
       ]),
@@ -127,15 +126,23 @@ export class FrequencyFormComponent implements OnInit {
         this.startTimeValidator.bind(this),
       ]),
       endTime: new FormControl(this.initialEndDateTime, [
-        // Validators.required,
         this.endTimeValidator,
         this.endTimeValidator.bind(this),
       ]),
     });
     // this.formReady.emit(this.frequencyForm);
-    this.composerSchedulerService.addFormGroup('frequency', this.frequencyForm);
-    this.composerSchedulerService.performFormReset.subscribe(() => {
-      if (this.composerSchedulerService.performFormReset.value) {
+    this.composerSchedulerService.addFormGroup(
+      this.medComponentId,
+      'frequency',
+      this.frequencyForm
+    );
+
+    this.composerSchedulerService.resetComponentMedFormId.subscribe(() => {
+      if (
+        this.composerSchedulerService.resetComponentMedFormId &&
+        this.composerSchedulerService.resetComponentMedFormId.value ===
+          this.medComponentId
+      ) {
         this.resetFrequencyForm();
       }
     });
@@ -152,7 +159,7 @@ export class FrequencyFormComponent implements OnInit {
     this.setDefaults();
     this.frequencyForm.patchValue({ startTime: this.initialStartDateTime });
     this.frequencyForm.patchValue({ endTime: this.initialEndDateTime });
-    console.log('resetFrequencyThis', this);
+    // console.log('resetFrequencyThis', this);
   }
 
   setDefaults(): void {
@@ -311,7 +318,7 @@ export class FrequencyFormComponent implements OnInit {
 
     this.maybeResetEndTime();
     // console.log('durationUnitValidationErrors', durationUnitValidationErrors);
-    console.log('durationThis', this);
+    // console.log('durationThis', this);
   }
 
   onDurationUnit(unit: string) {
@@ -346,6 +353,14 @@ export class FrequencyFormComponent implements OnInit {
   durationValidator(control: AbstractControl): { [key: string]: any } | null {
     // console.log('durationControl', control);
     // console.log('durationValidatorThis', this);
+    if (!this || !this.frequencyForm) {
+      return null;
+    } else if (this.noDurationOrDateTimesEntered()) {
+      return {
+        error:
+          '** Must select either Duration and Duration Unit, or Start and End Times',
+      };
+    }
     if (
       !control ||
       !this ||
@@ -379,6 +394,14 @@ export class FrequencyFormComponent implements OnInit {
   durationUnitValidator(
     control: AbstractControl
   ): { [key: string]: any } | null {
+    if (!this || !this.frequencyForm) {
+      return null;
+    } else if (this.noDurationOrDateTimesEntered()) {
+      return {
+        error:
+          '** Must select either Duration and Duration Unit, or Start and End Times',
+      };
+    }
     if (
       !control ||
       !this ||
@@ -454,7 +477,7 @@ export class FrequencyFormComponent implements OnInit {
       );
     }
     this.maybeResetDuration();
-    console.log('startEndDateTimesThis', this);
+    // console.log('startEndDateTimesThis', this);
   }
 
   startTimeValidator(control: AbstractControl): { [key: string]: any } | null {
@@ -469,11 +492,20 @@ export class FrequencyFormComponent implements OnInit {
           'Invalid date/time or date/time format. Must be DD/MM/YYYY HH:MM format.',
       };
     }
+    this.maybeResetDuration();
     return null;
   }
 
   endTimeValidator(control: AbstractControl): { [key: string]: any } | null {
     // console.log('durationControlValue', control.value);
+    if (!this || !this.frequencyForm) {
+      return null;
+    } else if (this.noDurationOrDateTimesEntered()) {
+      return {
+        error:
+          '** Must select either Duration and Duration Unit, or Start and End Times',
+      };
+    }
     if (!control || !control.value || !this || !this.frequencyForm) {
       return null;
     } else if (!this.validDateTime(control.value)) {
@@ -482,6 +514,7 @@ export class FrequencyFormComponent implements OnInit {
           'Invalid date/time or date/time format. Must be DD/MM/YYYY HH:MM format.',
       };
     }
+    this.maybeResetDuration();
     return null;
   }
 
@@ -495,7 +528,7 @@ export class FrequencyFormComponent implements OnInit {
   }
 
   maybeResetDuration(): void {
-    console.log('maybeResetDuration');
+    // console.log('frequencyFormResetDuration', this.frequencyForm);
     if (
       // this.frequencyForm.controls['startTime'].value &&
       // this.frequencyForm.controls['endTime'].value &&
@@ -504,11 +537,24 @@ export class FrequencyFormComponent implements OnInit {
       this.frequencyForm.get('startTime').value &&
       this.frequencyForm.get('endTime').value
     ) {
+      // console.log('frequencyFormResetDuration1', this.frequencyForm);
       this.selectedDuration = null;
       this.selectedDurationUnit = null;
       this.selectedDurationUnitName = '';
       this.frequencyForm.controls['duration'].setValue(null);
       this.frequencyForm.controls['durationUnit'].setValue('');
     }
+  }
+
+  noDurationOrDateTimesEntered(): boolean {
+    // console.log('noDurationOrDateTimesEntered', this.frequencyForm);
+    return !this.frequencyForm.get('duration').value &&
+      (!this.frequencyForm.get('durationUnit').value ||
+        Object.keys(this.frequencyForm.get('durationUnit').value).length ===
+          0) &&
+      // !this.frequencyForm.get('startTime').value &&
+      !this.frequencyForm.get('endTime').value
+      ? true
+      : false;
   }
 }

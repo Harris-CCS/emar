@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 
 //import { MEDICATIONS } from '../../../../app/mockup/medications';
 import { MedOrderService } from '../../../../services/med-order.service';
 import { CartStoreService } from '../../../../services/cart-store.service';
+import { UserStoreService } from '../../../../services/user-store.service';
+import { PatientStoreService } from '../../../../services/patient-store.service';
 import { ModalService } from '../../../../services/modal.service';
 
 @Component({
@@ -12,12 +14,17 @@ import { ModalService } from '../../../../services/modal.service';
 })
 export class DeptPreferredComponent implements OnInit {
 
+  @Output() isTabValid: EventEmitter<boolean> = new EventEmitter()
   private listContents = []
+  private userId = this.userStoreService.userId
+  private patientId = this.patientStoreService.patientId
 
   constructor(
     private medOrderService: MedOrderService,
     private modalService: ModalService,
     private cartStoreService: CartStoreService,
+    private userStoreService: UserStoreService,
+    private patientStoreService: PatientStoreService,
   ) { }
 
   ngOnInit(): void {
@@ -25,7 +32,7 @@ export class DeptPreferredComponent implements OnInit {
   }
 
   deptPreferred() {
-    return 'dp';
+    return 'deptpreferredlist';
   }
 
   deptPreferredOrders() {
@@ -34,15 +41,21 @@ export class DeptPreferredComponent implements OnInit {
   }
 
   getDeptPreferredOrdersList() {
-    this.medOrderService.getDeptPreferredOrdersList().subscribe((o) => {
-      this.listContents = o.map((x) => ({
-        ...x,
-        displayName: x.brandName,
-        displayRoute: x.medicationRoute ? x.medicationRoute.routeName : '',
-        displayFrequency: x.frequencyId,
-        displayDose: x.dose,
-        displayDoseUnit: x.doseUnit ? x.doseUnit.printName : ''
-      }))
+    this.medOrderService.getDeptPreferredOrdersList().subscribe((resp) => {
+      if (!resp || resp.length === 0) {
+        this.isTabValid.emit(false)
+      } else {
+        console.log('dept pref has data, resp:', resp)
+        this.isTabValid.emit(true)
+        this.listContents = resp.map((o) => ({
+          ...o,
+          displayName: o.brandName,
+          displayRoute: o.medicationRoute ? o.medicationRoute.routeName : '',
+          displayFrequency: o.frequencyId,
+          displayDose: o.dose,
+          displayDoseUnit: o.doseUnit ? o.doseUnit.printName : ''
+        }))
+      }
     });
   }
 
@@ -50,7 +63,7 @@ export class DeptPreferredComponent implements OnInit {
     console.log('addToCart from dept preferred list: med: ', med);
 
     // this.medOrderService.postCartOrder(med, this.deptPreferred());
-    this.cartStoreService.postCartOrder(med, 1, 5555, this.deptPreferred())
+    this.cartStoreService.postCartOrder(med, this.patientId, this.userId, this.deptPreferred())
     console.log(`addToCart from dept preferred list: ${med.id}  name: ${med.brandName}`);
     med.hasBeenAdded = true
   }
