@@ -8,7 +8,10 @@
   <div class="header-user">
     <div class="user-icons">
       <a class="notification" href="#" placement="bottom" ngbTooltip="Notifications"></a>
-      <a class="help" href="#" placement="bottom" ngbTooltip="Legend"></a>
+      <a class="help" href="#" placement="bottom" [ngbTooltip]="Legend" tooltipClass="icons-tooltip"></a>
+      <ng-template #Legend>
+        <help-icons></help-icons>
+      </ng-template>
     </div>
     <div class="user-block">
       <div>{{user.site.name}}</div>

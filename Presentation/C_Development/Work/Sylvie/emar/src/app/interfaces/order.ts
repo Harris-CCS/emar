@@ -16,5 +16,28 @@ export interface Order {
     signedOn: string,
     signedBy: string,
     allergies?: any,
-    drugs?: any 
+    drugs?: any,
+    prn?: boolean,
+    priority?: string, // STAT, Routine
+    orderType?: string, // Scheduled
+    orderStatus?: string, // Pending
+    orderAdministrations?: OrderAdministration[]
+}
+
+export interface OrderAdministration {
+    id: number,
+    administrationScheduledDatetime?: string,
+    administrationInputDatetime?: string,
+    administrationDatetime?: string,
+    administeringUserId?: number,
+    stopScheduledDatetime?: string,
+    stopInputDatetime?: string,
+    stopDatetime?: string,
+    stopUserId?: number,
+    acknowledgeUserId?: number,
+    acknowledgeDatetime?: string,
+    pointInTime?: boolean,
+    onHold?: boolean,
+    missedDose?: boolean,
+    administrationStatus?: string
 }
