@@ -4,23 +4,68 @@ export const ORDERS: Order[] = [{
 	"id": 1,
 	"patientId": 1,
 	"startTime": "2019-05-13T10:00:00",
-	"endTime": "2019-05-13T10:30:00",
+	"endTime": "2019-05-13T13:00:00",
 	"name": "Motrin",
 	"dose": "500mg",
 	"route": "PO",
-	"signedOn": "2019-05-13T10:12:45",
+	"signedOn": "2019-05-13T10:08:45",
 	"signedBy": "Merrily Turnbull, MD",
 	"allergies": [1],
+	"prn": false,
+	"priority": "STAT",
+	"orderStatus": "Ongoing",
+	"orderAdministrations": [
+        {
+            "id": 1,
+            "administrationScheduledDatetime": "2020-05-13T10:00:00",
+            "administrationInputDatetime": "2020-05-13T10:00:00",
+            "administrationDatetime": "2020-05-13T10:00:00",
+            "administeringUserId": 123,
+            "stopScheduledDatetime": "2020-05-13T10:05:00",
+            "stopInputDatetime": "2020-05-13T10:05:00",
+            "stopDatetime": "2020-05-13T10:05:00+05:00",
+            "stopUserId": 456,
+            "acknowledgeUserId": 789,
+            "acknowledgeDatetime": "2020-05-13T17:44:35",
+            "pointInTime": false,
+            "onHold": false,
+            "missedDose": false,
+            "administrationStatus": "Given",
+        },
+        {
+            "id": 2,
+			"administrationScheduledDatetime": "2020-05-13T11:00:00",
+			"administrationDatetime": "",
+			"missedDose": true,
+			"acknowledgeUserId": 789,
+            "acknowledgeDatetime": "2020-05-13T10:44:35",
+            "administrationStatus": "Pending",
+		},
+		{
+            "id": 3,
+			"administrationScheduledDatetime": "2020-05-13T12:00:00",
+			"administrationDatetime": "",
+			"missedDose": true,
+            "administrationStatus": "Pending",
+		},
+		{
+            "id": 4,
+			"administrationScheduledDatetime": "2020-05-13T13:00:00",
+            "administrationStatus": "Pending",
+        }
+    ]
 }, {
 	"id": 2,
 	"patientId": 1,
 	"startTime": "2019-05-13T14:00:00",
 	"endTime": "2019-05-13T14:30:00",
 	"name": "Motrin",
-	"dose": "500mg",
+	"dose": "600mg",
 	"route": "PO",
-	"signedOn": "2019-05-13T10:15:12",
-	"signedBy": "Romel Ursua, MD"
+	"signedOn": "2019-05-13T15:55:12",
+	"signedBy": "Romel Ursua, MD",
+	"priority": "STAT",
+	"orderStatus": "Pending"
 }, {
 	"id": 3,
 	"patientId": 2,
@@ -32,7 +77,8 @@ export const ORDERS: Order[] = [{
 	"signedOn": "2019-05-13T17:12:45",
 	"signedBy": "Pete Turnbull, MD",
 	"allergies": [1],
-	"drugs": [1]
+	"drugs": [1],
+	"orderStatus": "Pending"
 }, {
 	"id": 4,
 	"patientId": 1,
@@ -42,7 +88,10 @@ export const ORDERS: Order[] = [{
 	"dose": "500mg",
 	"route": "PO",
 	"signedOn": "2019-05-13T10:12:45",
-	"signedBy": "Peter Turnbull, MD"
+	"signedBy": "Peter Turnbull, MD",
+	"priority": "STAT",
+	"prn": true,
+	"orderStatus": "Ongoing"
 }, {
 	"id": 5,
 	"patientId": 1,
