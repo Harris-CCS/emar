@@ -18,7 +18,7 @@
             <div class="orders">
                 <div class="orders-new">
                     <!-- <h3>NEW ORDERS <span class="count">{{cartStoreService.totalCount$ | async}}</span></h3> -->
-                    <h3>NEW ORDERS 
+                    <h3>NEW ORDERS
                         <span [ngClass]="{'count': (cartStoreService.totalCount$ | async)}">
                             {{(cartStoreService.totalCount$ | async) ? (cartStoreService.totalCount$ | async) : ''}}
                         </span>
@@ -28,11 +28,12 @@
                         <med-search></med-search>
                     </div>
                     <div id="orders-cart">
-                        <order-cart-list [patientId]="patientId"></order-cart-list><!--[items]="cartListOrders()" -->
+                        <order-cart-list [patientId]="patientId"></order-cart-list>
+                        <!--[items]="cartListOrders()" -->
                     </div>
                 </div>
                 <div class="orders-current">
-                    <h3>CURRENT ORDERS 
+                    <h3>CURRENT ORDERS
                         <!-- <span [ngClass]="{'count': (cartStoreService.totalCount$ | async)}">
                             {{(cartStoreService.totalCount$ | async) ? (cartStoreService.totalCount$ | async) : ''}}
                         </span> -->
@@ -40,16 +41,23 @@
                     <div class="orders-current-wrapper">
                         <ul class="list-group">
                             <!-- <li class="list-group-item" *ngFor="let ord of currentOrders"> -->
-                            <li class="list-group-item" *ngFor="let ord of patientMedOrderStoreService.patientMedOrder$ | async">
-                                <span [ngClass]="{'allergy-dot': ord.allergies?.length, 'placeholder-dot': ord.allergies?.length === 0 || !ord.allergies}" placement="right" ngbTooltip="Allergy Reaction placeholder"></span>
-                                <span [ngClass]="{'drug-dot' : ord.drugs?.length, 'placeholder-dot': ord.drugs?.length === 0 || !ord.drugs}" placement="right" ngbTooltip="Medication Interaction placeholder"></span>
+                            <li class="list-group-item"
+                                *ngFor="let ord of patientMedOrderStoreService.patientMedOrder$ | async">
+                                <span
+                                    [ngClass]="{'allergy-dot': ord.allergies?.length, 'placeholder-dot': ord.allergies?.length === 0 || !ord.allergies}"
+                                    placement="right" ngbTooltip="Allergy Reaction placeholder"></span>
+                                <span
+                                    [ngClass]="{'drug-dot' : ord.drugs?.length, 'placeholder-dot': ord.drugs?.length === 0 || !ord.drugs}"
+                                    placement="right" ngbTooltip="Medication Interaction placeholder"></span>
                                 <span class="status">{{ord.orderStatus}}</span>
                                 <span>
-                                    {{ord.brandName}} {{ord.medicationRoute?.routeName | uppercase}} {{ord.dose}} {{ord.doseUnit?.unitName}} {{ord.frequencySchedule?.scheduleName}} 
+                                    {{ord.brandName}} {{ord.medicationRoute?.routeName | uppercase}} {{ord.dose}}
+                                    {{ord.doseUnit?.unitName}} {{ord.frequencySchedule?.scheduleName}}
                                     <!-- {{ord.displayName}} {{ord.displayRoute | uppercase}} {{ord.displayDose}} {{ord.displayDoseUnit}} {{ord.displayFrequency}} -->
                                 </span>
-                                <span 
-                                    class="details">{{ord.addTime}} <span class="minor">on</span> {{ord.addDate | date: "MM/dd/yy"}}, <span class="minor">Ordering physician:</span> {{ord.orderingPhysicianUser?.displayName}}
+                                <span class="details">{{ord.addTime}} <span class="minor">on</span>
+                                    {{ord.addDate | date: "MM/dd/yy"}}, <span class="minor">Ordering physician:</span>
+                                    {{ord.orderingPhysicianUser?.displayName}}
                                 </span>
                             </li>
                         </ul>
@@ -58,8 +66,10 @@
             </div>
             <div class="lists">
                 <div class="toggle">
-                    <span [ngClass]="{'active': qlSelected}" (click)="onSelectTab('list-quick-orders')">Quick List</span>
-                    <span [ngClass]="{'active': dpSelected, 'inValid': !hasDeptPreferredDefined}" (click)="onSelectTab('list-dept-preferred-orders')">Dept Preferred List</span>
+                    <span [ngClass]="{'active': qlSelected}" (click)="onSelectTab('list-quick-orders')">Quick
+                        List</span>
+                    <span [ngClass]="{'active': dpSelected, 'inValid': !hasDeptPreferredDefined}"
+                        (click)="onSelectTab('list-dept-preferred-orders')">Dept Preferred List</span>
                     <span [ngClass]="{'active': gSelected}" (click)="onSelectTab('list-groups-orders')">Groups</span>
                 </div>
 

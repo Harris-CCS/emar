@@ -16,6 +16,12 @@ import {
   tap,
   switchMap,
 } from 'rxjs/operators';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+import { ComposerOptions } from '../app/interfaces/composerOptions';
+import { Site } from '../app/interfaces/site';
+import { Frequency } from '../app/interfaces/frequency';
+import { Unit } from '../app/interfaces/unit';
+
 import { ComposerMedComponent } from '../pages/composer-med/composer-med.component';
 import { ModalService } from '../services/modal.service';
 import { MedOrderService } from '../services/med-order.service';
@@ -26,8 +32,15 @@ import { CartStoreService } from '../services/cart-store.service';
 })
 export class ComposerSchedulerService {
   private composerMedComponents: Array<ComposerMedComponent>;
-  // composerMedForm: FormGroup;
-  // performFormReset: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  private composerBrandNameOptions: ComposerOptions;
+  private siteData: Array<Site> = [];
+
+  private brandNameOptionsUrl: string = 'api/orders/composerOptions';
+  private siteMedicationFrequenciesUrl: string =
+    'api/orders/composerOptions/frequencies';
+  private siteMedicationUnitsUrl: string = 'api/orders/composerOptions/units';
+
+  // Behavior Subjects to trigger actions based on UI Interraction
   resetComponentMedFormId: BehaviorSubject<number> = new BehaviorSubject(-1);
   resetAllComponentMedFormIds: BehaviorSubject<boolean> = new BehaviorSubject(
     false
@@ -44,10 +57,10 @@ export class ComposerSchedulerService {
     private fb: FormBuilder,
     private modalService: ModalService,
     private medOrderService: MedOrderService,
-    private cartStoreService: CartStoreService
+    private cartStoreService: CartStoreService,
+    private http: HttpClient
   ) {
     this.composerMedComponents = [];
-    // this.composerMedForm = this.fb.group({});
   }
 
   addNewComposerMedComponent(): void {
@@ -103,5 +116,117 @@ export class ComposerSchedulerService {
     );
     // console.log('checkOverallValidity', invalidMedComponent);
     return invalidMedComponent ? false : true;
+  }
+
+  // HTTP
+
+  getBrandNameOptionsFromAPI(brandName: string): Observable<any> {
+    const headers = new HttpHeaders({ Accept: 'application/json' });
+    const fullBrandNameOptionsUrl = `${this.brandNameOptionsUrl}/${brandName}`;
+    // console.log(
+    //   'ComposerScheduler: getBrandNameOptionsFromAPI: fullBrandNameUrl: ',
+    //   fullBrandNameOptionsUrl
+    // );
+
+    return this.http
+      .get<any>(fullBrandNameOptionsUrl, { headers })
+      .pipe(catchError(this.handleError<any>('getBrandNameOptionsFromAPI')));
+  }
+
+  getSiteMedicationFrequenciesFromAPI(siteId: number): Observable<any> {
+    const headers = new HttpHeaders({ Accept: 'application/json' });
+    const fullSiteMedicationFrequenciesUrl = `${this.siteMedicationFrequenciesUrl}/${siteId}`;
+    // console.log(
+    //   'ComposerScheduler: getSiteMedicationFrequenciesFromAPI: fullSiteMedicationsFrequenciesUrl: ',
+    //   fullSiteMedicationFrequenciesUrl
+    // );
+
+    return this.http
+      .get<any>(fullSiteMedicationFrequenciesUrl, { headers })
+      .pipe(
+        catchError(this.handleError<any>('getSiteMedicationFrequenciesFromAPI'))
+      );
+  }
+
+  getSiteMedicationUnitsFromAPI(siteId: number): Observable<any> {
+    const headers = new HttpHeaders({ Accept: 'application/json' });
+    const fullSiteMedicationUnitsUrl = `${this.siteMedicationUnitsUrl}/${siteId}`;
+    // console.log(
+    //   'ComposerScheduler: getSiteMedicationUnitsFromAPI: fullSiteMedicationsUnitsUrl: ',
+    //   fullSiteMedicationUnitsUrl
+    // );
+
+    return this.http
+      .get<any>(fullSiteMedicationUnitsUrl, { headers })
+      .pipe(catchError(this.handleError<any>('getSiteMedicationUnitsFromAPI')));
+  }
+
+  /* Handle Http Request failed */
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      console.error('ComposerSchedulerService-handleError: ERROR: ', error);
+      console.error(
+        'ComposerSchedulerService-handleError: STATUS: ',
+        error.status
+      );
+      return of(result as T);
+    };
+  }
+
+  // Get and Set API Data
+
+  getBrandNameOptions(): ComposerOptions {
+    // console.log('getBrandNameOptions', this.composerBrandNameOptions);
+    return this.composerBrandNameOptions;
+  }
+
+  setBrandNameOptions(options: ComposerOptions): void {
+    this.composerBrandNameOptions = options;
+  }
+
+  getSiteMedicationFrequencies(siteId: number): Array<Frequency> {
+    const siteIndex: number = this.getSiteData(siteId);
+    return siteIndex === 0 || siteIndex
+      ? this.siteData[siteIndex].medicationFrequencies
+      : [];
+  }
+
+  setSiteMedicationFrequencies(
+    siteId: number,
+    frequencies: Array<Frequency>
+  ): void {
+    const siteIndex: number = this.getSiteData(siteId);
+    this.siteData[siteIndex].medicationFrequencies = frequencies;
+  }
+
+  getSiteMedicationUnits(siteId: number): Array<Unit> {
+    const siteIndex: number = this.getSiteData(siteId);
+    return siteIndex === 0 || siteIndex
+      ? this.siteData[siteIndex].medicationUnits
+      : [];
+  }
+
+  setSiteMedicationUnits(siteId: number, units: Array<Unit>): void {
+    const siteIndex: number = this.getSiteData(siteId);
+    this.siteData[siteIndex].medicationUnits = units;
+  }
+
+  getSiteData(siteId: number): number {
+    let siteIndex: number = null;
+    const site: Site = this.siteData.find((siteToFind, index) => {
+      if (siteToFind.id === siteId) {
+        siteIndex = index;
+        return siteToFind;
+      }
+    });
+    if (siteIndex === null) {
+      this.siteData.push({
+        id: siteId,
+        active: true,
+      });
+      return this.siteData.length - 1;
+    } else {
+      return siteIndex;
+    }
   }
 }

@@ -16,7 +16,6 @@ import { UserStoreService } from '../../services/user-store.service';
 import { PatientStoreService } from '../../services/patient-store.service';
 import { CartStoreService } from '../../services/cart-store.service';
 
-
 @Component({
   selector: 'composer-med',
   templateUrl: './composer-med.component.html',
@@ -29,14 +28,15 @@ export class ComposerMedComponent implements OnInit {
   // composerMedForm: FormGroup;
   @Input() composerMedForm: FormGroup;
   @Input() composerMedFormIndex: number;
-  options: ComposerOptions = COMPOSER_OPTIONS[0]; // TODO API call
+  // options: ComposerOptions = COMPOSER_OPTIONS[0];
+  options: ComposerOptions;
   selectedFormStrength = 0;
   isOpen: boolean = false;
   // performFormReset: BehaviorSubject<boolean> = new BehaviorSubject(false);
   title: string = '';
   isMedComponentInvalid: boolean = true;
-  private userId = this.userStoreService.userId
-  private patientId = this.patientStoreService.patientId
+  private userId = this.userStoreService.userId;
+  private patientId = this.patientStoreService.patientId;
 
   constructor(
     private fb: FormBuilder,
@@ -45,11 +45,13 @@ export class ComposerMedComponent implements OnInit {
     private cartStoreService: CartStoreService,
     private userStoreService: UserStoreService,
     private patientStoreService: PatientStoreService,
-    private composerSchedulerService: ComposerSchedulerService,
-
+    private composerSchedulerService: ComposerSchedulerService
   ) {}
 
   ngOnInit(): void {
+    console.log('composerSchedulerThis', this.composerSchedulerService);
+    this.options = this.composerSchedulerService.getBrandNameOptions();
+    // console.log('options', this.options);
     if (
       this.composerMedFormIndex === undefined ||
       this.composerMedFormIndex === null
@@ -71,6 +73,7 @@ export class ComposerMedComponent implements OnInit {
         this.composerMedForm.reset();
       }
     });
+    // console.log('medComponentOptions', this.options);
   }
 
   isMedComposerFormInvalid(): boolean {
@@ -140,14 +143,24 @@ export class ComposerMedComponent implements OnInit {
     if (this.getData().action === 'update') {
       console.log('saveCartOrder: PUT: med: ', this.getData());
       // this.medOrderService.updateCartOrder(this.getMed().med);
-      this.cartStoreService.updateCartOrder(this.getMed(), this.patientId, this.userId, '')
+      this.cartStoreService.updateCartOrder(
+        this.getMed(),
+        this.patientId,
+        this.userId,
+        ''
+      );
       console.log(
         `UPDATE order: ${this.getMed().id}  name: ${this.getMed().brandName}`
       );
     } else {
       // this.medOrderService.postCartOrder(this.getMed());
-      console.log('saveCartOrder: POST: med: ', this.getData())
-      this.cartStoreService.postCartOrder(this.getMed(), this.patientId, this.userId, '')
+      console.log('saveCartOrder: POST: med: ', this.getData());
+      this.cartStoreService.postCartOrder(
+        this.getMed(),
+        this.patientId,
+        this.userId,
+        ''
+      );
       console.log(
         `ADD order: ${this.getMed().id}  name: ${this.getMed().brandName}`
       );

@@ -12,6 +12,7 @@ import { ModalHeaderParameters } from '../../../../src/app/interfaces/modalHeade
 import { MedOrderService } from 'src/services/med-order.service';
 import { CartStoreService } from 'src/services/cart-store.service';
 import { ComposerSchedulerService } from '../../../services/composer-scheduler.service';
+import { UserStoreService } from '../../../services/user-store.service';
 import {
   NgbAccordion,
   NgbPanelChangeEvent,
@@ -32,13 +33,19 @@ export class ComposerMedModalComponent implements OnInit, AfterViewInit {
   composerMedComponents: Array<ComposerMedComponent>;
   addNewMedComponent: boolean = false;
   overallOrderValid: boolean = false;
+  initialData;
+  gotData: boolean = false;
+  userSiteId: number = null;
 
   constructor(
     private modalService: ModalService,
     private composerSchedulerService: ComposerSchedulerService,
     private medOrderService: MedOrderService,
-    private cartStoreService: CartStoreService
+    private cartStoreService: CartStoreService,
+    private userStoreService: UserStoreService
   ) {
+    this.userSiteId = this.userStoreService.userSiteId;
+    console.log('userSiteId', this.userSiteId);
     this.continueOrder = this.continueOrder.bind(this);
     this.cancelOrder = this.cancelOrder.bind(this);
     this.checkOrder = this.checkOrder.bind(this);
@@ -46,6 +53,88 @@ export class ComposerMedModalComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.modalService.modalOpening.subscribe((data) => {
+      // Get initial data from source (quick list, department list, group, or new order)
+      this.initialData = data;
+      console.log('initialData', this.initialData);
+      console.log('initialDataBrandName', this.initialData.med.brandName);
+
+      this.composerSchedulerService
+        .getBrandNameOptionsFromAPI(this.initialData.med.brandName)
+        .subscribe((response) => {
+          if (
+            this.initialData &&
+            this.initialData.med &&
+            this.initialData.med.brandName
+          ) {
+            this.composerSchedulerService.setBrandNameOptions(response);
+            const getBrandNameOptions = this.composerSchedulerService.getBrandNameOptions();
+            console.log(
+              'Set Brand Name Options: ',
+              this.composerSchedulerService
+            );
+            console.log('Get Brand Name Options: ', getBrandNameOptions);
+
+            if (
+              this.composerSchedulerService.getBrandNameOptions() &&
+              this.composerSchedulerService.getSiteMedicationFrequencies(
+                this.userSiteId
+              ) &&
+              this.composerSchedulerService.getSiteMedicationUnits(
+                this.userSiteId
+              )
+            ) {
+              this.gotData = true;
+            }
+          }
+        });
+    });
+
+    // Site Frequencies
+    this.composerSchedulerService
+      .getSiteMedicationFrequenciesFromAPI(this.userSiteId)
+      .subscribe((response) => {
+        if (typeof this.userSiteId === 'number') {
+          this.composerSchedulerService.setSiteMedicationFrequencies(
+            this.userSiteId,
+            response
+          );
+
+          // const getMedicationFrequencies = this.composerSchedulerService.getSiteMedicationFrequencies(
+          //   this.userSiteId
+          // );
+          // console.log(
+          //   `Set Frequencies for SiteId: ${this.userSiteId}`,
+          //   this.composerSchedulerService
+          // );
+          // console.log(
+          //   `Get Frequencies for SiteId: ${this.userSiteId}`,
+          //   getMedicationFrequencies
+          // );
+        }
+      });
+    // Site Medication Units
+    this.composerSchedulerService
+      .getSiteMedicationUnitsFromAPI(this.userSiteId)
+      .subscribe((response) => {
+        if (typeof this.userSiteId === 'number') {
+          this.composerSchedulerService.setSiteMedicationUnits(
+            this.userSiteId,
+            response
+          );
+          // const getMedicationUnits = this.composerSchedulerService.getSiteMedicationUnits(
+          //   this.userSiteId
+          // );
+          // console.log(
+          //   `Set Units for SiteId: ${this.userSiteId}`,
+          //   this.composerSchedulerService
+          // );
+          // console.log(
+          //   `Get Units for SiteId: ${this.userSiteId}`,
+          //   getMedicationUnits
+          // );
+        }
+      });
     this.modalService.modalClosed.subscribe(() => {
       if (this.modalService.modalClosed.value === 'medComposer') {
         this.composerSchedulerService.resetAllComponentMedForms();
@@ -108,10 +197,11 @@ export class ComposerMedModalComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    // console.log('ngAfterViewInit', this.accordionComponent);
     if (this.accordionComponent) {
       this.accordionComponent.panelChange.subscribe(
         (panelChangeEvent: NgbPanelChangeEvent) => {
-          // console.log('this.accordion', this.accordionComponent);
+          console.log('this.accordion', this.accordionComponent);
           // console.log('panelChangeEvent', panelChangeEvent);
           // if (!panelChangeEvent.nextState && panelChangeEvent.panelId) {
           // this.composerMedComponents = this.composerSchedulerService.getComposerMedComponents();
@@ -142,6 +232,22 @@ export class ComposerMedModalComponent implements OnInit, AfterViewInit {
     }
   }
 
+  // gotMedData(): boolean {
+  //   console.log('this.gotData', this.gotData);
+  //   this.gotData =
+  //     this.gotData
+  // ||
+  // (this.composerSchedulerService.getBrandNameOptions() &&
+  //   this.composerSchedulerService.getSiteMedicationFrequencies(
+  //     this.userSiteId
+  //   ) &&
+  //   this.composerSchedulerService.getSiteMedicationUnits(this.userSiteId))
+  //       ? true
+  //       : false;
+
+  //   return this.gotData;
+  // }
+
   resetMedModal(): void {
     this.modalTitle = ' ';
     this.isModalTitleParamsSet = false;
@@ -152,7 +258,7 @@ export class ComposerMedModalComponent implements OnInit, AfterViewInit {
   }
 
   resetComposerMedComponent(id): void {
-    alert(`resetComposerMedComponent - ${id}`);
+    // alert(`resetComposerMedComponent - ${id}`);
     this.composerSchedulerService.resetComponentMedFormById(id);
   }
 
@@ -174,6 +280,7 @@ export class ComposerMedModalComponent implements OnInit, AfterViewInit {
   }
 
   setMedComponentText(id: number): string {
+    // console.log('setMedComponentText0', this.composerMedComponents, id);
     if (this.composerMedComponents && this.composerMedComponents[id]) {
       const data = this.composerMedComponents[id].composerMedForm.value;
       let textLine1: string;
@@ -202,9 +309,12 @@ export class ComposerMedModalComponent implements OnInit, AfterViewInit {
         .split('  ')
         .join(' ');
       textLine2 = new RegExp(`^[\s]$`).test(textLine2) ? '' : textLine2;
+      // console.log('textline1', textLine1);
+      // console.log('textline2', textLine2);
 
       this.composerMedComponents[id].title =
         textLine1 || textLine2 ? `${textLine1}\n${textLine2}` : `Order #${id}`;
+      return this.composerMedComponents[id].title;
     } else {
       return `Order #${id}`;
     }
