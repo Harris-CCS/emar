@@ -11,6 +11,7 @@ import { MedSearchComponent } from './component/med-search/med-search.component'
 import { PipesModule } from './pipes/pipes.module';
 import { SimpleTableComponent } from './component/simple-table/simple-table.component';
 import { DateTimeModalComponent } from './component/date-time-modal/date-time-modal.component';
+import { HelpIconsComponent } from './component/help-icons/help-icons.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { DateTimeModalComponent } from './component/date-time-modal/date-time-mo
     ModalComponent,
     MedSearchComponent,
     SimpleTableComponent,
-    DateTimeModalComponent
+    DateTimeModalComponent,
+    HelpIconsComponent
   ],
   imports: [
     CommonModule,

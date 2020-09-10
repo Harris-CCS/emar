@@ -1,0 +1,86 @@
+@import "../../variables.scss";
+
+.page-content-wrapper {
+    flex-direction: column;
+}
+.pd-interval, .pd-unit {
+    float: left;
+    height: 100%;
+}
+.pd-right-btn {
+    position: absolute;
+    top: 2px;
+    right: 0;
+}
+.pd-left-btn {
+    position: absolute;
+    top: 2px;
+    left: 0;
+}
+.pd-relative {
+    position: relative;
+}
+.ngb-dp-navigation-chevron {
+    border-style: solid;
+    border-width: .2em .2em 0 0;
+    display: inline-block;
+    width: .75em;
+    height: .75em;
+    margin-left: .25em;
+    margin-right: .15em;
+    -webkit-transform: rotate(-135deg);
+    transform: rotate(-135deg);
+}
+.right .ngb-dp-navigation-chevron {
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+    margin-left: .15em;
+    margin-right: .25em;
+}
+.pd-stat-col {
+    display: block;
+}
+.pd-center { // works only for td
+    text-align: center;
+    vertical-align: middle;
+}
+.pd-line {
+    background: url("/assets/img/grayLine.png") 50% repeat-y;/* #C7C7C7; */
+    text-align: center;
+}
+.pd-time { /* 5 characters */
+    width: 50px;
+    text-align: center;
+    font-size: 10px;
+}
+.pd-full {
+    padding-left: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    height: 100%;
+}
+.pd-content {
+    padding-top: 0.75rem;
+    text-align: center;
+}
+.pd-sm {
+    padding: 0 0.2rem;
+}
+.table-my-striped tr:nth-of-type(even), .table-my-striped thead {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+.table-my-striped {
+    border-bottom: 1px solid #C7C7C7;
+}
+.pd-header {
+    padding: 0.75rem;
+}
+.table-hover tbody tr:hover {
+    background-color: #deeff5;
+}
+.debug th, .debug td {
+    border: 1px solid red;
+}
+table.debug {
+    border-collapse: collapse;
+}
