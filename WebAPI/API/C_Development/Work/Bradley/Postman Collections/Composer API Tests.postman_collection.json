@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "91178a6a-c60a-42a2-8d5f-42e164d3ce79",
+		"_postman_id": "3f95431f-fe61-4bdd-9106-bcc110cd2add",
 		"name": "Composer API Tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -75,6 +75,27 @@
 						"orders",
 						"composerOptions",
 						"units",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Template Dynamic POC",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/api/orders/composeroptions/templates/1",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"orders",
+						"composeroptions",
+						"templates",
 						"1"
 					]
 				}

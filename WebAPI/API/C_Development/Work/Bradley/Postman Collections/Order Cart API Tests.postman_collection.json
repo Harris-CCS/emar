@@ -55,14 +55,14 @@
 					}
 				],
 				"url": {
-					"raw": "{{URL}}/api/carts/1",
+					"raw": "{{URL}}/api/carts/999999",
 					"host": [
 						"{{URL}}"
 					],
 					"path": [
 						"api",
 						"carts",
-						"1"
+						"999999"
 					]
 				}
 			},
@@ -150,8 +150,8 @@
 							"pm.environment.set(\"CartOrderPatientId\", jsonData.patientId);\r",
 							"pm.environment.set(\"CartOrderUserId\", jsonData.userId);\r",
 							"\r",
-							"pm.test(\"order has frequency #380\", function() {\r",
-							"    pm.expect(jsonData.frequencySchedule != undefined && jsonData.frequencySchedule.id === 380 && jsonData.frequencySchedule.scheduleName === \"3 times daily\").to.be.true;\r",
+							"pm.test(\"order has frequency #\" + pm.environment.get(\"FrequencyId\"), function() {\r",
+							"    pm.expect(jsonData.frequencySchedule != undefined && jsonData.frequencySchedule.id == pm.environment.get(\"FrequencyId\") && jsonData.frequencySchedule.scheduleName === \"3 times daily\").to.be.true;\r",
 							"});\r",
 							""
 						],
