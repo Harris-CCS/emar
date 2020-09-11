@@ -3,12 +3,12 @@ as
     begin
 
         select distinct
-               [a].[site]
-             , [a].[name]
+               rtrim(ltrim([a].[site])) [site_id]
+             , rtrim(ltrim([a].[name])) [name]
         from   [ibex].[dbo].[idx] as [a]
         where  [type] in('AC')
-        order by [a].[name]
-               , [a].[site];
+        order by [site_id]
+               , [name];
     end;
 go
 

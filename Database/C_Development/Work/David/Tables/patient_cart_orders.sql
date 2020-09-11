@@ -4,9 +4,7 @@ create table [dbo].[patient_cart_orders]
     , [patient_id]              [bigint] not null
     , [user_id]                 [int] not null
     , [add_datetime]            [datetimeoffset](7) not null
-    , [ndc]                     [varchar](32) null
-    , [drug_id]                 [varchar](32) not null
-    , [brand_name]              [nvarchar](255) not null
+    , [medication_id]           [int] not null
     , [dose]                    [decimal](11, 2) null
     , [medication_unit_id]      [int] null
     , [medication_route_id]     [int] null
@@ -58,6 +56,10 @@ alter table [dbo].[patient_cart_orders]
 add constraint [fk__patient_cart_orders__frequency_schedules] foreign key([frequency_schedule_id]) references [dbo].[frequency_schedules]([id]);
 go
 
+alter table [dbo].[patient_cart_orders]
+add constraint [fk__patient_cart_orders__medications] foreign key([medication_id]) references [dbo].[medications]([id]);
+go
+
 /***************
  Data Dictionary
     Defaults
@@ -67,7 +69,7 @@ go
     Indexes
 ***************/
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Primary Key Column'
   , @level0type = N'SCHEMA'
@@ -83,7 +85,7 @@ go
     Table
 ***************/
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'This table contains: patient cart details'
   , @level0type = N'SCHEMA'
@@ -97,7 +99,7 @@ go
     Columns
 ***************/
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Auto increment table ID'
   , @level0type = N'SCHEMA'
@@ -108,7 +110,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'id';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Patient identifier, Foreign Key to patients table'
   , @level0type = N'SCHEMA'
@@ -119,7 +121,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'patient_id';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Person Idendifier that owns this cart record (Foreign Key to users table)'
   , @level0type = N'SCHEMA'
@@ -130,7 +132,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'user_id';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'add_datetime'
   , @level0type = N'SCHEMA'
@@ -141,46 +143,22 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'add_datetime';
 go
 
-execute [sys].[sp_addextendedproperty]
+go
+
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'National Drug Code that identifies the brand, formulation and packaging of a drug'
+  , @value = N'Medications identifier, Foreign Key to medications table'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
   , @level1name = N'patient_cart_orders'
   , @level2type = N'COLUMN'
-  , @level2name = N'ndc';
+  , @level2name = 'medication_id';
 go
 
-execute [sys].[sp_addextendedproperty]
-    @name = N'MS_Description'
-  , @value = N'External Vendor Drug Database Identifier
-    FDB: MEDID (MED Medication ID (Stable ID))
-    Multum: dnum
-These 3 columns will be carried as a set ndc,drug_id,brand_name
-while drug_id and brand_name are vendor specific concepts and can be derived from ndc number
-this will aid in display and lookup performance.
-'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'patient_cart_orders'
-  , @level2type = N'COLUMN'
-  , @level2name = N'drug_id';
 go
 
-execute [sys].[sp_addextendedproperty]
-    @name = N'MS_Description'
-  , @value = N'brand_name'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'patient_cart_orders'
-  , @level2type = N'COLUMN'
-  , @level2name = N'brand_name';
-go
-
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Medication Dose: numeric portion of dose/medication_unit_id pair'
   , @level0type = N'SCHEMA'
@@ -191,7 +169,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'dose';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Route of administration; Foreign Key to medication_routes table'
   , @level0type = N'SCHEMA'
@@ -202,7 +180,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'medication_route_id';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'priority'
   , @level0type = N'SCHEMA'
@@ -213,7 +191,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'priority';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Medication Unit: unit portion of dose/medication_unit_id pair'
   , @level0type = N'SCHEMA'
@@ -224,7 +202,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'medication_unit_id';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Foreign Key to frequency_schedules table'
   , @level0type = N'SCHEMA'
@@ -235,7 +213,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'frequency_schedule_id';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'prn'
   , @level0type = N'SCHEMA'
@@ -246,7 +224,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'prn';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'point_in_time'
   , @level0type = N'SCHEMA'
@@ -257,7 +235,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'point_in_time';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'begin_datetime'
   , @level0type = N'SCHEMA'
@@ -268,7 +246,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'begin_datetime';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'end_datetime'
   , @level0type = N'SCHEMA'
@@ -279,7 +257,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'end_datetime';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'order_notes'
   , @level0type = N'SCHEMA'
@@ -290,7 +268,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'order_notes';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'user_quick_list_item_id: to be used for most used item calculation'
   , @level0type = N'SCHEMA'

@@ -7,9 +7,6 @@ create table [dbo].[patient_orders]
     , [order_physician_user_id] [int] not null
     , [begin_datetime]          [datetimeoffset](7) not null
     , [end_datetime]            [datetimeoffset](7) null
-    , [ndc]                     [varchar](32) null
-    , [drug_id]                 [varchar](32) null
-    , [brand_name]              [nvarchar](255) null
     , [dose]                    [decimal](11, 2) null
     , [medication_unit_id]      [int] null
     , [medication_route_id]     [int] null
@@ -19,6 +16,7 @@ create table [dbo].[patient_orders]
     , [point_in_time]           [bit] not null
     , [order_status]            [varchar](10) not null
     , [order_notes]             [nvarchar](max) null
+    , [medication_id]           [int] not null
     , constraint [pk__patient_orders__id] primary key clustered([id] asc));
 go
 
@@ -54,6 +52,10 @@ go
 
 alter table [dbo].[patient_orders]
 add constraint [fk__patient_orders__frequency_schedules] foreign key([frequency_schedule_id]) references [dbo].[frequency_schedules]([id]);
+go
+
+alter table [dbo].[patient_orders]
+add constraint [fk__patient_orders__medications] foreign key([medication_id]) references [dbo].[medications]([id]);
 go
 
 /***************
@@ -150,43 +152,10 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'order_physician_user_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
-    @name = N'MS_Description'
-  , @value = N'National Drug Code that identifies the brand, formulation and packaging of a drug'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'patient_orders'
-  , @level2type = N'COLUMN'
-  , @level2name = N'ndc';
 go
 
-execute [sys].[sp_addextendedproperty] 
-    @name = N'MS_Description'
-  , @value = N'External Vendor Drug Database Identifier
-    FDB: MEDID (MED Medication ID (Stable ID))
-    Multum: dnum
-These 3 columns will be carried as a set ndc,drug_id,brand_name
-while drug_id and brand_name are vendor specific concepts and can be derived from ndc number
-this will aid in display and lookup performance.
-'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'patient_orders'
-  , @level2type = N'COLUMN'
-  , @level2name = N'drug_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
-    @name = N'MS_Description'
-  , @value = N'brand_name'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'patient_orders'
-  , @level2type = N'COLUMN'
-  , @level2name = N'brand_name';
 go
 
 execute [sys].[sp_addextendedproperty] 
@@ -308,4 +277,15 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'patient_orders'
   , @level2type = N'COLUMN'
   , @level2name = N'order_notes';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'Medications identifier, Foreign Key to medications table'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'patient_orders'
+  , @level2type = N'COLUMN'
+  , @level2name = N'medication_id';
 go

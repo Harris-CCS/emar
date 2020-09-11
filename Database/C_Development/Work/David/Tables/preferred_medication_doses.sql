@@ -1,6 +1,6 @@
 create table [dbo].[preferred_medication_doses]
     (
-      [drug_id]               [varchar](32) not null
+      [medication_id]      [int] not null
     , [dose]               [decimal](11, 2) null
     , [medication_unit_id] [int] null
     , [site_id]            [int] null);
@@ -14,7 +14,7 @@ go
 *****************/
 
 alter table [dbo].[preferred_medication_doses]
-add constraint [uc__preferred_medication_doses] unique clustered([medication_unit_id] asc, [dose] asc, [site_id] asc, [drug_id] asc);
+add constraint [uc__preferred_medication_doses] unique clustered([medication_id] asc, [site_id] asc, [medication_unit_id] asc, [dose] asc);
 go
 
 /*******
@@ -23,6 +23,7 @@ go
 /***********
  Foreign Key
 ***********/
+
 alter table [dbo].[preferred_medication_doses]
 add constraint [fk__preferred_medication_doses__sites] foreign key([site_id]) references [dbo].[sites]([id]);
 go
@@ -30,6 +31,11 @@ go
 alter table [dbo].[preferred_medication_doses]
 add constraint [fk__preferred_medication_doses__medication_units] foreign key([medication_unit_id]) references [dbo].[medication_units]([id]);
 go
+
+alter table [dbo].[preferred_medication_doses]
+add constraint [fk__preferred_medication_doses__medications] foreign key([medication_id]) references [dbo].[medications]([id]);
+go
+
 /***************
  Data Dictionary
     Defaults
@@ -71,14 +77,13 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'External Vendor Drug Database Identifier
-  FDB: MEDID (MED Medication ID (Stable ID))'
+  , @value = N'Medications identifier, Foreign Key to medications table'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'
   , @level1name = N'preferred_medication_doses'
   , @level2type = N'COLUMN'
-  , @level2name = N'drug_id';
+  , @level2name = 'medication_id';
 go
 
 execute [sys].[sp_addextendedproperty] 

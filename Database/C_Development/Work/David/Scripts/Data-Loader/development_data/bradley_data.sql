@@ -72,17 +72,16 @@ if '$(load_data)' in('sample', 'live')
                  group by [site_id]
                         )
              insert into [dbo].[department_preferred_list_items]
+             (site_id,department_code,medication_id,dose,medication_unit_id,medication_route_id,frequency_schedule_id,order_notes)
              select distinct [q].[site_id]
                   , [department_code] = case
                                             when row_number() over(partition by [q].[site_id]
                                                  order by [q].[site_id]
-                                                        , [brand_name]) % 2.0 =0
+                                                        , [medication_id]) % 2.0 =0
                                                 then 'Main ED'
                                             else 'Fast Track'
                                         end
-                  , [ndc]
-                  , isnull([drug_id], 999999)
-                  , [brand_name]
+                  , isnull([medication_id], 999999)
                   , [dose]
                   , [medication_unit_id]
                   , [medication_route_id]
@@ -91,7 +90,7 @@ if '$(load_data)' in('sample', 'live')
              from   [dbo].[user_quick_list_items] as [q]
                     inner join [SiteCounts] as [cnt] on [q].[site_id] = [cnt].[site_id]
              order by [q].[site_id]
-                    , [q].[brand_name];
+                    , isnull([medication_id], 999999);
 
         --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

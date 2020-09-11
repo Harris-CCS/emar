@@ -1,6 +1,6 @@
 print 'Loading Table: preferred_frequency_schedules';
 
-drop table if exists [#drug_ids];
+drop table if exists [#medication_ids];
 
 drop table if exists [#frequency_schedule_ids];
 
@@ -31,24 +31,24 @@ if '$(load_data)' = 'live'
                  from   [frequency_schedules]
                  where  [site_id] > 0),
              cte_meds
-             as (select [fdb].[MEDID] as                        [drug_id]
+             as (select [med].[id] as                        [medication_id]
                       , [src].[site_id]
-                      , ([fdb].[MEDID] % @max_med_group) + 1 as [group_id]
+                      , ([med].[id] % @max_med_group) + 1 as [group_id]
                  from   [cte_sites] as [src]
-                        cross join [dbo].[fdb_brand_name] as [fdb])
+                        cross join [dbo].[medications] as [med])
              select *
-             into [#drug_ids]
+             into [#medication_ids]
              from   [cte_meds];
 
         insert into [dbo].[preferred_frequency_schedules]
-            ([drug_id]
+            ([medication_id]
            , [frequency_schedule_id]
            , [site_id]
             )
-        select [d].[drug_id]
+        select [d].[medication_id]
              , [fs].[frequency_schedule_id]
              , [d].[site_id]
-        from   [#drug_ids] as [d]
+        from   [#medication_ids] as [d]
                cross join [#frequency_schedule_ids] as [fs]
         where  [d].[site_id] = [fs].[site_id]
                and [d].[group_id] = [fs].[group_id];
@@ -58,6 +58,6 @@ if '$(load_data)' = 'live'
 ****************/
     end;
 
-drop table if exists [#drug_ids];
+drop table if exists [#medication_ids];
 
 drop table if exists [#frequency_schedule_ids];

@@ -2,10 +2,11 @@ create procedure [dbo].[export_ibex_group_list_items]
 as
     begin
 
-        create table [#group_list_items]
+        create table [#group_list_items_proc]
             (
               [site_id]               [varchar](40) not null
             , [group_name]            [nvarchar](255) not null
+            , [group_type]            [varchar](5) not null
             , [ndc]                   [varchar](32) null
             , [drug_id]               [varchar](32) null
             , [brand_name]            [nvarchar](255) not null
@@ -15,23 +16,52 @@ as
             , [frequency_schedule_id] [int] null
             , [order_notes]           [nvarchar](max) null);
 
-        insert into [#group_list_items]
-        select [grp].[site] as                [site_id]
-             , rtrim(ltrim([cde].[name])) as  [group_name]
-             , rtrim(ltrim([grp].[code])) as  [ndc]
-             , '' as                          [drug_id]
-             , rtrim(ltrim([grp].[name])) as  [brand_name]
-             , rtrim(ltrim([grp].[dose])) as  [dose]
-             , rtrim(ltrim([grp].[unit])) as  [medication_unit_id]
-             , rtrim(ltrim([grp].[route])) as [medication_route_id]
-             , 0 as                           [frequency_schedule_id]
-             , [grp].[notes] as               [order_notes]
-        from   [ibex].[dbo].[grp]
-               inner join [ibex].[dbo].[cde] on [grp].[num] = [cde].[num]
-        where  [grp].[type] = 'M';
+        insert into [#group_list_items_proc]
+        --Part 1 combo medications
+        select [detail].[site] as                  [site_id]
+             , rtrim(ltrim([combo].[name])) as     [combo_med_name]
+             , 'CM' as                             [group_type]
+             , rtrim(ltrim([detail].[code])) as    [ndc]
+             , rtrim(ltrim([detail].[form_id])) as [drug_id]
+             , rtrim(ltrim([detail].[name])) as    [brand_name]
+             , rtrim(ltrim([detail].[dose]))
+             , rtrim(ltrim([detail].[unit])) as    [medication_unit_id]
+             , rtrim(ltrim([detail].[route])) as   [medication_route_id]
+             , 0 as                                [frequency_schedule_id]
+             , rtrim(ltrim([detail].[notes])) as   [notes]
+        from     ibex.dbo.[cde] as [parent]
+                 inner join ibex.dbo.[cde] as [combo] on [combo].[grptype] = [parent].[num]
+                 inner join ibex.dbo.[grp] as [detail] on [detail].[num] = [combo].[num]
+        where   [parent].[type] = 'T'
+                and [parent].[altcode] = 'X'--X=Combo
+                and [detail].[type] = 'M'--Medication
+        --Part 2 Group Meds
+        union
+        select [detail].[site]
+             , rtrim(ltrim([combo].[name])) as     [group_name]
+             , case
+                   when [detail].[type] = 'X'
+                       then 'GX'
+                   else 'GM'
+               end as                              [group_type]
+             , rtrim(ltrim([detail].[code])) as    [ndc]
+             , rtrim(ltrim([detail].[form_id])) as [drug_id]
+             , rtrim(ltrim([detail].[name])) as    [fdb_brand_name]
+             , rtrim(ltrim([detail].[dose]))
+             , rtrim(ltrim([detail].[unit])) as    [medication_unit_id]
+             , rtrim(ltrim([detail].[route])) as   [medication_route_id]
+             , 0 as                                [frequency_schedule_id]
+             , rtrim(ltrim([detail].[notes])) as   [notes]
+        from   ibex.dbo.[cde] as [parent]
+               inner join ibex.dbo.[cde] as [combo] on [combo].[grptype] = [parent].[num]
+               inner join ibex.dbo.[grp] as [detail] on [detail].[num] = [combo].[num]
+        where  [parent].[type] = 'T'
+               and [parent].[altcode] <> 'X'--X=Combo
+               and [detail].[type] in('M', 'X');--Medication
 
         select [site_id]
              , [group_name]
+             , [group_type]
              , [ndc]
              , [drug_id]
              , [brand_name]
@@ -50,6 +80,7 @@ as
         (
             select [grp].[site_id]
                  , [grp].[group_name]
+                 , [grp].[group_type]
                  , [grp].[ndc]
                  , [grp].[drug_id]
                  , [grp].[brand_name]
@@ -60,7 +91,7 @@ as
                  , [grp].[order_notes]
                  , [name_part].[ItemNumber]
                  , [name_part].[Item]
-            from   [#group_list_items] as [grp]
+            from   [#group_list_items_proc] as [grp]
                    outer apply [dbo].[delimited_split_8k]
                 ([brand_name], ':') as [name_part]
         ) as [t] pivot(max([item]) for [itemnumber] in([1]
@@ -106,25 +137,31 @@ as
             [dose] = '0'
         where  isnumeric([dose]) = 0;
 
+        update [#group_list_items_parsed] set    
+            [brand_name] = left([brand_name], charindex(':', [brand_name]) - 1)
+        where  charindex(':', [brand_name]) > 0;
+
         select [result].[site_id]
              , [result].[group_name]
+             , [result].[group_type]
              , [result].[ndc]
              , [result].[drug_id]
-             , [result].[brand_name]
+             , rtrim(ltrim([result].[brand_name])) as [brand_name]
              , [result].[dose]
              , [result].[medication_unit_id]
              , [result].[medication_route_id]
              , [result].[frequency_schedule_id]
              , [result].[order_notes]
         from   [#group_list_items_parsed] as [result]
-        order by [result].[group_name]
+        order by [result].[group_type]
+               , [result].[group_name]
                , [result].[ndc]
                , [result].[brand_name]
                , [result].[site_id]
                , [result].[medication_unit_id]
                , cast([result].[order_notes] as varchar(1000));
 
-        drop table if exists [#group_list_items];
+        drop table if exists [#group_list_items_proc];
         drop table if exists [#group_list_items_parsed];
     end;
 go

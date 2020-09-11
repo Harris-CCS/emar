@@ -308,7 +308,7 @@ select [site].[site_id]
      , [fs].[interval_start_time]
      , [fs].[interval_end_minutes]
      , [fs].[notes]
-     , 0 [point_in_time]
+     , 1 [point_in_time]
 from   [#frequency_schedules] as [fs]
        cross join
 (
@@ -360,6 +360,12 @@ select [frequency_schedule_id]
      , [frequency_day]
      , [frequency_time]
 from   [#frequency_interval_day_times_resolve];
+
+
+update [dbo].[frequency_schedules] set    
+    [point_in_time] = 0
+where  [name] like '%contin%'
+and [point_in_time] = 1;
 
 end;
 

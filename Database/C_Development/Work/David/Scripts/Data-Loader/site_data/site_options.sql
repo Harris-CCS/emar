@@ -12,7 +12,8 @@ declare
   , @MEDINPAT              varchar(25) = 'N'
   , @MEDOUTPAT             varchar(25) = 'N'
   , @MEDPYXIS              varchar(25) = 'N'
-  , @MEDEXACTMATCH         varchar(25) = 'N';
+  , @MEDEXACTMATCH         varchar(25) = 'N'
+  , @DRUG_DB_VENDOR        varchar(25) = 'F';
 
 drop table if exists [#site_options];
 
@@ -50,6 +51,8 @@ select [site].[id] as   [site_id]
                then @MEDPYXIS
            when [option].[name] = 'MEDEXACTMATCH'
                then @MEDEXACTMATCH
+           when [option].[name] = 'DRUG_DB_VENDOR'
+               then @DRUG_DB_VENDOR
            else 'DEFAULT_NOT_DEFINED'
        end as           [option_value]
 from   [dbo].[sites] as [site]

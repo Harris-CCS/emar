@@ -21,7 +21,9 @@ create table [#patient_orders]
     , [prn]                     [bit] not null
     , [point_in_time]           [bit] not null
     , [order_status]            [varchar](10) not null
-    , [order_notes]             [nvarchar](max) null);
+    , [order_notes]             [nvarchar](max) null
+    , [medication_id]           [int] null
+                                      default 0);
 
 if '$(load_data)' = 'live'
    and exists
@@ -70,6 +72,29 @@ if
 
         begin transaction;
 
+        truncate table [#medication_items];
+        insert into [#medication_items]
+            ([ndc]
+           , [drug_id]
+           , [brand_name]
+            )
+        select distinct 
+               isnull([ndc], '')
+             , isnull([drug_id], '')
+             , isnull([brand_name], '')
+        from   [#patient_orders];
+
+        --set medication id's
+        execute [dbo].[update_medication_id_list];
+
+        update [target] set    
+            [medication_id] = [source].[medication_id]
+        from   [#medication_items] [source]
+               inner join [#patient_orders] [target] on [source].[ndc] = [target].[ndc]
+                                                        and [source].[brand_name] = [target].[brand_name]
+                                                        and [source].[drug_id] = [target].[drug_id]
+        where  [source].[medication_id] > 0;
+
 /****************************************
         load temporary tables for staging
 ****************************************/
@@ -111,9 +136,6 @@ if
            , [order_physician_user_id]
            , [begin_datetime]
            , [end_datetime]
-           , [ndc]
-           , [drug_id]
-           , [brand_name]
            , [dose]
            , [medication_unit_id]
            , [medication_route_id]
@@ -123,6 +145,7 @@ if
            , [point_in_time]
            , [order_status]
            , [order_notes]
+           , [medication_id]
             )
         select isnull([internal_patient_id].[id], -1) as             [patient_id]
              , isnull([internal_add_user_id].[id], 0) as             [add_user_id]
@@ -130,9 +153,6 @@ if
              , isnull([internal_order_physician_user_id].[id], 0) as [order_physician_user_id]
              , [dbo].[ibex_date_to_offset_date]([source].[begin_datetime], [site].[time_zone_name]) as  [begin_datetime]
              , [dbo].[ibex_date_to_offset_date]([source].[end_datetime], [site].[time_zone_name]) as    [end_datetime]
-             , [source].[ndc]
-             , [source].[drug_id]
-             , [source].[brand_name]
              , [source].[dose]
              , [mu].[id] as                                          [medication_unit_id]
              , [mr].[id] as                                          [medication_routes_id]
@@ -142,6 +162,7 @@ if
              , [source].[point_in_time]
              , [source].[order_status]
              , [source].[order_notes]
+             , [source].[medication_id]
         from   [#patient_orders] as [source]
                outer apply [dbo].[get_internal_id]('pulsecheck', 'patients', [source].[patient_id]) as [internal_patient_id]
                left join [dbo].[patients] as [patients] on [patients].[id] = [internal_patient_id].[id]
@@ -154,6 +175,7 @@ if
                                                               and [mr].[name] = [source].[medication_route_id]
                left join [dbo].[medication_units] as [mu] on [mu].[site_id] = [mu_site].[site_id]
                                                              and [mu].[code] = [source].[medication_unit_id]
+        where [source].[medication_id]>0
         order by [brand_name]
                , [patient_id];
 

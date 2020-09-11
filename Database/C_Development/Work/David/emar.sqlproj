@@ -50,6 +50,7 @@
     <DefineTrace>true</DefineTrace>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <SqlTargetName>emar</SqlTargetName>
   </PropertyGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
@@ -217,6 +218,10 @@
     <Build Include="Programmability\Stored Procedures\update_weekly_usage_rolling_average.sql" />
     <None Include="Scripts\Data-Loader\development_data\hsi-an.sql" />
     <None Include="Scripts\Data-Loader\development_data\bradley_data_II.sql" />
+    <Build Include="Tables\medication_details.sql" />
+    <Build Include="Tables\medications.sql" />
+    <None Include="Scripts\Data-Loader\global_data\fdb_medications_loader.sql" />
+    <Build Include="Programmability\Stored Procedures\update_medication_id_list.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />
