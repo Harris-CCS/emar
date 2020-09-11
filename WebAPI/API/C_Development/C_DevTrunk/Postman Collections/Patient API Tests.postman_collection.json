@@ -45,14 +45,14 @@
 					}
 				],
 				"url": {
-					"raw": "{{URL}}/api/patients/999999999",
+					"raw": "{{URL}}/api/patients/8581",
 					"host": [
 						"{{URL}}"
 					],
 					"path": [
 						"api",
 						"patients",
-						"999999999"
+						"8581"
 					]
 				}
 			},
@@ -1667,6 +1667,16 @@
 						{
 							"key": "extId2",
 							"value": "20190524094230"
+						},
+						{
+							"key": "extId2",
+							"value": "20200611095741",
+							"disabled": true
+						},
+						{
+							"key": "extId1",
+							"value": "1",
+							"disabled": true
 						}
 					]
 				}

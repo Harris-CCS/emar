@@ -6,7 +6,6 @@ using System.Text;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Emar.Data.Helpers
 {
@@ -21,19 +20,19 @@ namespace Emar.Data.Helpers
             _context = context;
         }
 
-        public EfDiscrepancyReport CompareEfToDb()
+        public EfDiscrepancyReport CompareEfToDb(EfToDbSynchHelperParams parms)
         {
             List<EfTableAttributes> tables = 
                 new List<EfTableAttributes>(SurveyEfEntities().OrderBy(t => t.EntityName));
 
-#if TestingInternalDatatypeProblems
-            //for (int i = tables.Count - 1; i > 0; i--)
-            //{
-            //    if (tables[i].EntityName == "PatientCartOrder") continue;
-            //    tables.RemoveAt(i);
-            //}
-            while (tables.Count > 1)
-                tables.RemoveAt(1);
+#if TestingEfUtility
+            var tablesToKeep = ",BradNameChild,BradNameParent,"
+            for (int i = tables.Count - 1; i > 0; i--)
+            {
+                if (tablesToKeep.Contains("," + tables[i].EntityName + ",") 
+                    continue;
+                tables.RemoveAt(i);
+            }
 
             // Check the bottom of this file for definition of the example SQL table
 #endif
@@ -41,7 +40,7 @@ namespace Emar.Data.Helpers
             if (ProblemsExitInEfDefinitions(tables, out EfDiscrepancyReport report))
                 return report;
 
-            CompareSurveyToDatabase(tables, report);
+            CompareSurveyToDatabase(tables, parms.EntitiesNotMapped, report);
 
             if (!report.Files.Any()) return null;
 
@@ -59,7 +58,7 @@ namespace Emar.Data.Helpers
                     new EfTableAttributes
                     {
                         EntityName = entity.Name,
-                        SqlTableName = entity.GetTableName(),
+                        SqlTableName = entity.GetTableName()
                     };
 
                 var columns = new List<EfColumnAttributes>();
@@ -87,17 +86,19 @@ namespace Emar.Data.Helpers
                 var foreignKeys = new List<EfForeignKeyAttributes>();
                 foreach (var fk in entity.GetForeignKeys())
                 {
-                    EfForeignKeyAttributes fkObj = new EfForeignKeyAttributes();
-                    fkObj.DeclaringEntityType = fk.DeclaringEntityType;
-                    fkObj.DeclaringEntityProperties = fk.Properties;
-                    fkObj.DeclaringEntityNavigationProperty = fk.DependentToPrincipal.Name;
-                    
-                    fkObj.PrincipalEntityType = fk.PrincipalEntityType;
-                    fkObj.PrincipalEntityNavigationProperty = fk.PrincipalToDependent.Name;
+                    EfForeignKeyAttributes fkObj = new EfForeignKeyAttributes
+                    {
+                        DeclaringEntityType = fk.DeclaringEntityType,
+                        DeclaringEntityProperties = fk.Properties,
+                        DeclaringEntityNavigationProperty = fk.DependentToPrincipal.Name,
+                        PrincipalEntityType = fk.PrincipalEntityType,
+                        PrincipalEntityNavigationProperty = fk.PrincipalToDependent.Name,
+                        DeleteBehavior = fk.DeleteBehavior,
+                        ConstraintName = fk.GetConstraintName()
+                    };
 
 
-                    fkObj.DeleteBehavior = fk.DeleteBehavior;
-                    fkObj.ConstraintName = fk.GetConstraintName();
+
 
                     //var DependentToPrincipal = fk.DependentToPrincipal;
                     //var IsOwnership = fk.IsOwnership;
@@ -144,6 +145,19 @@ namespace Emar.Data.Helpers
             internal List<EfColumnAttributes> Columns { get; set; }
             internal List<EfForeignKeyAttributes> ForeignKeys { get; set; }
             public String SqlTableName { get; set; }
+        }
+
+        internal class EfForeignKeyAttributes
+        {
+            public IEntityType DeclaringEntityType;
+            public IEnumerable<IProperty> DeclaringEntityProperties { get; set; }
+            internal string DeclaringEntityNavigationProperty { get; set; }
+
+            public IEntityType PrincipalEntityType { get; set; }
+
+            public DeleteBehavior DeleteBehavior { get; set; }
+            public string ConstraintName { get; set; }
+            public string PrincipalEntityNavigationProperty { get; set; }
         }
 
         internal class EfColumnAttributes
@@ -397,24 +411,12 @@ namespace Emar.Data.Helpers
             }
         }
 
-        internal class EfForeignKeyAttributes
-        {
-            public IEntityType DeclaringEntityType;
-            public IEnumerable<IProperty> DeclaringEntityProperties { get; set; }
-            internal string DeclaringEntityNavigationProperty { get; set; }
-
-            public IEntityType PrincipalEntityType { get; set; }
-
-            public DeleteBehavior DeleteBehavior { get; set; }
-            public string ConstraintName { get; set; }
-            public string PrincipalEntityNavigationProperty { get; set; }
-        }
-        
         #endregion
 
         #region Model Checking
 
-        private void CompareSurveyToDatabase(List<EfTableAttributes> tables, EfDiscrepancyReport report)
+        private void CompareSurveyToDatabase(List<EfTableAttributes> tables, List<string> entitiesNotMapped,
+            EfDiscrepancyReport report)
         {
             // Create a list of tables that need to be removed from the model because they don't exist in the DB
             var tablesToRemove = new List<EfTableAttributes>();
@@ -423,6 +425,13 @@ namespace Emar.Data.Helpers
                 conn.Open();
                 foreach (var tbl in tables)
                 {
+                    if (entitiesNotMapped.Contains(tbl.EntityName))
+                    {
+                        // Add to the list of tables to remove below so that we don't claim all columns are missing
+                        tablesToRemove.Add(tbl);
+                        continue;
+                    }
+
                     using (var comm = new SqlCommand($"SELECT count(*) FROM sys.tables WHERE name = '{tbl.SqlTableName}'",
                         conn))
                     {
@@ -463,14 +472,10 @@ namespace Emar.Data.Helpers
             foreach (var table in tablesToRemove) 
                 tables.Remove(table);
 
-            foreach (var table in tables)
+            foreach (var column in tables.SelectMany(table => table.Columns.Where(column => !column.ExistsInDb)))
             {
-                foreach (var column in table.Columns)
-                {
-                    if (!column.ExistsInDb)
-                        report.RegisterProblem(column, FileSegment.EntityProperties,
-                            ReportProblem.ColumnNotInDatabase, null);
-                }
+                report.RegisterProblem(column, FileSegment.EntityProperties,
+                    ReportProblem.ColumnNotInDatabase, null);
             }
         }
 
@@ -589,6 +594,8 @@ namespace Emar.Data.Helpers
                     case ReportProblem.ColumnNotInDatabase:
                     case ReportProblem.DbDataTypeNotMatchDefinedSqlType:
                     case ReportProblem.DataTypeNullableButColumnDoesntTakeNulls:
+                    case ReportProblem.PropertyImproperlyFlaggedAsKey:
+                    case ReportProblem.PropertyNotFlaggedAsKey:
                         file = GetFile(problemColumn.Parent.SqlTableName, problemColumn.Parent.EntityName);
                         segmentObj = file.GetFileSegment(FileSegment.EntityProperties);
                         segmentObj.CorrectionFragments.Add(
@@ -777,6 +784,8 @@ namespace Emar.Data.Helpers
                     case ReportProblem.AnnotationSqlDatatypeNotMatchClrDatatype:
                     case ReportProblem.DbDataTypeNotMatchDefinedSqlType:
                     case ReportProblem.DataTypeNullableButColumnDoesntTakeNulls:
+                    case ReportProblem.PropertyNotFlaggedAsKey:
+                    case ReportProblem.PropertyImproperlyFlaggedAsKey:
                         CorrectionCode =
                             "// Update Property in Entity file" + Environment.NewLine + 
                             (string.IsNullOrWhiteSpace(problemDetails) ? ""
@@ -852,7 +861,8 @@ namespace Emar.Data.Helpers
                 {
                     case ReportProblem.DbTableMissing:
                         CorrectionCode =
-                            $"The DB Table {problemDetails} doesn't exist.  Remove this file from the project." +
+                            $"The DB Table {problemDetails} doesn't exist. " + Environment.NewLine +
+                            "Remove this file from the project, or add it to the \"EntitiesNotMapped\" list in the body of the \"Confirm\" call)." +
                             Environment.NewLine +
                             $"This will also cause you to have to update the {CONTEXT_NAME} to remove the corresponding DB Set" +
                             Environment.NewLine +
@@ -1024,7 +1034,7 @@ namespace Emar.Data.Helpers
         TableLevel
     }
 
-#if TestingInternalDatatypeProblems
+#if TestingEfUtility
 
 /**** Go to "C:\Users\bm70142\OneDrive - harriscomputer\Documents\PulseCheck work\Testing Data for EfToDbSynchHelper.sql"
  **** for SQL data to create sample tables */

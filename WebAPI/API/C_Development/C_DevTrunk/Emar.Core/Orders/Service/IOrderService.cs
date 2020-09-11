@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Emar.Core.Carts.Model;
 using Emar.Core.Helpers;
 using Emar.Core.Orders.Model;
 using Emar.Core.ResourceParameters;
@@ -19,6 +20,7 @@ namespace Emar.Core.Orders.Service
         // User Quick List services
         UserQuickListFrameworkDto GetInitialUserQuickList(in int userId, int? siteId, string tabLinkBase, string orderLinkBase);
         IEnumerable<UserQuickListItemDto> GetQuickListTab(in int userId, int? siteId, string orderLinkBase, string tab);
+        CartOrderDto CopyQuickListItemToCart(in int userId, in int quickListItemId, long patientId);
 
         // Department Preferred List services
         IEnumerable<DepartmentPreferredItemDto> GetDepartmentPreferredList(in int siteId, string departmentCode, string linkBase);

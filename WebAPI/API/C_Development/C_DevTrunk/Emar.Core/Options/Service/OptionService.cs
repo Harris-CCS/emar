@@ -1,4 +1,5 @@
-﻿using Emar.Core.Options.Repository;
+﻿using Emar.Core.Options.Model;
+using Emar.Core.Options.Repository;
 
 namespace Emar.Core.Options.Service
 {
@@ -11,7 +12,7 @@ namespace Emar.Core.Options.Service
             _optionRepository = optionRepository;
         }
 
-        public string GetOption(int siteId, string optionName)
+        public string GetOption(int siteId, OptionNames optionName)
         {
             return _optionRepository.GetOption(siteId, optionName);
         }

@@ -14,9 +14,6 @@ namespace Emar.Core.Helpers
     public static class AppConstants
     {
         public const string ImagesRoute = @"api/images";
-        public const string LongDateFormat = @"LONG_DATE_FORMAT";
-        public const string PatientImagePath = @"PATIENT_IMAGE_PATH";
-        public const string CustomIndicatorImagePath = @"CUSTOM_INDICATORS_IMAGE_PATH";
     }
 
     public static class StringExtensions

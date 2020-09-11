@@ -23,7 +23,7 @@
 									"var jsonData = pm.response.json();\r",
 									"\r",
 									"pm.test(\"First order's Frequency = 8\", function () {\r",
-									"    pm.expect(jsonData.orders[0].frequencyId).to.eql(8);\r",
+									"    pm.expect(jsonData.orders[0].frequencySchedule.id).to.eql(8);\r",
 									"});\r",
 									"\r",
 									"pm.test(\"some orders have frequency\", function () {\r",
