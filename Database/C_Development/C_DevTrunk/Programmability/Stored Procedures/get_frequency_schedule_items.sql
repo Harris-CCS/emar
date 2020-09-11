@@ -1,7 +1,7 @@
 create procedure [dbo].[get_frequency_schedule_items] 
       @frequency_schedule_id [int]               = 0
-    , @schedule_period_begin   [datetimeoffset](7) = null ---(when auto generating new orders time, this will be the last order administration datetime scheduled on the frequencyID)
-    , @schedule_period_end     [datetimeoffset](7) = null
+    , @schedule_period_begin [datetimeoffset](7) = null ---(when auto generating new orders time, this will be the last order administration datetime scheduled on the frequencyID)
+    , @schedule_period_end   [datetimeoffset](7) = null
 as
     begin
 
@@ -77,10 +77,9 @@ as
                 set @time_period_end_offset = datediff(minute, @schedule_period_begin, @schedule_period_end);
             end;
 
-        select    [sched].[frequency_schedules_id]
-                , [sched].[frequency_schedule_name]
-                --, [sched].[sched_datetime] as [sched_datetime_tz]
+        select    [sched].[point_in_time]
                 , [sched].[sched_datetime]  at time zone @local_time_zone_name as                                         [sched_datetime_tz]
+                , [sched].[sched_stop_datetime] at time zone @local_time_zone_name as                                     [stop_datetime_tz]
         from
         (
             -------- Reccuring Fixed Times
@@ -88,7 +87,9 @@ as
                    order by [cal].[the_date]) as                                                                          [sched_order]
                  , [fs].[id] as                                                                                           [frequency_schedules_id]
                  , [fs].[name] as                                                                                         [frequency_schedule_name]
+                 , [fs].[point_in_time] as                                                                                [point_in_time]
                  , cast(cast([cal].[the_date] as datetime) + cast([fjd].[frequency_time] as datetime) as datetime2(7)) as [sched_datetime]
+                 , cast(null as datetime2(7)) as                                                                          [sched_stop_datetime]
                  , [fs].[frequency_type_recurring]
             from     [dbo].[frequency_schedules] as [fs]
                      inner join [dbo].[frequency_interval_day_times] as [fjd] on [fs].[id] = [fjd].[frequency_schedule_id]
@@ -99,24 +100,28 @@ as
                     and [fs].[id] = @frequency_schedule_id
                     and [fs].[frequency_interval] = 0
                     and [ft].[name] in(N'Daily', N'Weekly')
-            -------- one time order
             union
+            -------- one time order
             select 1 as                                         [sched_order]
                  , [fs].[id] as                                 [frequency_schedules_id]
                  , [fs].[name] as                               [frequency_schedule_name]
+                 , [fs].[point_in_time] as                      [point_in_time]
                  , cast(@local_current_time as datetime2(7)) as [sched_datetime]
+                 , cast(null as datetime2(7)) as                [sched_stop_datetime]
                  , [fs].[frequency_type_recurring]
             from     [dbo].[frequency_schedules] as [fs]
                      inner join [dbo].[frequency_types] as [ft] on [ft].[id] = [fs].[frequency_type_id]
             where   [fs].[id] = @frequency_schedule_id
-                    and [ft].[name] in('One Time', 'STAT', 'PRN', 'Continuous')
-            -------- Reccuring Interval Times
+                    and [ft].[name] in('One Time', 'STAT', 'Continuous')
             union
+            ---------- Reccuring Interval Times
             select       dense_rank() over(
                          order by [cal].[the_date]) as                                                                          [sched_order]
                        , [fs].[id] as                                                                                           [frequency_schedules_id]
                        , [fs].[name] as                                                                                         [frequency_schedule_name]
+                       , [fs].[point_in_time] as                                                                                [point_in_time]
                        , cast(cast([cal].[the_date] as datetime) + cast([fjt].[frequency_time] as datetime) as datetime2(7)) as [sched_datetime]
+                       , cast(null as datetime2(7)) as                                                                          [sched_stop_datetime]
                        , [fs].[frequency_type_recurring]
             from           [dbo].[frequency_schedules] as [fs]
                            inner join [dbo].[frequency_interval_day_times] as [fjd] on [fs].[id] = [fjd].[frequency_schedule_id]
@@ -145,11 +150,13 @@ as
                   and [ft].[name] in(N'Daily', N'Weekly')
                   and [fs].[frequency_interval] > 0
             union
-            -------- Interval Schedule
-            select    1 as                      [sched_order]
-                    , [fs].[id] as              [frequency_schedules_id]
-                    , [fs].[name] as            [frequency_schedule_name]
-                    , [fjt].[frequency_time] as [sched_datetime]
+            ---------- Interval Schedule
+            select    1 as                          [sched_order]
+                    , [fs].[id] as                  [frequency_schedules_id]
+                    , [fs].[name] as                [frequency_schedule_name]
+                    , [fs].[point_in_time] as       [point_in_time]
+                    , [fjt].[frequency_time] as     [sched_datetime]
+                    , cast(null as datetime2(7)) as [sched_stop_datetime]
                     , [fs].[frequency_type_recurring]
             from      [dbo].[frequency_schedules] as [fs]
                       inner join [dbo].[frequency_interval_units] as [fi] on [fi].[id] = [fs].[frequency_interval_unit_id]

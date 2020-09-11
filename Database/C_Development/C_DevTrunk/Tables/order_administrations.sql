@@ -6,7 +6,7 @@ create table [dbo].[order_administrations]
     , [on_hold]                           [bit] not null
     , [missed_dose]                       [bit] not null
     , [administration_scheduled_datetime] [datetimeoffset](7) not null
-    , [administration_input_datetime]     [datetimeoffset](7) null
+    , [administration_system_datetime]    [datetimeoffset](7) null
     , [administering_user_id]             [int] null
     , [administration_datetime]           [datetimeoffset](7) null
     , [stop_scheduled_datetime]           [datetimeoffset](7) null
@@ -53,7 +53,7 @@ go
     Indexes
 ***************/
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Primary Key Constraint'
   , @level0type = N'SCHEMA'
@@ -69,7 +69,7 @@ go
     Table
 ***************/
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'This table contains: order administrations'
   , @level0type = N'SCHEMA'
@@ -83,7 +83,7 @@ go
     Columns
 ***************/
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Auto increment table ID'
   , @level0type = N'SCHEMA'
@@ -94,7 +94,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'id';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Foreign Key to patient_order_id table'
   , @level0type = N'SCHEMA'
@@ -105,7 +105,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'patient_order_id';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'point_in_time'
   , @level0type = N'SCHEMA'
@@ -116,7 +116,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'point_in_time';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'on_hold'
   , @level0type = N'SCHEMA'
@@ -127,7 +127,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'on_hold';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'missed_dose'
   , @level0type = N'SCHEMA'
@@ -138,7 +138,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'missed_dose';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'administration_scheduled_datetime'
   , @level0type = N'SCHEMA'
@@ -149,7 +149,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'administration_scheduled_datetime';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'administration_input_datetime'
   , @level0type = N'SCHEMA'
@@ -157,10 +157,10 @@ execute [sys].[sp_addextendedproperty]
   , @level1type = N'TABLE'
   , @level1name = N'order_administrations'
   , @level2type = N'COLUMN'
-  , @level2name = N'administration_input_datetime';
+  , @level2name = 'administration_system_datetime';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Person Idendifier that administered this record (Foreign Key to users table)'
   , @level0type = N'SCHEMA'
@@ -171,7 +171,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'administering_user_id';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'administration_datetime'
   , @level0type = N'SCHEMA'
@@ -182,7 +182,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'administration_datetime';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'stop_scheduled_datetime'
   , @level0type = N'SCHEMA'
@@ -193,7 +193,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'stop_scheduled_datetime';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'stop_input_datetime'
   , @level0type = N'SCHEMA'
@@ -204,7 +204,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'stop_input_datetime';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Person Idendifier that cancelled this record (Foreign Key to users table)'
   , @level0type = N'SCHEMA'
@@ -215,7 +215,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'stop_user_id';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'stop_datetime'
   , @level0type = N'SCHEMA'
@@ -226,7 +226,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'stop_datetime';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Person Idendifier that acknowledged this record (Foreign Key to users table)'
   , @level0type = N'SCHEMA'
@@ -237,7 +237,7 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'acknowledge_user_id';
 go
 
-execute [sys].[sp_addextendedproperty]
+execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'acknowledge_datetime'
   , @level0type = N'SCHEMA'

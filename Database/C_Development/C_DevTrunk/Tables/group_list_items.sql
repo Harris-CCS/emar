@@ -4,14 +4,12 @@ create table [dbo].[group_list_items]
     , [site_id]               [int] not null
     , [department_code]       [varchar](15) null
     , [group_name]            [nvarchar](255) not null
-    , [ndc]                   [varchar](32) null
-    , [drug_id]               [varchar](32) null
-    , [brand_name]            [nvarchar](255) not null
     , [dose]                  [decimal](11, 2) null
     , [medication_unit_id]    [int] null
     , [medication_route_id]   [int] null
     , [frequency_schedule_id] [int] null
     , [order_notes]           [nvarchar](max) null
+    , [medication_id]         [int] not null
     , constraint [pk__group_list_items__id] primary key clustered([id] asc));
 go
 
@@ -42,6 +40,10 @@ go
 
 alter table [dbo].[group_list_items]
 add constraint [fk__group_list_items__frequency_schedules] foreign key([frequency_schedule_id]) references [dbo].[frequency_schedules]([id]);
+go
+
+alter table [dbo].[group_list_items]
+add constraint [fk__group_list_items__medications] foreign key([medication_id]) references [dbo].[medications]([id]);
 go
 
 /***************
@@ -127,43 +129,10 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'group_name';
 go
 
-execute [sys].[sp_addextendedproperty] 
-    @name = N'MS_Description'
-  , @value = N'National Drug Code that identifies the brand, formulation and packaging of a drug'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'group_list_items'
-  , @level2type = N'COLUMN'
-  , @level2name = N'ndc';
 go
 
-execute [sys].[sp_addextendedproperty] 
-    @name = N'MS_Description'
-  , @value = N'External Vendor Drug Database Identifier
-    FDB: MEDID (MED Medication ID (Stable ID))
-    Multum: dnum
-These 3 columns will be carried as a set ndc,drug_id,brand_name
-while drug_id and brand_name are vendor specific concepts and can be derived from ndc number
-this will aid in display and lookup performance.
-'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'group_list_items'
-  , @level2type = N'COLUMN'
-  , @level2name = N'drug_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
-    @name = N'MS_Description'
-  , @value = N'Brand name'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'group_list_items'
-  , @level2type = N'COLUMN'
-  , @level2name = N'brand_name';
 go
 
 execute [sys].[sp_addextendedproperty] 
@@ -219,4 +188,15 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'group_list_items'
   , @level2type = N'COLUMN'
   , @level2name = N'order_notes';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'Medications identifier, Foreign Key to medications table'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'group_list_items'
+  , @level2type = N'COLUMN'
+  , @level2name = N'medication_id';
 go

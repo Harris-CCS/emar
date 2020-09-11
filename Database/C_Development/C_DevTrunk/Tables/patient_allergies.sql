@@ -5,8 +5,6 @@ create table [dbo].[patient_allergies]
     , [class]              [varchar](32) null
     , [category]           [varchar](32) null
     , [internal_drug_id]   [varchar](32) null
-    , [ndc]                [varchar](32) null
-    , [drug_id]            [varchar](32) null
     , [name]               [nvarchar](255) null
     , [alternate_name]     [nvarchar](255) null
     , [allergy_drug_id]    [varchar](32) null
@@ -25,6 +23,7 @@ create table [dbo].[patient_allergies]
     , [information_source] [varchar](25) null
     , [person_number]      [varchar](25) null
     , [account_number]     [varchar](25) null
+    , [medication_id]      [int] null
     , constraint [pk__patient_allergies__id] primary key clustered([id] asc));
 go
 
@@ -48,6 +47,10 @@ go
 
 alter table [dbo].[patient_allergies]
 add constraint [fk__users__patient_allergies__change_user_id] foreign key([change_user_id]) references [dbo].[users]([id]);
+go
+
+alter table [dbo].[patient_allergies]
+add constraint [fk__patient_allergies__medications] foreign key([medication_id]) references [dbo].[medications]([id]);
 go
 
 /***************
@@ -172,32 +175,8 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'alternate_name';
 go
 
-execute [sys].[sp_addextendedproperty] 
-    @name = N'MS_Description'
-  , @value = N'External Vendor Drug Database Identifier
-    FDB: MEDID (MED Medication ID (Stable ID))
-    Multum: dnum
-These 3 columns will be carried as a set ndc,drug_id,brand_name
-while drug_id and brand_name are vendor specific concepts and can be derived from ndc number
-this will aid in display and lookup performance.
-'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'patient_allergies'
-  , @level2type = N'COLUMN'
-  , @level2name = N'drug_id';
 go
 
-execute [sys].[sp_addextendedproperty] 
-    @name = N'MS_Description'
-  , @value = N'National Drug Code that identifies the brand, formulation and packaging of a drug'
-  , @level0type = N'SCHEMA'
-  , @level0name = N'dbo'
-  , @level1type = N'TABLE'
-  , @level1name = N'patient_allergies'
-  , @level2type = N'COLUMN'
-  , @level2name = N'ndc';
 go
 
 execute [sys].[sp_addextendedproperty] 
@@ -376,4 +355,15 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'patient_allergies'
   , @level2type = N'COLUMN'
   , @level2name = N'account_number';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'Medications identifier, Foreign Key to medications table'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'patient_allergies'
+  , @level2type = N'COLUMN'
+  , @level2name = N'medication_id';
 go

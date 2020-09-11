@@ -27,7 +27,9 @@ create table [#patient_home_medications]
     , [add_datetime]        [varchar](50) null
     , [change_user_id]      [varchar](50) null
     , [change_datetime]     [varchar](50) null
-    , [action_status]       [char](1) null);
+    , [action_status]       [char](1) null
+    , [medication_id]       [int] null
+                                  default 0);
 
 if '$(load_data)' = 'live'
    and exists
@@ -81,6 +83,29 @@ if
     begin
 
         begin transaction;
+
+        truncate table [#medication_items];
+        insert into [#medication_items]
+            ([ndc]
+           , [drug_id]
+           , [brand_name]
+            )
+        select distinct 
+               isnull([ndc], '')
+             , isnull([drug_id], '')
+             , isnull([name], '')
+        from   [#patient_home_medications];
+
+        --set medication id's
+        execute [dbo].[update_medication_id_list];
+
+        update [target] set    
+            [medication_id] = [source].[medication_id]
+        from   [#medication_items] [source]
+               inner join [#patient_home_medications] [target] on [source].[ndc] = [target].[ndc]
+                                                                  and [source].[brand_name] = [target].[name]
+                                                                  and [source].[drug_id] = [target].[drug_id]
+        where  [source].[medication_id] > 0;
 
 /****************************************
         load temporary tables for staging
@@ -140,8 +165,6 @@ if
            , [class]
            , [category]
            , [internal_drug_id]
-           , [ndc]
-           , [drug_id]
            , [name]
            , [dose]
            , [medication_unit_id]
@@ -159,13 +182,12 @@ if
            , [change_user_id]
            , [change_datetime]
            , [action_status]
+           , [medication_id]
             )
         select isnull([internal_patient_id].[id], -1) as                                                [patient_id]
              , [source].[class]
              , [source].[category]
              , [source].[internal_drug_id]
-             , [source].[ndc]
-             , [source].[drug_id]
              , [source].[name]
              , [source].[dose]
              , [mu].[id] as                                                                             [medication_unit_id]
@@ -183,6 +205,7 @@ if
              , isnull([internal_change_user_id].[id], 0) as                                             [change_user_id]
              , [dbo].[ibex_date_to_offset_date]([source].[change_datetime], [site].[time_zone_name]) as [change_datetime]
              , [source].[action_status]
+             , nullif([source].[medication_id], 0) as                [medication_id]
         from   [#patient_home_medications] as [source]
                outer apply [dbo].[get_internal_id]('pulsecheck', 'patients', [source].[patient_id]) as [internal_patient_id]
                left join [dbo].[patients] as [patients] on [patients].[id] = [internal_patient_id].[id]

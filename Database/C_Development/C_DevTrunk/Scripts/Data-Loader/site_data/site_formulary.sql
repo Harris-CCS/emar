@@ -12,7 +12,9 @@ create table [#site_formulary]
     , [service_code]       [varchar](32) null
     , [is_inpatient]       [bit] not null
     , [is_outpatient]      [bit] not null
-    , [is_pyxis]           [bit] not null);
+    , [is_pyxis]           [bit] not null
+    , [medication_id]      [int] null
+                                 default 0);
 
 if '$(load_data)' = 'live'
    and exists
@@ -51,6 +53,29 @@ if
 
         begin transaction;
 
+        truncate table [#medication_items];
+        insert into [#medication_items]
+            ([ndc]
+           , [drug_id]
+           , [brand_name]
+            )
+        select distinct 
+               isnull([ndc], '')
+             , isnull([drug_id], '')
+             , isnull([brand_name], '')
+        from   [#site_formulary];
+
+        --set medication id's
+        execute [dbo].[update_medication_id_list];
+
+        update [target] set    
+            [medication_id] = [source].[medication_id]
+        from   [#medication_items] [source]
+               inner join [#site_formulary] [target] on [source].[ndc] = [target].[ndc]
+                                                        and [source].[brand_name] = [target].[brand_name]
+                                                        and [source].[drug_id] = [target].[drug_id]
+        where  [source].[medication_id] > 0;
+
 /****************************************
         load temporary tables for staging
 ****************************************/
@@ -83,28 +108,24 @@ if
         insert into [dbo].[site_formulary]
             ([id]
            , [site_id]
-           , [ndc]
-           , [drug_id]
-           , [brand_name]
            , [hospital_drug_code]
            , [service_code]
            , [is_inpatient]
            , [is_outpatient]
            , [is_pyxis]
+           , [medication_id]
             )
         select [source].[target_id]
              , isnull([internal_site].[id], -1) as [site_id]
-             , [source].[ndc]
-             , [source].[drug_id]
-             , [source].[brand_name]
              , [source].[hospital_drug_code]
              , [source].[service_code]
              , [source].[is_inpatient]
              , [source].[is_outpatient]
              , [source].[is_pyxis]
+             , [source].[medication_id]
         from   [#site_formulary] as [source]
-               outer apply [dbo].[get_internal_id]
-            ('pulsecheck', 'sites', [source].[site_id]) as [internal_site]
+               outer apply [dbo].[get_internal_id]('pulsecheck', 'sites', [source].[site_id]) as [internal_site]
+        where  [source].[medication_id] > 0
         order by [source].[ndc]
                , [site_id];
 

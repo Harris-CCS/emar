@@ -56,7 +56,12 @@ yyyy-> Year, (e.g. 2015)'                                                       
     (7, 'MEDINPAT'                    , 'Possible Values: Y / N'                                                           ),
     (8, 'MEDOUTPAT'                   , 'Possible Values: Y / N'                                                           ),
     (9, 'MEDPYXIS'                    , 'Possible Values: Y / N'                                                           ),
-    (10,'MEDEXACTMATCH'               , 'Possible Values: Y / N'                                                           );
+    (10,'MEDEXACTMATCH'               , 'Possible Values: Y / N'                                                           ),
+    (11,'DRUG_DB_VENDOR'              , 'Drug database vendor
+  Multum   = M
+  FDB-US   = F
+  FDB-CA   = 1
+  Medispan = 2'                                                                                                            );
 
 /*************************************
         begin loading permanent tables
