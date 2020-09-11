@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Emar.Core.Helpers;
 using Emar.Core.Orders.Model;
 using Emar.Core.ResourceParameters;
@@ -21,12 +22,17 @@ namespace Emar.Core.Orders.Repository
         IEnumerable<UserQuickListItem> GetUserQuickListMostUsed(int userId, int? siteId);
         Dictionary<string, int> GetUserQuickListTabs(int userId, int? siteId);
         IEnumerable<UserQuickListItem> GetUserQuickListTabItems(int userId, int? siteId, string tab);
-        
+        UserQuickListItem GetUserQuickListItem(int quickListItemId);
+
         // Department Preferred List
         List<DepartmentPreferredListItem> GetDepartmentPreferredList(int siteId, string departmentCode, string linkBase);
 
         // Group Remembered Order List
         List<GroupListItem> GetGroupRememberedOrderItems(int siteId, string departmentCode, string linkBase);
         int GetSiteForOrder(long orderId);
+
+        // Utility Methods
+        IEnumerable<FrequencyScheduleAdministration> GetNewAdministrations(int cartOrderFrequencyId,
+            DateTimeOffset start, DateTimeOffset? stop);
     }
 }

@@ -22,6 +22,7 @@ namespace Emar.Data
         public virtual DbSet<DepartmentPreferredListItem> DepartmentPreferredListItems { get; set; }
         public virtual DbSet<ExternalIdEntity> ExternalIds { get; set; }
         public virtual DbSet<FrequencySchedule> FrequencySchedules { get; set; }
+        public virtual DbSet<FrequencyScheduleAdministration> FrequencyScheduleAdministrations { get; set; }
         public virtual DbSet<GroupListItem> GroupListItems { get; set; }
         public virtual DbSet<MedicationRoute> MedicationRoutes { get; set; }
         public virtual DbSet<MedicationUnit> MedicationUnits { get; set; }
@@ -167,6 +168,11 @@ namespace Emar.Data
                 
                 entity.Property(e => e.IsActive)
                     .HasDefaultValueSql("((1))");
+            });
+
+            modelBuilder.Entity<FrequencyScheduleAdministration>(entity =>
+            {
+                entity.HasNoKey();
             });
 
             modelBuilder.Entity<GroupListItem>(entity =>

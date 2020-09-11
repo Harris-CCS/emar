@@ -23,7 +23,7 @@ namespace Emar.Core.Orders.Model
     {
         public string DoseName { get; set; }
         public decimal Dose { get; set; }
-        public MockUnitDto DoseMockUnit { get; set; }
+        public MockUnitDto DoseUnit { get; set; }
     }
 
     public class MockUnitDto

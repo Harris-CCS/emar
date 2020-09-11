@@ -5,7 +5,7 @@ using Emar.Core.Users.Model;
 
 namespace Emar.Core.Carts.Model
 {
-    public class CartOrderDto : OrderBase
+    public class CartOrderIuDto : OrderIuBase
     {
         /// <summary>
         /// Unique patient identifier
@@ -21,8 +21,6 @@ namespace Emar.Core.Carts.Model
         /// Date and time the order was entered in the cart.  Includes the local time timezone offset from UTC.
         /// </summary>
         public DateTimeOffset AddDatetime { get; set; }
-        public string AddDate => AddDatetime.ToString(DateFormat);
-        public string AddTime => AddDatetime.ToString(TimeFormat);
 
         /// <summary>
         /// Indicates the order priority (STAT, Routine).
@@ -39,15 +37,11 @@ namespace Emar.Core.Carts.Model
         /// Date/time that the non-point-in-time administration started
         /// </summary>
         public DateTimeOffset BeginDatetime { get; set; }
-        public string BeginDate => BeginDatetime.ToString(DateFormat);
-        public string BeginTime => BeginDatetime.ToString(TimeFormat);
 
         /// <summary>
         /// Date and time the order ended.  Includes the local time timezone offset from UTC.
         /// </summary>
         public DateTimeOffset? EndDatetime { get; set; }
-        public string EndDate => EndDatetime?.ToString(DateFormat);
-        public string EndTime => EndDatetime?.ToString(TimeFormat);
 
         /// <summary>
         /// 
@@ -59,9 +53,5 @@ namespace Emar.Core.Carts.Model
         /// </summary>
         public IEnumerable<CartOrderAdministrationDto>? CartOrderAdministrations { get; set; }
 
-        /// <summary>
-        /// Provider who entered the order in the cart.
-        /// </summary>
-        public UserDto User { get; set; }
     }
 }

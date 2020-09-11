@@ -13,7 +13,7 @@ namespace Emar.Core.Patients.Model
 
         public bool Active { get; set; }
 
-        internal string DateFormat { get; set; } = "dd/MM/yyyy";
+        internal string DateFormat { get; set; } = "MM/dd/yyyy";
         internal string TimeFormat { get; set; } = "HH:mm:ss";
 
         private string _accountNumber;

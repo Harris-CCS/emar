@@ -1,17 +1,13 @@
 ﻿using System.Text.RegularExpressions;
-using Emar.Core.Medications.Model;
 
 namespace Emar.Core.Orders.Model
 {
-    public class OrderBase
+    public class OrderIuBase
     {
         /// <summary>
         /// Unique order identifier
         /// </summary>
         public long Id { get; set; }
-
-        internal string DateFormat { get; set; } = "MM/dd/yyyy";
-        internal string TimeFormat { get; set; } = "HH:mm:ss";
 
         string _ndc;
         /// <summary>
@@ -45,21 +41,11 @@ namespace Emar.Core.Orders.Model
 
         public decimal? Dose { get; set; }
 
-        internal int? MedicationUnitId { get; set; }
-        public MedicationUnitDto DoseUnit { get; set; }
+        public int? MedicationUnitId { get; set; }
+        
+        public int? MedicationRouteId { get; set; }
 
-        internal int? MedicationRouteId { get; set; }
-        /// <summary>
-        /// DTO of the Medication Route
-        /// </summary>
-        public MedicationRouteDto MedicationRoute { get; set; }
-
-
-        internal int? FrequencyId { get; set; }
-        /// <summary>
-        /// DTO of the Frequency Schedule
-        /// </summary>
-        public FrequencyScheduleDto FrequencySchedule { get; set; }
+        public int? FrequencyId { get; set; }
 
         /// <summary>
         /// Indicates whether the order is Point-In-Time.

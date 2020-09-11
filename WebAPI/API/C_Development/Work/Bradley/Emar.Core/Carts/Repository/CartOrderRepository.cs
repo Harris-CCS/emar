@@ -37,7 +37,7 @@ namespace Emar.Core.Carts.Repository
                     order.UserId == resourceParameters.UserId && order.PatientId == resourceParameters.PatientId;
             else
                 whereLambda = order =>
-                    order.UserId == resourceParameters.UserId && patientId == resourceParameters.PatientId;
+                    order.UserId == resourceParameters.UserId && order.PatientId == patientId;
 
             var orders = GetCartOrders(whereLambda);
 
@@ -58,11 +58,12 @@ namespace Emar.Core.Carts.Repository
                 .Include(order => order.CartOrderAdministrations)
                 .Include(order => order.MedicationRoute)
                 .Include(order=> order.FrequencySchedule)
+                .Include(order => order.MedicationUnit)
                 .Include(order => order.User)
-                .Include(order => order.Patient)
-                    .ThenInclude(patient => patient.Site)
-                        .ThenInclude(site => site.SiteOptions)
-                            .ThenInclude(siteOptions => siteOptions.Option)
+                //.Include(order => order.Patient)
+                //    .ThenInclude(patient => patient.Site)
+                //        .ThenInclude(site => site.SiteOptions)
+                //            .ThenInclude(siteOptions => siteOptions.Option)
                 .Where(wherePredicate)
                 .AsEnumerable();
 
@@ -88,6 +89,7 @@ namespace Emar.Core.Carts.Repository
                 catch (Exception ex)
                 {
                     transaction.Rollback();
+                    throw;
                 }
 
                 return GetOrder(cartOrder.Id, null);

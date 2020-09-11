@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Emar.Core.Carts.Model;
 using Emar.Core.Helpers;
 using Emar.Core.Medications.Model.Mappings;
 using Emar.Core.Users.Model.Mappings;
@@ -153,6 +154,38 @@ namespace Emar.Core.Orders.Model.Mappings
                         "add_quicklist_order_to_cart",
                         "POST")
                 };
+            return ret;
+        }
+
+        internal static PatientCartOrder MapUserQuickListItemToPatientCartOrder(UserQuickListItem dbObj)
+        {
+            if (dbObj == null)
+                return null;
+
+            var ret = new PatientCartOrder
+            {
+                // Properties From the OrderBase
+                Ndc = dbObj.Ndc,
+                DrugId = dbObj.DrugId,
+                BrandName = dbObj.BrandName,
+                Dose = dbObj.Dose,
+                MedicationUnitId = dbObj.MedicationUnitId,
+                MedicationRouteId = dbObj.MedicationRouteId,
+                FrequencyScheduleId = dbObj.FrequencyScheduleId,
+                //PointInTime = dbObj.point
+                OrderNotes = dbObj.OrderNotes,
+
+                // Properties from CartOrderDto
+                PatientId = -1,
+                UserId = -1,
+                AddDatetime = DateTimeOffset.Now,
+                Priority = 1,
+                Prn = false,
+                BeginDatetime = DateTimeOffset.Now,
+                //EndDatetime = ??? -- need to look at duration
+                UserQuickListItemId = dbObj.Id
+            };
+
             return ret;
         }
 

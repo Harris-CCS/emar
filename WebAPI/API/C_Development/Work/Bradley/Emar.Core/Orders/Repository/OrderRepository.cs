@@ -176,6 +176,11 @@ namespace Emar.Core.Orders.Repository
                     .ToList();
         }
 
+        public UserQuickListItem GetUserQuickListItem(int quickListItemId)
+        {
+            return _context.UserQuickListItems.FirstOrDefault(i => i.Id == quickListItemId);
+        }
+
         #endregion
 
         #region Department Preferred List Section
@@ -210,6 +215,10 @@ namespace Emar.Core.Orders.Repository
                 .Include(g => g.FrequencySchedule).ToList();
         }
 
+        #endregion
+
+        #region Utility Methods
+
         public int GetSiteForOrder(long orderId)
         {
             var x = _context.PatientOrders.Where(o => o.Id == orderId)
@@ -218,6 +227,40 @@ namespace Emar.Core.Orders.Repository
                 .FirstOrDefault();
 
             return x;
+        }
+
+        public IEnumerable<FrequencyScheduleAdministration> GetNewAdministrations(int cartOrderFrequencyId,
+            DateTimeOffset start, DateTimeOffset? stop)
+        {
+            if (cartOrderFrequencyId < 0)
+                throw new ArgumentException("Negative Frequency Schedule IDs not allowable.",
+                    nameof(cartOrderFrequencyId));
+
+            if (Math.Abs(start.Subtract(DateTimeOffset.Now).TotalHours) > 12)
+                throw new ArgumentOutOfRangeException(nameof(start), start,
+                    "Start time must be within 12 hours of \"Now\"");
+
+            if (stop != null && stop.Value < start)
+                throw new ArgumentOutOfRangeException(nameof(stop), stop,
+                    "Stop time must be after start time");
+
+            if (stop != null && stop.Value > DateTimeOffset.Now.AddDays(4))
+                throw new ArgumentOutOfRangeException(nameof(stop), stop,
+                    "Stop time must be <= 4 days from now");
+
+            IEnumerable<FrequencyScheduleAdministration> administrations;
+            if (stop == null)
+            {
+                administrations = _context.FrequencyScheduleAdministrations.FromSqlInterpolated(
+                    $"EXEC [dbo].[get_frequency_schedule_items] {cartOrderFrequencyId}, {start}").ToList();
+            }
+            else
+            {
+                administrations = _context.FrequencyScheduleAdministrations.FromSqlInterpolated(
+                    $"EXEC [dbo].[get_frequency_schedule_items] {cartOrderFrequencyId}, {start}, {stop}").ToList();
+            }
+
+            return administrations;
         }
 
         #endregion
