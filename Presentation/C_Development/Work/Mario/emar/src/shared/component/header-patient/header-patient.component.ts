@@ -33,7 +33,7 @@ export class HeaderPatientComponent implements OnInit {
   ngOnInit(): void {}
 
   getPatientFullName(): string {
-    //console.log('patient', this.patient);
+    // console.log('patientGetFullName', this.patient);
     const fullName: string =
       this.patient.fullName ||
       `${this.patient.firstName} ${
@@ -148,9 +148,9 @@ export class HeaderPatientComponent implements OnInit {
     }
   }
 
-  getCustomIndicatorImage(indicator: any): string {
-    return `../../../assets/img/${indicator.imageName}`;
-  }
+  // getCustomIndicatorImage(indicator: any): string {
+  //   return `../../../assets/img/${indicator.imageName}`;
+  // }
 
   checkForData(category: string): boolean {
     switch (category) {
@@ -163,7 +163,10 @@ export class HeaderPatientComponent implements OnInit {
         }
       }
       case 'allergies': {
-        if (!this.patient.allergies || !this.patient.allergies.length) {
+        if (
+          !this.patient.patientAllergies ||
+          !this.patient.patientAllergies.length
+        ) {
           return false;
         } else {
           this.maybeBuildAllergiesTableStructure();
@@ -171,7 +174,10 @@ export class HeaderPatientComponent implements OnInit {
         }
       }
       case 'homeMeds': {
-        if (!this.patient.homeMeds || !this.patient.homeMeds.length) {
+        if (
+          !this.patient.homeMedications ||
+          !this.patient.homeMedications.length
+        ) {
           return false;
         } else {
           this.maybeBuildHomeMedsTableStructure();
@@ -183,15 +189,6 @@ export class HeaderPatientComponent implements OnInit {
       }
     }
   }
-
-  // onExpandButtonClick(type: string): void {
-  //   if (type === 'allergies') {
-  //     this.showAllAllergies = !this.showAllAllergies;
-  //   }
-  //   if (type === 'meds') {
-  //     this.showAllMeds = !this.showAllMeds;
-  //   }
-  // }
 
   getVitalSignIconPath() {
     if (this.vsOverallIndicatorClass === 'indicator-high') {
@@ -270,7 +267,7 @@ export class HeaderPatientComponent implements OnInit {
     if (!this.vitalsTableStructure) {
       this.vitalsTableStructure = new SimpleTableComponent();
       this.vitalsTableStructure.title = 'Current Vital Signs';
-      if (this.patient.vsDateTime) {
+      if (this.patient.vsDatetime || this.patient.vsDatetimeDate) {
         this.vitalsTableStructure.appendTableHeaderCell(true, {
           isHeaderCell: true,
           data: 'Last Taken: ',
@@ -278,9 +275,12 @@ export class HeaderPatientComponent implements OnInit {
         });
         this.vitalsTableStructure.appendTableHeaderCell(false, {
           isHeaderCell: true,
-          data: this.patient.vsDateTime,
-          dataType: 'date',
-          className: 'left-align',
+          data: this.patient.vsDatetimeDate
+            ? `${this.patient.vsDatetimeDate} ${
+                this.patient.vsDatetimeTime || ''
+              }`
+            : this.patient.vsDatetime,
+          dataType: this.patient.vsDatetimeDate ? 'string' : 'date',
         });
       }
       this.vitalsTableStructure.params = {
@@ -293,12 +293,13 @@ export class HeaderPatientComponent implements OnInit {
       isHeaderCell: true,
       data: label,
       dataType: 'string',
+      className: 'align-left',
     });
     this.vitalsTableStructure.appendTableBodyCell(false, {
       isHeaderCell: false,
       data: value,
       dataType: 'string',
-      className,
+      className: `${className} align-center`,
     });
     const vsObject = {
       label,
@@ -356,32 +357,39 @@ export class HeaderPatientComponent implements OnInit {
         data: 'Comment',
       });
       // Table Data
-      for (const alg of this.patient.allergies) {
-        this.allergiesTableStructure.appendTableBodyCell(true, {
-          isHeaderCell: true,
-          data: alg.name,
-          dataType: 'string',
-        });
-        this.allergiesTableStructure.appendTableBodyCell(false, {
-          isHeaderCell: false,
-          data: alg.reaction,
-          dataType: 'string',
-        });
-        this.allergiesTableStructure.appendTableBodyCell(false, {
-          isHeaderCell: false,
-          data: alg.severity,
-          dataType: 'string',
-        });
-        this.allergiesTableStructure.appendTableBodyCell(false, {
-          isHeaderCell: false,
-          data: alg.source || ' ',
-          dataType: 'string',
-        });
-        this.allergiesTableStructure.appendTableBodyCell(false, {
-          isHeaderCell: false,
-          data: alg.comment,
-          dataType: 'string',
-        });
+      for (const alg of this.patient.patientAllergies) {
+        if (alg.isActive) {
+          this.allergiesTableStructure.appendTableBodyCell(true, {
+            isHeaderCell: true,
+            data: `${alg.name} ${alg.alternateName || ''}`,
+            dataType: 'string',
+            className: 'align-center',
+          });
+          this.allergiesTableStructure.appendTableBodyCell(false, {
+            isHeaderCell: false,
+            data: alg.reaction,
+            dataType: 'string',
+            className: 'align-center',
+          });
+          this.allergiesTableStructure.appendTableBodyCell(false, {
+            isHeaderCell: false,
+            data: alg.severity,
+            dataType: 'string',
+            className: 'align-center',
+          });
+          this.allergiesTableStructure.appendTableBodyCell(false, {
+            isHeaderCell: false,
+            data: alg.informationSource || ' ',
+            dataType: 'string',
+            className: 'align-center',
+          });
+          this.allergiesTableStructure.appendTableBodyCell(false, {
+            isHeaderCell: false,
+            data: alg.comment,
+            dataType: 'string',
+            className: 'align-center',
+          });
+        }
       }
       // console.log('allergies', this.allergiesTableStructure);
     }
@@ -423,37 +431,53 @@ export class HeaderPatientComponent implements OnInit {
         data: 'Comment',
       });
       // Table Data
-      for (const med of this.patient.homeMeds) {
-        this.homeMedsTableStructure.appendTableBodyCell(true, {
-          isHeaderCell: true,
-          data: med.name,
-          dataType: 'string',
-        });
-        this.homeMedsTableStructure.appendTableBodyCell(false, {
-          isHeaderCell: false,
-          data: med.dose,
-          dataType: 'string',
-        });
-        this.homeMedsTableStructure.appendTableBodyCell(false, {
-          isHeaderCell: false,
-          data: med.route,
-          dataType: 'string',
-        });
-        this.homeMedsTableStructure.appendTableBodyCell(false, {
-          isHeaderCell: false,
-          data: med.schedule,
-          dataType: 'string',
-        });
-        this.homeMedsTableStructure.appendTableBodyCell(false, {
-          isHeaderCell: false,
-          data: med.lastTaken || ' ',
-          dataType: 'date',
-        });
-        this.homeMedsTableStructure.appendTableBodyCell(false, {
-          isHeaderCell: false,
-          data: med.comment || ' ',
-          dataType: 'string',
-        });
+      for (const med of this.patient.homeMedications) {
+        if (med.isActive) {
+          this.homeMedsTableStructure.appendTableBodyCell(true, {
+            isHeaderCell: true,
+            data: `${med.name} ${med.alternateName || ''}`,
+            dataType: 'string',
+            className: 'align-center',
+          });
+          this.homeMedsTableStructure.appendTableBodyCell(false, {
+            isHeaderCell: false,
+            data: `${med.dose} ${
+              med.medicationUnit && med.medicationUnit.unitName
+                ? med.medicationUnit.unitName
+                : ' '
+            }`,
+            dataType: 'string',
+            className: 'align-center',
+          });
+          this.homeMedsTableStructure.appendTableBodyCell(false, {
+            isHeaderCell: false,
+            data: `${
+              med.medicationRoute && med.medicationRoute.routeName
+                ? med.medicationRoute.routeName
+                : ' '
+            }`,
+            dataType: 'string',
+            className: 'align-center',
+          });
+          this.homeMedsTableStructure.appendTableBodyCell(false, {
+            isHeaderCell: false,
+            data: med.schedule || ' ',
+            dataType: 'string',
+            className: 'align-center',
+          });
+          this.homeMedsTableStructure.appendTableBodyCell(false, {
+            isHeaderCell: false,
+            data: med.lastTaken || ' ',
+            dataType: med.lastTaken ? 'date' : 'string',
+            className: 'align-center',
+          });
+          this.homeMedsTableStructure.appendTableBodyCell(false, {
+            isHeaderCell: false,
+            data: med.comment || ' ',
+            dataType: 'string',
+            className: 'align-center',
+          });
+        }
       }
       // console.log('homeMeds', this.homeMedsTableStructure);
     }
