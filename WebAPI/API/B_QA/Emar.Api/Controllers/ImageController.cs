@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using Emar.Api.Helpers;
 using Emar.Core.Helpers;
+using Emar.Core.Options.Model;
 using Emar.Core.Patients.Service;
 using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Mvc;
@@ -157,7 +158,9 @@ namespace Emar.Api.Controllers
         {
             error = "";
 
-            Dictionary<string, string> externalRootSitePatientId = _patientService.GetExternalRootSitePatientId(number, getPatientBy, AppConstants.PatientImagePath);
+            Dictionary<string, string> externalRootSitePatientId =
+                _patientService.GetExternalRootSitePatientId(number, getPatientBy,
+                    OptionNames.PATIENT_IMAGE_PATH.ToString());
 
             if (externalRootSitePatientId == null)
             {
@@ -208,7 +211,9 @@ namespace Emar.Api.Controllers
         {
             error = "";
 
-            Dictionary<string, string> externalRootSitePatientId = _patientService.GetExternalRootSitePatientId(number, getPatientBy, AppConstants.CustomIndicatorImagePath);
+            Dictionary<string, string> externalRootSitePatientId =
+                _patientService.GetExternalRootSitePatientId(number, getPatientBy,
+                    OptionNames.CUSTOM_INDICATORS_IMAGE_PATH.ToString());
 
             if (externalRootSitePatientId == null)
             {

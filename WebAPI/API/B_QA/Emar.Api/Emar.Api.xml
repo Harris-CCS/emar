@@ -9,13 +9,11 @@
             Patient Cart Orders Controller
             </summary>
         </member>
-        <member name="M:Emar.Api.Controllers.CartOrdersController.#ctor(Emar.Core.Carts.Service.ICartOrderService,Emar.Core.Helpers.IPropertyMappingService,Emar.Core.Helpers.IPropertyCheckerService)">
+        <member name="M:Emar.Api.Controllers.CartOrdersController.#ctor(Emar.Core.Carts.Service.ICartOrderService)">
             <summary>
             Constructor
             </summary>
             <param name="cartOrderService"></param>
-            <param name="propertyMappingService"></param>
-            <param name="propertyCheckerService"></param>
         </member>
         <member name="M:Emar.Api.Controllers.CartOrdersController.GetCartOrders(System.String,System.Nullable{System.Int32},System.Nullable{System.Int64})">
             <summary>
@@ -47,7 +45,7 @@
             </param>
             <returns>An ActionResult of type CartOrderDto</returns>
         </member>
-        <member name="M:Emar.Api.Controllers.CartOrdersController.AddCartOrder(System.String,System.Nullable{System.Int32},Emar.Core.Carts.Model.CartOrderDto,System.Nullable{System.Int64})">
+        <member name="M:Emar.Api.Controllers.CartOrdersController.AddCartOrder(System.String,System.Nullable{System.Int32},Emar.Core.Carts.Model.CartOrderIuDto,System.Nullable{System.Int64})">
             <summary>
             Add a cart order for a patient the user entered.
             </summary>
@@ -68,7 +66,7 @@
             The JSON in the request body can **NOT** have Order and Administrations Ids set **OR** they **MUST** be set to 0.
             </remarks>
         </member>
-        <member name="M:Emar.Api.Controllers.CartOrdersController.UpdateCartOrder(System.String,System.Nullable{System.Int32},Emar.Core.Carts.Model.CartOrderDto,System.Int64)">
+        <member name="M:Emar.Api.Controllers.CartOrdersController.UpdateCartOrder(System.String,System.Nullable{System.Int32},Emar.Core.Carts.Model.CartOrderIuDto,System.Int64)">
             <summary>
             Update a cart order.
             </summary>
@@ -427,31 +425,34 @@
             </param>
             <returns>An IActionResult of IEnumerable of type PatientDto</returns>
         </member>
-        <member name="M:Emar.Api.Controllers.UserQuickListsController.GetUserQuickListInitial(System.Int32,System.Nullable{System.Int32},System.Nullable{System.Int64})">
+        <member name="M:Emar.Api.Controllers.UserQuickListsController.GetUserQuickListInitial(System.String,System.Int32,System.Nullable{System.Int32},System.Nullable{System.Int64})">
             <summary>
             Return initial information about a User's Quick List:
             will return the name and contents of the first Quick List tab,
             and a list of all the tabs that will return remembered orders
             </summary>
+            <param name="mediaType">Media type from the "Accept" header</param>
             <param name="userId">The user to retrieve the quick list for (provided in the header)</param>
             <param name="siteId">(Optional) The Site to retrieve the user's quick list for (if omitted, return the user's quick list for all sites)</param>
             <param name="patientId">(Optional) If provided, then HATEOAS links will be created to allow for the adding of the order directly to the patient's/user's cart</param>
             <returns></returns>
         </member>
-        <member name="M:Emar.Api.Controllers.UserQuickListsController.GetUserQuickListTab(System.Int32,System.Nullable{System.Int32},System.Nullable{System.Int64},System.String)">
+        <member name="M:Emar.Api.Controllers.UserQuickListsController.GetUserQuickListTab(System.String,System.Int32,System.Nullable{System.Int32},System.Nullable{System.Int64},System.String)">
             <summary>
             Return the contents for one tab of a User's Quick List
             </summary>
+            <param name="mediaType">Media type from the "Accept" header</param>
             <param name="userId">The user to retrieve the quick list for (provided in the header)</param>
             <param name="siteId">(Optional) The Site to retrieve the user's quick list for (if omitted, return the user's quick list for all sites)</param>
             <param name="patientId">(Optional) If provided, then HATEOAS links will be created to allow for the adding of the order directly to the patient's/user's cart</param>
             <param name="tabTitle">the tab to retrieve remembered orders for</param>
             <returns></returns>
         </member>
-        <member name="M:Emar.Api.Controllers.UserQuickListsController.CopyQuickListItemToCart(System.Int32,System.Int32,System.Int64)">
+        <member name="M:Emar.Api.Controllers.UserQuickListsController.CopyQuickListItemToCart(System.String,System.Int32,System.Int32,System.Int64)">
             <summary>
             Create an order in the user/patient's cart as a copy of the quicklist order
             </summary>
+            <param name="mediaType">Media type from the "Accept" header</param>
             <param name="userId">The user who owns the Cart</param>
             <param name="quickListItemId">The QuickList Item to move into the cart</param>
             <param name="patientId">the patient that the cart is intended for</param>

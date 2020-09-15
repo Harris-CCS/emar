@@ -25,8 +25,8 @@ namespace Emar.Core.Orders.Service
                         },
                         PreferredDoses = new List<PreferredDoseDto>
                         {
-                            new PreferredDoseDto {DoseName = "4 mg", Dose = new decimal(4.0), DoseMockUnit = new MockUnitDto{Id = 40, UnitName = "mg"}},
-                            new PreferredDoseDto {DoseName = "8 mg", Dose = new decimal(8.0), DoseMockUnit = new MockUnitDto{Id = 40, UnitName = "mg"}}
+                            new PreferredDoseDto {DoseName = "4 mg", Dose = new decimal(4.0), DoseUnit = new MockUnitDto{Id = 40, UnitName = "mg"}},
+                            new PreferredDoseDto {DoseName = "8 mg", Dose = new decimal(8.0), DoseUnit = new MockUnitDto{Id = 40, UnitName = "mg"}}
                         },
                         PreferredRoutes = new[] {new MedicationRouteDto {Id = 5, RouteName = "sublingual", SiteId = -1}},
                         PreferredFrequencies = new[]
@@ -47,8 +47,8 @@ namespace Emar.Core.Orders.Service
                         },
                         PreferredDoses = new List<PreferredDoseDto>
                         {
-                            new PreferredDoseDto {DoseName = "8 mg", Dose = new decimal(8.0), DoseMockUnit = new MockUnitDto{Id = 40, UnitName = "mg"}},
-                            new PreferredDoseDto {DoseName = "16 mg", Dose = new decimal(16.0), DoseMockUnit = new MockUnitDto{Id = 40, UnitName = "mg"}}
+                            new PreferredDoseDto {DoseName = "8 mg", Dose = new decimal(8.0), DoseUnit = new MockUnitDto{Id = 40, UnitName = "mg"}},
+                            new PreferredDoseDto {DoseName = "16 mg", Dose = new decimal(16.0), DoseUnit = new MockUnitDto{Id = 40, UnitName = "mg"}}
                         },
                         PreferredRoutes = new[] { new MedicationRouteDto {Id = 5, RouteName = "sublingual", SiteId = -1} },
                         PreferredFrequencies = new[]

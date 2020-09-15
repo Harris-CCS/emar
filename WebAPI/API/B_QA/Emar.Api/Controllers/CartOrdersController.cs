@@ -24,22 +24,20 @@ namespace Emar.Api.Controllers
     public class CartOrdersController : ControllerBase
     {
         private readonly ICartOrderService _cartOrderService;
-        private readonly IPropertyMappingService _propertyMappingService;
-        private readonly IPropertyCheckerService _propertyCheckerService;
+        //private readonly IPropertyMappingService _propertyMappingService;
+        //private readonly IPropertyCheckerService _propertyCheckerService;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="cartOrderService"></param>
-        /// <param name="propertyMappingService"></param>
-        /// <param name="propertyCheckerService"></param>
-        public CartOrdersController(ICartOrderService cartOrderService,
+        public CartOrdersController(ICartOrderService cartOrderService/*,
                                   IPropertyMappingService propertyMappingService,
-                                  IPropertyCheckerService propertyCheckerService)
+                                  IPropertyCheckerService propertyCheckerService*/)
         {
             _cartOrderService = cartOrderService ?? throw new ArgumentNullException(nameof(cartOrderService));
-            _propertyMappingService = propertyMappingService ?? throw new ArgumentNullException(nameof(propertyMappingService));
-            _propertyCheckerService = propertyCheckerService ?? throw new ArgumentNullException(nameof(propertyCheckerService));
+            //_propertyMappingService = propertyMappingService ?? throw new ArgumentNullException(nameof(propertyMappingService));
+            //_propertyCheckerService = propertyCheckerService ?? throw new ArgumentNullException(nameof(propertyCheckerService));
         }
 
         /// <summary>
@@ -159,11 +157,6 @@ namespace Emar.Api.Controllers
                 return BadRequest("User id is missing.");
             }
 
-            if (cartOrderId == null)
-            {
-                return BadRequest("Cart order id is missing.");
-            }
-
             OrdersResourceParameters resourceParameters = new OrdersResourceParameters();
 
             var order = _cartOrderService.GetOrder(cartOrderId, resourceParameters);
@@ -210,7 +203,7 @@ namespace Emar.Api.Controllers
         public ActionResult<CartOrderDto> AddCartOrder(
             [FromHeader(Name = "Accept")] string mediaType,
             [FromHeader(Name = "X-User")] int? userId,
-            [FromBody] CartOrderDto cartOrderBody,
+            [FromBody] CartOrderIuDto cartOrderBody,
             long? patientId
             )
         {
@@ -229,7 +222,7 @@ namespace Emar.Api.Controllers
                 return BadRequest("Patient id is missing.");
             }
 
-            ///  cartOrderAddDto can NOT have Order and Administrations Ids set OR they MUST be set to 0 
+            //  cartOrderAddDto can NOT have Order and Administrations Ids set OR they MUST be set to 0 
             var order = _cartOrderService.AddCartOrder(cartOrderBody);
 
             if (order == null)
@@ -237,9 +230,9 @@ namespace Emar.Api.Controllers
                 return NotFound($"New cart order for patient with id '{patientId}' from user with id '{userId}' was not added.");
             }
 
-            Response.Headers.Add("X-User", userId?.ToString() ?? "");
+            Response.Headers.Add("X-User", userId.ToString());
             return CreatedAtRoute(nameof(GetCartOrder), new { cartOrderId = order.Id }, order);
-            ///return CreatedAtRoute(nameof(GetCartOrder), new { cartOrderId = order.Id }, $"Cart order with id '{order.Id}' on patient with id '{patientId}' from user with id '{userId}' was created successfully.");
+            // return CreatedAtRoute(nameof(GetCartOrder), new { cartOrderId = order.Id }, $"Cart order with id '{order.Id}' on patient with id '{patientId}' from user with id '{userId}' was created successfully.");
         }
 
         /// <summary>
@@ -266,7 +259,7 @@ namespace Emar.Api.Controllers
         public IActionResult UpdateCartOrder(
             [FromHeader(Name = "Accept")] string mediaType,
             [FromHeader(Name = "X-User")] int? userId,
-            [FromBody] CartOrderDto cartOrderBody,
+            [FromBody] CartOrderIuDto cartOrderBody,
             long cartOrderId
             )
         {
@@ -278,11 +271,6 @@ namespace Emar.Api.Controllers
             if (userId == null)
             {
                 return BadRequest("User id is missing.");
-            }
-
-            if (cartOrderId == null)
-            {
-                return BadRequest("Cart order id is missing.");
             }
 
             var cartOrderDto = _cartOrderService.GetOrder(cartOrderId, null);
@@ -445,7 +433,7 @@ namespace Emar.Api.Controllers
 
             if (_cartOrderService.CheckoutOrders(userId, patientId))
             {
-                Response.Headers.Add("X-User", userId?.ToString() ?? "");
+                Response.Headers.Add("X-User", userId.Value.ToString());
                 return CreatedAtRoute(nameof(OrdersController.GetOrders), new { patientId }, $"Cart orders on patient with id '{patientId}' from user with id '{userId}' were signed successfully.");
             }
 

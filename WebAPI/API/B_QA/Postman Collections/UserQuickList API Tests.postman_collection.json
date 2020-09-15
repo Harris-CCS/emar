@@ -6,25 +6,26 @@
 	},
 	"item": [
 		{
-			"name": "Get user (external id)",
+			"name": "Testing Values From Database",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
-						"id": "5773f759-63d4-49ab-b48e-a4334b6499cc",
+						"id": "2ab33e9b-8a32-494e-8e24-f18ef1238d43",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
 							"});\r",
 							"\r",
+							"\r",
 							"var jsonData = pm.response.json();\r",
 							"\r",
-							"pm.test(\"Correct Name returned\", function() {\r",
-							"    pm.expect(jsonData.displayName).to.eql(\"Joe Admin He\");\r",
-							"});\r",
-							"\r",
-							"pm.environment.set(\"QuickListUserId\", jsonData.id);\r",
-							"\r",
+							"pm.environment.set(\"QuickListUserId\", jsonData.quickListUserId);\r",
+							"pm.environment.set(\"QuickListItemId\", jsonData.quickListItemId);\r",
+							"pm.environment.set(\"CartOrderPatientId\", jsonData.cartOrderPatientId);\r",
+							"pm.environment.set(\"QuickListUserIdTabCount\", jsonData.quickListUserIdTabCount);\r",
+							"pm.environment.set(\"QuickListPoundUserId\", jsonData.quickListPoundUserId);\r",
+							"pm.environment.set(\"QuickListPoundUserIdTabCount\", jsonData.quickListPoundUserIdTabCount);\r",
 							""
 						],
 						"type": "text/javascript"
@@ -32,110 +33,32 @@
 				}
 			],
 			"protocolProfileBehavior": {
-				"disabledSystemHeaders": {
-					"accept": true
-				}
+				"disableBodyPruning": true
 			},
 			"request": {
 				"method": "GET",
-				"header": [
-					{
-						"key": "Accept",
-						"value": "application/json,text/plain",
-						"type": "text"
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Ignore_UpdateSiteSixteenFrequencies\": \"with FrequencyCount as (select count(*) as [cnt] from [dbo].[frequency_schedules] where [frequency_schedules].[site_id] = 16), FrequencyIndex as (select row_number() over(order by [id]) - 1 as [idx], [frequency_schedules].[id] as [frequency_id] from [dbo].[frequency_schedules] where [frequency_schedules].[site_id] = 16), ListIndex as (select (row_number() over(order by [id]) - 1) % [FrequencyCount].[cnt] as [idx], [id] as [list_item_id] from [dbo].[user_quick_list_items] cross join [FrequencyCount]) update [d] set [frequency_schedule_id] = [f].[frequency_id] from   [dbo].[user_quick_list_items] [d] inner join [ListIndex] [l] on [d].[id] = [l].[list_item_id] inner join [FrequencyIndex] [f] on [l].[idx] = [f].[idx];\",\r\n    \"cartOrderPatientId\": \"SELECT id FROM patients WHERE site_id = 16 and last_name  = 'Robertson' and first_name = 'Frank'\",\r\n\t\"scheduleId\": \"SELECT id FROM frequency_schedules WHERE REPLACE(notes, ' ', '') = '0000,0400,0800,1200,1600,2000' AND site_id = 16\",\r\n    \"quickListUserId\": \"SELECT TOP 1 user_id FROM user_quick_list_items WHERE site_id = 16 GROUP BY user_id ORDER BY count(*) DESC\",\r\n    \"quickListItemId\": \"SELECT TOP 1 id FROM user_quick_list_items WHERE site_id = 16 and ISNULL(medication_unit_id, 0) > 0 and ISNULL(medication_route_id, 0) > 0 and user_id = <<quickListUserId>>\",\r\n    \"quickListUserIdTabCount\": \"DECLARE @userId int = <<quickListUserId>>; WITH letterCount AS (SELECT DISTINCT UPPER(SUBSTRING([brand_name], 1, 1)) as tab FROM [user_quick_list_items] WHERE UPPER(SUBSTRING([brand_name], 1, 1)) LIKE '[A-Z]' AND [user_id] = @userId) SELECT COUNT(*) + 1 + CASE WHEN EXISTS (SELECT TOP 1 1 FROM [user_quick_list_items] WHERE UPPER(SUBSTRING([brand_name], 1, 1)) NOT LIKE '[A-Z]' AND [user_id] = @userId) THEN 1 ELSE 0 END FROM letterCount;\",\r\n    \"quickListPoundUserId\": \"SELECT user_id FROM user_quick_list_items WHERE site_id = 16 AND UPPER(SUBSTRING([brand_name], 1, 1)) NOT LIKE '[A-Z]';\",\r\n    \"quickListPoundUserIdTabCount\": \"DECLARE @userId int = <<quickListPoundUserId>>; WITH letterCount AS (SELECT DISTINCT UPPER(SUBSTRING([brand_name], 1, 1)) as tab FROM [user_quick_list_items] WHERE UPPER(SUBSTRING([brand_name], 1, 1)) LIKE '[A-Z]' AND [user_id] = @userId) SELECT COUNT(*) + CASE WHEN EXISTS (SELECT TOP 1 1 FROM [user_quick_list_items] WHERE UPPER(SUBSTRING([brand_name], 1, 1)) NOT LIKE '[A-Z]' AND [user_id] = @userId) THEN 1 ELSE 0 END FROM letterCount;\",\r\n    \"Ignore\": \"UPDATE user_quick_list_items SET frequency_schedule_id = <<scheduleId>> WHERE id = <<quickListItemId>>;\",\r\n    \"Ignore2\": \"update [dbo].[user_quick_list_items] set [weekly_usage_rolling_average] = -1 where user_id = <<quickListUserId>>; set rowcount 100; update [dbo].[user_quick_list_items] set [weekly_usage_rolling_average] = 1.0 where user_id = <<quickListUserId>>; set rowcount 80; update [dbo].[user_quick_list_items] set [weekly_usage_rolling_average] = 1.0 where user_id = <<quickListUserId>>; set rowcount 60; update [dbo].[user_quick_list_items] set [weekly_usage_rolling_average] = 1.0 where user_id = <<quickListUserId>>; set rowcount 40; update [dbo].[user_quick_list_items] set [weekly_usage_rolling_average] = 1.0 where user_id = <<quickListUserId>>; set rowcount 20; update [dbo].[user_quick_list_items] set [weekly_usage_rolling_average] = 1.0 where user_id = <<quickListUserId>>; set rowcount 0;\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
 					}
-				],
+				},
 				"url": {
-					"raw": "{{URL}}/api/users?extId=10147",
+					"raw": "{{URL}}/api/testingvariables",
 					"host": [
 						"{{URL}}"
 					],
 					"path": [
 						"api",
-						"users"
-					],
-					"query": [
-						{
-							"key": "extId",
-							"value": "10147"
-						}
+						"testingvariables"
 					]
 				}
 			},
-			"response": [
-				{
-					"name": "Get user (external id)",
-					"originalRequest": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/vnd.pcemar.hateoas+json",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{URL}}/api/users?extId=10087",
-							"host": [
-								"{{URL}}"
-							],
-							"path": [
-								"api",
-								"users"
-							],
-							"query": [
-								{
-									"key": "extId",
-									"value": "10087"
-								}
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Date",
-							"value": "Tue, 14 Jul 2020 19:45:21 GMT"
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/vnd.pcemar.hateoas+json; charset=utf-8"
-						},
-						{
-							"key": "Server",
-							"value": "Kestrel"
-						},
-						{
-							"key": "Content-Length",
-							"value": "69"
-						},
-						{
-							"key": "Cache-Control",
-							"value": "public,max-age=60,must-revalidate"
-						},
-						{
-							"key": "Expires",
-							"value": "Tue, 14 Jul 2020 19:46:21 GMT"
-						},
-						{
-							"key": "Last-Modified",
-							"value": "Tue, 14 Jul 2020 19:45:21 GMT"
-						},
-						{
-							"key": "ETag",
-							"value": "\"A554A289C47FA1ED1AA601C37457C06E\""
-						},
-						{
-							"key": "Vary",
-							"value": "Accept, Accept-Language, Accept-Encoding"
-						}
-					],
-					"cookie": [],
-					"body": "{\n    \"id\": 240,\n    \"name\": \"HLAB\",\n    \"siteId\": 28,\n    \"siteName\": \"Pulsecheck Hospital\"\n}"
-				}
-			]
+			"response": []
 		},
 		{
 			"name": "GET quicklist (Initial Call: >80 Most Used)",
@@ -155,8 +78,8 @@
 							"    pm.expect(jsonData.currentTabContents.length).to.eql(80);\r",
 							"});\r",
 							"\r",
-							"pm.test(\"Returns 24 tabs\", function() {\r",
-							"    pm.expect(jsonData.tabListing.length).to.eql(24);\r",
+							"pm.test(\"Returns correct number of tabs\", function() {\r",
+							"    pm.expect(jsonData.tabListing.length.toString()).to.eql(pm.environment.get(\"QuickListUserIdTabCount\"));\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Correct Tab Name returned\", function() {\r",
@@ -240,6 +163,108 @@
 			"response": []
 		},
 		{
+			"name": "GET quicklist (Initial Call: no Most Used with #)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9c10489e-72a0-460c-a9d0-b3fb3a27955b",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Returns 20 records\", function() {\r",
+							"    pm.expect(jsonData.currentTabContents.length).to.eql(20);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Returns correct number of tabs\", function() {\r",
+							"    pm.expect(jsonData.tabListing.length.toString()).to.eql(pm.environment.get(\"QuickListPoundUserIdTabCount\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Correct Tab Name returned\", function() {\r",
+							"    pm.expect(jsonData.currentTab.tabName).to.eql(\"A\");\r",
+							"});\r",
+							"\r",
+							"const validFrequencyScheduleExists = (order) => {\r",
+							"    return order.frequencySchedule.id !== 0 && order.frequencySchedule.scheduleName !== undefined && order.frequencySchedule.scheduleName !== \"\";\r",
+							"}\r",
+							"\r",
+							"const validRouteExists = (order) => {\r",
+							"    if (order.medicationRoute === null)\r",
+							"        return false;\r",
+							"    return order.medicationRoute.id !== 0 && order.medicationRoute.routeName !== undefined && order.medicationRoute.routeName !== \"\";\r",
+							"}\r",
+							"\r",
+							"const validUnitExists = (order) => {\r",
+							"    if (order.doseUnit === null)\r",
+							"        return false;\r",
+							"    return order.doseUnit.id !== 0 && order.doseUnit.unitName !== undefined && order.doseUnit.unitName !== \"\";\r",
+							"}\r",
+							"\r",
+							"pm.test(\"All orders have a valid frequency\", function() {\r",
+							"    pm.expect(jsonData.currentTabContents.all(validFrequencyScheduleExists)).to.be.true;\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Some orders have a valid Route\", function() {\r",
+							"    pm.expect(jsonData.currentTabContents.any(validRouteExists)).to.be.true;\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Some orders have a valid Unit\", function() {\r",
+							"    pm.expect(jsonData.currentTabContents.any(validUnitExists)).to.be.true;\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json,text/plain"
+					},
+					{
+						"key": "X-User",
+						"type": "text",
+						"value": "{{QuickListPoundUserId}}"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/userquicklists?patientId=1234",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"userquicklists"
+					],
+					"query": [
+						{
+							"key": "SiteId",
+							"value": "10",
+							"disabled": true
+						},
+						{
+							"key": "patientId",
+							"value": "1234"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "GET quicklist (Subsequent: \"#\" - good site)",
 			"event": [
 				{
@@ -253,8 +278,8 @@
 							"\r",
 							"var jsonData = pm.response.json();\r",
 							"\r",
-							"pm.test(\"Returns 2 records\", function() {\r",
-							"    pm.expect(jsonData.length).to.eql(2);\r",
+							"pm.test(\"Returns 1 record\", function() {\r",
+							"    pm.expect(jsonData.length).to.eql(1);\r",
 							"});\r",
 							"\r",
 							"const validFrequencyScheduleExists = (order) => {\r",
@@ -306,11 +331,11 @@
 					{
 						"key": "X-User",
 						"type": "text",
-						"value": "{{QuickListUserId}}"
+						"value": "{{QuickListPoundUserId}}"
 					}
 				],
 				"url": {
-					"raw": "{{URL}}/api/userquicklists/tabs/%23?SiteId=28",
+					"raw": "{{URL}}/api/userquicklists/tabs/%23?SiteId=16",
 					"host": [
 						"{{URL}}"
 					],
@@ -323,7 +348,7 @@
 					"query": [
 						{
 							"key": "SiteId",
-							"value": "28"
+							"value": "16"
 						}
 					]
 				}
@@ -336,12 +361,12 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "014fcfac-2849-400e-a7af-a60461d3db42",
+						"id": "65d14327-2251-44f1-9fdf-de63298a7c40",
 						"exec": [
 							"var jsonData = pm.response.json();\r",
 							"\r",
-							"pm.test(\"Returns 53 records\", function () {\r",
-							"    pm.expect(jsonData.length).to.eql(53);\r",
+							"pm.test(\"Returns 9 records\", function () {\r",
+							"    pm.expect(jsonData.length).to.eql(9);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Status code is 200\", function () {\r",
@@ -382,7 +407,8 @@
 							"pm.test(\"Some orders have a valid Unit\", function() {\r",
 							"    pm.expect(jsonData.any(validUnitExists)).to.be.true;\r",
 							"})\r",
-							""
+							"\r",
+							"//pm.environment.set(\"QuickListItemId\", jsonData[0].id);"
 						],
 						"type": "text/javascript"
 					}
@@ -408,7 +434,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{URL}}/api/userquicklists/tabs/C?SiteId=28&patientId=12345",
+					"raw": "{{URL}}/api/userquicklists/tabs/C?SiteId=16&patientId=12345",
 					"host": [
 						"{{URL}}"
 					],
@@ -421,7 +447,7 @@
 					"query": [
 						{
 							"key": "SiteId",
-							"value": "28"
+							"value": "16"
 						},
 						{
 							"key": "patientId",
@@ -442,8 +468,8 @@
 						"exec": [
 							"var jsonData = pm.response.json();\r",
 							"\r",
-							"pm.test(\"Returns 53 records\", function() {\r",
-							"    pm.expect(jsonData.length).to.eql(53);\r",
+							"pm.test(\"Returns 9 records\", function() {\r",
+							"    pm.expect(jsonData.length).to.eql(9);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Status code is 200\", function () {\r",
@@ -545,8 +571,7 @@
 							"    var textData = pm.response.text();\r",
 							"    expectedStrings.forEach(str => pm.expect(textData).to.include(str));\r",
 							"});\r",
-							"\r",
-							"pm.environment.unset(\"QuickListUserId\");"
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -587,6 +612,113 @@
 							"key": "SiteId",
 							"value": "17"
 						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cart Order From UserQuickListItem",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "21963170-947b-4cf5-bdcc-7f6c2b6e5ae1",
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"UserQuickListItemId recorded\", function() {\r",
+							"    pm.expect(jsonData.userQuickListItemId.toString()).to.be.eql(pm.environment.get(\"QuickListItemId\"));\r",
+							"})\r",
+							"\r",
+							"pm.test(\"User Object exists\", function() {\r",
+							"    pm.expect(jsonData.user).to.not.eql(null);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Unit Object exists\", function() {\r",
+							"    pm.expect(jsonData.doseUnit).to.not.eql(null);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Frequency Object exists\", function() {\r",
+							"    pm.expect(jsonData.frequencySchedule).to.not.eql(null);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Route Object exists\", function() {\r",
+							"    pm.expect(jsonData.medicationRoute).to.not.eql(null);\r",
+							"})\r",
+							"\r",
+							"const validateAdmins = (admins) => {\r",
+							"    if(admins.length < 12)\r",
+							"        return false;\r",
+							"    if(new Date(admins[0].administrationScheduledDatetime) < new Date())\r",
+							"        return false;\r",
+							"    \r",
+							"    var todayAdmins;\r",
+							"    if(new Date().getHours() < 4)\r",
+							"        todayAdmins = 5;\r",
+							"    else if (new Date().getHours() < 8)\r",
+							"        todayAdmins = 4;\r",
+							"    else if (new Date().getHours() < 12)\r",
+							"        todayAdmins = 3;\r",
+							"    else if (new Date().getHours() < 16)\r",
+							"        todayAdmins = 2;\r",
+							"    else if (new Date().getHours() < 20)\r",
+							"        todayAdmins = 1;\r",
+							"    else\r",
+							"        todayAdmins = 0;\r",
+							"\r",
+							"    if(admins.length != 12 + todayAdmins)\r",
+							"        return false;\r",
+							"\r",
+							"    return true;\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Admin Validation\", function() {\r",
+							"    pm.expect(validateAdmins(jsonData.cartOrderAdministrations)).to.be.true;\r",
+							"})\r",
+							"\r",
+							"//pm.environment.unset(\"QuickListUserId\");\r",
+							"//pm.environment.unset(\"QuickListItemId\");\r",
+							"//pm.environment.unset(\"CartOrderPatientId\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-User",
+						"value": "{{QuickListUserId}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/userquicklists/{{QuickListItemId}}/cartOrders/{{CartOrderPatientId}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"userquicklists",
+						"{{QuickListItemId}}",
+						"cartOrders",
+						"{{CartOrderPatientId}}"
 					]
 				}
 			},

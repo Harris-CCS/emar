@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Emar.Core.Carts.Model;
+using Emar.Core.Carts.Model.Mappings;
+using Emar.Core.Carts.Repository;
 using Emar.Core.Helpers;
+using Emar.Core.Options.Model;
 using Emar.Core.Options.Repository;
 using Emar.Core.Orders.Model;
 using Emar.Core.Orders.Model.Mappings;
@@ -9,6 +13,7 @@ using Emar.Core.Orders.Repository;
 using Emar.Core.Patients.Repository;
 using Emar.Core.ResourceParameters;
 using Emar.Data.Entities;
+using Constants = Emar.Core.Orders.Model.Constants;
 
 namespace Emar.Core.Orders.Service
 {
@@ -17,12 +22,18 @@ namespace Emar.Core.Orders.Service
         private readonly IOrderRepository _orderRepository;
         private readonly IOptionRepository _optionRepository;
         private readonly IPatientRepository _patientRepository;
+        private readonly ICartOrderRepository _cartOrderRepository;
 
-        public OrderService(IOrderRepository orderRepository, IOptionRepository optionRepository, IPatientRepository patientRepository)
+        public OrderService(
+            IOrderRepository orderRepository,
+            IOptionRepository optionRepository,
+            IPatientRepository patientRepository,
+            ICartOrderRepository cartOrderRepository)
         {
             _orderRepository = orderRepository;
             _optionRepository = optionRepository ?? throw new ArgumentNullException(nameof(optionRepository));
             _patientRepository = patientRepository;
+            _cartOrderRepository = cartOrderRepository;
         }
 
         public PagedList<PatientOrderDto> GetOrders(long? patientId, OrdersResourceParameters resourceParameters)
@@ -37,7 +48,7 @@ namespace Emar.Core.Orders.Service
                 return null;
             }
 
-            var dateFormat = _optionRepository.GetOption(orders[0].Patient.SiteId, AppConstants.LongDateFormat);
+            var dateFormat = _optionRepository.GetOption(orders[0].Patient.SiteId, OptionNames.LONG_DATE_FORMAT);
 
             var ordersList = orders.Select(order => OrderMapper.MapOrder(order, dateFormat)).ToList();
 
@@ -50,7 +61,7 @@ namespace Emar.Core.Orders.Service
 
             var siteId = _patientRepository.GetSiteIdForPatient(patientId);
 
-            var dateFormat = _optionRepository.GetOption(siteId, AppConstants.LongDateFormat);
+            var dateFormat = _optionRepository.GetOption(siteId, OptionNames.LONG_DATE_FORMAT);
 
             return orders.Select(order => OrderMapper.MapOrder(order, dateFormat)).ToList()
                 // sort all the orders that don't have a "Next Action Time" to the bottom of the list
@@ -68,7 +79,7 @@ namespace Emar.Core.Orders.Service
             }
 
             var siteId = _patientRepository.GetSiteIdForPatient(order.PatientId);
-            var dateFormat = _optionRepository.GetOption(siteId, AppConstants.LongDateFormat);
+            var dateFormat = _optionRepository.GetOption(siteId, OptionNames.LONG_DATE_FORMAT);
 
             var orderDto = OrderMapper.MapOrder(order, dateFormat);
 
@@ -79,7 +90,7 @@ namespace Emar.Core.Orders.Service
         {
             // Get the Site's LongDateFormat Option
             var siteId = _orderRepository.GetSiteForOrder(orderId);
-            var dateFormat = _optionRepository.GetOption(siteId, AppConstants.LongDateFormat);
+            var dateFormat = _optionRepository.GetOption(siteId, OptionNames.LONG_DATE_FORMAT);
             var administrations = _orderRepository.GetAdministrations(orderId);
 
             return administrations
@@ -91,7 +102,7 @@ namespace Emar.Core.Orders.Service
             var administration = _orderRepository.GetAdministration(administrationId);
             var siteId = _orderRepository.GetSiteForOrder(administration.PatientOrderId);
             var administrationDto = OrderMapper.MapOrderAdministration(administration,
-                _optionRepository.GetOption(siteId, AppConstants.LongDateFormat));
+                _optionRepository.GetOption(siteId, OptionNames.LONG_DATE_FORMAT));
 
             return administrationDto;
         }
@@ -100,7 +111,7 @@ namespace Emar.Core.Orders.Service
         {
             // Get the Site's LongDateFormat Option
             var siteId = _orderRepository.GetSiteForOrder(orderId);
-            var dateFormat = _optionRepository.GetOption(siteId, AppConstants.LongDateFormat);
+            var dateFormat = _optionRepository.GetOption(siteId, OptionNames.LONG_DATE_FORMAT);
 
             var events = _orderRepository.GetEvents(orderId);
 
@@ -113,7 +124,7 @@ namespace Emar.Core.Orders.Service
 
             // Get the Site's LongDateFormat Option
             var siteId = _orderRepository.GetSiteForOrder(@event.PatientOrderId);
-            var dateFormat = _optionRepository.GetOption(siteId, AppConstants.LongDateFormat);
+            var dateFormat = _optionRepository.GetOption(siteId, OptionNames.LONG_DATE_FORMAT);
 
             var eventDto = OrderMapper.MapOrderEvent(@event, dateFormat);
 
@@ -129,7 +140,7 @@ namespace Emar.Core.Orders.Service
             {
                 // Get the Site's LongDateFormat Option
                 var siteId = _orderRepository.GetSiteForOrder(events[0].PatientOrderId);
-                dateFormat = _optionRepository.GetOption(siteId, AppConstants.LongDateFormat);
+                dateFormat = _optionRepository.GetOption(siteId, OptionNames.LONG_DATE_FORMAT);
             }
 
             return events.Select(@event => OrderMapper.MapOrderEvent(@event, dateFormat)).ToList();
@@ -194,7 +205,33 @@ namespace Emar.Core.Orders.Service
                 .OrderBy(i => i.BrandName);
         }
 
-        #endregion
+        public CartOrderDto CopyQuickListItemToCart(in int userId, in int quickListItemId, long patientId)
+        {
+            var quickListItem = _orderRepository.GetUserQuickListItem(quickListItemId);
+            if (quickListItem == null)
+                return null;
+
+            PatientCartOrder cartOrder = OrderMapper.MapUserQuickListItemToPatientCartOrder(quickListItem);
+            cartOrder.PatientId = patientId;
+            cartOrder.UserId = userId;
+
+            IEnumerable<FrequencyScheduleAdministration> admins = _orderRepository.GetNewAdministrations(cartOrder.FrequencyScheduleId ?? -1, DateTimeOffset.Now, null);
+
+            foreach (var admin in admins)
+            {
+                cartOrder.CartOrderAdministrations
+                    .Add(CartOrderMapper.MapFrequencyScheduleAdminToCartOrderAdmin(admin));
+            }
+
+            PatientCartOrder newCartOrder = _cartOrderRepository.AddCartOrder(cartOrder);
+
+            var siteId = _patientRepository.GetSiteIdForPatient(newCartOrder.PatientId);
+            var dateFormat = _optionRepository.GetOption(siteId, OptionNames.LONG_DATE_FORMAT);
+
+            return CartOrderMapper.MapCartOrder(newCartOrder, dateFormat);
+        }
+
+        #endregion User Quick List Services
 
         #region Department Preferred List Services
 
