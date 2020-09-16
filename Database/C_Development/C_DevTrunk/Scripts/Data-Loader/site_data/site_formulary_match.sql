@@ -11,15 +11,13 @@ create table [#site_formulary_match]
     , [inpatient_match]  [tinyint] not null
     , [outpatient_match] [tinyint] not null
     , [pyxis_match]      [tinyint] not null
-    , [medication_id]         [int] null default 0);    
+    , [priority_pick]    [smallint] null
+    , [medication_id]    [int] null
+                               default 0);
 
-if '$(load_data)' = 'live'
-   and exists
-(
-    select null
-    from   [master].[sys].[databases]
-    where  [name] = 'ibex'
-)
+if '$(load_data)' = 'sample'
+   or ('$(load_data)' = 'live'
+       and @does_ibex_exist = 1)
     begin
         insert into [#site_formulary_match]
             ([site_id]
@@ -31,12 +29,6 @@ if '$(load_data)' = 'live'
            , [pyxis_match]
             )
         execute ('execute dbo.export_ibex_site_formulary_match');
-    end;
-
-if '$(load_data)' = 'sample'
-    begin
-
-        bulk insert [#site_formulary_match] from '$(current_path)Scripts\Data-Loader\sample_data\site_formulary_match.bcp' with(fieldterminator = '|~', rowterminator = '\n');
     end;
 
 if
@@ -55,9 +47,9 @@ if
            , [brand_name]
             )
         select distinct 
-               isnull([ndc],'')
-             , isnull([drug_id],'')
-             , isnull([brand_name],'')
+               isnull([ndc], '')
+             , isnull([drug_id], '')
+             , isnull([brand_name], '')
         from   [#site_formulary_match];
 
         --set medication id's
@@ -67,9 +59,28 @@ if
             [medication_id] = [source].[medication_id]
         from   [#medication_items] [source]
                inner join [#site_formulary_match] [target] on [source].[ndc] = [target].[ndc]
-                                                          and [source].[brand_name] = [target].[brand_name]
-                                                          and [source].[drug_id] = [target].[drug_id]
+                                                              and [source].[brand_name] = [target].[brand_name]
+                                                              and [source].[drug_id] = [target].[drug_id]
         where  [source].[medication_id] > 0;
+
+        with cte_priority
+             as (select row_number() over(partition by [site_id]
+                                                     , [medication_id]
+                        order by [site_id]
+                               , [ndc] desc) as [priority_pick]
+                      , [sq].[site_id]
+                      , [sq].[ndc]
+                      , [sq].[drug_id]
+                      , [sq].[brand_name]
+                      , [sq].[medication_id]
+                 from   [#site_formulary_match] as [sq])
+             update [target] set    
+                 [priority_pick] = [source].[priority_pick]
+             from   [cte_priority] [source]
+                    inner join [#site_formulary_match] [target] on [source].[ndc] = [target].[ndc]
+                                                                   and [source].[brand_name] = [target].[brand_name]
+                                                                   and [source].[drug_id] = [target].[drug_id]
+                                                                   and [source].[site_id] = [target].[site_id];
 
 /****************************************
         load temporary tables for staging
@@ -113,11 +124,12 @@ if
              , [source].[inpatient_match]
              , [source].[outpatient_match]
              , [source].[pyxis_match]
-             , [source].[medication_id]	     
+             , [source].[medication_id]
         from   [#site_formulary_match] as [source]
                outer apply [dbo].[get_internal_id]
             ('pulsecheck', 'sites', [source].[site_id]) as [internal_site]
         where  [source].[medication_id] > 0
+               and [source].[priority_pick] = 1
         order by [source].[ndc]
                , [site_id];
 

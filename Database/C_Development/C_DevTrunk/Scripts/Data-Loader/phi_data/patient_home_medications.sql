@@ -29,15 +29,12 @@ create table [#patient_home_medications]
     , [change_datetime]     [varchar](50) null
     , [action_status]       [char](1) null
     , [medication_id]       [int] null
-                                  default 0);
+                                  default 0
+    , [last_taken_note]     [nvarchar](100) null);
 
-if '$(load_data)' = 'live'
-   and exists
-(
-    select null
-    from   [master].[sys].[databases]
-    where  [name] = 'ibex'
-)
+if '$(load_data)' = 'sample'
+   or ('$(load_data)' = 'live'
+       and @does_ibex_exist = 1)
     begin
 
         insert into [#patient_home_medications]
@@ -65,14 +62,9 @@ if '$(load_data)' = 'live'
            , [change_user_id]
            , [change_datetime]
            , [action_status]
+           , [last_taken_note]
             )
         execute ('execute dbo.export_ibex_patient_home_medications');
-    end;
-
-if '$(load_data)' = 'sample'
-    begin
-
-        bulk insert [#patient_home_medications] from '$(current_path)Scripts\Data-Loader\sample_data\patient_home_medications.bcp' with(fieldterminator = '|~', rowterminator = '\n');
     end;
 
 if
@@ -183,15 +175,16 @@ if
            , [change_datetime]
            , [action_status]
            , [medication_id]
+           , [last_taken_note]
             )
-        select isnull([internal_patient_id].[id], -1) as                                                [patient_id]
+        select isnull([internal_patient_id].[id], -1) as             [patient_id]
              , [source].[class]
              , [source].[category]
              , [source].[internal_drug_id]
              , [source].[name]
              , [source].[dose]
-             , [mu].[id] as                                                                             [medication_unit_id]
-             , [mr].[id] as                                                                             [medication_routes_id]
+             , [mu].[id] as                                          [medication_unit_id]
+             , [mr].[id] as                                          [medication_routes_id]
              , [source].[medication_drug_id]
              , [source].[is_active]
              , [source].[comment]
@@ -200,20 +193,28 @@ if
              , [source].[severity]
              , [source].[parent_drug_id]
              , [source].[parent_drug_name]
-             , isnull([internal_add_user_id].[id], 0) as                                                [add_user_id]
-             , [dbo].[ibex_date_to_offset_date]([source].[add_datetime], [site].[time_zone_name]) as    [add_datetime]
-             , isnull([internal_change_user_id].[id], 0) as                                             [change_user_id]
-             , [dbo].[ibex_date_to_offset_date]([source].[change_datetime], [site].[time_zone_name]) as [change_datetime]
+             , isnull([internal_add_user_id].[id], 0) as             [add_user_id]
+             , [dbo].[ibex_date_to_offset_date]
+            ([source].[add_datetime], [site].[time_zone_name]) as    [add_datetime]
+             , isnull([internal_change_user_id].[id], 0) as          [change_user_id]
+             , [dbo].[ibex_date_to_offset_date]
+            ([source].[change_datetime], [site].[time_zone_name]) as [change_datetime]
              , [source].[action_status]
              , nullif([source].[medication_id], 0) as                [medication_id]
+             , [source].[last_taken_note]
         from   [#patient_home_medications] as [source]
-               outer apply [dbo].[get_internal_id]('pulsecheck', 'patients', [source].[patient_id]) as [internal_patient_id]
+               outer apply [dbo].[get_internal_id]
+            ('pulsecheck', 'patients', [source].[patient_id]) as [internal_patient_id]
                left join [dbo].[patients] as [patients] on [patients].[id] = [internal_patient_id].[id]
                left join [dbo].[sites] as [site] on [site].[id] = [patients].[site_id]
-               outer apply [dbo].[get_internal_id]('pulsecheck', 'users', [source].[add_user_id]) as [internal_add_user_id]
-               outer apply [dbo].[get_internal_id]('pulsecheck', 'users', [source].[change_user_id]) as [internal_change_user_id]
-               cross apply [dbo].[get_code_share_site]([site].[id], 'medication_units') as [mu_site]
-               cross apply [dbo].[get_code_share_site]([site].[id], 'medication_routes') as [mr_site]
+               outer apply [dbo].[get_internal_id]
+            ('pulsecheck', 'users', [source].[add_user_id]) as [internal_add_user_id]
+               outer apply [dbo].[get_internal_id]
+            ('pulsecheck', 'users', [source].[change_user_id]) as [internal_change_user_id]
+               cross apply [dbo].[get_code_share_site]
+            ([site].[id], 'medication_units') as [mu_site]
+               cross apply [dbo].[get_code_share_site]
+            ([site].[id], 'medication_routes') as [mr_site]
                left join [dbo].[medication_routes] as [mr] on [mr].[site_id] = [mr_site].[site_id]
                                                               and [mr].[name] = [source].[medication_route_id]
                left join [dbo].[medication_units] as [mu] on [mu].[site_id] = [mu_site].[site_id]

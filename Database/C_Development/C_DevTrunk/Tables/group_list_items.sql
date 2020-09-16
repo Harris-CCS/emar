@@ -10,12 +10,18 @@ create table [dbo].[group_list_items]
     , [frequency_schedule_id] [int] null
     , [order_notes]           [nvarchar](max) null
     , [medication_id]         [int] not null
+    , [duration_in_minutes]   [int] not null
     , constraint [pk__group_list_items__id] primary key clustered([id] asc));
 go
 
 /********
  Defaults
 ********/
+
+alter table [dbo].[group_list_items]
+add constraint [df__group_list_items__duration_in_minutes] default((0)) for [duration_in_minutes];
+go
+
 /*****************
  Unique constraint
 *****************/
@@ -199,4 +205,15 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'group_list_items'
   , @level2type = N'COLUMN'
   , @level2name = N'medication_id';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'Order duration in minutes'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'group_list_items'
+  , @level2type = N'COLUMN'
+  , @level2name = N'duration_in_minutes';
 go

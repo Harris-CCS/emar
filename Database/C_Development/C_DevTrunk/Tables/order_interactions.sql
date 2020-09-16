@@ -5,6 +5,7 @@ create table [dbo].[order_interactions]
     , [patient_order_id]           [bigint] null
     , [patient_cart_order_id]      [bigint] null
     , [patient_home_medication_id] [bigint] null
+    , [drug_num]                   [tinyint] not null
     , constraint [pk__order_interactions__id] primary key clustered([id] asc));
 go
 
@@ -14,6 +15,11 @@ go
 /*******
  Indexes
 *******/
+
+create unique index [IX_order_interactions_medication_interaction_id__drug_num] on [dbo].[order_interactions]
+    ([medication_interaction_id], [drug_num]);
+go
+
 /***********
  Foreign Key
 ***********/
@@ -126,4 +132,15 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'order_interactions'
   , @level2type = N'COLUMN'
   , @level2name = N'patient_home_medication_id';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'drug_num'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'order_interactions'
+  , @level2type = N'COLUMN'
+  , @level2name = N'drug_num';
 go

@@ -81,6 +81,7 @@
     <Folder Include="Scripts\Data-Loader\user_data" />
     <Folder Include="Scripts\Data-Loader\phi_data" />
     <Folder Include="Scripts\Data-Loader\development_data" />
+    <Folder Include="Scripts\Data-Loader\export_procedures" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\users.sql" />
@@ -120,20 +121,14 @@
     <Build Include="Tables\prompts.sql" />
     <Build Include="Tables\template_prompt_groups.sql" />
     <None Include="Scripts\Data-Loader\delete_emar_data.sql" />
-    <Build Include="Programmability\Stored Procedures\export_ibex_sites.sql" />
     <Build Include="Programmability\Stored Procedures\export_ibex_medication_routes.sql" />
     <Build Include="Programmability\Stored Procedures\export_ibex_patients.sql" />
     <Build Include="Programmability\Stored Procedures\export_ibex_user_quick_list_items.sql" />
     <Build Include="Programmability\Stored Procedures\export_ibex_users.sql" />
     <Build Include="Tables\cart_order_administrations.sql" />
     <Build Include="Programmability\Stored Procedures\delimited_split_8k.sql" />
-    <Build Include="Programmability\Stored Procedures\export_ibex_group_list_items.sql" />
     <Build Include="Security\Logins\emarapiuser.sql" />
     <Build Include="Tables\group_list_items.sql" />
-    <Build Include="Programmability\Stored Procedures\export_ibex_site_formulary.sql" />
-    <Build Include="Programmability\Stored Procedures\export_ibex_site_formulary_match.sql" />
-    <Build Include="Programmability\Stored Procedures\export_ibex_patient_allergies.sql" />
-    <Build Include="Programmability\Stored Procedures\export_ibex_patient_home_medications.sql" />
     <None Include="Scripts\Data-Loader\global_data\options.sql" />
     <None Include="Scripts\Data-Loader\site_data\sites.sql" />
     <None Include="Scripts\Data-Loader\user_data\users.sql" />
@@ -149,7 +144,6 @@
     <None Include="Scripts\Data-Loader\development_data\bradley_data.sql" />
     <None Include="Scripts\Data-Loader\site_data\site_options.sql" />
     <Build Include="Programmability\Functions\Scalar-values Functions\ibex_date_to_offset_date.sql" />
-    <Build Include="Programmability\Stored Procedures\export_ibex_patient_orders.sql" />
     <None Include="Scripts\Data-Loader\phi_data\patient_orders.sql" />
     <Build Include="Tables\fdb_ndc_info.sql" />
     <Build Include="Tables\fdb_brand_name.sql" />
@@ -171,8 +165,6 @@
     <Build Include="Programmability\Stored Procedures\create_FDB_search.sql" />
     <Build Include="Tables\antimicrobial_indication_items.sql" />
     <Build Include="Tables\antimicrobial_indications.sql" />
-    <Build Include="Programmability\Stored Procedures\export_ibex_antimicrobial_indication_items.sql" />
-    <Build Include="Programmability\Stored Procedures\export_ibex_antimicrobial_indications.sql" />
     <None Include="Scripts\Data-Loader\site_data\antimicrobial_indication_items.sql" />
     <None Include="Scripts\Data-Loader\site_data\antimicrobial_indications.sql" />
     <Build Include="Tables\frequency_calendar.sql" />
@@ -222,6 +214,16 @@
     <Build Include="Tables\medications.sql" />
     <None Include="Scripts\Data-Loader\global_data\fdb_medications_loader.sql" />
     <Build Include="Programmability\Stored Procedures\update_medication_id_list.sql" />
+    <None Include="Scripts\Pre-Deployment\restore_sample_data.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_antimicrobial_indication_items.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_antimicrobial_indications.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_patient_home_medications.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_patient_allergies.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_sites.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_site_formulary.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_site_formulary_match.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_group_list_items.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_patient_orders.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />
@@ -232,31 +234,10 @@
     <None Include="Scripts\Data-Loader\sample_data\patients.bcp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Scripts\Data-Loader\sample_data\sites.bcp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Scripts\Data-Loader\sample_data\users.bcp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Scripts\Data-Loader\sample_data\user_quick_list_items.bcp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\Data-Loader\sample_data\group_list_items.bcp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\Data-Loader\sample_data\site_formulary.bcp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\Data-Loader\sample_data\site_formulary_match.bcp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\Data-Loader\sample_data\patient_home_medications.bcp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\Data-Loader\sample_data\patient_allergies.bcp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\Data-Loader\sample_data\patient_orders.bcp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Scripts\Data-Loader\sample_data\fdb_allergy_name.bcp">
@@ -277,12 +258,6 @@
     <None Include="Scripts\Data-Loader\sample_data\site_code_shares.bcp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Scripts\Data-Loader\sample_data\antimicrobial_indication_items.bcp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\Data-Loader\sample_data\antimicrobial_indications.bcp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Scripts\Data-Loader\sample_data\override_reasons.bcp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -290,6 +265,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Scripts\Data-Loader\sample_data\patient_problems.bcp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Data-Loader\sample_data\ibex_sample.bak">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

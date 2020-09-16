@@ -247,3 +247,14 @@ execute [sys].[sp_addextendedproperty]
   , @level2type = N'COLUMN'
   , @level2name = N'medication_id';
 go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'Order duration in minutes'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'user_quick_list_items'
+  , @level2type = N'COLUMN'
+  , @level2name = N'duration_in_minutes';
+go

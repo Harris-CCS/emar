@@ -25,13 +25,9 @@ create table [#patient_orders]
     , [medication_id]           [int] null
                                       default 0);
 
-if '$(load_data)' = 'live'
-   and exists
-(
-    select null
-    from   [master].[sys].[databases]
-    where  [name] = 'ibex'
-)
+if '$(load_data)' = 'sample'
+   or ('$(load_data)' = 'live'
+       and @does_ibex_exist = 1)
     begin
 
         insert into [#patient_orders]
@@ -54,13 +50,7 @@ if '$(load_data)' = 'live'
            , [order_status]
            , [order_notes]
             )
-        execute ('execute dbo.export_ibex_patient_orders ''live''');
-    end;
-
-if '$(load_data)' = 'sample'
-    begin
-
-        bulk insert [#patient_orders] from '$(current_path)Scripts\Data-Loader\sample_data\patient_orders.bcp' with(fieldterminator = '|~', rowterminator = '\n');
+        execute ('execute dbo.export_ibex_patient_orders');
     end;
 
 if
@@ -149,10 +139,13 @@ if
             )
         select isnull([internal_patient_id].[id], -1) as             [patient_id]
              , isnull([internal_add_user_id].[id], 0) as             [add_user_id]
-             , [dbo].[ibex_date_to_offset_date]([source].[add_datetime], [site].[time_zone_name]) as    [add_datetime]
+             , [dbo].[ibex_date_to_offset_date]
+            ([source].[add_datetime], [site].[time_zone_name]) as    [add_datetime]
              , isnull([internal_order_physician_user_id].[id], 0) as [order_physician_user_id]
-             , [dbo].[ibex_date_to_offset_date]([source].[begin_datetime], [site].[time_zone_name]) as  [begin_datetime]
-             , [dbo].[ibex_date_to_offset_date]([source].[end_datetime], [site].[time_zone_name]) as    [end_datetime]
+             , [dbo].[ibex_date_to_offset_date]
+            ([source].[begin_datetime], [site].[time_zone_name]) as  [begin_datetime]
+             , [dbo].[ibex_date_to_offset_date]
+            ([source].[end_datetime], [site].[time_zone_name]) as    [end_datetime]
              , [source].[dose]
              , [mu].[id] as                                          [medication_unit_id]
              , [mr].[id] as                                          [medication_routes_id]
@@ -164,18 +157,23 @@ if
              , [source].[order_notes]
              , [source].[medication_id]
         from   [#patient_orders] as [source]
-               outer apply [dbo].[get_internal_id]('pulsecheck', 'patients', [source].[patient_id]) as [internal_patient_id]
+               outer apply [dbo].[get_internal_id]
+            ('pulsecheck', 'patients', [source].[patient_id]) as [internal_patient_id]
                left join [dbo].[patients] as [patients] on [patients].[id] = [internal_patient_id].[id]
                left join [dbo].[sites] as [site] on [site].[id] = [patients].[site_id]
-               outer apply [dbo].[get_internal_id]('pulsecheck', 'users', [source].[add_user_id]) as [internal_add_user_id]
-               outer apply [dbo].[get_internal_id]('pulsecheck', 'users', [source].[order_physician_user_id]) as [internal_order_physician_user_id]
-               cross apply [dbo].[get_code_share_site]([patients].[site_id], 'medication_units') as [mu_site]
-               cross apply [dbo].[get_code_share_site]([patients].[site_id], 'medication_routes') as [mr_site]
+               outer apply [dbo].[get_internal_id]
+            ('pulsecheck', 'users', [source].[add_user_id]) as [internal_add_user_id]
+               outer apply [dbo].[get_internal_id]
+            ('pulsecheck', 'users', [source].[order_physician_user_id]) as [internal_order_physician_user_id]
+               cross apply [dbo].[get_code_share_site]
+            ([patients].[site_id], 'medication_units') as [mu_site]
+               cross apply [dbo].[get_code_share_site]
+            ([patients].[site_id], 'medication_routes') as [mr_site]
                left join [dbo].[medication_routes] as [mr] on [mr].[site_id] = [mr_site].[site_id]
                                                               and [mr].[name] = [source].[medication_route_id]
                left join [dbo].[medication_units] as [mu] on [mu].[site_id] = [mu_site].[site_id]
                                                              and [mu].[code] = [source].[medication_unit_id]
-        where [source].[medication_id]>0
+        where  [source].[medication_id] > 0
         order by [brand_name]
                , [patient_id];
 

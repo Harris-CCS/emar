@@ -31,13 +31,9 @@ create table [#patient_allergies]
     , [medication_id]      [int] null
                                  default 0);
 
-if '$(load_data)' = 'live'
-   and exists
-(
-    select null
-    from   [master].[sys].[databases]
-    where  [name] = 'ibex'
-)
+if '$(load_data)' = 'sample'
+   or ('$(load_data)' = 'live'
+       and @does_ibex_exist = 1)
     begin
 
         insert into [#patient_allergies]
@@ -67,12 +63,6 @@ if '$(load_data)' = 'live'
            , [account_number]
             )
         execute ('execute dbo.export_ibex_patient_allergies');
-    end;
-
-if '$(load_data)' = 'sample'
-    begin
-
-        bulk insert [#patient_allergies] from '$(current_path)Scripts\Data-Loader\sample_data\patient_allergies.bcp' with(fieldterminator = '|~', rowterminator = '\n');
     end;
 
 if
@@ -126,7 +116,7 @@ if
 
         set @max_id = isnull(@max_id, 0);
 
-        update [source] set
+        update [source] set    
             [target_id] = [source].[id] + @max_id
         from   [#patient_allergies] as [source];
 
@@ -161,33 +151,38 @@ if
            , [medication_id]
             )
         select isnull([internal_patient_id].[id], -1) as             [patient_id]
-            , [source].[class]
-            , [source].[category]
-            , [source].[internal_drug_id]
-            , [source].[name]
-            , [source].[allergy_drug_id]
-            , [source].[is_active]
-            , [source].[comment]
-            , [source].[schedule]
-            , [source].[reaction]
-            , [source].[severity]
-            , [source].[parent_drug_id]
-            , [source].[parent_drug_name]
-            , isnull([internal_add_user_id].[id], 0) as                                                [add_user_id]
-            , [dbo].[ibex_date_to_offset_date]([source].[add_datetime], [site].[time_zone_name]) as    [add_datetime]
-            , isnull([internal_change_user_id].[id], 0) as                                             [change_user_id]
-            , [dbo].[ibex_date_to_offset_date]([source].[change_datetime], [site].[time_zone_name]) as [change_datetime]
-            , [source].[action_status]
-            , [source].[information_source]
-            , [source].[person_number]
-            , [source].[account_number]
+             , [source].[class]
+             , [source].[category]
+             , [source].[internal_drug_id]
+             , [source].[name]
+             , [source].[allergy_drug_id]
+             , [source].[is_active]
+             , [source].[comment]
+             , [source].[schedule]
+             , [source].[reaction]
+             , [source].[severity]
+             , [source].[parent_drug_id]
+             , [source].[parent_drug_name]
+             , isnull([internal_add_user_id].[id], 0) as             [add_user_id]
+             , [dbo].[ibex_date_to_offset_date]
+            ([source].[add_datetime], [site].[time_zone_name]) as    [add_datetime]
+             , isnull([internal_change_user_id].[id], 0) as          [change_user_id]
+             , [dbo].[ibex_date_to_offset_date]
+            ([source].[change_datetime], [site].[time_zone_name]) as [change_datetime]
+             , [source].[action_status]
+             , [source].[information_source]
+             , [source].[person_number]
+             , [source].[account_number]
              , nullif([source].[medication_id], 0) as                [medication_id]
         from   [#patient_allergies] as [source]
-               outer apply [dbo].[get_internal_id]('pulsecheck', 'patients', [source].[patient_id]) as [internal_patient_id]
+               outer apply [dbo].[get_internal_id]
+            ('pulsecheck', 'patients', [source].[patient_id]) as [internal_patient_id]
                left join [dbo].[patients] as [patients] on [patients].[id] = [internal_patient_id].[id]
                left join [dbo].[sites] as [site] on [site].[id] = [patients].[site_id]
-               outer apply [dbo].[get_internal_id]('pulsecheck', 'users', [source].[add_user_id]) as [internal_add_user_id]
-               outer apply [dbo].[get_internal_id]('pulsecheck', 'users', [source].[change_user_id]) as [internal_change_user_id]
+               outer apply [dbo].[get_internal_id]
+            ('pulsecheck', 'users', [source].[add_user_id]) as [internal_add_user_id]
+               outer apply [dbo].[get_internal_id]
+            ('pulsecheck', 'users', [source].[change_user_id]) as [internal_change_user_id]
         order by [patient_id];
 
         -- set identity_insert [dbo].[patient_allergies] off;

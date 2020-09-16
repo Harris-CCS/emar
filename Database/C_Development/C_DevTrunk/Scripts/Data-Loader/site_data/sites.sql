@@ -1,4 +1,4 @@
-Print 'Loading Table: sites'
+print 'Loading Table: sites';
 
 drop table if exists [#sites];
 
@@ -9,13 +9,9 @@ create table [#sites]
     , [is_active]      [bit] not null
     , [time_zone_name] [sysname] not null);
 
-if '$(load_data)' = 'live'
-   and exists
-(
-    select null
-    from   [master].[sys].[databases]
-    where  [name] = 'ibex'
-)
+if '$(load_data)' = 'sample'
+   or ('$(load_data)' = 'live'
+       and @does_ibex_exist = 1)
     begin
 
         insert into [#sites]
@@ -25,12 +21,6 @@ if '$(load_data)' = 'live'
            , [time_zone_name]
             )
         execute ('execute dbo.export_ibex_sites');
-    end;
-
-if '$(load_data)' = 'sample'
-    begin
-
-        bulk insert [#sites] from '$(current_path)Scripts\Data-Loader\sample_data\sites.bcp' with(fieldterminator = '|~', rowterminator = '\n');
     end;
 
 if

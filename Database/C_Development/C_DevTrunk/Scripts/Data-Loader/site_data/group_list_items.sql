@@ -21,13 +21,9 @@ create table [#group_list_items]
     , [medication_id]         [int] null -- existing medication_id of ndc/drug/brand
                                     default 0);
 
-if '$(load_data)' = 'live'
-   and exists
-(
-    select null
-    from   [master].[sys].[databases]
-    where  [name] = 'ibex'
-)
+if '$(load_data)' = 'sample'
+   or ('$(load_data)' = 'live'
+       and @does_ibex_exist = 1)
     begin
 
         insert into [#group_list_items]
@@ -44,12 +40,6 @@ if '$(load_data)' = 'live'
            , [order_notes]
             )
         execute ('execute dbo.export_ibex_group_list_items');
-    end;
-
-if '$(load_data)' = 'sample'
-    begin
-
-        bulk insert [#group_list_items] from '$(current_path)Scripts\Data-Loader\sample_data\group_list_items.bcp' with(fieldterminator = '|~', rowterminator = '\n');
     end;
 
 if
