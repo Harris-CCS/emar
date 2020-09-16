@@ -42,18 +42,19 @@ as
                 set @future_days = 3;
             end;
 
-        set @local_current_time = cast(switchoffset(sysutcdatetime(), @current_utc_offset) as datetime2(0));
-
         if @schedule_period_begin is null
             begin
+                set @local_current_time = cast(switchoffset(sysutcdatetime(), @current_utc_offset) as datetime2(0));
+                set @schedule_period_begin = @local_current_time at time zone @local_time_zone_name;
                 set @date_period_begin = cast(@local_current_time as date);
-                set @datetime_period_begin = cast(@date_period_begin as datetime);
+                set @datetime_period_begin = cast(@local_current_time as datetime);
                 set @time_period_begin = cast(@datetime_period_begin as time(0));
             end;
             else
             begin
-                set @date_period_begin = cast(@schedule_period_begin as date);
-                set @datetime_period_begin = cast(@schedule_period_begin as datetime);
+                set @local_current_time = cast(@schedule_period_begin as datetime2(0));
+                set @date_period_begin = cast(@local_current_time as date);
+                set @datetime_period_begin = cast(@local_current_time as datetime);
                 set @time_period_begin = cast(@schedule_period_begin as time(0));
             end;
 
@@ -78,8 +79,12 @@ as
             end;
 
         select    [sched].[point_in_time]
-                , [sched].[sched_datetime]  at time zone @local_time_zone_name as                                         [sched_datetime_tz]
-                , [sched].[sched_stop_datetime] at time zone @local_time_zone_name as                                     [stop_datetime_tz]
+                , [sched].[sched_datetime] at time zone @local_time_zone_name as                                          [sched_datetime_tz]
+                , case
+                      when [sched].[point_in_time] = 1
+                          then null
+                      else [sched].[sched_stop_datetime]
+                  end at time zone @local_time_zone_name as                                                               [stop_datetime_tz]
         from
         (
             -------- Reccuring Fixed Times
@@ -89,7 +94,7 @@ as
                  , [fs].[name] as                                                                                         [frequency_schedule_name]
                  , [fs].[point_in_time] as                                                                                [point_in_time]
                  , cast(cast([cal].[the_date] as datetime) + cast([fjd].[frequency_time] as datetime) as datetime2(7)) as [sched_datetime]
-                 , cast(null as datetime2(7)) as                                                                          [sched_stop_datetime]
+                 , cast(@schedule_period_end as datetime2(7)) as                                                          [sched_stop_datetime]
                  , [fs].[frequency_type_recurring]
             from     [dbo].[frequency_schedules] as [fs]
                      inner join [dbo].[frequency_interval_day_times] as [fjd] on [fs].[id] = [fjd].[frequency_schedule_id]
@@ -102,12 +107,12 @@ as
                     and [ft].[name] in(N'Daily', N'Weekly')
             union
             -------- one time order
-            select 1 as                                         [sched_order]
-                 , [fs].[id] as                                 [frequency_schedules_id]
-                 , [fs].[name] as                               [frequency_schedule_name]
-                 , [fs].[point_in_time] as                      [point_in_time]
-                 , cast(@local_current_time as datetime2(7)) as [sched_datetime]
-                 , cast(null as datetime2(7)) as                [sched_stop_datetime]
+            select 1 as                                          [sched_order]
+                 , [fs].[id] as                                  [frequency_schedules_id]
+                 , [fs].[name] as                                [frequency_schedule_name]
+                 , [fs].[point_in_time] as                       [point_in_time]
+                 , cast(@local_current_time as datetime2(7)) as  [sched_datetime]
+                 , cast(@schedule_period_end as datetime2(7)) as [sched_stop_datetime]
                  , [fs].[frequency_type_recurring]
             from     [dbo].[frequency_schedules] as [fs]
                      inner join [dbo].[frequency_types] as [ft] on [ft].[id] = [fs].[frequency_type_id]
@@ -121,7 +126,7 @@ as
                        , [fs].[name] as                                                                                         [frequency_schedule_name]
                        , [fs].[point_in_time] as                                                                                [point_in_time]
                        , cast(cast([cal].[the_date] as datetime) + cast([fjt].[frequency_time] as datetime) as datetime2(7)) as [sched_datetime]
-                       , cast(null as datetime2(7)) as                                                                          [sched_stop_datetime]
+                       , cast(@schedule_period_end as datetime2(7)) as                                                          [sched_stop_datetime]
                        , [fs].[frequency_type_recurring]
             from           [dbo].[frequency_schedules] as [fs]
                            inner join [dbo].[frequency_interval_day_times] as [fjd] on [fs].[id] = [fjd].[frequency_schedule_id]
@@ -151,12 +156,12 @@ as
                   and [fs].[frequency_interval] > 0
             union
             ---------- Interval Schedule
-            select    1 as                          [sched_order]
-                    , [fs].[id] as                  [frequency_schedules_id]
-                    , [fs].[name] as                [frequency_schedule_name]
-                    , [fs].[point_in_time] as       [point_in_time]
-                    , [fjt].[frequency_time] as     [sched_datetime]
-                    , cast(null as datetime2(7)) as [sched_stop_datetime]
+            select    1 as                                          [sched_order]
+                    , [fs].[id] as                                  [frequency_schedules_id]
+                    , [fs].[name] as                                [frequency_schedule_name]
+                    , [fs].[point_in_time] as                       [point_in_time]
+                    , [fjt].[frequency_time] as                     [sched_datetime]
+                    , cast(@schedule_period_end as datetime2(7)) as [sched_stop_datetime]
                     , [fs].[frequency_type_recurring]
             from      [dbo].[frequency_schedules] as [fs]
                       inner join [dbo].[frequency_interval_units] as [fi] on [fi].[id] = [fs].[frequency_interval_unit_id]
@@ -187,6 +192,7 @@ as
               or [sched].[frequency_type_recurring] = 1)
              and [sched].[sched_datetime] between @datetime_period_begin and @datetime_period_end
         order by [sched].[sched_datetime];
+
     end;
 
 go

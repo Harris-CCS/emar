@@ -2,9 +2,8 @@ setlocal
 @echo off
 cls
 set current_script=%~nx0
-set current_path=%cd%
+set current_path=%cd%\..\Scripts\Data-Loader\sample_data\
 title %current_script% **BEGIN**
-set /A Counter=0
 for /f "delims=" %%x in (emar_dacpac.ini) do (set "%%x")
 @echo ~~~~~~~~ Active Parameters ~~~~~~~~
 @echo pgm_sqlpackage = %pgm_sqlpackage%
@@ -13,51 +12,10 @@ for /f "delims=" %%x in (emar_dacpac.ini) do (set "%%x")
 @echo server_name    = %server_name%
 @echo source_database_name = %source_database_name%
 @echo target_database_name = %target_database_name%
-set script_count=19
-set bcp_log=bcp_log.txt
+@echo current_path         = %current_path%
 @echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@echo %pgm_sqlcmd% -i build_sample_database.sql -S %server_name% -v current_path =%current_path%
+"%pgm_sqlcmd%" -i build_sample_database.sql -S %server_name% -v current_path ="%current_path%"
+title %current_script% **COMPLETE**
 
-echo ~~~~~~~~~~~~~begin~~~~~~~~~~~~~ > %bcp_log%
-    call :ek "execute emar_clean.dbo.export_ibex_antimicrobial_indication_items";antimicrobial_indication_items;"|~"
-    call :ek "execute emar_clean.dbo.export_ibex_antimicrobial_indications"     ;antimicrobial_indications     ;"|~"
-rem call :ek "execute emar_clean.dbo.export_ibex_fdb_allergy_name"              ;fdb_allergy_name              ;"|~"
-rem call :ek "execute emar_clean.dbo.export_ibex_fdb_brand_name"                ;fdb_brand_name                ;"|~"
-rem call :ek "execute emar_clean.dbo.export_ibex_fdb_ndc_info"                  ;fdb_ndc_info                  ;"|~"
-    call :ek "execute emar_clean.dbo.export_ibex_group_list_items"              ;group_list_items              ;"|~"
-    call :ek "execute emar_clean.dbo.export_ibex_medication_routes"             ;medication_routes             ;"|~"
-    call :ek "execute emar_clean.dbo.export_ibex_medication_units"              ;medication_units              ;"|~"
-rem call :ek "execute emar_clean.dbo.export_ibex_options"                       ;options                       ;"|~"
-    call :ek "execute emar_clean.dbo.export_ibex_order_instructions"            ;order_instructions            ;"|~"
-    call :ek "execute emar_clean.dbo.export_ibex_override_reasons"              ;override_reasons              ;"|~"
-    call :ek "execute emar_clean.dbo.export_ibex_patient_allergies"             ;patient_allergies             ;"|~"
-    call :ek "execute emar_clean.dbo.export_ibex_patient_home_medications"      ;patient_home_medications      ;"|~"
-    call :ek "execute emar_clean.dbo.export_ibex_patient_indicators"            ;patient_indicators            ;"|~"
-    call :ek "execute emar_clean.dbo.export_ibex_patient_orders"                ;patient_orders                ;"|~"
-    call :ek "execute emar_clean.dbo.export_ibex_patient_problems"              ;patient_problems              ;"|~"
-    call :ek "execute emar_clean.dbo.export_ibex_patients"                      ;patients                      ;"|~"
-rem call :ek "execute emar_clean.dbo.export_ibex_preferred_frequency_schedules" ;preferred_frequency_schedules ;"|~"
-rem call :ek "execute emar_clean.dbo.export_ibex_preferred_medication_doses"    ;preferred_medication_doses    ;"|~"
-rem call :ek "execute emar_clean.dbo.export_ibex_preferred_medication_routes"   ;preferred_medication_routes   ;"|~"
-    call :ek "execute emar_clean.dbo.export_ibex_site_code_shares"              ;site_code_shares              ;"|~"
-    call :ek "execute emar_clean.dbo.export_ibex_site_formulary"                ;site_formulary                ;"|~"
-    call :ek "execute emar_clean.dbo.export_ibex_site_formulary_match"          ;site_formulary_match          ;"|~"
-rem call :ek "execute emar_clean.dbo.export_ibex_site_options"                  ;site_options                  ;"|~"
-    call :ek "execute emar_clean.dbo.export_ibex_sites"                         ;sites                         ;"|~"
-    call :ek "execute emar_clean.dbo.export_ibex_user_quick_list_items"         ;user_quick_list_items         ;"|~"
-    call :ek "execute emar_clean.dbo.export_ibex_users"                         ;users                         ;"|~"
-title %title_val% *** COMPLETE ***
-exit /b
-:ek
-echo. >> %bcp_log%
-set /A Counter+=1
-set title_val= %current_script% :: Processing %Counter% of %script_count%
-title %title_val%
-rem  %1 Table to Load
-rem  %2 Text File To Import
-rem  %3 Delimiter
-echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ >> %bcp_log%
-echo process: %1
-echo process: %1 >> %bcp_log%
-echo %1 queryout "%bcp_data_folder%%2.txt" -c -t%3 -S %server_name% -T >> %bcp_log%
-bcp  %1 queryout "%bcp_data_folder%%2.bcp" -c -t%3 -S %server_name% -T >> %bcp_log%
-exit /b
+

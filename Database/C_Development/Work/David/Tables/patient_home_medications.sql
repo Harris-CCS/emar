@@ -24,6 +24,7 @@ create table [dbo].[patient_home_medications]
     , [change_datetime]     [datetimeoffset](7) null
     , [action_status]       [char](1) null
     , [medication_id]       [int] null
+    , [last_taken_note]     [nvarchar](100) null
     , constraint [pk__patient_home_medications__id] primary key clustered([id] asc));
 go
 
@@ -374,4 +375,15 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'patient_home_medications'
   , @level2type = N'COLUMN'
   , @level2name = N'medication_id';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'Free Text note column, for medication last taken'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'patient_home_medications'
+  , @level2type = N'COLUMN'
+  , @level2name = N'last_taken_note';
 go

@@ -11,13 +11,19 @@
 *************************************************************************************/
 
 if '$(load_data)' = 'sample'
-   or ('$(load_data)' = 'live'
-       and exists
-(
-    select null
-    from   [master].[sys].[databases]
-    where  [name] = 'ibex'
-))
+    begin
+        :r ..\Scripts\Pre-Deployment\restore_sample_data.sql
+    end;
+
+declare @does_ibex_exist bit = 0;
+select @does_ibex_exist = 1
+from   [master].[sys].[databases]
+where  [name] = 'ibex';
+
+if '$(load_data)' = 'sample'
+   or  ('$(load_data)' = 'live'
+         and @does_ibex_exist = 1
+       )
     begin
         :r ..\Scripts\Data-Loader\delete_emar_data.sql
     end;

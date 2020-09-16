@@ -7,13 +7,14 @@ create table [#antimicrobial_indication_items]
       [site_id]      [varchar](25) not null
     , [sub_category] [varchar](25) not null);
 
-if '$(load_data)' = 'live'
-   and exists
+if '$(load_data)' = 'sample'
+   or ('$(load_data)' = 'live'
+       and exists
 (
     select null
     from   [master].[sys].[databases]
     where  [name] = 'ibex'
-)
+))
     begin
 
         insert into [#antimicrobial_indication_items]
@@ -21,12 +22,6 @@ if '$(load_data)' = 'live'
            , [sub_category]
             )
         execute ('execute dbo.export_ibex_antimicrobial_indication_items');
-    end;
-
-if '$(load_data)' = 'sample'
-    begin
-
-        bulk insert [#antimicrobial_indication_items] from '$(current_path)Scripts\Data-Loader\sample_data\antimicrobial_indication_items.bcp' with(fieldterminator = '|~', rowterminator = '\n');
     end;
 
 if

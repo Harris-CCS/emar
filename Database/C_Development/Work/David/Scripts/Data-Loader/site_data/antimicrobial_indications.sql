@@ -10,13 +10,9 @@ create table [#antimicrobial_indications]
     , [is_active]        [bit] not null
     , [ordinal_position] [int] not null);
 
-if '$(load_data)' = 'live'
-   and exists
-(
-    select null
-    from   [master].[sys].[databases]
-    where  [name] = 'ibex'
-)
+if '$(load_data)' = 'sample'
+   or ('$(load_data)' = 'live'
+       and @does_ibex_exist = 1)
     begin
 
         insert into [#antimicrobial_indications]
@@ -27,12 +23,6 @@ if '$(load_data)' = 'live'
            , [ordinal_position]
             )
         execute ('execute dbo.export_ibex_antimicrobial_indications');
-    end;
-
-if '$(load_data)' = 'sample'
-    begin
-
-        bulk insert [#antimicrobial_indications] from '$(current_path)Scripts\Data-Loader\sample_data\antimicrobial_indications.bcp' with(fieldterminator = '|~', rowterminator = '\n');
     end;
 
 if

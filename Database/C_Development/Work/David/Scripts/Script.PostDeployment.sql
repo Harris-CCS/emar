@@ -75,54 +75,92 @@ drop table if exists [#medication_items];
 create table [#medication_items]
     (
       [medication_id] [int] default 0
+    , [site_id]       [int] not null default-1
     , [ndc]           [varchar](32) not null
     , [drug_id]       [varchar](32) not null
     , [brand_name]    [nvarchar](255) not null
-    , primary key clustered([ndc] asc, [drug_id] asc, [brand_name] asc));
+    , [match]         [nvarchar](255) null --- Added for testing / debugging
+    , primary key clustered([ndc] asc, [drug_id] asc, [brand_name] asc, [site_id] asc));
 
--- https://stackoverflow.com/questions/23923366/specifying-a-relative-path-in-post-deployment-sql-files
-:r ..\Scripts\Data-Loader\global_data\fdb_allergy_name.sql
-:r ..\Scripts\Data-Loader\global_data\fdb_brand_name.sql
-:r ..\Scripts\Data-Loader\global_data\fdb_ndc_info.sql
-:r ..\Scripts\Data-Loader\global_data\frequency_calendar.sql
-:r ..\Scripts\Data-Loader\global_data\frequency_days.sql
-:r ..\Scripts\Data-Loader\global_data\frequency_interval_units.sql
-:r ..\Scripts\Data-Loader\global_data\frequency_minutes.sql
-:r ..\Scripts\Data-Loader\global_data\frequency_types.sql
-:r ..\Scripts\Data-Loader\global_data\options.sql
-:r ..\Scripts\Data-Loader\site_data\sites.sql
-:r ..\Scripts\Data-Loader\global_data\fdb_medications_loader.sql
-:r ..\Scripts\Data-Loader\site_data\antimicrobial_indication_items.sql
-:r ..\Scripts\Data-Loader\site_data\antimicrobial_indications.sql
-:r ..\Scripts\Data-Loader\site_data\frequency_schedules.sql
-:r ..\Scripts\Data-Loader\site_data\medication_routes.sql
-:r ..\Scripts\Data-Loader\site_data\medication_units.sql
-:r ..\Scripts\Data-Loader\site_data\order_instructions.sql
-:r ..\Scripts\Data-Loader\site_data\override_reasons.sql
-:r ..\Scripts\Data-Loader\phi_data\patients.sql
-:r ..\Scripts\Data-Loader\site_data\site_code_shares.sql
-:r ..\Scripts\Data-Loader\site_data\site_options.sql
-:r ..\Scripts\Data-Loader\user_data\users.sql
-:r ..\Scripts\Data-Loader\site_data\group_list_items.sql
-:r ..\Scripts\Data-Loader\phi_data\patient_allergies.sql
-:r ..\Scripts\Data-Loader\phi_data\patient_home_medications.sql
-:r ..\Scripts\Data-Loader\phi_data\patient_indicators.sql
---- BEGIN: custom data deployments for development
-:r ..\Scripts\Data-Loader\development_data\antoni_data.sql
---- END: custom data deployments for development
-:r ..\Scripts\Data-Loader\phi_data\patient_orders.sql
-:r ..\Scripts\Data-Loader\phi_data\patient_problems.sql
-:r ..\Scripts\Data-Loader\site_data\preferred_frequency_schedules.sql
-:r ..\Scripts\Data-Loader\site_data\preferred_medication_doses.sql
-:r ..\Scripts\Data-Loader\site_data\preferred_medication_routes.sql
-:r ..\Scripts\Data-Loader\site_data\site_formulary.sql
-:r ..\Scripts\Data-Loader\site_data\site_formulary_match.sql
-:r ..\Scripts\Data-Loader\user_data\user_quick_list_items.sql
---- BEGIN: custom data deployments for development
-:r ..\Scripts\Data-Loader\development_data\bradley_data.sql
-:r ..\Scripts\Data-Loader\development_data\bradley_data_II.sql
-:r ..\Scripts\Data-Loader\development_data\hsi-an.sql
---- END: custom data deployments for development
+declare 
+      @export_database_name sysname = 'default_none'
+    , @template nvarchar(max)
+    , @sql_cmd nvarchar(max)
+    , @does_ibex_exist bit = 0;
+
+select @does_ibex_exist = 1
+from   [master].[sys].[databases]
+where  [name] = 'ibex';
+
+if '$(load_data)' = 'live'
+    begin
+        set @export_database_name = 'ibex';
+    end;
+
+if '$(load_data)' = 'sample'
+    begin
+        set @export_database_name = 'ibex_sample';
+    end;
+
+if '$(load_data)' = 'sample'
+   or  ('$(load_data)' = 'live'
+         and @does_ibex_exist = 1
+       )
+    begin
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_antimicrobial_indication_items.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_antimicrobial_indications.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_group_list_items.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_patient_allergies.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_patient_home_medications.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_patient_orders.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_site_formulary.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_site_formulary_match.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_sites.sql
+
+        -- https://stackoverflow.com/questions/23923366/specifying-a-relative-path-in-post-deployment-sql-files
+        :r ..\Scripts\Data-Loader\global_data\fdb_allergy_name.sql
+        :r ..\Scripts\Data-Loader\global_data\fdb_brand_name.sql
+        :r ..\Scripts\Data-Loader\global_data\fdb_ndc_info.sql
+        :r ..\Scripts\Data-Loader\global_data\frequency_calendar.sql
+        :r ..\Scripts\Data-Loader\global_data\frequency_days.sql
+        :r ..\Scripts\Data-Loader\global_data\frequency_interval_units.sql
+        :r ..\Scripts\Data-Loader\global_data\frequency_minutes.sql
+        :r ..\Scripts\Data-Loader\global_data\frequency_types.sql
+        :r ..\Scripts\Data-Loader\global_data\options.sql
+        :r ..\Scripts\Data-Loader\site_data\sites.sql
+        :r ..\Scripts\Data-Loader\global_data\fdb_medications_loader.sql
+        :r ..\Scripts\Data-Loader\site_data\antimicrobial_indication_items.sql
+        :r ..\Scripts\Data-Loader\site_data\antimicrobial_indications.sql
+        :r ..\Scripts\Data-Loader\site_data\frequency_schedules.sql
+        :r ..\Scripts\Data-Loader\site_data\medication_routes.sql
+        :r ..\Scripts\Data-Loader\site_data\medication_units.sql
+        :r ..\Scripts\Data-Loader\site_data\order_instructions.sql
+        :r ..\Scripts\Data-Loader\site_data\override_reasons.sql
+        :r ..\Scripts\Data-Loader\phi_data\patients.sql
+        :r ..\Scripts\Data-Loader\site_data\site_code_shares.sql
+        :r ..\Scripts\Data-Loader\site_data\site_options.sql
+        :r ..\Scripts\Data-Loader\user_data\users.sql
+        :r ..\Scripts\Data-Loader\site_data\group_list_items.sql
+        :r ..\Scripts\Data-Loader\phi_data\patient_allergies.sql
+        :r ..\Scripts\Data-Loader\phi_data\patient_home_medications.sql
+        :r ..\Scripts\Data-Loader\phi_data\patient_indicators.sql
+        --- BEGIN: custom data deployments for development
+        :r ..\Scripts\Data-Loader\development_data\antoni_data.sql
+        --- END: custom data deployments for development
+        :r ..\Scripts\Data-Loader\phi_data\patient_orders.sql
+        :r ..\Scripts\Data-Loader\phi_data\patient_problems.sql
+        :r ..\Scripts\Data-Loader\site_data\preferred_frequency_schedules.sql
+        :r ..\Scripts\Data-Loader\site_data\preferred_medication_doses.sql
+        :r ..\Scripts\Data-Loader\site_data\preferred_medication_routes.sql
+        :r ..\Scripts\Data-Loader\site_data\site_formulary.sql
+        :r ..\Scripts\Data-Loader\site_data\site_formulary_match.sql
+        :r ..\Scripts\Data-Loader\user_data\user_quick_list_items.sql
+        --- BEGIN: custom data deployments for development
+        :r ..\Scripts\Data-Loader\development_data\bradley_data.sql
+        :r ..\Scripts\Data-Loader\development_data\bradley_data_II.sql
+        :r ..\Scripts\Data-Loader\development_data\hsi-an.sql
+        --- END: custom data deployments for development
+end;
 
 drop table if exists [#medication_items]; 
 
@@ -131,6 +169,11 @@ drop table if exists [#medication_items];
 -- After bacpac is created create the dacpac including these procedures
 if '$(is_bacpac_build)'='True'
 begin
+    ---- emar specific procedures with external references
+    drop procedure if exists [dbo].[create_FDB_search];
+    drop procedure if exists [dbo].[pc_fdb_get_drc_info];
+    drop procedure if exists [dbo].[pc_fdb_meds_search];
+
     drop procedure if exists [dbo].[export_ibex_antimicrobial_indication_items];
     drop procedure if exists [dbo].[export_ibex_antimicrobial_indications];
     drop procedure if exists [dbo].[export_ibex_fdb_allergy_name];
@@ -165,10 +208,6 @@ begin
     drop procedure if exists [dbo].[export_ibex_sites];
     drop procedure if exists [dbo].[export_ibex_user_quick_list_items];
     drop procedure if exists [dbo].[export_ibex_users];
-    ---- emar specific procedures with external references
-    drop procedure if exists [dbo].[create_FDB_search];
-    drop procedure if exists [dbo].[pc_fdb_get_drc_info];
-    drop procedure if exists [dbo].[pc_fdb_meds_search];
 end;
 
 --- variables global to all diagram_ published scripts
