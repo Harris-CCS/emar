@@ -25,12 +25,13 @@ import {
 } from 'rxjs/operators';
 
 import { Frequency } from '../../../app/interfaces/frequency';
-import { FREQUENCIES } from '../../../app/mockup/frequencies';
+// import { FREQUENCIES } from '../../../app/mockup/frequencies';
 import { ModalService } from 'src/services/modal.service';
 import { Order } from 'src/app/interfaces/order';
 import { Duration } from 'src/app/interfaces/duration';
 import { Unit } from 'src/app/interfaces/unit';
 import { ComposerSchedulerService } from 'src/services/composer-scheduler.service';
+import { UserStoreService } from 'src/services/user-store.service';
 const DURATION_UNITS: string[] = ['Dose(s)', 'Hour(s)', 'Day(s)'];
 
 @Component({
@@ -49,7 +50,8 @@ export class FrequencyFormComponent implements OnInit {
   focusFrequency$ = new Subject<string>();
   clickFrequency$ = new Subject<string>();
 
-  frequencies: Frequency[] = FREQUENCIES; // TODO API
+  // frequencies: Frequency[] = FREQUENCIES;
+  frequencies: Frequency[];
   order: Order = null; // TODO come from composer
   preferredDurationUnits: string[] = DURATION_UNITS;
   minStartDateTime: string;
@@ -62,12 +64,20 @@ export class FrequencyFormComponent implements OnInit {
   selectedDurationUnitName: string = '';
   initialStartDateTime: string = '';
   initialEndDateTime: string = '';
+  userSiteId: number = null;
 
   constructor(
     private fb: FormBuilder,
     private modalService: ModalService,
-    private composerSchedulerService: ComposerSchedulerService
-  ) {}
+    private composerSchedulerService: ComposerSchedulerService,
+    private userStoreService: UserStoreService
+  ) {
+    this.userSiteId = this.userStoreService.userSiteId;
+    this.frequencies = this.composerSchedulerService.getSiteMedicationFrequencies(
+      this.userSiteId
+    );
+    // console.log('frequenciesinConstructor', this.frequencies);
+  }
 
   ngOnInit() {
     // default values
@@ -281,9 +291,10 @@ export class FrequencyFormComponent implements OnInit {
       map((term) =>
         term.length < 0
           ? []
-          : FREQUENCIES.filter((f) =>
-              new RegExp(term, 'mi').test(f.frequencyName)
-            ).slice(0, 10)
+          : // : FREQUENCIES.filter((f) =>
+            this.frequencies
+              .filter((f) => new RegExp(term, 'mi').test(f.frequencyName))
+              .slice(0, 10)
       )
       // TODO this.frequencies but this is undefined
     );
