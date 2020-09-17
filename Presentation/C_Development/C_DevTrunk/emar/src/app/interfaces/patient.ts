@@ -1,5 +1,6 @@
 import { Allergy } from './allergy';
 import { HomeMedication } from './home-medication';
+import { PatientIndicator } from './patient-indicator';
 
 export interface Patient {
   id: number;
@@ -12,10 +13,12 @@ export interface Patient {
   nameSuffix?: string;
   fullName?: string; // not in patients table, but in API returned data
   gender: string;
+  birthDate: string;
   dateOfBirth?: string;
+  deactivationDateTime?: string;
   age?: number;
   ageUnits?: string;
-  chiefComplaint?: string;
+  complaint?: string;
   heightInCm?: number;
   weightInKg?: number;
   siteId: number;
@@ -26,7 +29,9 @@ export interface Patient {
   urgency?: string;
   nameAlert: boolean;
   withdrawConsent: boolean;
-  vsDateTime?: string;
+  vsDatetime?: string;
+  vsDatetimeDate?: string;
+  vsDatetimeTime?: string;
   vsBloodPressureIndicator?: string;
   vsSystolic?: string;
   vsDiastolic?: string;
@@ -47,13 +52,16 @@ export interface Patient {
   personNumber?: string;
   customNumber?: string;
   site: { id: number; name: string; active: boolean; timeZoneName: string };
-  // Missing fields
-  patientImage?: string;
-  customIndicators?: Array<IIndicators>;
-  allergies?: Array<IAllergies>;
-  homeMeds?: Array<IHomeMeds>;
   patientAllergies?: Array<Allergy>;
   homeMedications?: Array<HomeMedication>;
+  patientIndicators?: Array<PatientIndicator>;
+  patientImageSrc?: string;
+  visitStartDateTime: string;
+  // Missing fields
+  // patientImage?: string;
+  // customIndicators?: Array<IIndicators>;
+  // allergies?: Array<IAllergies>;
+  // homeMeds?: Array<IHomeMeds>;
 }
 
 interface IIndicators {
