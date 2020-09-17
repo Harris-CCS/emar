@@ -24,6 +24,7 @@
         <content *ngIf="cell.dataType !== 'date'">
           {{cell.data}}
         </content>
+        <img *ngIf="cell.imagePath" [src]="cell.imagePath" onerror="this.style.display='none'">
       </td>
     </tr>
   </tbody>
@@ -36,6 +37,7 @@
         <content *ngIf="cell.dataType !== 'date'">
           {{cell.data}}
         </content>
+        <img *ngIf="cell.imagePath" [src]="cell.imagePath" onerror="this.style.display='none'">
       </td>
     </tr>
   </tbody>

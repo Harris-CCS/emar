@@ -30,6 +30,7 @@ export class SimpleTableComponent implements OnInit {
         className?: string;
         data: string;
         dataType?: string;
+        imagePath?: string;
       }[];
     }[];
   };
@@ -148,6 +149,7 @@ export class SimpleTableComponent implements OnInit {
       data?: any;
       dataType?: string;
       className?: string;
+      imagePath?: string;
     }
   ): void {
     if (!this.header) {
@@ -172,6 +174,7 @@ export class SimpleTableComponent implements OnInit {
       data: cell.data || ' ',
       dataType: cell.dataType,
       className: cell.className,
+      imagePath: cell.imagePath,
     });
   }
 

@@ -20,7 +20,7 @@ export class HeaderPatientComponent implements OnInit {
     indicator: string;
     className: string;
   }[];
-  vsOverallIndicatorClass: string = 'indicator-normal';
+  vsOverallIndicatorClass: string = 'set-normal';
   // showAllAllergies: boolean = false;
   // showAllMeds: boolean = false;
 
@@ -54,6 +54,7 @@ export class HeaderPatientComponent implements OnInit {
     if (this.patient.urgencyColor && this.patient.urgencyColor.includes('#')) {
       return this.patient.urgencyColor;
     } else {
+      return '#DCDCDC';
       /*
      'R' => 'Red',
      'Y' => 'Yellow',
@@ -65,28 +66,28 @@ export class HeaderPatientComponent implements OnInit {
      'K' => 'Gray',
      'X' => 'Black'
 */
-      switch (this.patient.urgency) {
-        case 'R':
-          return '#FF0000';
-        case 'G':
-          return '#60D760';
-        case 'Y':
-          return '#FBEC5D';
-        case 'B':
-          return '#64AAF5';
-        case 'P':
-          return '#CC33CC';
-        case 'Q':
-          return '#FFC6FF';
-        case 'K':
-          return '#C2C7CC';
-        case 'Z':
-          return '#FC9A39';
-        case 'X':
-          return '#000';
-        default:
-          return '#000';
-      }
+      // switch (this.patient.urgency) {
+      //   case 'R':
+      //     return '#FF0000';
+      //   case 'G':
+      //     return '#60D760';
+      //   case 'Y':
+      //     return '#FBEC5D';
+      //   case 'B':
+      //     return '#64AAF5';
+      //   case 'P':
+      //     return '#CC33CC';
+      //   case 'Q':
+      //     return '#FFC6FF';
+      //   case 'K':
+      //     return '#C2C7CC';
+      //   case 'Z':
+      //     return '#FC9A39';
+      //   case 'X':
+      //     return '#000';
+      //   default:
+      //     return '#000';
+      // }
     }
   }
 
@@ -191,10 +192,12 @@ export class HeaderPatientComponent implements OnInit {
   }
 
   getVitalSignIconPath() {
-    if (this.vsOverallIndicatorClass === 'indicator-high') {
+    if (this.vsOverallIndicatorClass.includes('panic')) {
       return `../../../assets/icon/vitals_high.svg`;
-    } else {
+    } else if (this.vsOverallIndicatorClass.includes('abnormal')) {
       return `../../../assets/icon/vitals_mid.svg`;
+    } else {
+      return `../../../assets/icon/vitals_normal.svg`;
     }
   }
 
@@ -263,6 +266,19 @@ export class HeaderPatientComponent implements OnInit {
 
   logVitalSign(label: string, value: string, indicator: string): void {
     const className = this.getIndicatorClassName(indicator);
+    if (
+      className &&
+      className.includes('panic') &&
+      !this.vsOverallIndicatorClass.includes('panic')
+    ) {
+      this.vsOverallIndicatorClass = 'set-panic';
+    } else if (
+      className &&
+      className.includes('abnormal') &&
+      !this.vsOverallIndicatorClass.includes('panic')
+    ) {
+      this.vsOverallIndicatorClass = 'set-abnormal';
+    }
     // Table Structure
     if (!this.vitalsTableStructure) {
       this.vitalsTableStructure = new SimpleTableComponent();
@@ -299,7 +315,10 @@ export class HeaderPatientComponent implements OnInit {
       isHeaderCell: false,
       data: value,
       dataType: 'string',
-      className: `${className} align-center`,
+      className: `${className} align-left`,
+      imagePath: className.includes('panic')
+        ? '../../../assets/img/unable_to_check.png'
+        : '',
     });
     const vsObject = {
       label,
@@ -311,16 +330,29 @@ export class HeaderPatientComponent implements OnInit {
   }
 
   getIndicatorClassName(indicator: any): string {
-    if (indicator === '0') {
-      if (this.vsOverallIndicatorClass === 'indicator-normal') {
-        this.vsOverallIndicatorClass = 'indicator-low';
+    /*
+      0 = Normal
+      1 = Panic Low
+      2 = Normal Low
+      3 = Normal High
+      4 = Panic High
+    */
+    switch (indicator) {
+      case '0': {
+        return 'indicator-normal';
       }
-      return 'indicator-low';
-    } else if (indicator === '2') {
-      this.vsOverallIndicatorClass = 'indicator-high';
-      return 'indicator-high';
-    } else {
-      return 'indicator-normal';
+      case '1': {
+        return 'indicator-low panic';
+      }
+      case '2': {
+        return 'indicator-low abnormal';
+      }
+      case '3': {
+        return 'indicator-high abnormal';
+      }
+      case '4': {
+        return 'indicator-high panic';
+      }
     }
   }
 

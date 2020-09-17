@@ -18,14 +18,14 @@
                 <div>
                     <span *ngIf="patient.complaint"><em>Complaint: </em>{{patient.complaint}}</span>
                 </div>
-                <div class="action-icons">
+                <div>
                     <ul class="horizontal-icon-list">
                         <li>
                             <span placement="bottom" ngbTooltip="Click to view Current Vital Signs">
                                 <img *ngIf="checkForData('vitals')" [src]="getVitalSignIconPath()"
                                     class={{vsOverallIndicatorClass}} alt="Vital Signs"
                                     [ngbPopover]="lastVitalSignsTaken" placement="bottom-left" triggers="click"
-                                    [autoClose]="'outside'" container="body">
+                                    [autoClose]="'outside'" container="body" [ngClass]="{'action-icons': true}">
                             </span>
                         </li>
                         <li>
@@ -61,15 +61,16 @@
                 <div class="custom-indicators" *ngIf="patient.patientIndicators">
                     <ul class="horizontal-icon-list">
                         <li *ngFor="let indicator of patient.patientIndicators">
-                            <img *ngIf="indicator.imageSrc" [src]="indicator.imageSrc" alt="{{indicator.description}}"
-                                placement="bottom" ngbTooltip="{{indicator.description}}">
+                            <img *ngIf="indicator.imageSrc" [src]="indicator.imageSrc"
+                                onerror="this.style.display='none'" alt="{{indicator.description}}" placement="bottom"
+                                ngbTooltip="{{indicator.description}}">
                         </li>
                     </ul>
                 </div>
             </div>
-            <!-- <div class='patient-image'>
-                <img [src]="patient.patientImage" alt="">
-            </div> -->
+            <div class='patient-image'>
+                <img [src]="patient.patientImageSrc" onerror="this.style.display='none'" alt="Patient Image">
+            </div>
             <div class="patient-demo-ids">
                 <div class="patient-data-demographics">
                     <div class="demographics-header">
