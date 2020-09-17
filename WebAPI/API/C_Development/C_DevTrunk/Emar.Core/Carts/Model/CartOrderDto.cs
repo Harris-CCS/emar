@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Emar.Core.Medications.Model;
 using Emar.Core.Orders.Model;
 using Emar.Core.Users.Model;
+using Emar.Data.Entities;
 
 namespace Emar.Core.Carts.Model
 {

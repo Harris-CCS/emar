@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Linq;
-using Emar.Core.Helpers;
+using Emar.Core.Medications.Model;
 using Emar.Core.Medications.Model.Mappings;
-using Emar.Core.Orders.Model;
 using Emar.Core.Users.Model.Mappings;
 using Emar.Data.Entities;
 
@@ -10,7 +9,7 @@ namespace Emar.Core.Carts.Model.Mappings
 {
     public static class CartOrderMapper
     {
-        public static CartOrderDto MapCartOrder(PatientCartOrder order, string dateFormat)
+        public static CartOrderDto MapCartOrder(PatientCartOrder order, string dateFormat, string drugDBVendor)
         {
             if (order == null)
                 return null;
@@ -44,8 +43,9 @@ namespace Emar.Core.Carts.Model.Mappings
                 //EndTime = DateTimeHelper.GetTime(order.EndDatetime),
                 UserQuickListItemId = order.UserQuickListItemId,
                 OrderNotes = order.OrderNotes,
-                CartOrderAdministrations = order.CartOrderAdministrations
-                    .Select(a => MapCartOrderAdministration(a, dateFormat)).ToList()
+                CartOrderAdministrations = order.CartOrderAdministrations.Select(a => MapCartOrderAdministration(a, dateFormat)).ToList(),
+                OrderInteractions = order.OrderInteractions?.Select(interaction => MedicationMapper.MapOrderInteraction(interaction, drugDBVendor)).ToList(),
+                AllergyReactions = order.AllergyReactionsView?.Select(reaction => MedicationMapper.MapAllergyReactionView(reaction, drugDBVendor)).ToList()
             };
 
             return orderDto;
@@ -75,13 +75,15 @@ namespace Emar.Core.Carts.Model.Mappings
                 BeginDatetime = orderDto.BeginDatetime,
                 EndDatetime = orderDto.EndDatetime,
                 OrderNotes = orderDto.OrderNotes,
-                CartOrderAdministrations = orderDto.CartOrderAdministrations?.Select(MapCartOrderAdministrationToDto).ToList()
+                CartOrderAdministrations = orderDto.CartOrderAdministrations?.Select(MapCartOrderAdministrationToDto).ToList(),
+                OrderInteractions = orderDto.OrderInteractions?.Select(MedicationMapper.MapOrderInteractionDto).ToList(),
+                AllergyReactionsView = orderDto.AllergyReactions?.Select(MedicationMapper.MapAllergyReactionViewDto).ToList()
             };
 
             return order;
         }
 
-        public static CartOrderAdministrationDto MapCartOrderAdministration(CartOrderAdministration administration, string  dateFormat)
+        public static CartOrderAdministrationDto MapCartOrderAdministration(CartOrderAdministration administration, string dateFormat)
         {
             if (administration == null)
                 return null;
@@ -133,6 +135,63 @@ namespace Emar.Core.Carts.Model.Mappings
             };
 
             return administration;
+        }
+
+        public static MedicationModel MapPatientCartOrderToModel(PatientCartOrder order, int userId, int siteId)
+        {
+            if (order == null)
+            {
+                return null;
+            }
+
+            return new MedicationModel
+            {
+                SiteId = siteId,
+                PatientId = order.PatientId,
+                UserId = userId,
+                SourceTable = SourceTables.PatientCartOrders,
+                SourceTableId = order.Id,
+                Type = EmarOrderType.PatientCartOrder,
+                ActionStatus = null,
+                AddDatetime = order.AddDatetime,
+                AddUserId = order.UserId,
+                AlternateName = null,
+                BeginDatetime = null,
+                BrandName = order.BrandName,
+                ActiveName = order.FdbBrandName?.Active,
+                ActiveId = order.FdbBrandName?.PcRoutedGenId?.ToString(),
+                Category = null,
+                ChangeDatetime = null,
+                ChangeUserId = null,
+                Class = null,
+                Comment = order.OrderNotes,
+                Dose = order.Dose,
+                DrugId = order.DrugId,
+                EndDatetime = null,
+                FrequencyScheduleId = order.FrequencyScheduleId,
+                InternalDrugId = null,
+                IsActive = null,
+                MedicationDrugId = null,
+                MedicationRouteId = order.MedicationRouteId,
+                MedicationUnitId = order.MedicationUnitId,
+                Ndc = order.Ndc,
+                OrderPhysicianUserId = null,
+                OrderStatus = null,
+                ParentDrugId = null,
+                ParentDrugName = null,
+                PointInTime = order.PointInTime,
+                Priority = order.Priority,
+                Prn = order.Prn,
+                Reaction = null,
+                Schedule = null,
+                Severity = null,
+
+                Name = null,
+                AllergyDrugId = null,
+                InformationSource = null,
+                PersonNumber = null,
+                AccountNumber = null
+            };
         }
     }
 }

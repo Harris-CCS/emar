@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Emar.Core.Helpers;
+using Emar.Core.Medications.Model;
 
 namespace Emar.Core.Orders.Model
 {

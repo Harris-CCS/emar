@@ -10,23 +10,107 @@ namespace Emar.Core.Patients.Model
     {
         public long Id { get; set; }
 
-        public long PatientId { get; set; }
-        internal string Class { get; set; }
-        internal string Category { get; set; }
-        public string InternalDrugId { get; set; }
-        public string Ndc { get; set; }
-        public string DrugId { get; set; }
-        public string Name { get; set; }
-        public string AlternateName { get; set; }
-        public string AllergyDrugId { get; set; }
-        public bool IsActive { get; set; }
-        public string Comment { get; set; }
-        public string Schedule { get; set; }
-        public string Reaction { get; set; }
-        public string Severity { get; set; }
+        public long? PatientId { get; set; }
 
-        public string ParentDrugId { get; set; }
-        public string ParentDrugName { get; set; }
+        private string _class;
+        public string Class
+        {
+            get => _class?.Trim();
+            set => _class = value?.Trim();
+        }
+
+        string _category;
+        public string Category
+        {
+            get => _category?.Trim();
+            set => _category = value?.Trim();
+        }
+
+        string _internalDrugId;
+        public string InternalDrugId
+        {
+            get => _internalDrugId?.Trim();
+            set => _internalDrugId = value?.Trim();
+        }
+
+        string _ndc;
+        public string Ndc
+        {
+            get => _ndc?.Trim();
+            set => _ndc = value?.Trim();
+        }
+
+        string _drugId;
+        public string DrugId
+        {
+            get => _drugId?.Trim();
+            set => _drugId = value?.Trim();
+        }
+
+        string _name;
+        public string Name
+        {
+            get => _name?.Trim();
+            set => _name = value?.Trim();
+        }
+
+        string _alternateName;
+        public string AlternateName
+        {
+            get => _alternateName?.Trim();
+            set => _alternateName = value?.Trim();
+        }
+
+        string _allergyDrugId;
+        public string AllergyDrugId
+        {
+            get => _allergyDrugId?.Trim();
+            set => _allergyDrugId = value?.Trim();
+        }
+
+        public bool IsActive { get; set; }
+
+        string _comment;
+        public string Comment
+        {
+            get => _comment?.Trim();
+            set => _comment = value?.Trim();
+        }
+
+        string _schedule;
+        public string Schedule
+        {
+            get => _schedule?.Trim();
+            set => _schedule = value?.Trim();
+        }
+
+        string _reaction;
+        public string Reaction
+        {
+            get => _reaction?.Trim();
+            set => _reaction = value?.Trim();
+        }
+
+        string _severity;
+        public string Severity
+        {
+            get => _severity?.Trim();
+            set => _severity = value?.Trim();
+        }
+
+        string _parentDrugId;
+        public string ParentDrugId
+        {
+            get => _parentDrugId?.Trim();
+            set => _parentDrugId = value?.Trim();
+        }
+
+        string _parentDrugName;
+        public string ParentDrugName
+        {
+            get => _parentDrugName?.Trim();
+            set => _parentDrugName = value?.Trim();
+        }
 
         // BRM: 8/24/2020 - user data not needed by UI (Marco)
         //public int AddUserId { get; set; }
@@ -37,8 +121,15 @@ namespace Emar.Core.Patients.Model
         //public UserDto ChangeUser { get; set; }
         //public DateTimeOffset? ChangeDatetime { get; set; }
 
-        public string ActionStatus { get; set; }
+        string _actionStatus;
+        public string ActionStatus
+        {
+            get => _actionStatus?.Trim();
+            set => _actionStatus = value?.Trim();
+        }
+
         public string InformationSourceCode { get; set; }
+
         public string InformationSource
         {
             get
@@ -52,6 +143,20 @@ namespace Emar.Core.Patients.Model
                         return InformationSourceCode;
                 }
             }
+        }
+
+        string _personNumber;
+        public string PersonNumber
+        {
+            get => _personNumber?.Trim();
+            set => _personNumber = value?.Trim();
+        }
+
+        string _accountNumber;
+        public string AccountNumber
+        {
+            get => _accountNumber?.Trim();
+            set => _accountNumber = value?.Trim();
         }
     }
 }

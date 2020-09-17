@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Emar.Core.Medications.Model;
 using Emar.Core.Orders.Model;
 using Emar.Core.Users.Model;
 
@@ -53,5 +54,8 @@ namespace Emar.Core.Carts.Model
         /// </summary>
         public IEnumerable<CartOrderAdministrationDto>? CartOrderAdministrations { get; set; }
 
+        public virtual ICollection<OrderInteractionDto>? OrderInteractions { get; set; }
+
+        public virtual ICollection<AllergyReactionViewDto>? AllergyReactions { get; set; }
     }
 }

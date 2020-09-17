@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,6 +8,11 @@ namespace Emar.Data.Entities
     [Table("patient_allergies")]
     public partial class PatientAllergy
     {
+        public PatientAllergy()
+        {
+            OrderReactions = new HashSet<OrderReaction>();
+        }
+
         [Key]
         [Column("id")]
         public long Id { get; set; }
@@ -88,5 +94,8 @@ namespace Emar.Data.Entities
         [ForeignKey(nameof(PatientId))]
         [InverseProperty(nameof(Entities.Patient.PatientAllergies))]
         public virtual Patient Patient { get; set; }
+
+        [InverseProperty("PatientAllergy")]
+        public virtual ICollection<OrderReaction> OrderReactions { get; set; }
     }
 }
