@@ -16,23 +16,23 @@ namespace Emar.Core.Orders.Model
         public IEnumerable<MedicationRouteDto> AvailableRoutes { get; set; }
         public IEnumerable<PreferredDoseDto> PreferredDoses { get; set; }
         public IEnumerable<MedicationRouteDto> PreferredRoutes { get; set; }
-        public IEnumerable<FrequencyDto> PreferredFrequencies { get; set; }
+        public IEnumerable<MockFrequencyDto> PreferredFrequencies { get; set; }
     }
 
     public class PreferredDoseDto
     {
         public string DoseName { get; set; }
         public decimal Dose { get; set; }
-        public UnitDto DoseUnit { get; set; }
+        public MockUnitDto DoseUnit { get; set; }
     }
 
-    public class UnitDto
+    public class MockUnitDto
     {
         public int Id { get; set; }
         public string UnitName { get; set; }
     }
 
-    public class FrequencyDto
+    public class MockFrequencyDto
     {
         public int Id { get; set; }
         public string FrequencyName { get; set; }

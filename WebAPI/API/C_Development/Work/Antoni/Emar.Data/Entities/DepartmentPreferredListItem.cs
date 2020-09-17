@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Emar.Data.Entities
@@ -46,6 +47,9 @@ namespace Emar.Data.Entities
         [Column("order_notes")]
         public string OrderNotes { get; set; }
 
+        [ForeignKey(nameof(FrequencyScheduleId))]
+        [InverseProperty(nameof(Entities.FrequencySchedule.DepartmentPreferredListItems))]
+        public virtual FrequencySchedule FrequencySchedule { get; set; }
 
         [ForeignKey(nameof(MedicationRouteId))]
         [InverseProperty(nameof(Entities.MedicationRoute.DepartmentPreferredListItems))]

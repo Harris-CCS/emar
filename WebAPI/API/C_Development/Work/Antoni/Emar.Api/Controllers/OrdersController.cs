@@ -79,9 +79,9 @@ namespace Emar.Api.Controllers
         [ProducesResponseType(406)] // (not acceptable) - the server does not support the required representation
         public ActionResult<IEnumerable<PatientOrderDto>> GetOrders(
             [FromHeader(Name = "Accept")] string mediaType,
-            [FromQuery] string patientId,
-            [FromQuery] string orderBy,
-            [FromQuery] string fields
+            [FromQuery] string patientId
+            //[FromQuery] string orderBy,
+            //[FromQuery] string fields
             )
         {
             if (!MediaTypes.IsValidMediaType(mediaType))
@@ -89,59 +89,63 @@ namespace Emar.Api.Controllers
                 return BadRequest("Unsupported media type header provided.");
             }
 
-            OrdersResourceParameters resourceParameters = new OrdersResourceParameters
-            {
-                PatientId = long.TryParse(patientId, out long ptId) ? ptId : -1,
-                OrderBy = orderBy,
-                Fields = fields
-            };
+            //OrdersResourceParameters resourceParameters = new OrdersResourceParameters
+            //{
+            //    PatientId = long.TryParse(patientId, out long ptId) ? ptId : -1,
+            //    OrderBy = orderBy,
+            //    Fields = fields
+            //};
 
-            if (!_propertyMappingService.ValidMappingExistsFor<PatientOrderDto, PatientOrder>(orderBy))
-            {
-                return BadRequest();
-            }
+            //if (!_propertyMappingService.ValidMappingExistsFor<PatientOrderDto, PatientOrder>(orderBy))
+            //{
+            //    return BadRequest();
+            //}
 
-            if (!_propertyCheckerService.TypeHasProperties<PatientOrderDto>(fields))
-            {
-                return BadRequest();
-            }
+            //if (!_propertyCheckerService.TypeHasProperties<PatientOrderDto>(fields))
+            //{
+            //    return BadRequest();
+            //}
 
-            PagedList<PatientOrderDto> orders = _orderService.GetOrders(null, resourceParameters);
+            if ((long.TryParse(patientId, out long ptId) ? ptId : -1) < 1)
+                return BadRequest($"Patient ID {patientId} is not valid");
 
-            if (orders == null)
-            {
-                return NotFound($"No orders found.");
-            }
+            //PagedList<PatientOrderDto> orders = _orderService.GetOrders(null, resourceParameters);
+            var orders = _orderService.GetOrders(ptId).ToList();
 
-            var paginationMetadata = new
-            {
-                totalCount = orders.TotalCount,
-                pageSize = orders.PageSize,
-                currentPage = orders.CurrentPage,
-                totalPages = orders.TotalPages
-            };
+            if (!orders.Any())
+                return NotFound($"No orders found for Patient ID: {ptId}.");
 
-            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+            return Ok(orders);
 
-            var links = CreateHateOasLinksForOrders(resourceParameters, orders.HasNext, orders.HasPrevious);
-            var shapedOrders = ((IEnumerable<PatientOrderDto>)orders).ShapeData(fields);
-            var shapedOrdersWithLinks = shapedOrders.Select(order =>
-            {
-                var orderAsDictionary = order as IDictionary<string, object>;
-                var orderLinks = CreateHateOasLinksForOrder((long)orderAsDictionary["Id"], resourceParameters);
+            //var paginationMetadata = new
+            //{
+            //    totalCount = orders.TotalCount,
+            //    pageSize = orders.PageSize,
+            //    currentPage = orders.CurrentPage,
+            //    totalPages = orders.TotalPages
+            //};
 
-                orderAsDictionary.Add("links", orderLinks);
+            //Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
 
-                return orderAsDictionary;
-            });
+            //var links = CreateHateOasLinksForOrders(resourceParameters, orders.HasNext, orders.HasPrevious);
+            //var shapedOrders = ((IEnumerable<PatientOrderDto>)orders).ShapeData(fields);
+            //var shapedOrdersWithLinks = shapedOrders.Select(order =>
+            //{
+            //    var orderAsDictionary = order as IDictionary<string, object>;
+            //    var orderLinks = CreateHateOasLinksForOrder((long)orderAsDictionary["Id"], resourceParameters);
 
-            var linkedOrderResource = new
-            {
-                orders = shapedOrdersWithLinks,
-                links
-            };
+            //    orderAsDictionary.Add("links", orderLinks);
 
-            return Ok(linkedOrderResource);
+            //    return orderAsDictionary;
+            //});
+
+            //var linkedOrderResource = new
+            //{
+            //    orders = shapedOrdersWithLinks,
+            //    links
+            //};
+
+            //return Ok(linkedOrderResource);
         }
 
         /// <summary>

@@ -10,8 +10,8 @@ namespace Emar.Core.Patients.Service
     {
         PagedList<PatientDto> GetPatients(PatientsResourceParameters resourceParameters, bool includeOrders);
         PatientDto GetPatient(long patientId, PatientsResourceParameters resourceParameters, bool includeOrders);
-        PatientDto GetPatient(short extId1, string extId2);
-        PatientDto GetPatientByNumber(string number, GetPatientBy getPatientBy);
+        PatientDto GetPatient(short extId1, string extId2, bool includeOrders);
+        PatientDto GetPatientByNumber(string number, GetPatientBy getPatientBy, bool includeOrders);
         Dictionary<string, string> GetExternalRootSitePatientId(string number, GetPatientBy getPatientBy, string rootType);
     }
 }

@@ -12,14 +12,15 @@ namespace Emar.Data.Entities
         {
             PatientAllergies = new HashSet<PatientAllergy>();
             PatientCartOrders = new HashSet<PatientCartOrder>();
-            PatientOrders = new HashSet<PatientOrder>();
+            PatientHomeMedications = new HashSet<PatientHomeMedication>();
             PatientIndicators = new HashSet<PatientIndicator>();
+            PatientOrders = new HashSet<PatientOrder>();
         }
 
         [Key]
         [Column("id")]
         public long Id { get; set; }
-        [Column("site_id")]
+        [Column("site_id", TypeName = "int")]
         public int SiteId { get; set; }
         [Column("medical_record_number")]
         [StringLength(25)]
@@ -131,19 +132,18 @@ namespace Emar.Data.Entities
         [Column("vs_pain_scale")]
         [StringLength(14)]
         public string VsPainScale { get; set; }
-
         [Column("is_active")]
         public bool Active { get; set; }
-        
         [Column("custom_number")]
         [StringLength(25)]
         public string CustomNumber { get; set; }
-        
         [Column("person_number")]
         [StringLength(25)]
         public string PersonNumber { get; set; }
-        [Column("deactivation_datetime")]
+        [Column("deactivation_datetime", TypeName = "datetimeoffset")]
         public DateTimeOffset? DeactivationDatetime { get; set; }
+        [Column("visit_start_datetime", TypeName = "datetimeoffset")]
+        public DateTimeOffset? VisitStartDatetime { get; set; }
 
         [ForeignKey(nameof(SiteId))]
         [InverseProperty(nameof(Entities.Site.Patients))]
@@ -156,12 +156,12 @@ namespace Emar.Data.Entities
         public virtual ICollection<PatientCartOrder> PatientCartOrders { get; set; }
 
         [InverseProperty("Patient")]
-        public virtual ICollection<PatientOrder> PatientOrders { get; set; }
-
-        [InverseProperty("Patient")]
-        public virtual ExternalIdEntity ExternalIds { get; set; }
+        public virtual ICollection<PatientHomeMedication> PatientHomeMedications { get; set; }
 
         [InverseProperty("Patient")]
         public virtual ICollection<PatientIndicator> PatientIndicators { get; set; }
+
+        [InverseProperty("Patient")]
+        public virtual ICollection<PatientOrder> PatientOrders { get; set; }
     }
 }

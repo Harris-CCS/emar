@@ -31,11 +31,15 @@ namespace Emar.Core.Carts.Repository
 
         public PagedList<PatientCartOrder> GetOrders(long? patientId, OrdersResourceParameters resourceParameters)
         {
-            Expression<Func<PatientCartOrder, bool>> _whereLambda = null;
-            _whereLambda = _whereLambda.And(order => order.UserId == resourceParameters.UserId);
-            _whereLambda = _whereLambda.And(order => order.PatientId == (patientId ?? resourceParameters.PatientId));
+            Expression<Func<PatientCartOrder, bool>> whereLambda;
+            if (patientId == null)
+                whereLambda = order =>
+                    order.UserId == resourceParameters.UserId && order.PatientId == resourceParameters.PatientId;
+            else
+                whereLambda = order =>
+                    order.UserId == resourceParameters.UserId && order.PatientId == patientId;
 
-            var orders = GetCartOrders(_whereLambda.Compile());
+            var orders = GetCartOrders(whereLambda);
 
             if (resourceParameters.OrderBy != null)
             {
@@ -48,20 +52,41 @@ namespace Emar.Core.Carts.Repository
             return PagedList<PatientCartOrder>.Create(orders.AsQueryable(), resourceParameters.PageNumber, resourceParameters.PageSize);
         }
 
-        IEnumerable<PatientCartOrder> GetCartOrders(Func<PatientCartOrder, bool> wherePredicate = null)
+        IEnumerable<PatientCartOrder> GetCartOrders(Expression<Func<PatientCartOrder, bool>> wherePredicate)
         {
             var orders = _context.PatientCartOrders
                 .Include(order => order.CartOrderAdministrations)
                 .Include(order => order.MedicationRoute)
+                .Include(order => order.FrequencySchedule)
+                .Include(order => order.MedicationUnit)
                 .Include(order => order.User)
-                .Include(order => order.Patient)
-                    .ThenInclude(patient => patient.Site)
-                        .ThenInclude(site => site.SiteOptions)
-                            .ThenInclude(siteOptions => siteOptions.Option)
+                .Include(order => order.OrderInteractions)
+                    .ThenInclude(interaction => interaction.DrugInteractionView)
+                .Include(order => order.AllergyReactionsView)
+                //.Include(order => order.Patient)
+                //    .ThenInclude(patient => patient.Site)
+                //        .ThenInclude(site => site.SiteOptions)
+                //            .ThenInclude(siteOptions => siteOptions.Option)
                 .Where(wherePredicate)
                 .AsEnumerable();
 
             return orders;
+        }
+
+        public IEnumerable<PatientCartOrder> GetPatientCartOrders(Expression<Func<PatientCartOrder, bool>> wherePredicate = null)
+        {
+            return _context.PatientCartOrders
+                .Where(wherePredicate)
+                .ToList()
+                .Select(order =>
+                {
+                    order.FdbBrandName =
+                    (from s in (from s in _context.FdbBrandName select s).Where(u => u.Medid.ToString() == order.DrugId)
+                     select s)
+                     .FirstOrDefault();
+                    return order;
+                })
+                .AsEnumerable();
         }
 
         public PatientCartOrder GetOrder(long orderId, OrdersResourceParameters resourceParameters)
@@ -83,6 +108,7 @@ namespace Emar.Core.Carts.Repository
                 catch (Exception ex)
                 {
                     transaction.Rollback();
+                    throw;
                 }
 
                 return GetOrder(cartOrder.Id, null);
@@ -268,5 +294,17 @@ namespace Emar.Core.Carts.Repository
             return _context.CartOrderAdministrations
                     .FirstOrDefault(administration => administration.Id == administrationId);
         }
+
+        ////////////  probably not needed, leave for now, will clean later
+        ////////////public FdbBrandName GetPatientCartOrderFdbBrandName(long orderId)
+        ////////////{
+        ////////////    var query =
+        ////////////        from p in (from p in _context.PatientCartOrders select p).Where(u => u.Id == orderId)
+        ////////////        join n in _context.FdbNdcInfo on p.DrugId equals n.GcnSeqno.ToString()
+        ////////////        join s in _context.FdbBrandName on n.RoutedGenId equals s.RoutedGenId
+        ////////////        select s;
+
+        ////////////    return query.FirstOrDefault();
+        ////////////}
     }
 }

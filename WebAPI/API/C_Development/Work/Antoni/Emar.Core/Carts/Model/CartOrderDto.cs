@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Emar.Core.Medications.Model;
 using Emar.Core.Orders.Model;
 using Emar.Core.Users.Model;
+using Emar.Data.Entities;
 
 namespace Emar.Core.Carts.Model
 {
@@ -21,8 +23,8 @@ namespace Emar.Core.Carts.Model
         /// Date and time the order was entered in the cart.  Includes the local time timezone offset from UTC.
         /// </summary>
         public DateTimeOffset AddDatetime { get; set; }
-        public string AddDate { get; set; }
-        public string AddTime { get; set; }
+        public string AddDate => AddDatetime.ToString(DateFormat);
+        public string AddTime => AddDatetime.ToString(TimeFormat);
 
         /// <summary>
         /// Indicates the order priority (STAT, Routine).
@@ -39,15 +41,15 @@ namespace Emar.Core.Carts.Model
         /// Date/time that the non-point-in-time administration started
         /// </summary>
         public DateTimeOffset BeginDatetime { get; set; }
-        public string BeginDate { get; set; }
-        public string BeginTime { get; set; }
+        public string BeginDate => BeginDatetime.ToString(DateFormat);
+        public string BeginTime => BeginDatetime.ToString(TimeFormat);
 
         /// <summary>
         /// Date and time the order ended.  Includes the local time timezone offset from UTC.
         /// </summary>
         public DateTimeOffset? EndDatetime { get; set; }
-        public string EndDate { get; set; }
-        public string EndTime { get; set; }
+        public string EndDate => EndDatetime?.ToString(DateFormat);
+        public string EndTime => EndDatetime?.ToString(TimeFormat);
 
         /// <summary>
         /// 

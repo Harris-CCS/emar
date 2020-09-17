@@ -42,13 +42,19 @@ namespace Emar.Core.Orders.Repository
             return PagedList<PatientOrder>.Create(orders.AsQueryable(), resourceParameters.PageNumber, resourceParameters.PageSize);
         }
 
+        public IEnumerable<PatientOrder> GetOrders(long patientId)
+        {
+            return GetOrders(order => order.PatientId == patientId)
+                .ToList();
+        }
+
         public PatientOrder GetOrder(long orderId, OrdersResourceParameters resourceParameters)
         {
             return GetOrders(order => order.Id == orderId)
                     .FirstOrDefault();
         }
 
-        IEnumerable<PatientOrder> GetOrders(Func<PatientOrder, bool> wherePredicate)
+        IEnumerable<PatientOrder> GetOrders(Expression<Func<PatientOrder, bool>> wherePredicate)
         {
             return _context.PatientOrders
                     .Include(order => order.OrderAdministrations)
@@ -56,12 +62,32 @@ namespace Emar.Core.Orders.Repository
                     .Include(order => order.MedicationUnit)
                     .Include(order => order.AddUser)
                     .Include(order => order.OrderPhysicianUser)
-                    .Include(order => order.Patient)
-                        .ThenInclude(patient => patient.Site)
-                            .ThenInclude(site => site.SiteOptions)
-                                .ThenInclude(siteOptions => siteOptions.Option)
+                    .Include(order => order.FrequencySchedule)
+                    .Include(order => order.OrderInteractions)
+                        .ThenInclude(interaction => interaction.DrugInteractionView)
+                    .Include(order => order.AllergyReactionsView)
+                    //.Include(order => order.Patient)
+                    //    .ThenInclude(patient => patient.Site)
+                    //        .ThenInclude(site => site.SiteOptions)
+                    //            .ThenInclude(siteOptions => siteOptions.Option)
                     .Where(wherePredicate)
                     .AsEnumerable();
+        }
+
+        public IEnumerable<PatientOrder> GetPatientOrders(Expression<Func<PatientOrder, bool>> wherePredicate)
+        {
+            return _context.PatientOrders
+                .Where(wherePredicate)
+                .ToList()
+                .Select(order =>
+                {
+                    order.FdbBrandName =
+                    (from s in (from s in _context.FdbBrandName select s).Where(u => u.Medid.ToString() == order.DrugId)
+                     select s)
+                     .FirstOrDefault();
+                    return order;
+                })
+                .AsEnumerable();
         }
 
         public IEnumerable<OrderAdministration> GetAdministrations(long orderId)
@@ -96,6 +122,17 @@ namespace Emar.Core.Orders.Repository
                     .AsEnumerable();
         }
 
+        ////////////public FdbBrandName GetPatientOrderFdbBrandName(long orderId)
+        ////////////{
+        ////////////    var query =
+        ////////////        from p in (from p in _context.PatientOrders select p).Where(u => u.Id == orderId)
+        ////////////        join n in _context.FdbNdcInfo on p.DrugId equals n.GcnSeqno.ToString()
+        ////////////        join s in _context.FdbBrandName on n.RoutedGenId equals s.RoutedGenId
+        ////////////        select s;
+
+        ////////////    return query.FirstOrDefault();
+        ////////////}
+
         #region UserQuickList Section
         /// <summary>
         /// 
@@ -105,72 +142,97 @@ namespace Emar.Core.Orders.Repository
         /// <returns></returns>
         public IEnumerable<UserQuickListItem> GetUserQuickListMostUsed(int userId, int? siteId)
         {
+            Expression<Func<UserQuickListItem, bool>> whereExpression;
             if (siteId == null)
-                return _context.UserQuickListItems
-                    .Where(i => i.UserId == userId && i.WeeklyUsageRollingAverage > -1)
+                whereExpression = i => i.UserId == userId && i.WeeklyUsageRollingAverage > -1;
+            else
+                whereExpression = i => i.UserId == userId && i.SiteId == siteId && i.WeeklyUsageRollingAverage > -1;
+
+            return _context.UserQuickListItems
+                    .Where(whereExpression)
                     .Include(i => i.MedicationRoute)
+                    .Include(i => i.MedicationUnit)
+                    .Include(i => i.FrequencySchedule)
                     .OrderByDescending(i => i.WeeklyUsageRollingAverage)
                     .Take(80)
                     .ToList();
-
-            return _context.UserQuickListItems
-                .Where(i => i.UserId == userId && i.SiteId == siteId)
-                .Include(i => i.MedicationRoute)
-                .OrderByDescending(i => i.WeeklyUsageRollingAverage)
-                .Take(80)
-                .ToList();
         }
 
-        public List<string> GetUserQuickListTabs(int userId, int? siteId)
+        public Dictionary<string, int> GetUserQuickListTabs(int userId, int? siteId)
         {
+            Expression<Func<UserQuickListItem, bool>> whereExpression;
             if (siteId == null)
-                return _context.UserQuickListItems
-                    .Where(i => i.UserId == userId)
-                    .GroupBy(i => i.BrandName.Substring(0, 1).ToUpper())
-                    .Select(i => i.Key)
-                    .ToList();
+                whereExpression = i => i.UserId == userId;
+            else
+                whereExpression = i => i.UserId == userId && i.SiteId == siteId;
 
-            return _context.UserQuickListItems
-                .Where(i => i.UserId == userId && i.SiteId == siteId)
+            var stuff = _context.UserQuickListItems
+                .Where(whereExpression)
                 .GroupBy(i => i.BrandName.Substring(0, 1).ToUpper())
-                .Select(i => i.Key)
-                .ToList();
+                .Select(i => new { name = i.Key, count = i.Count() }).ToList();
+
+            return stuff.ToDictionary(s => s.name, s => s.count);
         }
 
         IEnumerable<UserQuickListItem> IOrderRepository.GetUserQuickListTabItems(int userId, int? siteId, string tab)
         {
+            Expression<Func<UserQuickListItem, bool>> whereExpression;
+
             if (tab == "#")
             {
                 if (siteId == null)
-                    return _context.UserQuickListItems
-                        .Where(i => i.UserId == userId)
-                        .Include(i => i.MedicationRoute)
-                        .ToList()
-                        .Where(i => !char.IsLetter(i.BrandName.Substring(0, 1).ToCharArray()[0]));
-
-                return _context.UserQuickListItems
-                    .Where(i => i.UserId == userId
-                                && i.SiteId == siteId)
-                    .Include(i => i.MedicationRoute)
-                    .ToList()
-                    .Where(i => !char.IsLetter(i.BrandName.Substring(0, 1).ToCharArray()[0]));
+                    whereExpression = i => i.UserId == userId && !EF.Functions.Like(i.BrandName, "[a-zA-Z]%");
+                else
+                    whereExpression = i =>
+                        i.UserId == userId && i.SiteId == siteId && !EF.Functions.Like(i.BrandName, "[a-zA-Z]%");
+            }
+            else
+            {
+                if (siteId == null)
+                    whereExpression = i => i.UserId == userId
+                                           && EF.Functions.Like(i.BrandName, $"[{tab.ToLower()}{tab.ToUpper()}]%");
+                else
+                    whereExpression = i => i.UserId == userId
+                                           && i.SiteId == siteId
+                                           && EF.Functions.Like(i.BrandName, $"[{tab.ToLower()}{tab.ToUpper()}]%");
             }
 
-            if (siteId == null)
-                return _context.UserQuickListItems
-                    .Where(i => i.UserId == userId
-                                && i.BrandName.Substring(0, 1).ToUpper() == tab)
-                    .Include(i => i.MedicationRoute)
-                    .ToList();
-
             return _context.UserQuickListItems
-                .Where(i => i.UserId == userId
-                            && i.SiteId == siteId
-                            && i.BrandName.Substring(0, 1).ToUpper() == tab)
-                .Include(i => i.MedicationRoute)
-                .ToList();
+                    .Where(whereExpression)
+                    .Include(i => i.MedicationRoute)
+                    .Include(i => i.MedicationUnit)
+                    .Include(i => i.FrequencySchedule)
+                    .ToList();
         }
 
+        public UserQuickListItem GetUserQuickListItem(int quickListItemId)
+        {
+            return _context.UserQuickListItems.FirstOrDefault(i => i.Id == quickListItemId);
+        }
+
+        public UserQuickListItem GetUserQuickListTabItem(long itemId, int? userId)
+        {
+            Expression<Func<UserQuickListItem, bool>> whereLambda = i => i.Id == itemId;
+
+            if (userId != null)
+            {
+                whereLambda = whereLambda.And(i => i.UserId == userId);
+            }
+
+            return _context.UserQuickListItems
+                .Where(whereLambda)
+                .FirstOrDefault();
+        }
+
+        public FdbBrandName GetUserQuickListItemFdbBrandName(long itemId)
+        {
+            var query =
+                from p in (from p in _context.UserQuickListItems select p).Where(u => u.Id == itemId)
+                join s in _context.FdbBrandName on p.DrugId equals s.Medid.ToString()
+                select s;
+
+            return query.FirstOrDefault();
+        }
         #endregion
 
         #region Department Preferred List Section
@@ -178,18 +240,36 @@ namespace Emar.Core.Orders.Repository
         public List<DepartmentPreferredListItem> GetDepartmentPreferredList(int siteId, string departmentCode, string linkBase)
         {
             Expression<Func<DepartmentPreferredListItem, bool>> whereLambda = s => s.SiteId == siteId;
-            if(!string.IsNullOrWhiteSpace(departmentCode))
-                whereLambda = whereLambda.And(s => s.DepartmentCode == departmentCode);
+            if (!string.IsNullOrWhiteSpace(departmentCode))
+                whereLambda = s => s.SiteId == siteId && s.DepartmentCode == departmentCode;
 
             return _context.DepartmentPreferredListItems.Where(whereLambda)
                     .Include(g => g.MedicationUnit)
-                    .Include(g => g.MedicationRoute).ToList();
+                    .Include(g => g.MedicationRoute)
+                    .Include(g => g.FrequencySchedule).ToList();
         }
 
+        public DepartmentPreferredListItem GetDepartmentPreferredItem(long itemId)
+        {
+            Expression<Func<DepartmentPreferredListItem, bool>> whereLambda = i => i.Id == itemId;
+
+            return _context.DepartmentPreferredListItems
+                .Where(whereLambda)
+                .FirstOrDefault();
+        }
+
+        public FdbBrandName GetDepartmentPreferredListItemFdbBrandName(long itemId)
+        {
+            var query =
+                from p in (from p in _context.DepartmentPreferredListItems select p).Where(u => u.Id == itemId)
+                join s in _context.FdbBrandName on p.DrugId equals s.Medid.ToString()
+                select s;
+
+            return query.FirstOrDefault();
+        }
         #endregion
 
         #region Groups Remembered Orders Section
-
         public List<GroupListItem> GetGroupRememberedOrderItems(int siteId, string departmentCode, string linkBase)
         {
             Expression<Func<GroupListItem, bool>> whereLambda;
@@ -199,10 +279,84 @@ namespace Emar.Core.Orders.Repository
                 whereLambda = s => s.SiteId == siteId && s.DepartmentCode == departmentCode;
 
             return _context.GroupListItems.Where(whereLambda)
-                .Include( g => g.MedicationUnit)
-                .Include(g => g.MedicationRoute).ToList();
+                .Include(g => g.MedicationUnit)
+                .Include(g => g.MedicationRoute)
+                .Include(g => g.FrequencySchedule).ToList();
         }
 
+        public GroupListItem GetGroupRememberedOrderItem(long itemId)
+        {
+            Expression<Func<GroupListItem, bool>> whereLambda = i => i.Id == itemId;
+
+            return _context.GroupListItems
+                .Where(whereLambda)
+                .FirstOrDefault();
+        }
+
+        public FdbBrandName GetGroupRememberedOrderItemFdbBrandName(long itemId)
+        {
+            var query =
+                from p in (from p in _context.GroupListItems select p).Where(u => u.Id == itemId)
+                join s in _context.FdbBrandName on p.DrugId equals s.Medid.ToString()
+                select s;
+
+            return query.FirstOrDefault();
+        }
+        #endregion
+
+        #region Allergies Section
+        public IEnumerable<PatientAllergy> GetAllergies(Func<PatientAllergy, bool> wherePredicate)
+        {
+            return _context.PatientAllergies
+                    .Where(wherePredicate)
+                    .AsEnumerable();
+        }
+        #endregion
+
+        #region Utility Methods
+        public int GetSiteForOrder(long orderId)
+        {
+            var x = _context.PatientOrders.Where(o => o.Id == orderId)
+                .Include(o => o.Patient)
+                .Select(o => o.Patient.SiteId)
+                .FirstOrDefault();
+
+            return x;
+        }
+
+        public IEnumerable<FrequencyScheduleAdministration> GetNewAdministrations(int cartOrderFrequencyId,
+            DateTimeOffset start, DateTimeOffset? stop)
+        {
+            if (cartOrderFrequencyId < 0)
+                throw new ArgumentException("Negative Frequency Schedule IDs not allowable.",
+                    nameof(cartOrderFrequencyId));
+
+            if (Math.Abs(start.Subtract(DateTimeOffset.Now).TotalHours) > 12)
+                throw new ArgumentOutOfRangeException(nameof(start), start,
+                    "Start time must be within 12 hours of \"Now\"");
+
+            if (stop != null && stop.Value < start)
+                throw new ArgumentOutOfRangeException(nameof(stop), stop,
+                    "Stop time must be after start time");
+
+            if (stop != null && stop.Value > DateTimeOffset.Now.AddDays(4))
+                throw new ArgumentOutOfRangeException(nameof(stop), stop,
+                    "Stop time must be <= 4 days from now");
+
+            IEnumerable<FrequencyScheduleAdministration> administrations;
+            if (stop == null)
+            {
+                administrations = _context.FrequencyScheduleAdministrations.FromSqlInterpolated(
+                    $"EXEC [dbo].[get_frequency_schedule_items] {cartOrderFrequencyId}, {start}").ToList();
+            }
+            else
+            {
+                administrations = _context.FrequencyScheduleAdministrations.FromSqlInterpolated(
+                    $"EXEC [dbo].[get_frequency_schedule_items] {cartOrderFrequencyId}, {start}, {stop}").ToList();
+            }
+
+            return administrations;
+        }
         #endregion
     }
 }

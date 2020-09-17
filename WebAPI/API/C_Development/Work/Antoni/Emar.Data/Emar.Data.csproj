@@ -18,8 +18,19 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Entities\BradNameExample.cs" />
+    <Compile Remove="Entities\Medication.cs" />
+    <Compile Remove="Entities\MedicationDetail.cs" />
+  </ItemGroup>
+
   <ItemGroup>
     <None Remove="Emar.Data.csproj.bak" />
+    <None Remove="EmarContext.cs.bak" />
   </ItemGroup>
 
   <ItemGroup>

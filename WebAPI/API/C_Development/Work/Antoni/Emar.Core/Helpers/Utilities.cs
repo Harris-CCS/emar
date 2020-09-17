@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Dynamic;
 using System.Globalization;
 using System.Linq;
@@ -14,9 +15,6 @@ namespace Emar.Core.Helpers
     public static class AppConstants
     {
         public const string ImagesRoute = @"api/images";
-        public const string LongDateFormat = @"LONG_DATE_FORMAT";
-        public const string PatientImagePath = @"PATIENT_IMAGE_PATH";
-        public const string CustomIndicatorImagePath = @"CUSTOM_INDICATORS_IMAGE_PATH";
     }
 
     public static class StringExtensions
@@ -405,6 +403,54 @@ namespace Emar.Core.Helpers
         {
             EmarHttpContext.Configure(app.ApplicationServices.GetRequiredService<IHttpContextAccessor>());
             return app;
+        }
+    }
+
+    public static class DataSetExtensions
+    {
+        public static DataSet ToDataSet<T>(this IList<T> list)
+        {
+            var elementType = typeof(T);
+            var ds = new DataSet();
+            var t = new DataTable();
+            ds.Tables.Add(t);
+
+            if (elementType.IsValueType)
+            {
+                var colType = Nullable.GetUnderlyingType(elementType) ?? elementType;
+                t.Columns.Add(elementType.Name, colType);
+            }
+            else
+            {
+                //add a column to table for each public property on T
+                foreach (var propInfo in elementType.GetProperties())
+                {
+                    var colType = Nullable.GetUnderlyingType(propInfo.PropertyType) ?? propInfo.PropertyType;
+                    t.Columns.Add(propInfo.Name, colType);
+                }
+            }
+
+            //go through each property on T and add each value to the table
+            foreach (var item in list)
+            {
+                var row = t.NewRow();
+
+                if (elementType.IsValueType)
+                {
+                    row[elementType.Name] = item;
+                }
+                else
+                {
+                    foreach (var propInfo in elementType.GetProperties())
+                    {
+                        row[propInfo.Name] = propInfo.GetValue(item, null) ?? DBNull.Value;
+                    }
+                }
+
+                t.Rows.Add(row);
+            }
+
+            return ds;
         }
     }
 }

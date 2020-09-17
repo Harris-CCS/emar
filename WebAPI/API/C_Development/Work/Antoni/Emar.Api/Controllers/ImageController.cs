@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using Emar.Api.Helpers;
 using Emar.Core.Helpers;
+using Emar.Core.Options.Model;
 using Emar.Core.Patients.Service;
 using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Mvc;
@@ -33,7 +34,8 @@ namespace Emar.Api.Controllers
         public IActionResult GetPatientImage(
             [FromHeader(Name = "Accept")] string mediaType,
             [FromQuery] string getPatientBy,
-            [FromQuery] string number
+            [FromQuery] string number,
+            [FromQuery] bool detailsOnError = false
             )
         {
             if ((getPatientBy == null) ||
@@ -71,7 +73,7 @@ namespace Emar.Api.Controllers
             }
 
             string error;
-            PhysicalFileResult physicalFileResult = GetPatientImageFile(number, patientBy, out error);
+            PhysicalFileResult physicalFileResult = GetPatientImageFile(number, patientBy, out error, detailsOnError);
 
             if (error.StartsWith("BadRequest|"))
             {
@@ -95,7 +97,8 @@ namespace Emar.Api.Controllers
         [Produces(MediaTypes.Jpeg, MediaTypes.Png, MediaTypes.Gif, MediaTypes.Text)]
         public IActionResult GetPatientImageById(
             [FromHeader(Name = "Accept")] string mediaType,
-            long? patientId
+            long? patientId,
+            [FromQuery] bool detailsOnError = false
             )
         {
             if (patientId == null)
@@ -104,7 +107,7 @@ namespace Emar.Api.Controllers
             }
 
             string error;
-            PhysicalFileResult physicalFileResult = GetPatientImageFile(patientId.ToString(), GetPatientBy.Id, out error);
+            PhysicalFileResult physicalFileResult = GetPatientImageFile(patientId.ToString(), GetPatientBy.Id, out error, detailsOnError);
 
             if (error.StartsWith("BadRequest|"))
             {
@@ -129,7 +132,8 @@ namespace Emar.Api.Controllers
         public IActionResult GetPatientIndicatorImage(
             [FromHeader(Name = "Accept")] string mediaType,
             long? patientId,
-            string imageName
+            string imageName,
+            [FromQuery] bool detailsOnError = false
             )
         {
             if (imageName == null)
@@ -138,7 +142,7 @@ namespace Emar.Api.Controllers
             }
 
             string error;
-            PhysicalFileResult physicalFileResult = GetPatientIndicatorImageFile(patientId.ToString(), GetPatientBy.Id, imageName, out error);
+            PhysicalFileResult physicalFileResult = GetPatientIndicatorImageFile(patientId.ToString(), GetPatientBy.Id, imageName, out error, detailsOnError);
 
             if (error.StartsWith("BadRequest|"))
             {
@@ -153,11 +157,11 @@ namespace Emar.Api.Controllers
             return physicalFileResult;
         }
 
-        private PhysicalFileResult GetPatientImageFile(string number, GetPatientBy getPatientBy, out string error)
+        private PhysicalFileResult GetPatientImageFile(string number, GetPatientBy getPatientBy, out string error, bool detailsOnError = false)
         {
             error = "";
 
-            Dictionary<string, string> externalRootSitePatientId = _patientService.GetExternalRootSitePatientId(number, getPatientBy, AppConstants.PatientImagePath);
+            Dictionary<string, string> externalRootSitePatientId = _patientService.GetExternalRootSitePatientId(number, getPatientBy, OptionNames.PATIENT_IMAGE_PATH.ToString());
 
             if (externalRootSitePatientId == null)
             {
@@ -173,7 +177,17 @@ namespace Emar.Api.Controllers
                 (site == null) ||
                 (patientId == null))
             {
-                error = "BadRequest|";
+                error = "BadRequest|"
+                        + (detailsOnError ? Environment.NewLine +
+                                            Environment.NewLine +
+                                            Environment.NewLine +
+                                            Environment.NewLine +
+                                            ">>ImageController 0001<<" + Environment.NewLine +
+                                            "------------------------" + Environment.NewLine +
+                                            "root: [" + root + "]" + Environment.NewLine +
+                                            "site: [" + site + "]" + Environment.NewLine +
+                                            "patientId: [" + patientId + "]" + Environment.NewLine 
+                                          : "");
                 return null;
             }
 
@@ -192,7 +206,18 @@ namespace Emar.Api.Controllers
 
             if (!fInfo.Exists)
             {
-                error = $"NotFound|Image {fInfo.Name} not found.";
+                error = $"NotFound|Image {fInfo.Name} not found."
+                        + (detailsOnError ? Environment.NewLine +
+                                            Environment.NewLine +
+                                            Environment.NewLine +
+                                            Environment.NewLine +
+                                            ">>ImageController 0002<<" + Environment.NewLine +
+                                            "------------------------" + Environment.NewLine +
+                                            "filepath: [" + filepath + "]" + Environment.NewLine +
+                                            "root: [" + root + "]" + Environment.NewLine +
+                                            "site: [" + site + "]" + Environment.NewLine +
+                                            "patientId: [" + patientId + "]" + Environment.NewLine 
+                                          : "");
                 return null;
             }
 
@@ -204,11 +229,11 @@ namespace Emar.Api.Controllers
             return PhysicalFile(filepath, contentType);
         }
 
-        private PhysicalFileResult GetPatientIndicatorImageFile(string number, GetPatientBy getPatientBy, string imageName, out string error)
+        private PhysicalFileResult GetPatientIndicatorImageFile(string number, GetPatientBy getPatientBy, string imageName, out string error, bool detailsOnError = false)
         {
             error = "";
 
-            Dictionary<string, string> externalRootSitePatientId = _patientService.GetExternalRootSitePatientId(number, getPatientBy, AppConstants.CustomIndicatorImagePath);
+            Dictionary<string, string> externalRootSitePatientId = _patientService.GetExternalRootSitePatientId(number, getPatientBy, OptionNames.CUSTOM_INDICATORS_IMAGE_PATH.ToString());
 
             if (externalRootSitePatientId == null)
             {
@@ -220,7 +245,15 @@ namespace Emar.Api.Controllers
 
             if (root == null)
             {
-                error = "BadRequest|";
+                error = "BadRequest|"
+                        + (detailsOnError ? Environment.NewLine +
+                                            Environment.NewLine +
+                                            Environment.NewLine +
+                                            Environment.NewLine +
+                                            ">>ImageController 0003<<" + Environment.NewLine +
+                                            "------------------------" + Environment.NewLine +
+                                            "root: [" + root + "]" + Environment.NewLine
+                                          : "");
                 return null;
             }
 
@@ -232,7 +265,16 @@ namespace Emar.Api.Controllers
 
             if (!fInfo.Exists)
             {
-                error = $"NotFound |Image {fInfo.Name} not found.";
+                error = $"NotFound|Image {fInfo.Name} not found."
+                        + (detailsOnError ? Environment.NewLine +
+                                            Environment.NewLine +
+                                            Environment.NewLine +
+                                            Environment.NewLine +
+                                            ">>ImageController 0004<<" + Environment.NewLine +
+                                            "------------------------" + Environment.NewLine +
+                                            "filepath: [" + filepath + "]" + Environment.NewLine +
+                                            "root: [" + root + "]" + Environment.NewLine 
+                                          : "");
                 return null;
             }
 

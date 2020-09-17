@@ -11,6 +11,8 @@ namespace Emar.Data.Entities
         public PatientCartOrder()
         {
             CartOrderAdministrations = new HashSet<CartOrderAdministration>();
+            OrderInteractions = new HashSet<OrderInteraction>();
+            OrderReactions = new HashSet<OrderReaction>();
         }
 
         [Key]
@@ -69,6 +71,10 @@ namespace Emar.Data.Entities
         [Column("user_quick_list_item_id", TypeName = "int")]
         public int? UserQuickListItemId { get; set; }
 
+        [ForeignKey(nameof(FrequencyScheduleId))]
+        [InverseProperty(nameof(Entities.FrequencySchedule.PatientCartOrders))]
+        public virtual FrequencySchedule FrequencySchedule { get; set; }
+
         [ForeignKey(nameof(MedicationRouteId))]
         [InverseProperty(nameof(Entities.MedicationRoute.PatientCartOrders))]
         public virtual MedicationRoute MedicationRoute { get; set; }
@@ -91,5 +97,19 @@ namespace Emar.Data.Entities
 
         [InverseProperty("PatientCartOrder")]
         public virtual ICollection<CartOrderAdministration> CartOrderAdministrations { get; set; }
+
+        [InverseProperty("PatientCartOrder")]
+        public virtual ICollection<OrderInteraction> OrderInteractions { get; set; }
+
+        [InverseProperty("PatientCartOrder")]
+        public virtual ICollection<OrderReaction> OrderReactions { get; set; }
+
+
+        [ForeignKey("OrderId")]
+        [InverseProperty("PatientCartOrder")]
+        public virtual ICollection<AllergyReactionView> AllergyReactionsView { get; set; }
+
+        [NotMapped]
+        public FdbBrandName FdbBrandName { get; set; }
     }
 }

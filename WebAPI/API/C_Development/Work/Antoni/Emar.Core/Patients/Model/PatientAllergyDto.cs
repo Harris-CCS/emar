@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using Emar.Core.Users.Model;
+using Emar.Data.Entities;
 
 namespace Emar.Core.Patients.Model
 {
@@ -109,13 +112,14 @@ namespace Emar.Core.Patients.Model
             set => _parentDrugName = value?.Trim();
         }
 
-        public int AddUserId { get; set; }
+        // BRM: 8/24/2020 - user data not needed by UI (Marco)
+        //public int AddUserId { get; set; }
+        //public UserDto AddUser { get; set; }
+        //public DateTimeOffset? AddDatetime { get; set; }
 
-        public DateTimeOffset? AddDatetime { get; set; }
-
-        public int ChangeUserId { get; set; }
-
-        public DateTimeOffset? ChangeDatetime { get; set; }
+        //public int ChangeUserId { get; set; }
+        //public UserDto ChangeUser { get; set; }
+        //public DateTimeOffset? ChangeDatetime { get; set; }
 
         string _actionStatus;
         public string ActionStatus
@@ -124,11 +128,21 @@ namespace Emar.Core.Patients.Model
             set => _actionStatus = value?.Trim();
         }
 
-        string _informationSource;
+        public string InformationSourceCode { get; set; }
+
         public string InformationSource
         {
-            get => _informationSource?.Trim();
-            set => _informationSource = value?.Trim();
+            get
+            {
+                switch (InformationSourceCode)
+                {
+                    case "PC": return "PulseCheck";
+                    case "HIE": return "HIE/CCD";
+                    case "ADT": return "Interface";
+                    default:
+                        return InformationSourceCode;
+                }
+            }
         }
 
         string _personNumber;
@@ -144,9 +158,5 @@ namespace Emar.Core.Patients.Model
             get => _accountNumber?.Trim();
             set => _accountNumber = value?.Trim();
         }
-
-        public UserDto AddUser { get; set; }
-
-        public UserDto ChangeUser { get; set; }
     }
 }

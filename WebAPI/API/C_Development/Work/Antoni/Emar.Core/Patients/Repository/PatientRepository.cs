@@ -21,7 +21,6 @@ namespace Emar.Core.Patients.Repository
 
         public PatientRepository()
         {
-
         }
 
         public PatientRepository(EmarContext emarContext, IPropertyMappingService propertyMappingService)
@@ -36,7 +35,8 @@ namespace Emar.Core.Patients.Repository
 
             if (!resourceParameters.IncludeInactive)
             {
-                whereLambda = whereLambda.And(pt => pt.Active == true);
+                whereLambda = //whereLambda.And(pt => pt.Active == true);
+                    pt => pt.Active;
             }
 
             if (resourceParameters.SiteId != null)
@@ -87,33 +87,45 @@ namespace Emar.Core.Patients.Repository
             if (includeOrders)
             {
                 return _context.Patients
-                        .Include(patient => patient.PatientOrders)
-                            .ThenInclude(order => order.OrderAdministrations)
-                        .Include(patient => patient.PatientOrders)
-                            .ThenInclude(order => order.MedicationRoute)
-                        .Include(patient => patient.PatientOrders)
-                            .ThenInclude(order => order.MedicationUnit)
-                        .Include(patient => patient.PatientOrders)
-                            .ThenInclude(order => order.AddUser)
-                        .Include(patient => patient.PatientOrders)
-                            .ThenInclude(order => order.OrderPhysicianUser)
-                        .Include(patient => patient.Site)
-                            .ThenInclude(site => site.SiteOptions)
-                                .ThenInclude(siteOptions => siteOptions.Option)
-                        .Include(patient => patient.ExternalIds)
-                        .Include(patient => patient.PatientIndicators)
-                        .Where(wherePredicate)
-                        .ToList();
+                    .Include(patient => patient.PatientOrders)
+                        .ThenInclude(order => order.OrderAdministrations)
+                    .Include(patient => patient.PatientOrders)
+                        .ThenInclude(order => order.MedicationRoute)
+                    .Include(patient => patient.PatientOrders)
+                        .ThenInclude(order => order.MedicationUnit)
+                    .Include(patient => patient.PatientOrders)
+                        .ThenInclude(order => order.FrequencySchedule)
+                    .Include(patient => patient.PatientOrders)
+                        .ThenInclude(order => order.AddUser)
+                    .Include(patient => patient.PatientOrders)
+                        .ThenInclude(order => order.OrderPhysicianUser)
+                    //.Include(patient => patient.Site)
+                    //    .ThenInclude(site => site.SiteOptions)
+                    //        .ThenInclude(siteOptions => siteOptions.Option)
+                    //.Include(patient => patient.ExternalIds)
+                    .Include(patient => patient.PatientIndicators)
+                    .Include(p => p.PatientAllergies)
+                    .Include(p => p.PatientHomeMedications)
+                        .ThenInclude(h => h.MedicationUnit)
+                    .Include(p => p.PatientHomeMedications)
+                        .ThenInclude(h => h.MedicationRoute)
+                    .Where(wherePredicate)
+                    .ToList();
             }
 
             return _context.Patients
-                    .Include(patient => patient.Site)
-                        .ThenInclude(site => site.SiteOptions)
-                            .ThenInclude(siteOptions => siteOptions.Option)
-                        .Include(patient => patient.ExternalIds)
-                        .Include(patient => patient.PatientIndicators)
-                        .Where(wherePredicate)
-                        .ToList();
+                //.Include(patient => patient.Site)
+                //    .ThenInclude(site => site.SiteOptions)
+                //        .ThenInclude(siteOptions => siteOptions.Option)
+                //.Include(patient => patient.ExternalIds)
+                .Include(patient => patient.PatientIndicators)
+                .Include(p => p.PatientAllergies)
+                .Include(p=>p.PatientHomeMedications)
+                    .ThenInclude(h => h.MedicationUnit)
+                .Include(p => p.PatientHomeMedications)
+                    .ThenInclude(h => h.MedicationRoute)
+                .Where(wherePredicate)
+                .ToList();
         }
         //IEnumerable<Patient> GetPatients(Func<Patient, bool> wherePredicate, bool includeOrders = true)
         //{
@@ -154,12 +166,10 @@ namespace Emar.Core.Patients.Repository
                 (resourceParameters.ExtId2 != null))
             {
                 patientId = _context.ExternalIds
-                                .Where(@x_id =>
-                                        @x_id.ExternalId.Equals(resourceParameters.ExtId1 + "|" + resourceParameters.ExtId2) &&
-                                        @x_id.Entity.ToLower().Equals(@"patients") &&
-                                        @x_id.Vendor.ToLower().Equals(@"pulsecheck"))
-                                .FirstOrDefault()
-                                .InternalId;
+                    .FirstOrDefault(xId => xId.ExternalId.Equals(resourceParameters.ExtId1 + "|" + resourceParameters.ExtId2) &&
+                                             xId.Entity.ToLower().Equals(@"patients") &&
+                                             xId.Vendor.ToLower().Equals(@"pulsecheck"))
+                    .InternalId;
             }
 
             return patientId;
@@ -207,7 +217,6 @@ namespace Emar.Core.Patients.Repository
                 {"patientId", extIdParts[1]}
             };
 
-
             #region Version 346 code
 
             //var list = _context.Patients
@@ -250,7 +259,6 @@ namespace Emar.Core.Patients.Repository
             //};
 
             #endregion
-
             #region Annonymous Joins
             ////////var externalRootSitePatientId = _context.Patients
             ////////                                //.Where(wherePredicate)
@@ -352,10 +360,16 @@ namespace Emar.Core.Patients.Repository
             //return externalRootSitePatientId;
          }
 
-        public Patient GetPatientByNumber(string number, GetPatientBy getPatientBy)
+        public Patient GetPatientByNumber(string number, GetPatientBy getPatientBy, bool includeOrders)
         {
-            return GetPatients(GetWherePredicate(number, getPatientBy))
+            return GetPatients(GetWherePredicate(number, getPatientBy), includeOrders)
                     .FirstOrDefault();
+        }
+
+        public int GetSiteIdForPatient(long patientId)
+        {
+            return _context.Patients.Where(p => p.Id == patientId)
+                .Select(p => p.SiteId).FirstOrDefault();
         }
 
         Expression<Func<Patient, bool>> GetWherePredicate(string number, GetPatientBy getPatientBy)
@@ -373,6 +387,32 @@ namespace Emar.Core.Patients.Repository
                 default:
                     return null;
             }
+        }
+
+        public IEnumerable<PatientAllergy> GetAllergiesByPatientId(long patientId, Expression<Func<PatientAllergy, bool>> wherePredicate = null)
+        {
+            Expression<Func<PatientAllergy, bool>> whereLambda = a => a.PatientId == patientId;
+
+            if (wherePredicate != null)
+            {
+                whereLambda = whereLambda.And(wherePredicate);
+            }
+
+            return _context.PatientAllergies
+                .Where(whereLambda);
+        }
+
+        public IEnumerable<FdbAllergyName> GetAllergyFdbAllergyNames(string name, Expression<Func<FdbAllergyName, bool>> wherePredicate = null)
+        {
+            Expression<Func<FdbAllergyName, bool>> whereLambda = f => f.AllergyName == name;
+
+            if (wherePredicate != null)
+            {
+                whereLambda = whereLambda.And(wherePredicate);
+            }
+
+            return _context.FdbAllergyName
+                .Where(whereLambda);
         }
     }
 }

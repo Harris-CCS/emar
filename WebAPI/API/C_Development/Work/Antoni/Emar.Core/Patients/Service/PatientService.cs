@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Emar.Core.Helpers;
+using Emar.Core.Options.Model;
+using Emar.Core.Options.Repository;
 using Emar.Core.Patients.Model;
 using Emar.Core.Patients.Model.Mappings;
 using Emar.Core.Patients.Repository;
@@ -13,10 +15,12 @@ namespace Emar.Core.Patients.Service
     public class PatientService : IPatientService
     {
         private readonly IPatientRepository _patientRepository;
+        private readonly IOptionRepository _optionRepository;
 
-        public PatientService(IPatientRepository patientRepository)
+        public PatientService(IPatientRepository patientRepository, IOptionRepository optionRepository)
         {
             _patientRepository = patientRepository;
+            _optionRepository = optionRepository;
         }
 
         public PagedList<PatientDto> GetPatients(PatientsResourceParameters resourceParameters, bool includeOrders)
@@ -33,7 +37,10 @@ namespace Emar.Core.Patients.Service
 
             foreach (Patient patient in patients)
             {
-                patientList.Add(PatientMapper.MapPatient(patient));
+                var dateFormat = _optionRepository.GetOption(patient.SiteId, OptionNames.LONG_DATE_FORMAT);
+                var drugDBVendor = _optionRepository.GetOption(patient.SiteId, OptionNames.DRUG_DB_VENDOR);
+
+                patientList.Add(PatientMapper.MapPatient(patient, dateFormat, drugDBVendor));
             }
 
             return new PagedList<PatientDto>(patientList, patients.TotalCount, patients.CurrentPage, patients.PageSize);
@@ -48,7 +55,10 @@ namespace Emar.Core.Patients.Service
                 return null;
             }
 
-            PatientDto patientDto = PatientMapper.MapPatient(patient);
+            var dateFormat = _optionRepository.GetOption(patient.SiteId, OptionNames.LONG_DATE_FORMAT);
+            var drugDBVendor = _optionRepository.GetOption(patient.SiteId, OptionNames.DRUG_DB_VENDOR);
+
+            PatientDto patientDto = PatientMapper.MapPatient(patient, dateFormat, drugDBVendor);
 
             return patientDto;
         }
@@ -58,15 +68,18 @@ namespace Emar.Core.Patients.Service
         /// </summary>
         /// <param name="extId1">The external Site ID</param>
         /// <param name="extId2">the external Ibex number of the patient</param>
+        /// <param name="includeOrders">Should orders be included with the patient output</param>
         /// <returns></returns>
-        public PatientDto GetPatient(short extId1, string extId2)
+        public PatientDto GetPatient(short extId1, string extId2, bool includeOrders)
         {
             var patientId = _patientRepository.GetInternalPatientId(extId1, extId2);
             if (patientId == 0)
                 return null;
 
-            Patient patient = _patientRepository.GetPatient(patientId, null, false);
-            PatientDto patientDto = PatientMapper.MapPatient(patient);
+            Patient patient = _patientRepository.GetPatient(patientId, null, includeOrders);
+            var dateFormat = _optionRepository.GetOption(patient.SiteId, OptionNames.LONG_DATE_FORMAT);
+            var drugDBVendor = _optionRepository.GetOption(patient.SiteId, OptionNames.DRUG_DB_VENDOR);
+            PatientDto patientDto = PatientMapper.MapPatient(patient, dateFormat, drugDBVendor);
 
             return patientDto;
         }
@@ -74,12 +87,17 @@ namespace Emar.Core.Patients.Service
         /// <summary>
         /// Implemented to retrieve a patient by Account Number, Custom Number or Person Number instead of the Internal Id
         /// </summary>
-        /// <param name="accountNumber"></param>
+        /// <param name="number">Number to search for the patient with - [getPatientBy] determines what kind of number this is</param>
+        /// <param name="getPatientBy">Type of number to search. Values include: Id, MedicalRecordNumber,
+        /// AccountNumber, CustomNumber, PersonNumber</param>
+        /// <param name="includeOrders">Should orders be included with the patient output</param>
         /// <returns></returns>
-        public PatientDto GetPatientByNumber(string number, GetPatientBy getPatientBy)
+        public PatientDto GetPatientByNumber(string number, GetPatientBy getPatientBy, bool includeOrders)
         {
-            Patient patient = _patientRepository.GetPatientByNumber(number, getPatientBy);
-            PatientDto patientDto = PatientMapper.MapPatient(patient);
+            Patient patient = _patientRepository.GetPatientByNumber(number, getPatientBy, includeOrders);
+            var dateFormat = _optionRepository.GetOption(patient.SiteId, OptionNames.LONG_DATE_FORMAT);
+            var drugDBVendor = _optionRepository.GetOption(patient.SiteId, OptionNames.DRUG_DB_VENDOR);
+            PatientDto patientDto = PatientMapper.MapPatient(patient, dateFormat, drugDBVendor);
 
             return patientDto;
         }

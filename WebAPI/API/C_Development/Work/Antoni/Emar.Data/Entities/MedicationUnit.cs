@@ -12,6 +12,7 @@ namespace Emar.Data.Entities
             DepartmentPreferredListItems = new HashSet<DepartmentPreferredListItem>();
             GroupListItems = new HashSet<GroupListItem>();
             PatientCartOrders = new HashSet<PatientCartOrder>();
+            PatientHomeMedications = new HashSet<PatientHomeMedication>();
             PatientOrders = new HashSet<PatientOrder>();
             UserQuickListItems = new HashSet<UserQuickListItem>();
         }
@@ -56,6 +57,9 @@ namespace Emar.Data.Entities
 
         [InverseProperty("MedicationUnit")]
         public virtual ICollection<PatientCartOrder> PatientCartOrders { get; set; }
+
+        [InverseProperty("MedicationUnit")]
+        public virtual ICollection<PatientHomeMedication> PatientHomeMedications { get; set; }
 
         [InverseProperty("MedicationUnit")]
         public virtual ICollection<PatientOrder> PatientOrders { get; set; }

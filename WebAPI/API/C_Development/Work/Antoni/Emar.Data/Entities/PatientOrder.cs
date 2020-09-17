@@ -12,6 +12,8 @@ namespace Emar.Data.Entities
         {
             OrderAdministrations = new HashSet<OrderAdministration>();
             OrderEvents = new HashSet<OrderEvent>();
+            OrderInteractions = new HashSet<OrderInteraction>();
+            OrderReactions = new HashSet<OrderReaction>();
         }
 
         [Key]
@@ -81,6 +83,10 @@ namespace Emar.Data.Entities
         [InverseProperty(nameof(User.PatientOrdersAddUser))]
         public virtual User AddUser { get; set; }
 
+        [ForeignKey(nameof(FrequencyScheduleId))]
+        [InverseProperty(nameof(Entities.FrequencySchedule.PatientOrders))]
+        public virtual FrequencySchedule FrequencySchedule { get; set; }
+
         [ForeignKey(nameof(MedicationRouteId))]
         [InverseProperty(nameof(Entities.MedicationRoute.PatientOrders))]
         public virtual MedicationRoute MedicationRoute { get; set; }
@@ -102,5 +108,19 @@ namespace Emar.Data.Entities
 
         [InverseProperty("PatientOrder")]
         public virtual ICollection<OrderEvent> OrderEvents { get; set; }
+
+        [InverseProperty("PatientOrder")]
+        public virtual ICollection<OrderInteraction> OrderInteractions { get; set; }
+
+        [InverseProperty("PatientOrder")]
+        public virtual ICollection<OrderReaction> OrderReactions { get; set; }
+
+
+        [ForeignKey("OrderId")]
+        [InverseProperty("PatientOrder")]
+        public virtual ICollection<AllergyReactionView> AllergyReactionsView { get; set; }
+
+        [NotMapped]
+        public FdbBrandName? FdbBrandName { get; set; }
     }
 }

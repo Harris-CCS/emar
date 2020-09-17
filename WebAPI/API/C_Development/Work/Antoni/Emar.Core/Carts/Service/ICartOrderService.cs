@@ -9,8 +9,8 @@ namespace Emar.Core.Carts.Service
     {
         PagedList<CartOrderDto> GetOrders(long? patientId, OrdersResourceParameters resourceParameters);
         CartOrderDto GetOrder(long orderId, OrdersResourceParameters resourceParameters);
-        CartOrderDto AddCartOrder(CartOrderDto cartOrderAddDto);
-        bool UpdateCartOrder(long? cartOrderId, CartOrderDto cartOrderDto, CartOrderDto cartOrderUpdateDto);
+        CartOrderDto AddCartOrder(CartOrderIuDto cartOrderAddDto);
+        bool UpdateCartOrder(long? cartOrderId, CartOrderDto cartOrderDto, CartOrderIuDto cartOrderUpdateDto);
         bool DeleteCartOrder(long? cartOrderId);
         bool DeleteCartOrders(int? userId, long? patientId);
         bool CheckoutOrders(int? userId, long? patientId);

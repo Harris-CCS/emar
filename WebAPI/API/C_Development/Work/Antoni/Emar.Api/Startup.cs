@@ -5,6 +5,8 @@ using System.Reflection;
 using Emar.Core.Carts.Repository;
 using Emar.Core.Carts.Service;
 using Emar.Core.Helpers;
+using Emar.Core.Medications.Repository;
+using Emar.Core.Medications.Service;
 using Emar.Core.Options.Repository;
 using Emar.Core.Options.Service;
 using Emar.Core.Orders.Repository;
@@ -13,6 +15,8 @@ using Emar.Core.Patients.Repository;
 using Emar.Core.Patients.Service;
 using Emar.Core.Sites.Service;
 using Emar.Core.Sites.Repository;
+using Emar.Core.Templates.Service;
+using Emar.Core.Templates.Repository;
 using Emar.Core.Users.Repository;
 using Emar.Core.Users.Service;
 using Emar.Data;
@@ -28,6 +32,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
+using Emar.Core.HomeMedications.Service;
+using Emar.Core.HomeMedications.Repository;
 
 namespace Emar.Api
 {
@@ -145,6 +151,14 @@ namespace Emar.Api
             services.AddScoped<ICartOrderService, CartOrderService>();
             services.AddScoped<ICartOrderRepository, CartOrderRepository>();
 
+            services.AddScoped<IDoseRangeCheckingInfoService, DoseRangeCheckingInfoService>();
+            services.AddScoped<IDoseRangeCheckingInfoRepository, DoseRangeCheckingInfoRepository>();
+
+            services.AddScoped<IHomeMedicationService, HomeMedicationService>();
+            services.AddScoped<IHomeMedicationRepository, HomeMedicationRepository>();
+
+            services.AddScoped<IInteractionRepository, InteractionRepository>();
+
             services.AddScoped<IOptionService, OptionService>();
             services.AddScoped<IOptionRepository, OptionRepository>();
 
@@ -159,6 +173,9 @@ namespace Emar.Api
 
             services.AddScoped<ISiteService, SiteService>();
             services.AddScoped<ISiteRepository, SiteRepository>();
+
+            services.AddScoped<ITemplateService, TemplateService>();
+            services.AddScoped<ITemplateRepository, TemplateRepository>();
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
