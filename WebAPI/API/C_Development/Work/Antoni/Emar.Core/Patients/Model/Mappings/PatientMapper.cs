@@ -195,7 +195,7 @@ namespace Emar.Core.Patients.Model.Mappings
                 MedicationUnitId = dbObj.MedicationUnitId,
                 MedicationUnit = MedicationMapper.MapMedicationUnit(dbObj.MedicationUnit),
                 MedicationRouteId = dbObj.MedicationRouteId,
-                MedicationRoute = MedicationMapper.MapMedicationRoute(dbObj.MedicationRoute)
+                MedicationRoute = MedicationMapper.MapMedicationRoute(dbObj.MedicationRoute),
 
                 //AddUserId = allergy.AddUserId,
                 //AddUser = UserMapper.MapUser(allergy.AddUser),
@@ -203,6 +203,8 @@ namespace Emar.Core.Patients.Model.Mappings
                 //ChangeUserId = allergy.ChangeUserId,
                 //ChangeUser = UserMapper.MapUser(allergy.ChangeUser),
                 //ChangeDatetime = allergy.ChangeDatetime,
+
+                ActionStatus = dbObj.ActionStatus
             };
 
             if (retDto.MedicationRoute == null && retDto.MedicationRouteId != null)

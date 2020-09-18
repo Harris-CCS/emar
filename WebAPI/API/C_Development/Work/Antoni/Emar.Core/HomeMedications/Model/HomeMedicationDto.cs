@@ -97,7 +97,12 @@ namespace Emar.Core.HomeMedications.Model
         //public DateTimeOffset? AddDatetime { get; set; }
         //public int ChangeUserId { get; set; }
         //public DateTimeOffset? ChangeDatetime { get; set; }
-        //////public virtual ICollection<OrderInteractionDto>? OrderInteractions { get; set; }
-        //////public virtual ICollection<AllergyReactionViewDto>? AllergyReactions { get; set; }
+
+        string _actionStatus;
+        public string ActionStatus
+        {
+            get => _actionStatus?.Trim();
+            set => _actionStatus = value?.Trim();
+        }
     }
 }
