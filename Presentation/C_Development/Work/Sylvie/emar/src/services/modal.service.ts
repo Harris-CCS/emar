@@ -58,6 +58,7 @@ export class ModalService {
         modal.isOpen = true;
         this.modalOpening.emit(data);
       }, 100);
+      // console.log('modalStored', this.modals);
     }
   }
 
@@ -92,5 +93,10 @@ export class ModalService {
       modal.modalHeaderParameters = parameters;
       // console.log('modalHeaderParameters', modal);
     }
+  }
+
+  modalIsOpen(modalId: string) {
+    const modal = this.findModal(modalId);
+    return modal ? modal.isOpen : false;
   }
 }

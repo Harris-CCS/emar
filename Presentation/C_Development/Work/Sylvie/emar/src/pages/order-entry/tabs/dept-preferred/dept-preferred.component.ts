@@ -10,25 +10,27 @@ import { ModalService } from '../../../../services/modal.service';
 @Component({
   selector: 'dept-preferred',
   templateUrl: './dept-preferred.component.html',
-  styleUrls: ['./dept-preferred.component.scss']
+  styleUrls: ['./dept-preferred.component.scss'],
 })
 export class DeptPreferredComponent implements OnInit {
+  @Output() isTabValid: EventEmitter<boolean> = new EventEmitter();
+  private listContents = [];
 
-  @Output() isTabValid: EventEmitter<boolean> = new EventEmitter()
-  private listContents = []
-  private userId = this.userStoreService.userId
-  private patientId = this.patientStoreService.patientId
+  // @Output() isTabValid: EventEmitter<boolean> = new EventEmitter()
+  // private listContents = [];
+  private userId = this.userStoreService.userId;
+  private patientId = this.patientStoreService.patientId;
 
   constructor(
     private medOrderService: MedOrderService,
     private modalService: ModalService,
     private cartStoreService: CartStoreService,
     private userStoreService: UserStoreService,
-    private patientStoreService: PatientStoreService,
-  ) { }
+    private patientStoreService: PatientStoreService
+  ) {}
 
   ngOnInit(): void {
-    this.getDeptPreferredOrdersList()
+    this.getDeptPreferredOrdersList();
   }
 
   deptPreferred() {
@@ -37,24 +39,24 @@ export class DeptPreferredComponent implements OnInit {
 
   deptPreferredOrders() {
     // return this.medOrderService.getDeptPreferredOrdersList();
-    return this.listContents
+    return this.listContents;
   }
 
   getDeptPreferredOrdersList() {
     this.medOrderService.getDeptPreferredOrdersList().subscribe((resp) => {
       if (!resp || resp.length === 0) {
-        this.isTabValid.emit(false)
+        this.isTabValid.emit(false);
       } else {
-        console.log('dept pref has data, resp:', resp)
-        this.isTabValid.emit(true)
+        console.log('dept pref has data, resp:', resp);
+        this.isTabValid.emit(true);
         this.listContents = resp.map((o) => ({
           ...o,
           displayName: o.brandName,
           displayRoute: o.medicationRoute ? o.medicationRoute.routeName : '',
           displayFrequency: o.frequencyId,
           displayDose: o.dose,
-          displayDoseUnit: o.doseUnit ? o.doseUnit.printName : ''
-        }))
+          displayDoseUnit: o.doseUnit ? o.doseUnit.printName : '',
+        }));
       }
     });
   }
@@ -63,13 +65,24 @@ export class DeptPreferredComponent implements OnInit {
     console.log('addToCart from dept preferred list: med: ', med);
 
     // this.medOrderService.postCartOrder(med, this.deptPreferred());
-    this.cartStoreService.postCartOrder(med, this.patientId, this.userId, this.deptPreferred())
-    console.log(`addToCart from dept preferred list: ${med.id}  name: ${med.brandName}`);
-    med.hasBeenAdded = true
-  }
+    this.cartStoreService.postCartOrder(
+      med,
+      this.patientId,
+      this.userId,
+      this.deptPreferred()
+    );
+    console.log(
+      `addToCart from dept preferred list: ${med.id}  name: ${med.brandName}`
+    );
+    med.hasBeenAdded = true;
+  };
 
   editOrder = (med) => {
-    this.modalService.open('medComposer', {action: 'add', med});
+    this.modalService.open('medComposer', {
+      action: 'add',
+      source: 'dept-list',
+      med,
+    });
     console.log(`editOrder from Dept Preferred list: ${med.brandName}`);
-  }
+  };
 }

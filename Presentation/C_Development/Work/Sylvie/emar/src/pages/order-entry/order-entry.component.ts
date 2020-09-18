@@ -16,12 +16,11 @@ import { MedOrderService } from '../../services/med-order.service';
 // import { PatientService } from 'src/services/patient.service';
 import { ModalService } from '../../services/modal.service';
 
-
 import { CartService } from '../../services/cart.service';
 import { CartStoreService } from '../../services/cart-store.service';
 import { UserStoreService } from '../../services/user-store.service';
 import { PatientStoreService } from '../../services/patient-store.service';
-import { PatientMedOrderStoreService} from '../../services/patient-med-order-store.service';
+import { PatientMedOrderStoreService } from '../../services/patient-med-order-store.service';
 
 @Component({
   selector: 'order-entry',
@@ -43,8 +42,11 @@ export class OrderEntryComponent implements OnInit {
 
   hasDeptPreferredDefined: boolean = false;
   isTabValidHandler(event) {
-    this.hasDeptPreferredDefined = event
-    console.log('isTabValidHandler: hasDeptPreferredDefined? ', this.hasDeptPreferredDefined)
+    this.hasDeptPreferredDefined = event;
+    console.log(
+      'isTabValidHandler: hasDeptPreferredDefined? ',
+      this.hasDeptPreferredDefined
+    );
   }
 
   constructor(
@@ -62,12 +64,12 @@ export class OrderEntryComponent implements OnInit {
   ngOnInit(): void {
     //const patientId:number = +this.route.snapshot.params['id'];
     // this.patientId = +this.route.snapshot.params['id'];
-    this.patientId = this.patientStoreService.patientId
+    this.patientId = this.patientStoreService.patientId;
     console.log('OrderEntry: patientId: ', this.patientId);
     // this.patient = this.patientService.getPatient(this.patientId);
     //this.orders = this.patientService.getPatientOrders(this.patientId);
     // this.getCurrentListOrders()
-    this.getCartListOrders()
+    this.getCartListOrders();
 
     // this.patientService
     //   .getPatient(this.patientId)
@@ -135,30 +137,30 @@ export class OrderEntryComponent implements OnInit {
   // }
 
   cartListOrders() {
-    return this.cartOrders
+    return this.cartOrders;
   }
 
   getCartListOrders() {
     //return ORDERS.slice(2, 5);
     //return (this.cartOrders = this.medOrderService.getCartOrders());
-    this.cartService.getCartOrders(this.patientId, this.userStoreService.userId).subscribe((o) => {
-      if (o) {
-        console.log('OrderEntry: getCartListOrders: ', o.orders)
-        this.cartOrders = o.orders.map((x) => ({
-          ...x,
-          displayName: x.brandName,
-          displayRoute: x.medicationRoute ? x.medicationRoute.routeName : '',
-          displayFrequency: x.frequencyId,
-          displayDose: x.dose,
-          displayDoseUnit: x.doseUnit ? x.doseUnit.printName : '',
-          allergies: [],
-          drugs: []
-        }))
-      }
-    }) 
+    this.cartService
+      .getCartOrders(this.patientId, this.userStoreService.userId)
+      .subscribe((o) => {
+        if (o) {
+          console.log('OrderEntry: getCartListOrders: ', o.orders);
+          this.cartOrders = o.orders.map((x) => ({
+            ...x,
+            displayName: x.brandName,
+            displayRoute: x.medicationRoute ? x.medicationRoute.routeName : '',
+            displayFrequency: x.frequencyId,
+            displayDose: x.dose,
+            displayDoseUnit: x.doseUnit ? x.doseUnit.printName : '',
+            allergies: [],
+            drugs: [],
+          }));
+        }
+      });
   }
-
-
 
   // getCartListOrders() {
   //   //return ORDERS.slice(2, 5);
@@ -186,6 +188,6 @@ export class OrderEntryComponent implements OnInit {
   //         drugs: []
   //       }))
   //     }
-  //   }) 
+  //   })
   // }
 }

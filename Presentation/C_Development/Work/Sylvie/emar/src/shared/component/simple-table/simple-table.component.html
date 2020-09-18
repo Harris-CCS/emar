@@ -1,7 +1,7 @@
 <table *ngIf="tableHasData()" class="table table-md table-striped">
   <thead *ngIf="tableStructure.title && tableStructure.body.row.length">
     <tr class="thead-dark">
-      <th [colSpan]="tableStructure.body.row.length + 1">{{tableStructure.title}}</th>
+      <th [colSpan]="tableStructure.body.row[0].cell.length">{{tableStructure.title}}</th>
     </tr>
     <tr *ngFor="let row of tableStructure.header.row">
       <th *ngFor="let cell of row.cell" scope="col" class={{cell.className}}>
@@ -24,6 +24,7 @@
         <content *ngIf="cell.dataType !== 'date'">
           {{cell.data}}
         </content>
+        <img *ngIf="cell.imagePath" [src]="cell.imagePath" onerror="this.style.display='none'">
       </td>
     </tr>
   </tbody>
@@ -36,6 +37,7 @@
         <content *ngIf="cell.dataType !== 'date'">
           {{cell.data}}
         </content>
+        <img *ngIf="cell.imagePath" [src]="cell.imagePath" onerror="this.style.display='none'">
       </td>
     </tr>
   </tbody>
