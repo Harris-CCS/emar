@@ -14,10 +14,10 @@ $e-blood-orange: #FF3300;
 $e-blue-yonder: #0077ab;
 
 // bootstrap overwrite
-$font-size-root: 14px; // = 1rem for bootstrap and emar
+$font-size-root: 12px; // = 1rem for bootstrap and emar
 $theme-colors: (
     "primary": $e-blue-yonder,
-    "warning": $e-orange
+    "warning": $e-orange,
 );
 
 // emar

@@ -108,4 +108,6 @@ export class SimpleOrderListComponent implements OnInit {
   //   //this.data = this.data.filter( (med) => med.name.startsWith(newTab));
   //   //console.log('tabChage: data: ', this.data)
   // }
+
+
 }

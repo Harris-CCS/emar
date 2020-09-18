@@ -22,6 +22,7 @@ import {
   map,
 } from 'rxjs/operators';
 import { ComposerSchedulerService } from '../../../services/composer-scheduler.service';
+import { UserStoreService } from '../../../services/user-store.service';
 import { ComposerOptions } from '../../../app/interfaces/composerOptions';
 import { FormStrength } from '../../../app/interfaces/formStrength';
 import { AdministrationInstructions } from '../../../app/interfaces/administrationInstructions';
@@ -29,7 +30,7 @@ import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { Dose } from '../../../app/interfaces/dose';
 import { Unit } from '../../../app/interfaces/unit';
 import { Route } from '../../../app/interfaces/route';
-import { UNITS } from '../../../app/mockup/doseUnits';
+// import { UNITS } from '../../../app/mockup/doseUnits';
 
 @Component({
   selector: 'med-form',
@@ -50,7 +51,8 @@ export class MedFormComponent implements OnInit {
 
   medForm: FormGroup;
   // Temp Data for strengths, doses, doseUnits, routes, and priorities - Get these from API service
-  doseUnits: Unit[] = UNITS;
+  // doseUnits: Unit[] = UNITS;
+  doseUnits: Unit[];
   priorities = ['STAT', 'Routine'];
   //
 
@@ -66,11 +68,20 @@ export class MedFormComponent implements OnInit {
   selectedPriority: string = 'STAT';
   enteredAdministrationInstructionsText: string = '';
   selectedAdministrationInstructionsData: AdministrationInstructions[] = [];
+  userSiteId: number = null;
 
   constructor(
     private fb: FormBuilder,
-    private composerSchedulerService: ComposerSchedulerService
-  ) {}
+    private composerSchedulerService: ComposerSchedulerService,
+    private userStoreService: UserStoreService
+  ) {
+    this.userSiteId = this.userStoreService.userSiteId;
+    this.doseUnits = this.composerSchedulerService.getSiteMedicationUnits(
+      this.userSiteId
+    );
+    // this.doseUnits = UNITS;
+    console.log('UnitsFromAPI', this.doseUnits);
+  }
 
   ngOnInit() {
     if (!this.medOptions) {
@@ -207,11 +218,11 @@ export class MedFormComponent implements OnInit {
   // ********** Dose/Unit ***************************
 
   changeSelectedDose(dose: any, source?: string) {
-    // console.log('doseValue', dose);
+    console.log('doseValue', dose, source);
 
     if (source === 'happyButton' && typeof dose === 'object') {
       this.selectedDose = dose.dose;
-      this.changeSelectedDoseUnit(dose.doseUnit);
+      this.changeSelectedDoseUnit(dose.doseMockUnit);
       this.medForm.controls['dose'].setValue(dose.dose);
     } else {
       this.selectedDose = dose;
@@ -224,7 +235,7 @@ export class MedFormComponent implements OnInit {
   }
 
   changeSelectedDoseUnit(unit: Unit) {
-    // console.log('changebyUnitObject', unit);
+    console.log('changebyUnitObject', unit);
     if (unit) {
       this.selectedDoseUnitData = unit;
       this.selectedDoseUnitName = unit.unitName;
@@ -250,7 +261,8 @@ export class MedFormComponent implements OnInit {
     // console.log('ChangeByUnitLookup', unitName);
     const matchingUnit = !unitName
       ? null
-      : UNITS.find((fndUnit) => fndUnit.unitName === unitName);
+      : // : UNITS.find((fndUnit) => fndUnit.unitName === unitName);
+        this.doseUnits.find((fndUnit) => fndUnit.unitName === unitName);
     this.changeSelectedDoseUnit(matchingUnit);
     // console.log('changeDoseUnitByLookupThis', this);
   }
@@ -259,7 +271,8 @@ export class MedFormComponent implements OnInit {
     if (!this.selectedDose || !this.selectedDoseUnitName) {
       this.selectedDoseName = '';
     } else {
-      this.selectedDoseName = `${this.selectedDose}\u202F${this.selectedDoseUnitName}`;
+      // this.selectedDoseName = `${this.selectedDose}\u202F${this.selectedDoseUnitName}`;
+      this.selectedDoseName = `${this.selectedDose} ${this.selectedDoseUnitName}`;
     }
   }
 
@@ -280,11 +293,15 @@ export class MedFormComponent implements OnInit {
       map((term) => {
         let subSet = [];
         if (term) {
-          subSet = UNITS.filter(
-            (v) => v.unitName.toLowerCase().indexOf(term.toLowerCase()) > -1
-          ).slice(0, 10);
+          // subSet = UNITS.filter(
+          subSet = this.doseUnits
+            .filter(
+              (v) => v.unitName.toLowerCase().indexOf(term.toLowerCase()) > -1
+            )
+            .slice(0, 10);
         } else {
-          subSet = UNITS.slice(0, 10);
+          // subSet = UNITS.slice(0, 10);
+          subSet = this.doseUnits.slice(0, 10);
         }
         return subSet.map((node) => node.unitName);
       })

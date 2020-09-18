@@ -84,7 +84,7 @@ export class MedOrderService {
 
     return this.http
       .get<any>(patientCurOrderUrl, { headers })
-      .pipe(catchError(this.handleError<any>('getCurrentOrddrAPI')))
+      .pipe(catchError(this.handleError<any>('getCurrentOrdersAPI')))
   }
 
   /* Cart Orders */

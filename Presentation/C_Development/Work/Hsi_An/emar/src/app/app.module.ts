@@ -10,6 +10,8 @@ import { PatientsDashboardComponent } from '../pages/patients-dashboard/patients
 import { environment } from 'src/environments/environment';
 import { ComposerMedSelfModule } from '../pages/composer-med-self/composer-med-self.module';
 import { ComposerSchedulerService } from '../services/composer-scheduler.service';
+import { PatientDashboardModule } from '../pages/patient-dashboard/patient-dashboard.module';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [AppComponent, PatientsDashboardComponent],
@@ -20,6 +22,8 @@ import { ComposerSchedulerService } from '../services/composer-scheduler.service
     AppRoutingModule,
     HttpClientModule,
     ComposerMedSelfModule,
+    CommonModule,
+    PatientDashboardModule
   ],
   providers: [
     //{ provide: "BASE_API_URL", useValue: environment.apiUrl},

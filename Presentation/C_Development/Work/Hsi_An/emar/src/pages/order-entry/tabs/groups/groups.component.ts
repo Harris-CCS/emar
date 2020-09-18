@@ -10,25 +10,27 @@ import { ModalService } from '../../../../services/modal.service';
 @Component({
   selector: 'groups',
   templateUrl: './groups.component.html',
-  styleUrls: ['./groups.component.scss']
+  styleUrls: ['./groups.component.scss'],
 })
 export class GroupsComponent implements OnInit {
+  private groupPanels = [];
+  private groupContent = [];
 
-  private groupPanels = []
-  private groupContent= []
-  private userId = this.userStoreService.userId
-  private patientId = this.patientStoreService.patientId
+  // private groupPanels = []
+  // private groupContent= []
+  private userId = this.userStoreService.userId;
+  private patientId = this.patientStoreService.patientId;
 
   constructor(
     private medOrderService: MedOrderService,
     private modalService: ModalService,
     private cartStoreService: CartStoreService,
     private userStoreService: UserStoreService,
-    private patientStoreService: PatientStoreService,
-  ) { }
+    private patientStoreService: PatientStoreService
+  ) {}
 
   ngOnInit(): void {
-    this.getGroupOrdersList()
+    this.getGroupOrdersList();
   }
 
   groups() {
@@ -38,7 +40,7 @@ export class GroupsComponent implements OnInit {
   groupsOrders() {
     // return this.medOrderService.getGroupsOrders();
     // console.log('groupOrders: ', this.groupPanels)
-    return this.groupPanels
+    return this.groupPanels;
   }
 
   getGroupOrdersList() {
@@ -51,20 +53,29 @@ export class GroupsComponent implements OnInit {
           displayRoute: i.medicationRoute ? i.medicationRoute.routeName : '',
           displayFrequency: i.frequencyId,
           displayDose: i.dose,
-          displayDoseUnit: i.doseUnit ? i.doseUnit.printName : ''
+          displayDoseUnit: i.doseUnit ? i.doseUnit.printName : '',
         })),
-      }))
+      }));
     });
   }
 
   addToCart = (med) => {
-    this.cartStoreService.postCartOrder(med, this.patientId, this.userId, this.groups());
-    med.hasBeenAdded = true
+    this.cartStoreService.postCartOrder(
+      med,
+      this.patientId,
+      this.userId,
+      this.groups()
+    );
+    med.hasBeenAdded = true;
     console.log(`addToCart from Group list: ${med.id}  name: ${med.brandName}`);
-  }
+  };
 
   editOrder = (med) => {
-    this.modalService.open('medComposer', {action: 'add', med});
+    this.modalService.open('medComposer', {
+      action: 'add',
+      source: 'groups',
+      med,
+    });
     console.log(`editOrder from Group list: ${med.brandName}`);
-  }
+  };
 }

@@ -6,7 +6,6 @@ import { UserStoreService } from '../../../../services/user-store.service';
 import { PatientStoreService } from '../../../../services/patient-store.service';
 import { ModalService } from '../../../../services/modal.service';
 
-
 import { PatientService } from '../../../../services/patient.service';
 
 @Component({
@@ -15,8 +14,7 @@ import { PatientService } from '../../../../services/patient.service';
   styleUrls: ['./quick-list.component.scss'],
 })
 export class QuickListComponent implements OnInit {
-
-  private currentTab: string = 'A'
+  private currentTab: string = 'A';
   // private tabListTabs = ['Most Used', '#', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
   private tabListTabs = []
   private currentTabContents = []
@@ -48,33 +46,33 @@ export class QuickListComponent implements OnInit {
     //return this.medOrderService.getTabListTabs();
     return this.tabListTabs;
   }
-  
+
   quickListOrders() {
     //return this.medOrderService.getQuickListOrders();
     // return this.medOrderService.getMedListBySelectedTab(this.currentTab);
-    return this.currentTabContents
+    return this.currentTabContents;
   }
 
   changeTab = (tab) => {
-    console.log('quick-list: changeTab: change from: ', this.currentTab)
+    console.log('quick-list: changeTab: change from: ', this.currentTab);
     this.currentTab = tab;
-    console.log('quick-list: changeTab: change to: ', this.currentTab)
+    console.log('quick-list: changeTab: change to: ', this.currentTab);
 
     // this.medOrderService.getMedListBySelectedTab(this.currentTab)
-    const t = this.currentTab === '#' ? '%23' : this.currentTab
+    const t = this.currentTab === '#' ? '%23' : this.currentTab;
     this.medOrderService.getMedListBySelectedTab(t).subscribe((o) => {
-      console.log('CHNAGETAB.....', o.length)
+      console.log('CHNAGETAB.....', o.length);
       this.currentTabContents = o.map((x) => ({
         ...x,
         displayName: x.brandName,
         displayRoute: x.medicationRoute ? x.medicationRoute.routeName : '',
         displayFrequency: x.frequencyId,
         displayDose: x.dose,
-        displayDoseUnit: x.doseUnit ? x.doseUnit.printName : ''
-      }))
-    })
+        displayDoseUnit: x.doseUnit ? x.doseUnit.printName : '',
+      }));
+    });
     //this.quickListOrders()
-  }
+  };
 
   //addToCart = (...args) => console.log(`addToCart from quick list:`, ...args);
   addToCart = (med) => {
@@ -83,13 +81,17 @@ export class QuickListComponent implements OnInit {
 
     this.cartStoreService.postCartOrder(med, this.patientId, this.userId, this.quickList())
     console.log(`addToCart from quick list: ${med.id}  name: ${med.brandName}`);
-    med.hasBeenAdded = true
-  }
+    med.hasBeenAdded = true;
+  };
 
   editOrder = (med) => {
-    this.modalService.open('medComposer', {action: 'add', med});
+    this.modalService.open('medComposer', {
+      action: 'add',
+      source: 'quick-list',
+      med,
+    });
     console.log(`editOrder from quick list: ${med.brandName}`);
-  }
+  };
 
 
 
@@ -104,17 +106,17 @@ export class QuickListComponent implements OnInit {
     // console.log('patONE: ', patOne)
 
     this.medOrderService.getUserQuickLists().subscribe((o) => {
-      console.log('QUICKLISTTABS....', o)
-      this.tabListTabs = o.tabListing.map( x => x.tabName)
-      this.currentTab = o.currentTab.tabName
+      console.log('QUICKLISTTABS....', o);
+      this.tabListTabs = o.tabListing.map((x) => x.tabName);
+      this.currentTab = o.currentTab.tabName;
       this.currentTabContents = o.currentTabContents.map((x) => ({
         ...x,
         displayName: x.brandName,
         displayRoute: x.medicationRoute ? x.medicationRoute.routeName : '',
         displayFrequency: x.frequencyId,
         displayDose: x.dose,
-        displayDoseUnit: x.doseUnit ? x.doseUnit.printName : ''
-      }))
+        displayDoseUnit: x.doseUnit ? x.doseUnit.printName : '',
+      }));
     });
 
     //return this.medOrderService.getTabListTabs();
