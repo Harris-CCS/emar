@@ -53,7 +53,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Emar.Core\Emar.Core.csproj" />
-    <ProjectReference Include="..\Emar.MedicationReactions\Emar.MedicationReactions.csproj" />
   </ItemGroup>
 
   <ItemGroup>

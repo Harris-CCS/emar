@@ -19,5 +19,6 @@ namespace Emar.Core.Patients.Repository
         int GetSiteIdForPatient(long patientId);
         IEnumerable<PatientAllergy> GetAllergiesByPatientId(long patientId, Expression<Func<PatientAllergy, bool>> wherePredicate);
         IEnumerable<FdbAllergyName> GetAllergyFdbAllergyNames(string name, Expression<Func<FdbAllergyName, bool>> wherePredicate = null);
+        IEnumerable<FdbAllergyName> GetAllergyFdbAllergyNamesByPcHiclSeqno(string pcHiclSeqno, Expression<Func<FdbAllergyName, bool>> wherePredicate = null);
     }
 }

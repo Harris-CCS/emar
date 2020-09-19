@@ -10,5 +10,6 @@ namespace Emar.Core.HomeMedications.Repository
         IEnumerable<PatientHomeMedication> GetMedications(Func<PatientHomeMedication, bool> wherePredicate);
         IEnumerable<PatientHomeMedication> GetPatientHomeMedications(Expression<Func<PatientHomeMedication, bool>> wherePredicate);
         FdbBrandName GetPatientHomeMedicationFdbBrandName(long medicationId);
+        FdbBrandName GetPatientHomeMedicationFdbBrandNameByPcRoutedGenId(string internalDrugId);
     }
 }

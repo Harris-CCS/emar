@@ -150,10 +150,10 @@ namespace Emar.Core.MedicationReactions
         /// <param name="patientId">Patient identifier</param>
         /// <param name="checklist">Drugs to check</param>
         /// <returns>ReactionsCheckResult object</returns>
-        public ReactionsCheckResult CheckReactions(int siteId, long patientId, Dictionary<string, string> checklist)
+        public ReactionsCheckResult CheckReactions(int siteId, long patientId, Dictionary<string, string> checklist, string drugDBVendor)
         {
             var result = new ReactionsCheckResult();
-            var algMedData = LoadAlgMedTable(patientId);
+            var algMedData = LoadAlgMedTable(patientId, drugDBVendor);
             List<Dictionary<string, string>> FTAllergyInfo = new List<Dictionary<string, string>>();
             List<Dictionary<string, string>> AllergyInfo = new List<Dictionary<string, string>>();
             List<Dictionary<string, string>> CurrentMedsInfo = new List<Dictionary<string, string>>();
@@ -368,7 +368,6 @@ namespace Emar.Core.MedicationReactions
                             { "Name",  name },
                             { "SourceTable", fld["SourceTable"] },
                             { "SourceTableId", fld["SourceTableId"] }
-                            ////////////{ "AllergyDrugId", fld["AllergyDrugId"] }
                         };
                     }
                 }
@@ -845,7 +844,7 @@ namespace Emar.Core.MedicationReactions
         /// <param name="patientId">Patient identifier</param>
         /// <param name="confirmedOnly">Flag for whether the results should only include confirmed entries</param>
         /// <returns>List of Dictionary objects representing alg/med entries</returns>
-        public List<Dictionary<string, string>> LoadAlgMedTable(long patientId, bool confirmedOnly = false)
+        public List<Dictionary<string, string>> LoadAlgMedTable(long patientId, string drugDBVendor, bool confirmedOnly = false)
         {
             var algMedData = new List<Dictionary<string, string>>();
 
@@ -856,6 +855,13 @@ namespace Emar.Core.MedicationReactions
 
             foreach (var alg in algResult)
             {
+                if (drugDBVendor != null &&
+                    drugDBVendor == DrugDBVendors.FDB &&
+                    !_patientRepository.GetAllergyFdbAllergyNamesByPcHiclSeqno(alg["AllergyDrugId"]).Any())
+                {
+                    continue;
+                }
+
                 alg["AlternateName"] = alg["AlternateName"]?.Trim();
                 alg["ParentDrugName"] = alg["ParentDrugName"]?.Trim();
                 alg["ParentDrugId"] = alg["ParentDrugId"]?.Trim();
@@ -880,6 +886,13 @@ namespace Emar.Core.MedicationReactions
 
             foreach (var alg in homeMedsResult)
             {
+                if (drugDBVendor != null &&
+                    drugDBVendor == DrugDBVendors.FDB &&
+                    _homeMedicationRepository.GetPatientHomeMedicationFdbBrandNameByPcRoutedGenId(alg["InternalDrugId"]) == null)
+                {
+                    continue;
+                }
+
                 alg["AlternateName"] = alg["AlternateName"]?.Trim();
                 alg["ParentDrugName"] = alg["ParentDrugName"]?.Trim();
                 alg["ParentDrugId"] = alg["ParentDrugId"]?.Trim();
