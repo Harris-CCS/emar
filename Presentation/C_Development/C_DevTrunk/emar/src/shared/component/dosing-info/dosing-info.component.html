@@ -1,0 +1,24 @@
+<h3>Dosing Information</h3>
+<ng-container *ngIf="sortedDosingOptions && sortedDosingOptions.length > 0">
+  <ngb-accordion #acc="ngbAccordion" class="accordion" [destroyOnHide]="false" closeOthers="true" class="acc-panel">
+    <ngb-panel [id]="'doseInfo-route-' + i" *ngFor="let routeOption of sortedDosingOptions; let i = index"
+      [ngClass]="{'doseInfo':'true'}">
+      <ng-template ngbPanelHeader>
+        <div class="accordion-panel-header" [ngClass]="{'active': isPanelSelected('doseInfo-route-' + i)}">
+          <button class="d-flex align-items-center justify-content-between ml-2 accordion-panel-toggle"
+            id="'doseInfo-route-' + i +'-panel'" [ngClass]="{'active': isPanelSelected('doseInfo-route-' + i)}"
+            ngbPanelToggle>
+            <div class="panel-id">
+              <span>{{routeOption.routeDescriptionDisplay}}</span>
+            </div>
+            <button class="btn btn-sm align-items-center justify-content-between ml-2 accordion-toggle"
+              [ngClass]="{'active': isPanelSelected('doseInfo-route-' + i)}"></button>
+          </button>
+        </div>
+      </ng-template>
+      <ng-template ngbPanelContent>
+        <simple-table [tableStructure]="getTableStructure(i)"></simple-table>
+      </ng-template>
+    </ngb-panel>
+  </ngb-accordion>
+</ng-container>

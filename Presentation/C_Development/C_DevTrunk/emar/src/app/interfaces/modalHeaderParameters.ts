@@ -4,6 +4,8 @@ export interface ModalHeaderParameters {
   class?: string[];
   toolTip?: string;
   onTitleClick?: any;
+  popoverName?: string;
+  popoverData?: any;
   buttons?: Array<ModalHeaderButtons>;
   fields?: Array<ModalHeaderParameterField>;
 }

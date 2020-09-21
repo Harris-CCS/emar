@@ -13,6 +13,7 @@ import { MedOrderService } from 'src/services/med-order.service';
 import { CartStoreService } from 'src/services/cart-store.service';
 import { ComposerSchedulerService } from '../../../services/composer-scheduler.service';
 import { UserStoreService } from '../../../services/user-store.service';
+import { DoseOption } from '../../../app/interfaces/doseOption';
 import {
   NgbAccordion,
   NgbPanelChangeEvent,
@@ -36,6 +37,7 @@ export class ComposerMedModalComponent implements OnInit, AfterViewInit {
   initialData;
   gotData: boolean = false;
   userSiteId: number = null;
+  doseOptions: Array<DoseOption> = [];
 
   constructor(
     private modalService: ModalService,
@@ -87,6 +89,13 @@ export class ComposerMedModalComponent implements OnInit, AfterViewInit {
               this.gotData = true;
             }
           }
+        });
+
+      this.composerSchedulerService
+        .getDosingOptionsFromAPI('00173044202')
+        .subscribe((response) => {
+          this.composerSchedulerService.setDosingOptions(response);
+          this.doseOptions = this.composerSchedulerService.getDosingOptions();
         });
     });
 
@@ -431,13 +440,20 @@ export class ComposerMedModalComponent implements OnInit, AfterViewInit {
   setModalHeaderParameters(): string {
     // this.composerMedComponents = this.composerSchedulerService.getComposerMedComponents();
     // console.log('composerMedComponentsSMT', this.composerMedComponents);
-    if (!this.isModalTitleParamsSet && this.getData().med) {
+    if (
+      !this.isModalTitleParamsSet &&
+      this.getData().med &&
+      this.doseOptions.length > 0
+    ) {
       this.modalHeaderParameters = {
         label: 'New Order: ',
         title: this.getData().med.brandName,
         class: ['dialog-title', 'order-med-name'],
         toolTip: 'Dosing Information',
         onTitleClick: this.onTitleClick,
+        popoverName: 'dosingInfo',
+        popoverData: this.doseOptions,
+        // popoverData: `<p>Popover Content!</p>`,
         buttons: [
           {
             id: 'quicklist',
@@ -483,7 +499,7 @@ export class ComposerMedModalComponent implements OnInit, AfterViewInit {
   }
 
   onTitleClick(): void {
-    alert('Dosage Table to go here when clicked!');
+    console.log('Dosage Table to go here when clicked!');
   }
 
   addOrderToQuickList(): void {
