@@ -102,6 +102,10 @@ namespace Emar.Data.Entities
         [Column("action_status", TypeName = "char(1)")]
         public string ActionStatus { get; set; }
 
+        [Column("last_taken_note")]
+        [StringLength(100)]
+        public string LastTakenNote { get; set; }
+
 
         [ForeignKey(nameof(AddUserId))]
         [InverseProperty(nameof(Entities.User.PatientHomeMedicationsAddUser))]

@@ -6,7 +6,6 @@ using Emar.Core.Medications.Model;
 using Emar.Core.Medications.Model.Mappings;
 using Emar.Core.Orders.Model.Mappings;
 using Emar.Core.Sites.Model.Mappings;
-using Emar.Core.Users.Model.Mappings;
 using Emar.Data.Entities;
 
 namespace Emar.Core.Patients.Model.Mappings
@@ -204,11 +203,12 @@ namespace Emar.Core.Patients.Model.Mappings
                 //ChangeUser = UserMapper.MapUser(allergy.ChangeUser),
                 //ChangeDatetime = allergy.ChangeDatetime,
 
-                ActionStatus = dbObj.ActionStatus
+                ActionStatus = dbObj.ActionStatus,
+                LastTakenNote = dbObj.LastTakenNote
             };
 
             if (retDto.MedicationRoute == null && retDto.MedicationRouteId != null)
-                retDto.MedicationRoute = new MedicationRouteDto {Id = retDto.MedicationRouteId.Value};
+                retDto.MedicationRoute = new MedicationRouteDto { Id = retDto.MedicationRouteId.Value };
 
             if (retDto.MedicationUnit == null && retDto.MedicationUnitId != null)
                 retDto.MedicationUnit = new MedicationUnitDto { Id = retDto.MedicationUnitId.Value };
