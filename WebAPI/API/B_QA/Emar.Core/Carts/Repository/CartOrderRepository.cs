@@ -57,9 +57,12 @@ namespace Emar.Core.Carts.Repository
             var orders = _context.PatientCartOrders
                 .Include(order => order.CartOrderAdministrations)
                 .Include(order => order.MedicationRoute)
-                .Include(order=> order.FrequencySchedule)
+                .Include(order => order.FrequencySchedule)
                 .Include(order => order.MedicationUnit)
                 .Include(order => order.User)
+                .Include(order => order.OrderInteractions)
+                    .ThenInclude(interaction => interaction.DrugInteractionView)
+                .Include(order => order.AllergyReactionsView)
                 //.Include(order => order.Patient)
                 //    .ThenInclude(patient => patient.Site)
                 //        .ThenInclude(site => site.SiteOptions)
@@ -68,6 +71,22 @@ namespace Emar.Core.Carts.Repository
                 .AsEnumerable();
 
             return orders;
+        }
+
+        public IEnumerable<PatientCartOrder> GetPatientCartOrders(Expression<Func<PatientCartOrder, bool>> wherePredicate = null)
+        {
+            return _context.PatientCartOrders
+                .Where(wherePredicate)
+                .ToList()
+                .Select(order =>
+                {
+                    order.FdbBrandName =
+                    (from s in (from s in _context.FdbBrandName select s).Where(u => u.Medid.ToString() == order.DrugId)
+                     select s)
+                     .FirstOrDefault();
+                    return order;
+                })
+                .AsEnumerable();
         }
 
         public PatientCartOrder GetOrder(long orderId, OrdersResourceParameters resourceParameters)
@@ -275,5 +294,17 @@ namespace Emar.Core.Carts.Repository
             return _context.CartOrderAdministrations
                     .FirstOrDefault(administration => administration.Id == administrationId);
         }
+
+        ////////////  probably not needed, leave for now, will clean later
+        ////////////public FdbBrandName GetPatientCartOrderFdbBrandName(long orderId)
+        ////////////{
+        ////////////    var query =
+        ////////////        from p in (from p in _context.PatientCartOrders select p).Where(u => u.Id == orderId)
+        ////////////        join n in _context.FdbNdcInfo on p.DrugId equals n.GcnSeqno.ToString()
+        ////////////        join s in _context.FdbBrandName on n.RoutedGenId equals s.RoutedGenId
+        ////////////        select s;
+
+        ////////////    return query.FirstOrDefault();
+        ////////////}
     }
 }

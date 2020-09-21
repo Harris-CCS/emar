@@ -13,6 +13,8 @@ namespace Emar.Data.Entities
             OrderAdministrationsAcknowledgeUser = new HashSet<OrderAdministration>();
             OrderAdministrationAdministeringUser = new HashSet<OrderAdministration>();
             OrderAdministrationStopUser = new HashSet<OrderAdministration>();
+            OrderReactions = new HashSet<OrderReaction>();
+            MedicationInteractions = new HashSet<MedicationInteraction>();
             PatientAllergiesAddUser = new HashSet<PatientAllergy>();
             PatientAllergiesChangeUser = new HashSet<PatientAllergy>();
             PatientCartOrders = new HashSet<PatientCartOrder>();
@@ -91,6 +93,9 @@ namespace Emar.Data.Entities
         [InverseProperty(nameof(OrderAdministration.StopUser))]
         public virtual ICollection<OrderAdministration> OrderAdministrationStopUser { get; set; }
 
+        [InverseProperty("OverrideReasonUser")]
+        public virtual ICollection<OrderReaction> OrderReactions { get; set; }
+
         [InverseProperty(nameof(PatientAllergy.AddUser))]
         public virtual ICollection<PatientAllergy> PatientAllergiesAddUser { get; set; }
 
@@ -99,6 +104,9 @@ namespace Emar.Data.Entities
 
         [InverseProperty(nameof(PatientOrder.AddUser))]
         public virtual ICollection<PatientOrder> PatientOrdersAddUser { get; set; }
+
+        [InverseProperty("OverrideReasonUser")]
+        public virtual ICollection<MedicationInteraction> MedicationInteractions { get; set; }
 
         [InverseProperty("User")]
         public virtual ICollection<PatientCartOrder> PatientCartOrders { get; set; }
@@ -114,5 +122,10 @@ namespace Emar.Data.Entities
 
         [InverseProperty(nameof(PatientHomeMedication.ChangeUser))]
         public virtual ICollection<PatientHomeMedication> PatientHomeMedicationsChangeUser { get; set; }
+
+        [InverseProperty("OverrideReasonUser")]
+        public virtual ICollection<AllergyReactionView> AllergyReactionsView { get; set; }
+        [InverseProperty("OverrideReasonUser")]
+        public virtual ICollection<DrugInteractionView> DrugInteractionsView { get; set; }
     }
 }

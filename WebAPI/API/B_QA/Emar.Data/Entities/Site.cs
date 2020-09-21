@@ -13,6 +13,7 @@ namespace Emar.Data.Entities
             GroupListItems = new HashSet<GroupListItem>();
             MedicationRoutes = new HashSet<MedicationRoute>();
             MedicationUnits = new HashSet<MedicationUnit>();
+            OverrideReasons = new HashSet<OverrideReason>();
             Patients = new HashSet<Patient>();
             UserQuickListItems = new HashSet<UserQuickListItem>();
             Users = new HashSet<User>();
@@ -46,6 +47,9 @@ namespace Emar.Data.Entities
         public virtual ICollection<MedicationUnit> MedicationUnits { get; set; }
 
         [InverseProperty("Site")]
+        public virtual ICollection<OverrideReason> OverrideReasons { get; set; }
+
+        [InverseProperty("Site")]
         public virtual ICollection<Patient> Patients { get; set; }
 
         [InverseProperty("Site")]
@@ -56,11 +60,5 @@ namespace Emar.Data.Entities
 
         [InverseProperty("Site")]
         public virtual ICollection<SiteOption> SiteOptions { get; set; }
-
-        //  This foreign key is not in the database, and can't be enforceable if it were:
-        //    - The datatypes don't line up, and 
-        //    - values exist in ExternalIds that don't point to the patients table
-        //[InverseProperty("Site")]
-        //public virtual ExternalIdEntity ExternalIds { get; set; }
     }
 }

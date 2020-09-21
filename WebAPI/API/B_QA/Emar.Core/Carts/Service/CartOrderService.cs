@@ -38,8 +38,9 @@ namespace Emar.Core.Carts.Service
 
             var siteId = _patientRepository.GetSiteIdForPatient(patientId ?? resourceParameters.PatientId ?? -1);
             var dateFormat = _optionRepository.GetOption(siteId, OptionNames.LONG_DATE_FORMAT);
+            var drugDBVendor = _optionRepository.GetOption(siteId, OptionNames.DRUG_DB_VENDOR);
 
-            var ordersList = orders.Select(order => CartOrderMapper.MapCartOrder(order, dateFormat)).ToList();
+            var ordersList = orders.Select(order => CartOrderMapper.MapCartOrder(order, dateFormat, drugDBVendor)).ToList();
 
             return new PagedList<CartOrderDto>(ordersList, orders.TotalCount, orders.CurrentPage, orders.PageSize);
         }
@@ -53,8 +54,9 @@ namespace Emar.Core.Carts.Service
 
             var siteId = _patientRepository.GetSiteIdForPatient(order.PatientId);
             var dateFormat = _optionRepository.GetOption(siteId, OptionNames.LONG_DATE_FORMAT);
-            
-            var orderDto = CartOrderMapper.MapCartOrder(order, dateFormat);
+            var drugDBVendor = _optionRepository.GetOption(siteId, OptionNames.DRUG_DB_VENDOR);
+
+            var orderDto = CartOrderMapper.MapCartOrder(order, dateFormat, drugDBVendor);
 
             return orderDto;
         }
@@ -69,8 +71,9 @@ namespace Emar.Core.Carts.Service
 
             var siteId = _patientRepository.GetSiteIdForPatient(order.PatientId);
             var dateFormat = _optionRepository.GetOption(siteId, OptionNames.LONG_DATE_FORMAT);
+            var drugDBVendor = _optionRepository.GetOption(siteId, OptionNames.DRUG_DB_VENDOR);
 
-            var orderDto = CartOrderMapper.MapCartOrder(order, dateFormat);
+            var orderDto = CartOrderMapper.MapCartOrder(order, dateFormat, drugDBVendor);
 
             return orderDto;
         }

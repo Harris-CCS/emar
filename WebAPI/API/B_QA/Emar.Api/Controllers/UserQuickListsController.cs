@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Emar.Api.Helpers;
+using Emar.Core.Carts.Model;
 using Emar.Core.Orders.Model;
 using Emar.Core.Orders.Service;
 using Microsoft.AspNetCore.Mvc;
@@ -36,7 +37,7 @@ namespace Emar.Api.Controllers
         [ProducesResponseType(404)] // (not found) - the resource does not exits
         //[ProducesResponseType(406)] // (not acceptable) - the server does not support the required representation
         public ActionResult<UserQuickListFrameworkDto> GetUserQuickListInitial(
-            [FromHeader(Name = "Accept")] string mediaType, 
+            [FromHeader(Name = "Accept")] string mediaType,
             [FromHeader(Name = "X-User")] int userId,
             [FromQuery] int? siteId,
             [FromQuery] long? patientId)
@@ -93,7 +94,7 @@ namespace Emar.Api.Controllers
 
             var orderLinkBase = Url.Link(nameof(CopyQuickListItemToCart), new { quickListItemId = -99, patientId = patientId });
 
-            IEnumerable<UserQuickListItemDto> ret = _orderService.GetQuickListTab(userId, siteId, orderLinkBase, tabTitle);
+            IEnumerable<UserQuickListItemDto> ret = _orderService.GetQuickListTab(userId, siteId, patientId.HasValue ? patientId.Value : -1, orderLinkBase, tabTitle);
 
             if (ret != null) return Ok(ret);
             if (siteId == null)
@@ -112,11 +113,11 @@ namespace Emar.Api.Controllers
         /// <param name="patientId">the patient that the cart is intended for</param>
         /// <returns></returns>
         [HttpPost("{quickListItemId}/cartOrders/{patientId}", Name = "CopyQuickListItemToCart")]
-        [ProducesResponseType(typeof(IEnumerable<UserQuickListItemDto>), 200)] // (OK) - the resource is sent in the response
+        [ProducesResponseType(typeof(CartOrderDto), 200)] // (OK) - the resource is sent in the response
         [ProducesResponseType(400)] // (bad request) - indicates a bad request (e.g. wrong parameter)
         [ProducesResponseType(404)] // (not found) - the resource does not exits
         [ProducesResponseType(406)] // (not acceptable) - the server does not support the required representation
-        public ActionResult<UserQuickListItemDto> CopyQuickListItemToCart(
+        public ActionResult<CartOrderDto> CopyQuickListItemToCart(
             [FromHeader(Name = "Accept")] string mediaType,
             [FromHeader(Name = "X-User")] int userId,
             int quickListItemId,
@@ -131,13 +132,12 @@ namespace Emar.Api.Controllers
 
             if (newCartOrder == null)
             {
-                return NotFound($"New cart order from Quick List ID: {quickListItemId}, for patient with id '{patientId}' from user with id '{userId}' was not added.");
+                return NotFound($"New cart order from Quick List id '{quickListItemId}' for patient with id '{patientId}' from user with id '{userId}' was not added.");
             }
 
             Response.Headers.Add("X-User", userId.ToString());
 
-            return CreatedAtRoute(nameof(CartOrdersController.GetCartOrder), new {cartOrderId = newCartOrder.Id},
-                newCartOrder);
+            return CreatedAtRoute(nameof(CartOrdersController.GetCartOrder), new { cartOrderId = newCartOrder.Id }, newCartOrder);
         }
     }
 }

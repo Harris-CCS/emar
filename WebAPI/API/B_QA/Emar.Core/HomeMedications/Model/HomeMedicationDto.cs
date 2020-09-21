@@ -1,6 +1,4 @@
-﻿using System;
-using Emar.Core.Medications.Model;
-using Emar.Core.Orders.Model;
+﻿using Emar.Core.Medications.Model;
 
 namespace Emar.Core.HomeMedications.Model
 {
@@ -99,5 +97,12 @@ namespace Emar.Core.HomeMedications.Model
         //public DateTimeOffset? AddDatetime { get; set; }
         //public int ChangeUserId { get; set; }
         //public DateTimeOffset? ChangeDatetime { get; set; }
+
+        string _actionStatus;
+        public string ActionStatus
+        {
+            get => _actionStatus?.Trim();
+            set => _actionStatus = value?.Trim();
+        }
     }
 }
