@@ -11,9 +11,6 @@ Post-Deployment Script Template
 *************************************************************************************/
 set nocount on;
 
-declare
-     @max_id bigint
-
 /* Insert table order
 LVL: 000 SEQ: 001 TBL: dbo.actions
 LVL: 000 SEQ: 002 TBL: dbo.fdb_allergy_name
@@ -86,7 +83,9 @@ declare
       @export_database_name sysname = 'default_none'
     , @template nvarchar(max)
     , @sql_cmd nvarchar(max)
-    , @does_ibex_exist bit = 0;
+    , @does_ibex_exist bit = 0
+    , @max_id bigint
+    , @dev_custom_data_site_id int;
 
 select @does_ibex_exist = 1
 from   [master].[sys].[databases]
@@ -109,13 +108,26 @@ if '$(load_data)' = 'sample'
     begin
         :r ..\Scripts\Data-Loader\export_procedures\export_ibex_antimicrobial_indication_items.sql
         :r ..\Scripts\Data-Loader\export_procedures\export_ibex_antimicrobial_indications.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_fdb_allergy.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_fdb_brand_name.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_fdb_ndc_info.sql
         :r ..\Scripts\Data-Loader\export_procedures\export_ibex_group_list_items.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_medication_routes.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_medication_units.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_order_instructions.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_override_reasons.sql
         :r ..\Scripts\Data-Loader\export_procedures\export_ibex_patient_allergies.sql
         :r ..\Scripts\Data-Loader\export_procedures\export_ibex_patient_home_medications.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_patient_indicators.sql
         :r ..\Scripts\Data-Loader\export_procedures\export_ibex_patient_orders.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_patient_problems.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_patients.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_site_code_shares.sql
         :r ..\Scripts\Data-Loader\export_procedures\export_ibex_site_formulary.sql
         :r ..\Scripts\Data-Loader\export_procedures\export_ibex_site_formulary_match.sql
         :r ..\Scripts\Data-Loader\export_procedures\export_ibex_sites.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_user_quick_list_items.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_users.sql
 
         -- https://stackoverflow.com/questions/23923366/specifying-a-relative-path-in-post-deployment-sql-files
         :r ..\Scripts\Data-Loader\global_data\fdb_allergy_name.sql
@@ -155,10 +167,18 @@ if '$(load_data)' = 'sample'
         :r ..\Scripts\Data-Loader\site_data\site_formulary.sql
         :r ..\Scripts\Data-Loader\site_data\site_formulary_match.sql
         :r ..\Scripts\Data-Loader\user_data\user_quick_list_items.sql
+
+        select @dev_custom_data_site_id = [id]
+        from   [dbo].[get_internal_id]('pulsecheck', 'sites', '36');
+
         --- BEGIN: custom data deployments for development
         :r ..\Scripts\Data-Loader\development_data\bradley_data.sql
         :r ..\Scripts\Data-Loader\development_data\bradley_data_II.sql
         :r ..\Scripts\Data-Loader\development_data\hsi-an.sql
+        :r ..\Scripts\Data-Loader\development_data\dev_department_preferred_list_items.sql
+        :r ..\Scripts\Data-Loader\development_data\dev_group_list_items.sql
+        :r ..\Scripts\Data-Loader\development_data\dev_patients.sql
+        :r ..\Scripts\Data-Loader\development_data\dev_user_quick_list_items.sql
         --- END: custom data deployments for development
 end;
 
@@ -174,41 +194,43 @@ begin
     drop procedure if exists [dbo].[pc_fdb_get_drc_info];
     drop procedure if exists [dbo].[pc_fdb_meds_search];
 
-    drop procedure if exists [dbo].[export_ibex_antimicrobial_indication_items];
-    drop procedure if exists [dbo].[export_ibex_antimicrobial_indications];
-    drop procedure if exists [dbo].[export_ibex_fdb_allergy_name];
-    drop procedure if exists [dbo].[export_ibex_fdb_brand_name];
-    drop procedure if exists [dbo].[export_ibex_fdb_ndc_info];
-    drop procedure if exists [dbo].[export_ibex_frequency_calendar];
-    drop procedure if exists [dbo].[export_ibex_frequency_days];
-    drop procedure if exists [dbo].[export_ibex_frequency_interval_day_times];
-    drop procedure if exists [dbo].[export_ibex_frequency_interval_units];
-    drop procedure if exists [dbo].[export_ibex_frequency_minutes];
-    drop procedure if exists [dbo].[export_ibex_frequency_schedules];
-    drop procedure if exists [dbo].[export_ibex_frequency_types];
-    drop procedure if exists [dbo].[export_ibex_group_list_items];
-    drop procedure if exists [dbo].[export_ibex_medication_routes];
-    drop procedure if exists [dbo].[export_ibex_medication_units];
-    drop procedure if exists [dbo].[export_ibex_options];
-    drop procedure if exists [dbo].[export_ibex_order_instructions];
-    drop procedure if exists [dbo].[export_ibex_override_reasons];
-    drop procedure if exists [dbo].[export_ibex_patient_allergies];
-    drop procedure if exists [dbo].[export_ibex_patient_home_medications];
-    drop procedure if exists [dbo].[export_ibex_patient_indicators];
-    drop procedure if exists [dbo].[export_ibex_patient_orders];
-    drop procedure if exists [dbo].[export_ibex_patient_problems];
-    drop procedure if exists [dbo].[export_ibex_patients];
-    drop procedure if exists [dbo].[export_ibex_preferred_frequency_schedules];
-    drop procedure if exists [dbo].[export_ibex_preferred_medication_doses];
-    drop procedure if exists [dbo].[export_ibex_preferred_medication_routes];
-    drop procedure if exists [dbo].[export_ibex_site_code_shares];
-    drop procedure if exists [dbo].[export_ibex_site_formulary];
-    drop procedure if exists [dbo].[export_ibex_site_formulary_match];
-    drop procedure if exists [dbo].[export_ibex_site_options];
-    drop procedure if exists [dbo].[export_ibex_sites];
-    drop procedure if exists [dbo].[export_ibex_user_quick_list_items];
-    drop procedure if exists [dbo].[export_ibex_users];
+drop procedure if exists [dbo].[export_ibex_antimicrobial_indication_items];
+drop procedure if exists [dbo].[export_ibex_antimicrobial_indications];
+drop procedure if exists [dbo].[export_ibex_fdb_allergy_name];
+drop procedure if exists [dbo].[export_ibex_fdb_brand_name];
+drop procedure if exists [dbo].[export_ibex_fdb_ndc_info];
+drop procedure if exists [dbo].[export_ibex_frequency_calendar];
+drop procedure if exists [dbo].[export_ibex_frequency_days];
+drop procedure if exists [dbo].[export_ibex_frequency_interval_day_times];
+drop procedure if exists [dbo].[export_ibex_frequency_interval_units];
+drop procedure if exists [dbo].[export_ibex_frequency_minutes];
+drop procedure if exists [dbo].[export_ibex_frequency_schedules];
+drop procedure if exists [dbo].[export_ibex_frequency_types];
+drop procedure if exists [dbo].[export_ibex_group_list_items];
+drop procedure if exists [dbo].[export_ibex_medication_routes];
+drop procedure if exists [dbo].[export_ibex_medication_units];
+drop procedure if exists [dbo].[export_ibex_options];
+drop procedure if exists [dbo].[export_ibex_order_instructions];
+drop procedure if exists [dbo].[export_ibex_override_reasons];
+drop procedure if exists [dbo].[export_ibex_patient_allergies];
+drop procedure if exists [dbo].[export_ibex_patient_home_medications];
+drop procedure if exists [dbo].[export_ibex_patient_indicators];
+drop procedure if exists [dbo].[export_ibex_patient_orders];
+drop procedure if exists [dbo].[export_ibex_patient_problems];
+drop procedure if exists [dbo].[export_ibex_patients];
+drop procedure if exists [dbo].[export_ibex_preferred_frequency_schedules];
+drop procedure if exists [dbo].[export_ibex_preferred_medication_doses];
+drop procedure if exists [dbo].[export_ibex_preferred_medication_routes];
+drop procedure if exists [dbo].[export_ibex_site_code_shares];
+drop procedure if exists [dbo].[export_ibex_site_formulary];
+drop procedure if exists [dbo].[export_ibex_site_formulary_match];
+drop procedure if exists [dbo].[export_ibex_site_options];
+drop procedure if exists [dbo].[export_ibex_sites];
+drop procedure if exists [dbo].[export_ibex_user_quick_list_items];
+drop procedure if exists [dbo].[export_ibex_users];
+
 end;
+
 
 --- variables global to all diagram_ published scripts
 declare

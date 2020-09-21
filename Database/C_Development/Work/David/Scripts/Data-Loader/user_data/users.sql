@@ -21,13 +21,9 @@ create table [#users]
     , [last_login_time]         [varchar](50) null
     , [failed_login_attempts]   [int] not null);
 
-if '$(load_data)' = 'live'
-   and exists
-(
-    select null
-    from   [master].[sys].[databases]
-    where  [name] = 'ibex'
-)
+if '$(load_data)' = 'sample'
+   or ('$(load_data)' = 'live'
+       and @does_ibex_exist = 1)
     begin
 
         insert into [#users]
@@ -49,12 +45,6 @@ if '$(load_data)' = 'live'
            , [failed_login_attempts]
             )
         execute ('execute dbo.export_ibex_users');
-    end;
-
-if '$(load_data)' = 'sample'
-    begin
-
-        bulk insert [#users] from '$(current_path)Scripts\Data-Loader\sample_data\users.bcp' with(fieldterminator = '|~', rowterminator = '\n');
     end;
 
 if

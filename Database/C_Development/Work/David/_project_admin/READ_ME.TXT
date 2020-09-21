@@ -10,7 +10,7 @@ WARNING, THIS IS FOR DEVELOPMENT DEPLOYMENT ONLY!!!!
 *******************************************************************************/
 
 
-PURPOSE: This set of directions is how to build the project for check-in/release for TFS.
+PURPOSE: This set of directions is how to build the project for check-in and release for TFS.
 
 
 /********************************************/
@@ -22,11 +22,11 @@ These are the scripts to run
     02_publish_emar_clean.cmd
     03_build_table_hierarchy_result.cmd
     04_edit_project_scripts.txt
-    05_command_line_project_build.cmd
-    06_publish_emar_clean.cmd
-    07_export_emar_bacpac.cmd
-    08_publish_emar_clean.cmd
-    09_bcp.cmd
+    05_bcp.cmd
+    06_command_line_project_build.cmd
+    07_publish_emar_clean.cmd
+    08_export_emar_bacpac.cmd
+    09_publish_emar_clean.cmd
     10_extract_emar_dacpac.cmd
     11_import_emar_bacpac.cmd
     12_test_bacpac_release.txt

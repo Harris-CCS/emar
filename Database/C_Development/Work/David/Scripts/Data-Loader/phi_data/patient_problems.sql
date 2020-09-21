@@ -11,13 +11,9 @@ create table [#patient_problems]
     , [problem_name]   [nvarchar](255) not null
     , [diagnosis_type] [varchar](25) null);
 
-if '$(load_data)' = 'live'
-   and exists
-(
-    select null
-    from   [master].[sys].[databases]
-    where  [name] = 'ibex'
-)
+if '$(load_data)' = 'sample'
+   or ('$(load_data)' = 'live'
+       and @does_ibex_exist = 1)
     begin
 
         insert into [#patient_problems]
@@ -29,12 +25,6 @@ if '$(load_data)' = 'live'
            , [diagnosis_type]
             )
         execute ('execute dbo.export_ibex_patient_problems');
-    end;
-
-if '$(load_data)' = 'sample'
-    begin
-
-        bulk insert [#patient_problems] from '$(current_path)Scripts\Data-Loader\sample_data\patient_problems.bcp' with(fieldterminator = '|~', rowterminator = '\n');
     end;
 
 if

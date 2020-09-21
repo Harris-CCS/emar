@@ -28,33 +28,29 @@ create table [#patients]
     , [withdraw_consent]               [bit] not null
     , [vs_datetime]                    [varchar](14) null
     , [vs_blood_pressure_indicator]    [char](1) null
-    , [vs_systolic]                    [char](14) null
-    , [vs_diastolic]                   [char](14) null
+    , [vs_systolic]                    [varchar](14) null
+    , [vs_diastolic]                   [varchar](14) null
     , [vs_pulse_indicator]             [char](1) null
-    , [vs_pulse]                       [char](14) null
+    , [vs_pulse]                       [varchar](14) null
     , [vs_map_level]                   [char](1) null
     , [vs_map]                         [varchar](14) null
     , [vs_respiratory_indicator]       [char](1) null
-    , [vs_respiratory]                 [char](14) null
+    , [vs_respiratory]                 [varchar](14) null
     , [vs_temperature_indicator]       [char](1) null
-    , [vs_temperature]                 [char](14) null
+    , [vs_temperature]                 [varchar](14) null
     , [vs_end_tidal_level]             [char](1) null
     , [vs_end_tidal]                   [varchar](14) null
     , [vs_oxygen_saturation_indicator] [char](1) null
     , [vs_oxygen_saturation]           [varchar](50) null
     , [vs_pain_scale_indicator]        [char](1) null
-    , [vs_pain_scale]                  [char](14) null
+    , [vs_pain_scale]                  [varchar](14) null
     , [custom_number]                  [varchar](25) null
     , [person_number]                  [varchar](25) null
     , [visit_start_datetime]           [varchar](25) null);
 
-if '$(load_data)' = 'live'
-   and exists
-(
-    select null
-    from   [master].[sys].[databases]
-    where  [name] = 'ibex'
-)
+if '$(load_data)' = 'sample'
+   or ('$(load_data)' = 'live'
+       and @does_ibex_exist = 1)
     begin
 
         insert into [#patients]
@@ -103,12 +99,6 @@ if '$(load_data)' = 'live'
            , [visit_start_datetime]
             )
         execute ('execute dbo.export_ibex_patients');
-    end;
-
-if '$(load_data)' = 'sample'
-    begin
-
-        bulk insert [#patients] from '$(current_path)Scripts\Data-Loader\sample_data\patients.bcp' with(fieldterminator = '|~', rowterminator = '\n');
     end;
 
 if

@@ -8,13 +8,9 @@ create table [#order_instructions]
     , [description] [varchar](80) not null
     , [is_active]   [bit] not null);
 
-if '$(load_data)' = 'live'
-   and exists
-(
-    select null
-    from   [master].[sys].[databases]
-    where  [name] = 'ibex'
-)
+if '$(load_data)' = 'sample'
+   or ('$(load_data)' = 'live'
+       and @does_ibex_exist = 1)
     begin
 
         insert into [#order_instructions]
@@ -23,12 +19,6 @@ if '$(load_data)' = 'live'
            , [is_active]
             )
         execute ('execute dbo.export_ibex_order_instructions');
-    end;
-
-if '$(load_data)' = 'sample'
-    begin
-
-        bulk insert [#order_instructions] from '$(current_path)Scripts\Data-Loader\sample_data\order_instructions.bcp' with(fieldterminator = '|~', rowterminator = '\n');
     end;
 
 if

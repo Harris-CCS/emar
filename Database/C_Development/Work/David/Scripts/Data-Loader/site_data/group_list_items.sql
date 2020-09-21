@@ -215,6 +215,27 @@ if
              , [source].[frequency_schedule_id]
              , [source].[order_notes]
              , [source].[medication_id]
+        from     [#group_list_items] as [source]
+                 cross apply [dbo].[get_code_share_site]
+            ([source].[internal_site_id], 'medication_units') as [mu_site]
+                 cross apply [dbo].[get_code_share_site]
+            ([source].[internal_site_id], 'medication_routes') as [mr_site]
+                 left join [dbo].[medication_routes] as [mr] on [mr].[site_id] = [mr_site].[site_id]
+                                                                and [mr].[name] = [source].[medication_route_id]
+                 left join [dbo].[medication_units] as [mu] on [mu].[site_id] = [mu_site].[site_id]
+                                                               and [mu].[code] = [source].[medication_unit_id]
+        where   [source].[medication_id] > 0
+                and [source].[group_type] not in('CM', 'GX')
+        union
+        select [source].[internal_site_id] as [site_id]
+             , '' as                          [department_code]
+             , [source].[group_name]
+             , null as                        [dose]
+             , null as                        [medication_unit_id]
+             , null as                        [medication_routes_id]
+             , [source].[frequency_schedule_id]
+             , null as                        [order_notes]
+             , [source].[parent_id] as        [medication_id]
         from   [#group_list_items] as [source]
                cross apply [dbo].[get_code_share_site]
             ([source].[internal_site_id], 'medication_units') as [mu_site]
@@ -224,34 +245,14 @@ if
                                                               and [mr].[name] = [source].[medication_route_id]
                left join [dbo].[medication_units] as [mu] on [mu].[site_id] = [mu_site].[site_id]
                                                              and [mu].[code] = [source].[medication_unit_id]
-        where  [source].[medication_id] > 0
-               and [source].[group_type] <> 'CM';
+        where  [source].[parent_id] > 0
+               and [source].[group_type] = 'GX';
+
         -- set identity_insert [dbo].[group_list_items] off;
 
 /***************************************
         loading [external_ids] reference
 ***************************************/
-
-        with SiteCounts
-             as (select [group_list_items].[site_id]
-                      , count(*) as [cnt]
-                 from   [dbo].[group_list_items]
-                 group by [group_list_items].[site_id]),
-             src
-             as (select [g].[id]
-                      , case
-                            when row_number() over(partition by [g].[site_id]
-                                 order by [g].[site_id]
-                                        , [medication_id]) > ([cnt].[cnt] / 2.0)
-                                then 'Main ED'
-                            else 'Fast Track'
-                        end as [new_department_code]
-                 from   [dbo].[group_list_items] as [g]
-                        join [SiteCounts] as [cnt] on [g].[site_id] = [cnt].[site_id])
-             update [g] set    
-                 [g].[department_code] = [new_department_code]
-             from   [dbo].[group_list_items] [g]
-                    join [src] on [g].[id] = [src].[id];
 
 /****************
         end table

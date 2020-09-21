@@ -7,25 +7,15 @@ create table [#medication_routes]
       [site_id] [varchar](25) not null
     , [name]    [varchar](50) not null);
 
-if '$(load_data)' = 'live'
-   and exists
-(
-    select null
-    from   [master].[sys].[databases]
-    where  [name] = 'ibex'
-)
+if '$(load_data)' = 'sample'
+   or ('$(load_data)' = 'live'
+       and @does_ibex_exist = 1)
     begin
         insert into [#medication_routes]
             ([site_id]
            , [name]
             )
         execute ('execute dbo.export_ibex_medication_routes');
-    end;
-
-if '$(load_data)' = 'sample'
-    begin
-
-        bulk insert [#medication_routes] from '$(current_path)Scripts\Data-Loader\sample_data\medication_routes.bcp' with(fieldterminator = '|~', rowterminator = '\n');
     end;
 
 if

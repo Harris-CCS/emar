@@ -2,7 +2,7 @@ print 'create procedure [dbo].[export_ibex_patient_orders];'
 drop procedure if exists [dbo].[export_ibex_patient_orders];
 
 set @template = N'
-create procedure [dbo].[export_ibex_patient_orders]
+create or alter procedure [dbo].[export_ibex_patient_orders]
 as
     begin
 
@@ -61,5 +61,5 @@ as
 set @sql_cmd = @template;
 set @sql_cmd = replace(@sql_cmd, '<@export_database_name>', @export_database_name);
 
-exec [dbo].[sp_executesql]
+execute [dbo].[sp_executesql]
     @statement = @sql_cmd;
