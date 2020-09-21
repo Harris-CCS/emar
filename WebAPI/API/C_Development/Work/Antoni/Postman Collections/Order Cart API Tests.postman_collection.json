@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "29a85b01-56d3-4016-be30-1aca9499642c",
+		"_postman_id": "921cd31a-4882-4224-9f4b-4e168b0e40a5",
 		"name": "Order Cart API Tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -11,14 +11,15 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "00d11326-7fac-46da-b45e-dd79b52f2ee4",
+						"id": "cb7a1c36-de6f-4c28-aa94-7b98a605b6d0",
 						"exec": [
 							"pm.test(\"Status code is 404\", function () {\r",
 							"    pm.response.to.have.status(404);\r",
 							"});\r",
 							"\r",
 							"pm.environment.set(\"CartOrderPatientId\", \"163\");\r",
-							"pm.environment.set(\"CartOrderUserId\", \"123\");"
+							"pm.environment.set(\"CartOrderUserId\", \"123\");\r",
+							"pm.environment.set(\"FrequencyId\", \"380\");"
 						],
 						"type": "text/javascript"
 					}
@@ -26,7 +27,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "c65d09bd-ab7f-438c-b50b-95b83e1a0c41",
+						"id": "80046ab8-cb70-4f9f-8b8e-2cef3109ce7c",
 						"exec": [
 							""
 						],
@@ -54,14 +55,14 @@
 					}
 				],
 				"url": {
-					"raw": "{{URL}}/api/carts/1",
+					"raw": "{{URL}}/api/carts/999999",
 					"host": [
 						"{{URL}}"
 					],
 					"path": [
 						"api",
 						"carts",
-						"1"
+						"999999"
 					]
 				}
 			},
@@ -138,7 +139,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "2407f32d-10dc-4175-8185-1527f6847b33",
+						"id": "4328d1a5-a79b-464c-a091-f15983672fa2",
 						"exec": [
 							"pm.test(\"Status code is 201\", function () {\r",
 							"    pm.response.to.have.status(201);\r",
@@ -147,7 +148,12 @@
 							"var jsonData = pm.response.json();\r",
 							"pm.environment.set(\"CartOrderId\", jsonData.id);\r",
 							"pm.environment.set(\"CartOrderPatientId\", jsonData.patientId);\r",
-							"pm.environment.set(\"CartOrderUserId\", jsonData.userId);"
+							"pm.environment.set(\"CartOrderUserId\", jsonData.userId);\r",
+							"\r",
+							"pm.test(\"order has frequency #\" + pm.environment.get(\"FrequencyId\"), function() {\r",
+							"    pm.expect(jsonData.frequencySchedule != undefined && jsonData.frequencySchedule.id == pm.environment.get(\"FrequencyId\") && jsonData.frequencySchedule.scheduleName === \"3 times daily\").to.be.true;\r",
+							"});\r",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -174,7 +180,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"patientId\": \"{{CartOrderPatientId}}\",\r\n    \"userId\": \"{{CartOrderUserId}}\",\r\n    \"addDatetime\": \"2020-09-23T00:30:00+00:00\",\r\n    \"ndc\": null,\r\n    \"drugId\": \"drug888\",\r\n    \"brandName\": \"brandname999\",\r\n    \"dose\": null,\r\n    \"medicationUnitId\": null,\r\n    \"medicationRoute\": null,\r\n    \"priority\": 1,\r\n    \"frequencyId\": null,\r\n    \"prn\": false,\r\n    \"pointInTime\": false,\r\n    \"beginDatetime\": \"2020-09-23T01:00:00+00:00\",\r\n    \"endDatetime\": null,\r\n    \"orderNotes\": null,\r\n    \"userQuickListItemId\": null,\r\n    \"cartOrderAdministrations\": [\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T01:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T02:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T03:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T04:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T05:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T06:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T07:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        }\r\n    ]\r\n}",
+					"raw": "{\r\n    \"patientId\": \"{{CartOrderPatientId}}\",\r\n    \"userId\": \"{{CartOrderUserId}}\",\r\n    \"addDatetime\": \"2020-09-23T00:30:00+00:00\",\r\n    \"ndc\": null,\r\n    \"drugId\": \"drug888\",\r\n    \"brandName\": \"brandname999\",\r\n    \"dose\": null,\r\n    \"medicationUnitId\": null,\r\n    \"medicationRoute\": null,\r\n    \"priority\": 1,\r\n    \"frequencyId\": {{FrequencyId}},\r\n    \"prn\": false,\r\n    \"pointInTime\": false,\r\n    \"beginDatetime\": \"2020-09-23T01:00:00+00:00\",\r\n    \"endDatetime\": null,\r\n    \"orderNotes\": null,\r\n    \"userQuickListItemId\": null,\r\n    \"cartOrderAdministrations\": [\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T01:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T02:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T03:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T04:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T05:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T06:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T07:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        }\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -291,10 +297,22 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "3be6f0ff-81e3-4add-8347-a8496fb80a70",
+						"id": "912d977e-f932-4dd4-bef8-45b32d299c13",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"const frequencySchedule380Exists = (order) => {\r",
+							"    if(order.frequencySchedule === null)\r",
+							"        return false;\r",
+							"    return order.frequencySchedule.id === 380 && order.frequencySchedule.scheduleName === \"3 times daily\";\r",
+							"}\r",
+							"\r",
+							"pm.test(\"any order has frequency #380\", function() {\r",
+							"    pm.expect(jsonData.orders.any(frequencySchedule380Exists)).to.be.true;\r",
 							"});\r",
 							""
 						],
@@ -418,11 +436,18 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "eddffef7-f2c2-497f-b8c6-7961134bf895",
+						"id": "a4d00b8f-cd56-44a4-87f5-8864d1cd8741",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
-							"});"
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"any order has frequency #380\", function() {\r",
+							"    pm.expect(jsonData.frequencySchedule.id === 380 && jsonData.frequencySchedule.scheduleName === \"3 times daily\").to.be.true;\r",
+							"});\r",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -487,15 +512,6 @@
 								"value": "{{CartOrderUserId}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
 							"raw": "{{URL}}/api/carts/orders/{{CartOrderId}}",
 							"host": [
@@ -561,11 +577,19 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "0a0e475f-aa95-443b-93ee-473cc0b72b0b",
+						"id": "0b5581a1-96a3-4988-847a-fd93b83beb55",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
-							"});"
+							"});\r",
+							"\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"any order has frequency #380\", function() {\r",
+							"    pm.expect(jsonData.frequencySchedule.id === 380 && jsonData.frequencySchedule.scheduleName === \"3 times daily\").to.be.true;\r",
+							"});\r",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -592,7 +616,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": \"{{CartOrderId}}\",\r\n    \"patientId\": \"{{CartOrderPatientId}}\",\r\n    \"userId\": \"{{CartOrderUserId}}\",\r\n    \"addDatetime\": \"2020-09-30T20:30:20+00:00\",\r\n    \"ndc\": null,\r\n    \"drugId\": \"drug123\",\r\n    \"brandName\": \"brandname123\",\r\n    \"dose\": null,\r\n    \"medicationUnitId\": null,\r\n    \"medicationRoute\": null,\r\n    \"priority\": 0,\r\n    \"frequencyId\": null,\r\n    \"prn\": false,\r\n    \"pointInTime\": false,\r\n    \"beginDatetime\": \"2020-09-23T00:20:00+00:00\",\r\n    \"endDatetime\": null,\r\n    \"orderNotes\": null,\r\n    \"userQuickListItemId\": null,\r\n    \"cartOrderAdministrations\": [\r\n        {\r\n            \"patientCartOrderId\": \"{{CartOrderId}}\",\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T13:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"patientCartOrderId\": \"{{CartOrderId}}\",\r\n            \"pointInTime\": false,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T14:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"patientCartOrderId\": \"{{CartOrderId}}\",\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T15:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"patientCartOrderId\": \"{{CartOrderId}}\",\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T16:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"patientCartOrderId\": \"{{CartOrderId}}\",\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T17:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"patientCartOrderId\": \"{{CartOrderId}}\",\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T18:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"patientCartOrderId\": \"{{CartOrderId}}\",\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T19:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        }\r\n    ]\r\n}",
+					"raw": "{\r\n    \"id\": \"{{CartOrderId}}\",\r\n    \"patientId\": \"{{CartOrderPatientId}}\",\r\n    \"userId\": \"{{CartOrderUserId}}\",\r\n    \"addDatetime\": \"2020-09-30T20:30:20+00:00\",\r\n    \"ndc\": null,\r\n    \"drugId\": \"drug123\",\r\n    \"brandName\": \"brandname123\",\r\n    \"dose\": null,\r\n    \"medicationUnitId\": null,\r\n    \"medicationRoute\": null,\r\n    \"priority\": 0,\r\n    \"frequencyId\": {{FrequencyId}},\r\n    \"prn\": false,\r\n    \"pointInTime\": false,\r\n    \"beginDatetime\": \"2020-09-23T00:20:00+00:00\",\r\n    \"endDatetime\": null,\r\n    \"orderNotes\": null,\r\n    \"userQuickListItemId\": null,\r\n    \"cartOrderAdministrations\": [\r\n        {\r\n            \"patientCartOrderId\": \"{{CartOrderId}}\",\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T13:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"patientCartOrderId\": \"{{CartOrderId}}\",\r\n            \"pointInTime\": false,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T14:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"patientCartOrderId\": \"{{CartOrderId}}\",\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T15:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"patientCartOrderId\": \"{{CartOrderId}}\",\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T16:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"patientCartOrderId\": \"{{CartOrderId}}\",\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T17:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"patientCartOrderId\": \"{{CartOrderId}}\",\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T18:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"patientCartOrderId\": \"{{CartOrderId}}\",\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T19:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        }\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -703,7 +727,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "8d0b6bfc-7eaf-405e-993a-a1fa31386d30",
+						"id": "95f45b84-e842-4723-a0d0-eacadfed5a83",
 						"exec": [
 							"pm.test(\"Status code is 204\", function () {\r",
 							"    pm.response.to.have.status(204);\r",
@@ -827,7 +851,7 @@
 						}
 					],
 					"cookie": [],
-					"body": null
+					"body": ""
 				}
 			]
 		},
@@ -837,7 +861,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "404f0f2c-0698-4e6c-9ea5-6b3c4fcabe30",
+						"id": "ef47c5e7-4310-47b8-8b9b-063a6e1db10a",
 						"exec": [
 							"pm.test(\"Status code is 201\", function () {\r",
 							"    pm.response.to.have.status(201);\r",
@@ -847,6 +871,11 @@
 							"pm.environment.set(\"CartOrderId\", jsonData.id);\r",
 							"pm.environment.set(\"CartOrderPatientId\", jsonData.patientId);\r",
 							"pm.environment.set(\"CartOrderUserId\", jsonData.userId);\r",
+							"\r",
+							"pm.test(\"order has frequency #380\", function() {\r",
+							"    pm.expect(jsonData.frequencySchedule.id === 380 && jsonData.frequencySchedule.scheduleName === \"3 times daily\").to.be.true;\r",
+							"});\r",
+							"\r",
 							"\r",
 							"// initialize counter as an environment variable, if not already done\r",
 							"if (!pm.environment.has(\"count5orders\")) {\r",
@@ -890,7 +919,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"patientId\": \"{{CartOrderPatientId}}\",\r\n    \"userId\": \"{{CartOrderUserId}}\",\r\n    \"addDatetime\": \"2020-09-23T00:30:00+00:00\",\r\n    \"ndc\": null,\r\n    \"drugId\": \"drug888\",\r\n    \"brandName\": \"brandname999\",\r\n    \"dose\": null,\r\n    \"medicationUnitId\": null,\r\n    \"medicationRoute\": null,\r\n    \"priority\": 1,\r\n    \"frequencyId\": null,\r\n    \"prn\": false,\r\n    \"pointInTime\": false,\r\n    \"beginDatetime\": \"2020-09-23T01:00:00+00:00\",\r\n    \"endDatetime\": null,\r\n    \"orderNotes\": null,\r\n    \"userQuickListItemId\": null,\r\n    \"cartOrderAdministrations\": [\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T01:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T02:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T03:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T04:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T05:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T06:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T07:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        }\r\n    ]\r\n}",
+					"raw": "{\r\n    \"patientId\": \"{{CartOrderPatientId}}\",\r\n    \"userId\": \"{{CartOrderUserId}}\",\r\n    \"addDatetime\": \"2020-09-23T00:30:00+00:00\",\r\n    \"ndc\": null,\r\n    \"drugId\": \"drug888\",\r\n    \"brandName\": \"brandname999\",\r\n    \"dose\": null,\r\n    \"medicationUnitId\": null,\r\n    \"medicationRoute\": null,\r\n    \"priority\": 1,\r\n    \"frequencyId\": {{FrequencyId}},\r\n    \"prn\": false,\r\n    \"pointInTime\": false,\r\n    \"beginDatetime\": \"2020-09-23T01:00:00+00:00\",\r\n    \"endDatetime\": null,\r\n    \"orderNotes\": null,\r\n    \"userQuickListItemId\": null,\r\n    \"cartOrderAdministrations\": [\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T01:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T02:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T03:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T04:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T05:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T06:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T07:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        }\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -1007,7 +1036,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "dba9f9ee-3002-4f41-b5f0-6acf12b31f05",
+						"id": "b7ad964a-21ed-4806-9210-04bdefbc728a",
 						"exec": [
 							"pm.test(\"Status code is 204\", function () {\r",
 							"    pm.response.to.have.status(204);\r",
@@ -1112,7 +1141,7 @@
 						}
 					],
 					"cookie": [],
-					"body": null
+					"body": ""
 				}
 			]
 		},
@@ -1122,7 +1151,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "3d3b23f9-f842-48f2-868a-81d9242d7bf9",
+						"id": "9fda5d1f-7129-44e4-a395-b845bf859ba9",
 						"exec": [
 							"pm.test(\"Status code is 201\", function () {\r",
 							"    pm.response.to.have.status(201);\r",
@@ -1132,6 +1161,11 @@
 							"pm.environment.set(\"CartOrderId\", jsonData.id);\r",
 							"pm.environment.set(\"CartOrderPatientId\", jsonData.patientId);\r",
 							"pm.environment.set(\"CartOrderUserId\", jsonData.userId);\r",
+							"\r",
+							"pm.test(\"order has frequency #380\", function() {\r",
+							"    pm.expect(jsonData.frequencySchedule.id === 380 && jsonData.frequencySchedule.scheduleName === \"3 times daily\").to.be.true;\r",
+							"});\r",
+							"\r",
 							"\r",
 							"// initialize counter as an environment variable, if not already done\r",
 							"if (!pm.environment.has(\"count7orders\")) {\r",
@@ -1175,7 +1209,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"patientId\": \"{{CartOrderPatientId}}\",\r\n    \"userId\": \"{{CartOrderUserId}}\",\r\n    \"addDatetime\": \"2020-09-23T00:30:00+00:00\",\r\n    \"ndc\": null,\r\n    \"drugId\": \"drug888\",\r\n    \"brandName\": \"brandname999\",\r\n    \"dose\": null,\r\n    \"medicationUnitId\": null,\r\n    \"medicationRoute\": null,\r\n    \"priority\": 1,\r\n    \"frequencyId\": null,\r\n    \"prn\": false,\r\n    \"pointInTime\": false,\r\n    \"beginDatetime\": \"2020-09-23T01:00:00+00:00\",\r\n    \"endDatetime\": null,\r\n    \"orderNotes\": null,\r\n    \"userQuickListItemId\": null,\r\n    \"cartOrderAdministrations\": [\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T01:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T02:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T03:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T04:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T05:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T06:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T07:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        }\r\n    ]\r\n}",
+					"raw": "{\r\n    \"patientId\": \"{{CartOrderPatientId}}\",\r\n    \"userId\": \"{{CartOrderUserId}}\",\r\n    \"addDatetime\": \"2020-09-23T00:30:00+00:00\",\r\n    \"ndc\": null,\r\n    \"drugId\": \"drug888\",\r\n    \"brandName\": \"brandname999\",\r\n    \"dose\": null,\r\n    \"medicationUnitId\": null,\r\n    \"medicationRoute\": null,\r\n    \"priority\": 1,\r\n    \"frequencyId\": {{FrequencyId}},\r\n    \"prn\": false,\r\n    \"pointInTime\": false,\r\n    \"beginDatetime\": \"2020-09-23T01:00:00+00:00\",\r\n    \"endDatetime\": null,\r\n    \"orderNotes\": null,\r\n    \"userQuickListItemId\": null,\r\n    \"cartOrderAdministrations\": [\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T01:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T02:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T03:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T04:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T05:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T06:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        },\r\n        {\r\n            \"pointInTime\": true,\r\n            \"administrationScheduledDatetime\": \"2020-09-23T07:00:00+00:00\",\r\n            \"stopScheduledDatetime\": null\r\n        }\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -1292,7 +1326,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "10ee68e5-0e2f-4775-a7f8-874f60076248",
+						"id": "5fb706ff-cf85-4941-94e7-554877425e77",
 						"exec": [
 							"pm.test(\"Status code is 201\", function () {\r",
 							"    pm.response.to.have.status(201);\r",
