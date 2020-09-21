@@ -10,13 +10,10 @@ create table [#medication_units]
     , [print_name] [varchar](50) not null
     , [is_active]  [bit] not null);
 
-if '$(load_data)' = 'live'
-   and exists
-(
-    select null
-    from   [master].[sys].[databases]
-    where  [name] = 'ibex'
-)
+
+if '$(load_data)' = 'sample'
+   or ('$(load_data)' = 'live'
+       and @does_ibex_exist = 1)
     begin
         insert into [#medication_units]
             ([site_id]
@@ -26,12 +23,6 @@ if '$(load_data)' = 'live'
            , [is_active]
             )
         execute ('execute dbo.export_ibex_medication_units');
-    end;
-
-if '$(load_data)' = 'sample'
-    begin
-
-        bulk insert [#medication_units] from '$(current_path)Scripts\Data-Loader\sample_data\medication_units.bcp' with(fieldterminator = '|~', rowterminator = '\n');
     end;
 
 if

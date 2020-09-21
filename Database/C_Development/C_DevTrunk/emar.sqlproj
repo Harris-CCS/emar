@@ -121,10 +121,6 @@
     <Build Include="Tables\prompts.sql" />
     <Build Include="Tables\template_prompt_groups.sql" />
     <None Include="Scripts\Data-Loader\delete_emar_data.sql" />
-    <Build Include="Programmability\Stored Procedures\export_ibex_medication_routes.sql" />
-    <Build Include="Programmability\Stored Procedures\export_ibex_patients.sql" />
-    <Build Include="Programmability\Stored Procedures\export_ibex_user_quick_list_items.sql" />
-    <Build Include="Programmability\Stored Procedures\export_ibex_users.sql" />
     <Build Include="Tables\cart_order_administrations.sql" />
     <Build Include="Programmability\Stored Procedures\delimited_split_8k.sql" />
     <Build Include="Security\Logins\emarapiuser.sql" />
@@ -148,17 +144,12 @@
     <Build Include="Tables\fdb_ndc_info.sql" />
     <Build Include="Tables\fdb_brand_name.sql" />
     <Build Include="Tables\fdb_allergy_name.sql" />
-    <Build Include="Programmability\Stored Procedures\export_ibex_fdb_allergy.sql" />
-    <Build Include="Programmability\Stored Procedures\export_ibex_fdb_brand_name.sql" />
     <None Include="Scripts\Data-Loader\global_data\fdb_allergy_name.sql" />
     <None Include="Scripts\Data-Loader\global_data\fdb_brand_name.sql" />
     <None Include="Scripts\Data-Loader\global_data\fdb_ndc_info.sql" />
-    <Build Include="Programmability\Stored Procedures\export_ibex_patient_indicators.sql" />
     <None Include="Scripts\Data-Loader\phi_data\patient_indicators.sql" />
-    <Build Include="Programmability\Stored Procedures\export_ibex_medication_units.sql" />
     <None Include="Scripts\Data-Loader\site_data\medication_units.sql" />
     <Build Include="Tables\medication_units.sql" />
-    <Build Include="Programmability\Stored Procedures\export_ibex_site_code_shares.sql" />
     <None Include="Scripts\Data-Loader\site_data\site_code_shares.sql" />
     <Build Include="Programmability\Functions\Table-values Functions\get_code_share_site.sql" />
     <Build Include="Programmability\Stored Procedures\pc_fdb_get_drc_info.sql" />
@@ -186,7 +177,6 @@
     <Build Include="Programmability\Stored Procedures\get_frequency_schedule_items.sql" />
     <Build Include="Tables\medication_interactions.sql" />
     <Build Include="Tables\order_interactions.sql" />
-    <Build Include="Programmability\Stored Procedures\export_ibex_override_reasons.sql" />
     <None Include="Scripts\Data-Loader\site_data\override_reasons.sql" />
     <Build Include="Tables\preferred_frequency_schedules.sql" />
     <Build Include="Tables\preferred_medication_doses.sql" />
@@ -197,14 +187,12 @@
     <None Include="Scripts\Data-Loader\site_data\preferred_medication_doses.sql" />
     <None Include="Scripts\Data-Loader\site_data\preferred_medication_routes.sql" />
     <Build Include="Tables\patient_problems.sql" />
-    <Build Include="Programmability\Stored Procedures\export_ibex_order_instructions.sql" />
     <Build Include="Tables\order_instructions.sql" />
-    <Build Include="Programmability\Stored Procedures\export_ibex_patient_problems.sql" />
     <None Include="Scripts\Data-Loader\site_data\order_instructions.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>DoNotCopy</CopyToOutputDirectory>
     </None>
     <None Include="Scripts\Data-Loader\phi_data\patient_problems.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>DoNotCopy</CopyToOutputDirectory>
     </None>
     <None Include="Scripts\Post-Deployment\sql_agent_job.sql" />
     <Build Include="Programmability\Stored Procedures\update_weekly_usage_rolling_average.sql" />
@@ -224,49 +212,27 @@
     <None Include="Scripts\Data-Loader\export_procedures\export_ibex_site_formulary_match.sql" />
     <None Include="Scripts\Data-Loader\export_procedures\export_ibex_group_list_items.sql" />
     <None Include="Scripts\Data-Loader\export_procedures\export_ibex_patient_orders.sql" />
+    <None Include="Scripts\Data-Loader\development_data\dev_user_quick_list_items.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_patients.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_user_quick_list_items.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_fdb_allergy.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_fdb_brand_name.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_fdb_ndc_info.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_site_code_shares.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_medication_routes.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_medication_units.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_users.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_order_instructions.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_override_reasons.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_patient_indicators.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_patient_problems.sql" />
+    <None Include="Scripts\Data-Loader\development_data\dev_department_preferred_list_items.sql" />
+    <None Include="Scripts\Data-Loader\development_data\dev_group_list_items.sql" />
+    <None Include="Scripts\Data-Loader\development_data\dev_patients.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />
     <None Include="ROS-57C-DX01.publish.xml" />
-    <None Include="Scripts\Data-Loader\sample_data\medication_routes.bcp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\Data-Loader\sample_data\patients.bcp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\Data-Loader\sample_data\users.bcp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\Data-Loader\sample_data\user_quick_list_items.bcp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\Data-Loader\sample_data\fdb_allergy_name.bcp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\Data-Loader\sample_data\fdb_brand_name.bcp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\Data-Loader\sample_data\fdb_ndc_info.bcp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\Data-Loader\sample_data\patient_indicators.bcp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\Data-Loader\sample_data\medication_units.bcp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\Data-Loader\sample_data\site_code_shares.bcp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\Data-Loader\sample_data\override_reasons.bcp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\Data-Loader\sample_data\order_instructions.bcp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\Data-Loader\sample_data\patient_problems.bcp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Scripts\Data-Loader\sample_data\ibex_sample.bak">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

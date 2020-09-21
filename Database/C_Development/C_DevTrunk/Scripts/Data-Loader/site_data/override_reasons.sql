@@ -8,13 +8,9 @@ create table [#override_reasons]
     , [is_medication] [bit] not null
     , [description]   [varchar](80) not null);
 
-if '$(load_data)' = 'live'
-   and exists
-(
-    select null
-    from   [master].[sys].[databases]
-    where  [name] = 'ibex'
-)
+if '$(load_data)' = 'sample'
+   or ('$(load_data)' = 'live'
+       and @does_ibex_exist = 1)
     begin
 
         insert into [#override_reasons]
@@ -23,12 +19,6 @@ if '$(load_data)' = 'live'
            , [description]
             )
         execute ('execute dbo.export_ibex_override_reasons');
-    end;
-
-if '$(load_data)' = 'sample'
-    begin
-
-        bulk insert [#override_reasons] from '$(current_path)Scripts\Data-Loader\sample_data\override_reasons.bcp' with(fieldterminator = '|~', rowterminator = '\n');
     end;
 
 if

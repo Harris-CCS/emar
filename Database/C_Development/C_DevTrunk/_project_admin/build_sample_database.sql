@@ -19,8 +19,9 @@ create database [ibex_sample];
 alter database [ibex_sample] set compatibility_level = 130;
 
 alter database [ibex_sample] set recovery simple;
+go
 
-waitfor delay '00:00:30'
+waitfor delay '00:00:10';
 
 ---- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ---- [antimicrobial_indication_items]
@@ -28,12 +29,10 @@ waitfor delay '00:00:30'
 
 print '---- [antimicrobial_indication_items]';
 
-select [source].[site]
-     , [source].[sub_cat]
+select [site]
+     , [sub_cat]
 into [ibex_sample].[dbo].[medication_indication_list]
-from   [ibex].[dbo].[medication_indication_list] as [source]
-order by [source].[sub_cat]
-       , [source].[site];
+from   [ibex].[dbo].[medication_indication_list];
 
 ---- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ---- [antimicrobial_indications]
@@ -41,15 +40,15 @@ order by [source].[sub_cat]
 
 print '---- [antimicrobial_indications]';
 
-select [source].[site]
-     , [source].[code]
-     , [source].[description]
-     , [source].[status]
-     , [source].[position]
+select [site]
+     , [code]
+     , [description]
+     , [status]
+     , [position]
 into [ibex_sample].[dbo].[medication_indication]
-from   [ibex].[dbo].[medication_indication] as [source]
-order by [source].[description]
-       , [source].[site];
+from   [ibex].[dbo].[medication_indication]
+order by [description]
+       , [site];
 
 ---- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ---- [fdb_ndc_info]
@@ -72,17 +71,55 @@ into [ibex_sample].[dbo].[fdb_brand_name]
 from   [ibex].[dbo].[fdb_brand_name];
 
 ---- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
----- [patients]
+---- [fdb_allergy_name]
 ---- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-print '---- [patients]';
+print '---- [fdb_allergy_name]';
 
-select [patients].[ibex]
-     , [patients].[person]
-     , [patients].[acctnum]
-     , [patients].[site]
-into [ibex_sample].[dbo].[pat]
-from   [ibex].[dbo].[pat] as [patients];
+select *
+into [ibex_sample].[dbo].[fdb_allergy_name]
+from   [ibex].[dbo].[fdb_allergy_name];
+
+---- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---- [group_list_items]
+---- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+select [num]
+     , [type]
+       --   , status
+     , [site]
+     , [name]
+       --   , dateadd
+       --   , [datechg]
+       --   , [usradd]
+       --   , [usrchg]
+     , [grptype]
+     , [altcode]
+       --   , [svc]
+       --   , [color]
+     , [description]
+into [ibex_sample].[dbo].[cde]
+from   [ibex].[dbo].[cde];
+
+select [num]
+     , [type]
+     , [code]
+       --, [svctype]
+     , [site]
+     , [name]
+       --, [face]
+       --, [cpt]
+     , [route]
+     , [dose]
+     , [unit]
+       --, [id]
+     , [notes]
+     , [form_id]
+--, [defaulted]
+--, [schedule]
+--, [indication]
+into [ibex_sample].[dbo].[grp]
+from   [ibex].[dbo].[grp];
 
 ---- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ---- [patient_home_medications] / [patient_allergies]
@@ -90,84 +127,116 @@ from   [ibex].[dbo].[pat] as [patients];
 
 print '---- [patient_home_medications] / [patient_allergies]';
 
-select [source].[site]
-     , [source].[class]
-     , [source].[cat]
-     , [source].[drug]
-     , [source].[ndc]
-     , [source].[name]
-     , [source].[alg_drug_id]
-     , [source].[status]
-     , [source].[comment]
-     , [source].[severity]
-     , [source].[actionstatus]
-     , [source].[person]
-     , [source].[acctnum]
+select [site]
+     , [class]
+     , [cat]
+     , [drug]
+     , [ndc]
+     , [name]
+     , [alg_drug_id]
+     , [status]
+     , [comment]
+     , [severity]
+     , [actionstatus]
+     , [person]
+     , [acctnum]
 into [ibex_sample].[dbo].[hie_alg]
-from   [ibex].[dbo].[hie_alg] as [source];
+from   [ibex].[dbo].[hie_alg];
 
-select [source].[site]
-     , [source].[class]
-     , [source].[cat]
-     , [source].[drug]
-     , [source].[name]
-     , [source].[dose]
-     , [source].[unit]
-     , [source].[route]
-     , [source].[alg_drug_id]
-     , [source].[status]
-     , [source].[comment]
-     , [source].[sched]
-     , [source].[actionstatus]
-     , [source].[ndc]
-     , [source].[person]
-     , [source].[acctnum]
+select [site]
+     , [class]
+     , [cat]
+     , [drug]
+     , [name]
+     , [dose]
+     , [unit]
+     , [route]
+     , [alg_drug_id]
+     , [status]
+     , [comment]
+     , [sched]
+     , [actionstatus]
+     , [ndc]
+     , [person]
+     , [acctnum]
 into [ibex_sample].[dbo].[hie_meds]
-from   [ibex].[dbo].[hie_meds] as [source];
+from   [ibex].[dbo].[hie_meds];
 
-select [source].[ibex]
-     , [source].[class]
-     , [source].[cat]
-     , [source].[drug]
-     , [source].[ndc]
-     , [source].[name]
-     , [source].[alt_name]
-     , [source].[dose]
-     , [source].[unit]
-     , [source].[route]
-     , [source].[alg_drug_id]
-     , [source].[status]
-     , [source].[cmt]
-     , [source].[sched]
-     , [source].[reaction]
-     , [source].[severity]
-     , [source].[parent_id]
-     , [source].[parent_name]
-     , [source].[usr]
-     , [source].[dateadd]
-     , [source].[usrchg]
-     , [source].[datechg]
-     , [source].[actionstatus]
-     , [source].[taken]
-     , [source].[type]
-     , [source].[site]
-     , [source].[provider]
+select [ibex]
+     , [class]
+     , [cat]
+     , [drug]
+     , [ndc]
+     , [name]
+     , [alt_name]
+     , [dose]
+     , [unit]
+     , [route]
+     , [alg_drug_id]
+     , [status]
+     , [cmt]
+     , [sched]
+     , [reaction]
+     , [severity]
+     , [parent_id]
+     , [parent_name]
+     , [usr]
+     , [dateadd]
+     , [usrchg]
+     , [datechg]
+     , [actionstatus]
+     , [taken]
+     , [type]
+     , [site]
+     , [provider]
 into [ibex_sample].[dbo].[alg]
-from   [ibex].[dbo].[alg] as [source];
+from   [ibex].[dbo].[alg];
 
 select [type]
      , [site]
      , [id]
-       --, [status]
-       --, [name]
-       --, [misc]
+     , [status]
+     , [name]
+     , [misc]
      , [misc2]
 --, [misc3]
 --, [misc4]
 --, [idx_id]
 into [ibex_sample].[dbo].[idx]
-from   [ibex].[dbo].[idx] as [source]
-where  [type] in('LQ', 'LR');
+from   [ibex].[dbo].[idx]
+where  [type] in('LQ', 'LR', 'Z', 'BE', 'AC', 'SO');
+--  Z = Urgency
+-- BE = medication_units
+-- AC = medication_routes
+-- SO = order_instructions
+---- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---- [patient_indicators]
+---- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+select [id]
+     , [code]
+     , [site]
+     , [template]
+into [ibex_sample].[dbo].[custom_indicators]
+from   [ibex].[dbo].[custom_indicators];
+
+select [site]
+     , [ibex]
+     , [code]
+     , [type]
+into [ibex_sample].[dbo].[pat_indicators]
+from   [ibex].[dbo].[pat_indicators];
+
+select [position]
+     , [custom_indicator_id]
+     , [site]
+into [ibex_sample].[dbo].[current_custom_indicators]
+from   [ibex].[dbo].[current_custom_indicators];
+
+select [id]
+     , [name]
+into [ibex_sample].[dbo].[custom_indicator_images]
+from   [ibex].[dbo].[custom_indicator_images];
 
 ---- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ---- [patient_orders]
@@ -186,6 +255,7 @@ select [ibex]
      , [order_date]
      , [order_for_usr]
      , [order_usr]
+     , [type]
 into [ibex_sample].[dbo].[med]
 from   [ibex].[dbo].[med];
 
@@ -195,6 +265,131 @@ select [ibex]
      , [packaging_id]
 into [ibex_sample].[dbo].[med_details]
 from   [ibex].[dbo].[med_details];
+
+---- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---- [patients_problems]
+---- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+select [site]
+     , [ibex]
+     , [alienkey]
+     , [name]
+     , [riskgreen]
+     , [service]
+     , [type]
+     , [status]
+into [ibex_sample].[dbo].[trx]
+from   [ibex].[dbo].[trx];
+
+select [display]
+     , [oid]
+into [ibex_sample].[dbo].[code_systems]
+from   [ibex].[dbo].[code_systems];
+
+select [ibex]
+     , [problem_code]
+     , [problem_name]
+     , [problem_code_system]
+     , [internal_status]
+into [ibex_sample].[dbo].[problem_episode]
+from   [ibex].[dbo].[problem_episode];
+
+---- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---- [patients]
+---- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+print '---- [patients]';
+
+select [ibex]
+     , [person]
+     , [acctnum]
+     , [site]
+     , [medrec]
+     , [lname]
+     , [fname]
+     , [mname]
+     , [suffix]
+     , [gender]
+     , [dob]
+     , [age]
+     , [ageunits]
+     , [complaint]
+     , [height]
+     , [weight]
+     , [bed]
+     , [ward]
+     , [dept]
+     , [ord42]
+     , [naalert]
+     , [withdraw]
+     , [vsdate]
+     , [ord11]
+     , [vssys]
+     , [vsdia]
+     , [ord12]
+     , [vspulse]
+     , [vsmaplevel]
+     , [vsmap]
+     , [ord13]
+     , [vsresp]
+     , [ord14]
+     , [vstemp]
+     , [vsendtidallevel]
+     , [vsendtidal]
+     , [ord23]
+     , [vso2]
+     , [ord15]
+     , [vspain]
+     , [custom_insurance_id]
+     , [eun]
+into [ibex_sample].[dbo].[pat]
+from   [ibex].[dbo].[pat];
+
+---- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---- [site_code_shares]
+---- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+print '---- [site_code_shares]';
+
+select [site]
+     , [cs_site]
+     , [cs_name]
+into [ibex_sample].[dbo].[code_share]
+from   [ibex].[dbo].[code_share];
+
+---- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---- [site_formulary]
+---- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+print '---- [site_formulary]';
+
+select [site]
+     , [ndc]
+     , [brand]
+     , [aliencode]
+     , [svc]
+     , [inpat]
+     , [outpat]
+     , [pyxis]
+     , [dateadd]
+into [ibex_sample].[dbo].[frm]
+from   [ibex].[dbo].[frm] as [formulary]
+order by [ndc]
+       , [site];
+
+---- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---- [site_formulary_match]
+---- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+print '---- [site_formulary_match]';
+
+select [site]
+     , [ndc]
+     , [inpat]
+     , [outpat]
+     , [pyxis]
+into [ibex_sample].[dbo].[formulary_match]
+from   [ibex].[dbo].[formulary_match];
 
 ---- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ---- [sites]
@@ -209,79 +404,42 @@ into [ibex_sample].[dbo].[org]
 from   [ibex].[dbo].[org];
 
 ---- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
----- [formulary]
+---- [user_quick_list_items]
 ---- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-print '---- [formulary]';
+print '---- [user_quick_list_items]';
 
-select [formulary].[site]
-     , [formulary].[ndc]
+select distinct 
+       [site]
+     , [usr]
+     , [ndc]
      , [brand]
-     , [aliencode]
-     , [svc]
-     , [inpat]
-     , [outpat]
-     , [pyxis]
-     , [formulary].[dateadd]
-into [ibex_sample].[dbo].[frm]
-from   [ibex].[dbo].[frm] as [formulary]
-order by [formulary].[ndc]
-       , [formulary].[site];
+     , [strength]
+     , [unit]
+     , [route]
+     , [notes]
+into [ibex_sample].[dbo].[rxl]
+from   [ibex].[dbo].[rxl];
 
 ---- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
----- [formulary_match]
+---- [users]
 ---- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-print '---- [formulary_match]';
+print '---- [users]';
 
-select [formulary].[site]
-     , [formulary].[ndc]
-     , [formulary].[inpat]
-     , [formulary].[outpat]
-     , [formulary].[pyxis]
-into [ibex_sample].[dbo].[formulary_match]
-from   [ibex].[dbo].[formulary_match] as [formulary];
-
----- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
----- [group_list_items]
----- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-select [source].[num]
-     , [source].[type]
-       --, [source].status
-       --, [source].[site]
-     , [source].[name]
-       --, [source].dateadd
-       --, [source].[datechg]
-       --, [source].[usradd]
-       --, [source].[usrchg]
-     , [source].[grptype]
-     , [source].[altcode]
---, [source].[svc]
---, [source].[color]
---, [source].[description]
-into [ibex_sample].[dbo].[cde]
-from   [ibex].[dbo].[cde] as [source];
-
-select [source].[num]
-     , [source].[type]
-     , [source].[code]
-       --, [source].[svctype]
-     , [source].[site]
-     , [source].[name]
-       --, [source].[face]
-       --, [source].[cpt]
-     , [source].[route]
-     , [source].[dose]
-     , [source].[unit]
-       --, [source].[id]
-     , [source].[notes]
-     , [source].[form_id]
---, [source].[defaulted]
---, [source].[schedule]
---, [source].[indication]
-into [ibex_sample].[dbo].[grp]
-from   [ibex].[dbo].[grp] as [source];
+select [num]
+     , [site]
+     , [type]
+     , [status]
+     , [init]
+     , [first]
+     , [last]
+     , [ordonly]
+     , [loginid]
+     , [password]
+     , [lastlogin]
+into [ibex_sample].[dbo].[drs]
+from   [ibex].[dbo].[drs];
 
 ---- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ---- [backup]
@@ -296,5 +454,6 @@ dbcc shrinkdatabase([ibex_sample]);
 ---- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 print '---- Backup';
+print N'$(current_path)\ibex_sample.bak'
 
-backup database [ibex_sample] to disk = N'$(current_path)\ibex_sample.bak' with blocksize = 65536, maxtransfersize = 1048576, init, compression, stats = 20, copy_only;
+backup database [ibex_sample] to disk = N'$(current_path)\ibex_sample.bak' with blocksize = 65536, maxtransfersize = 1048576, init, compression, stats = 9, copy_only;

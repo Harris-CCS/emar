@@ -20,36 +20,25 @@ create table [#fdb_brand_name]
         load temporary tables for staging
 ****************************************/
 
---if '$(load_data)' = 'live'
---   and exists
---(
---    select null
---    from   [master].[sys].[databases]
---    where  [name] = 'ibex'  
---)
---    begin
-
---        insert into [#fdb_brand_name]
---            ([MEDID]
---           , [long_brand_name]
---           , [active]
---           , [MED_NAME_ID]
---           , [PC_MED_NAME_ID]
---           , [ROUTED_GEN_ID]
---           , [PC_ROUTED_GEN_ID]
---           , [brand_name]
---           , [dea_schedule]
---           , [rx_otc]
---           , [erx_search]
---            )
---        execute ('execute dbo.export_ibex_fdb_brand_name');
---    end;
-
-if '$(load_data)' = 'live'
-or '$(load_data)' = 'sample'
+if '$(load_data)' = 'sample'
+   or ('$(load_data)' = 'live'
+       and @does_ibex_exist = 1)
     begin
 
-        bulk insert [#fdb_brand_name] from '$(current_path)Scripts\Data-Loader\sample_data\fdb_brand_name.bcp' with(fieldterminator = '|~', rowterminator = '\n');
+        insert into [#fdb_brand_name]
+            ([MEDID]
+           , [long_brand_name]
+           , [active]
+           , [MED_NAME_ID]
+           , [PC_MED_NAME_ID]
+           , [ROUTED_GEN_ID]
+           , [PC_ROUTED_GEN_ID]
+           , [brand_name]
+           , [dea_schedule]
+           , [rx_otc]
+           , [erx_search]
+            )
+        execute ('execute dbo.export_ibex_fdb_brand_name');
     end;
 
 if

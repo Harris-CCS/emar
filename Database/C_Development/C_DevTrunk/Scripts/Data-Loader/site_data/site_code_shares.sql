@@ -8,13 +8,9 @@ create table [#site_code_shares]
     , [target_site_id] [int] not null
     , [entity]         sysname not null);
 
-if '$(load_data)' = 'live'
-   and exists
-(
-    select null
-    from   [master].[sys].[databases]
-    where  [name] = 'ibex'
-)
+if '$(load_data)' = 'sample'
+   or ('$(load_data)' = 'live'
+       and @does_ibex_exist = 1)
     begin
         insert into [#site_code_shares]
             ([source_site_id]
@@ -22,12 +18,6 @@ if '$(load_data)' = 'live'
            , [entity]
             )
         execute ('execute dbo.export_ibex_site_code_shares');
-    end;
-
-if '$(load_data)' = 'sample'
-    begin
-
-        bulk insert [#site_code_shares] from '$(current_path)Scripts\Data-Loader\sample_data\site_code_shares.bcp' with(fieldterminator = '|~', rowterminator = '\n');
     end;
 
 begin transaction;

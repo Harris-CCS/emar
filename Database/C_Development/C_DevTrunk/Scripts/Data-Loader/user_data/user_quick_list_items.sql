@@ -16,13 +16,9 @@ create table [#user_quick_list_items]
     , [order_notes]           [nvarchar](max) null
     , [medication_id]         [int] null default 0);
 
-if '$(load_data)' = 'live'
-   and exists
-(
-    select null
-    from   [master].[sys].[databases]
-    where  [name] = 'ibex'
-)
+if '$(load_data)' = 'sample'
+   or ('$(load_data)' = 'live'
+       and @does_ibex_exist = 1)
     begin
 
         insert into [#user_quick_list_items]
@@ -38,12 +34,6 @@ if '$(load_data)' = 'live'
            , [order_notes]
             )
         execute ('execute dbo.export_ibex_user_quick_list_items');
-    end;
-
-if '$(load_data)' = 'sample'
-    begin
-
-        bulk insert [#user_quick_list_items] from '$(current_path)Scripts\Data-Loader\sample_data\user_quick_list_items.bcp' with(fieldterminator = '|~', rowterminator = '\n');
     end;
 
 if
