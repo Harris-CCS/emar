@@ -31,7 +31,7 @@
                         <li>
                             <span placement="bottom" ngbTooltip="Click to view Allergies">
                                 <button type="button" *ngIf="checkForData('allergies')" class="action-button"
-                                    placement="bottom-left" triggers="click " [autoClose]="'outside'"
+                                    placement="bottom-left" triggers="click" [autoClose]="'outside'"
                                     [ngbPopover]="allergies" container="body">A</button>
                             </span>
                         </li>
@@ -68,7 +68,7 @@
                     </ul>
                 </div>
             </div>
-            <div class='patient-image'>
+            <div *ngIf="patient.patientImageSrc" class='patient-image'>
                 <img [src]="patient.patientImageSrc" onerror="this.style.display='none'" alt="Patient Image">
             </div>
             <div class="patient-demo-ids">
@@ -84,7 +84,7 @@
                         <span [class]="getPatientGenderIconStyle()" *ngIf="patient.gender"
                             ngbTooltip="{{patientGenderText}}" placement="bottom-right">{{patientGenderLetter}}</span>
                     </div>
-                    <div>
+                    <div [ngStyle]="{'padding-right': '5px'}">
                         <span *ngIf="patient.heightInCm">{{patient.heightInCm}} cm </span>
                         <span *ngIf="patient.weightInKg" [innerText]="appendDisplayValue('weight')"></span>
                     </div>

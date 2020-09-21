@@ -55,6 +55,12 @@ export class ModalComponent implements OnInit {
         case 'title': {
           return this.modalHeaderParameters.title;
         }
+        case 'popoverName': {
+          return this.modalHeaderParameters.popoverName;
+        }
+        case 'popoverData': {
+          return this.modalHeaderParameters.popoverData;
+        }
         case 'class': {
           return this.modalHeaderParameters.class[parseInt(node, 10)];
         }

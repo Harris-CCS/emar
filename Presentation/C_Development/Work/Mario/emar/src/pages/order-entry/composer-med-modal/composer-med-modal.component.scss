@@ -1,5 +1,11 @@
 @import "../../../variables";
 
+::ng-deep .card-header {
+  // background-color: $blue-D-20;
+   padding: 5px;
+  //  margin: 0;
+  }
+
 .accordion-panel-header {
   display: flex;
   justify-content: space-between;
@@ -8,7 +14,7 @@
   border: none;
   border-radius: 10px;
   font-weight: bold;
-  background-color: gray;
+  background-color: $blue;
   color: #fff;
   box-shadow: none;
 }
