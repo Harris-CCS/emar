@@ -104,5 +104,12 @@ namespace Emar.Core.HomeMedications.Model
             get => _actionStatus?.Trim();
             set => _actionStatus = value?.Trim();
         }
+
+        string _lastTakenNote;
+        public string LastTakenNote
+        {
+            get => _lastTakenNote?.Trim();
+            set => _lastTakenNote = value?.Trim();
+        }
     }
 }
