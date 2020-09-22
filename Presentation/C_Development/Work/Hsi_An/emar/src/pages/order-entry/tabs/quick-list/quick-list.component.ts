@@ -79,8 +79,10 @@ export class QuickListComponent implements OnInit {
     // this.medOrderService.postCartOrder(med, this.quickList());
     console.log('addToCart from quick list: med: ', med);
 
-    this.cartStoreService.postCartOrder(med, this.patientId, this.userId, this.quickList())
-    console.log(`addToCart from quick list: ${med.id}  name: ${med.brandName}`);
+    // this.cartStoreService.postCartOrder(med, this.patientId, this.userId, this.quickList())
+    // this.medOrderService.postCartOrderByListOrderId(med.id, this.patientId, this.userId);
+    this.cartStoreService.postCartOrderByListOrderId(med, med.id, this.patientId, this.userId);
+    console.log(`addToCart from quick list: ${med.id}  name: ${med.brandName} by userId: ${this.userId}`);
     med.hasBeenAdded = true;
   };
 

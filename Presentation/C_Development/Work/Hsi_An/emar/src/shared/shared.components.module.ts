@@ -11,6 +11,8 @@ import { MedSearchComponent } from './component/med-search/med-search.component'
 import { PipesModule } from './pipes/pipes.module';
 import { SimpleTableComponent } from './component/simple-table/simple-table.component';
 import { DateTimeModalComponent } from './component/date-time-modal/date-time-modal.component';
+import { NotAuthComponent } from './component/not-auth/not-auth.component';
+import { BootstrapComponent } from './component/bootstrap/bootstrap.component';
 import { HelpIconsComponent } from './component/help-icons/help-icons.component';
 import { DosingInfoComponent } from './component/dosing-info/dosing-info.component';
 
@@ -23,6 +25,8 @@ import { DosingInfoComponent } from './component/dosing-info/dosing-info.compone
     MedSearchComponent,
     SimpleTableComponent,
     DateTimeModalComponent,
+    NotAuthComponent,
+    BootstrapComponent,
     HelpIconsComponent,
     DosingInfoComponent,
   ],
@@ -40,6 +44,8 @@ import { DosingInfoComponent } from './component/dosing-info/dosing-info.compone
     ModalComponent,
     MedSearchComponent,
     SimpleTableComponent,
+    DateTimeModalComponent,
+    BootstrapComponent,
     DateTimeModalComponent,
   ],
   bootstrap: [MedSearchComponent],

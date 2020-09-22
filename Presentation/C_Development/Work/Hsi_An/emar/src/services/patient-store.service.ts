@@ -13,11 +13,15 @@ import { PatientService } from 'src/services/patient.service';
 })
 export class PatientStoreService {
 
-  extId1: string = '36' //site id
-  extId2: string = '20190226161557' //patient id - ibex
+  extId1: string  //= '36' //site id
+  extId2: string  // = '20190226161557' //patient id - ibex
+
+  emarPatientId: number
 
   constructor(private patientService: PatientService) {
-    this.fetchPatient(this.extId1, this.extId2)  
+    if (this.extId1 && this.extId2) {
+      this.fetchPatientByExtIds(this.extId1, this.extId2)  
+    }
   }
 
   private readonly _patient = new BehaviorSubject<Patient>(<Patient>{})
@@ -34,7 +38,8 @@ export class PatientStoreService {
   }
 
   get patientId(): number {
-    return this._patient.getValue().id || 657
+    return this._patient.getValue().id
+    // return this._patient.getValue().id || 657
   }
 
   get patientAllergies(): Allergy[] {
@@ -45,8 +50,13 @@ export class PatientStoreService {
     return this._patient.getValue().homeMedications || []
   }
 
-  async fetchPatient(extId1, extId2) {
-    this.patient = await this.patientService.getPatientByExtIds(extId1, extId2).toPromise()
+  async fetchPatient(emarPatientId) {
+    this.patient = await this.patientService.getPatient(emarPatientId).toPromise()
     console.log('PatientStore - fetchPatient: ', this.patient)
+  }
+  
+  async fetchPatientByExtIds(extId1, extId2) {
+    this.patient = await this.patientService.getPatientByExtIds(extId1, extId2).toPromise()
+    console.log('PatientStore - fetchPatientByExtIds: ', this.patient)
   }
 }
