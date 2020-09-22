@@ -5,7 +5,6 @@ import { map } from 'rxjs/operators';
 import { User } from 'src/app/interfaces/user';
 import { UserService } from './user.service';
 
-
 interface Site {
   id: number,
   name: string,
@@ -18,10 +17,16 @@ interface Site {
 })
 export class UserStoreService {
 
-  extId: number = 10620 //14893
+  /* ibex.drs.num */
+  // extId: number = 10620 //14893
+  extId: number
+  /* emar.users.id */
+  emarUserId: number 
 
-  constructor(private userService: UserService) { 
-    this.fetchUser(this.extId)
+  constructor(private userService: UserService) {
+    if (this.extId) {
+      this.fetchUserByExtId(this.extId) 
+    }
   }
 
   private readonly _user = new BehaviorSubject<User>(<User>{site:{}})
@@ -40,7 +45,8 @@ export class UserStoreService {
 
   get userId(): number {
     console.log('UserStore: userId: ', this._user.getValue().id)
-    return this._user.getValue().id || 5205 //2729
+    return this._user.getValue().id
+    // return this._user.getValue().id || 5205 //2729
     // return 27
   }
 
@@ -56,14 +62,21 @@ export class UserStoreService {
 
   get userSiteId(): number {
     console.log('UserStore: userSiteId: ', this.userSite.id)
-    return this.userSite.id || 16
+    return this.userSite.id
+    // return this.userSite.id || 16
     // return 12
   }
 
-  async fetchUser(extId) {
-    this.user = await this.userService.getUserByExtId(extId).toPromise()
+  async fetchUser(emarUserId) {
+    this.user = await this.userService.getUser(emarUserId).toPromise()
 
     console.log('UserStore - fetchUser: ', this.user)
+  }
+  
+  async fetchUserByExtId(extId) {
+    this.user = await this.userService.getUserByExtId(extId).toPromise()
+
+    console.log('UserStore - fetchUserByExtId: ', this.user)
   }
 }
 

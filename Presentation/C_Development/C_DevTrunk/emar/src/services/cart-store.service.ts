@@ -6,6 +6,7 @@ import { UserStoreService } from '../services/user-store.service';
 import { PatientStoreService } from '../services/patient-store.service';
 import { PatientMedOrderStoreService } from '../services/patient-med-order-store.service';
 import { CartService } from './cart.service';
+import { MedOrderService } from './med-order.service';
 // import { OrderCartListComponent } from 'src/pages/order-entry/order-cart/order-cart-list/order-cart-list.component';
 
 import { CartOrder } from '../app/interfaces/cart-order';
@@ -25,6 +26,7 @@ export class CartStoreService {
     private userStoreService: UserStoreService,
     private patientStoreService: PatientStoreService,
     private patientMedOrderStoreService: PatientMedOrderStoreService,
+    private medOrderService: MedOrderService,
   ) {
     // this.fetchAll()
     this.fetchPatientCartOrders(this.patientId, this.userId)
@@ -164,6 +166,94 @@ export class CartStoreService {
       console.log('CartStore: POSTED ALL 1: patientId: ', patientId, ' userId: ', userId)
 
       const cartOrder = await this.cartService.postCartOrder(ord, patientId, userId).toPromise()
+
+      //reload the cart order from database
+      const idx = this.cartOrders.indexOf(this.cartOrders.find( o => 
+        typeof o.id ==='string' &&  o.id === tempId
+      ))
+
+      this.cartOrders[idx] = {
+        ...cartOrder
+      }
+      this.cartOrders = [...this.cartOrders]
+      console.log('CartStore: POSTED & UPDATED')
+    } catch (e) {
+      console.log('CartStore: POST ERROR: ', e)
+      this.cartOrders = orders
+      this.totalCount = this.totalCount - 1
+    }
+  }
+
+  /* POST - post a cart order by UserQuickListItemId*/
+  async postCartOrderByListOrderId(order: CartOrder, listOrderId: number, patientId: number, userId: number, listType?: string) {
+    // async postCartOrder(order: {}, patientId: number, userId: number, listType?: string) {
+    console.log('CartStore: POST - postCartOrderByListOrderId')
+
+    // TODO - do not need whole ord here.  only need med name dosage etc to display in the cart
+    let ord: CartOrder = {
+      patientId: patientId,
+      userId: userId,
+      addDatetime: "2020-08-14T22:01:53.589Z",
+      //addDate: "2020-08-14",
+      //addTime: "22:01:53",
+      priority: 2,
+      prn: true,
+      beginDatetime: "2020-08-14T22:01:53.589Z",
+      //beginDate: "2020-08-14",
+      //beginTime: "22:01:53",
+      endDatetime: "2020-08-14T22:01:53.589Z",
+      userQuickListItemId: 0,
+      cartOrderAdministrations: [
+        {
+          id: 0,
+          patientCartOrderId: 0,
+          administrationScheduledDatetime: "2020-08-14T22:01:53.589Z",
+          administrationScheduledDate: "2020-08-14",
+          administrationScheduledTime: "22:01:53",
+          stopScheduledDatetime: "2020-08-14T22:01:53.589Z",
+          stopScheduledDate: "2020-08-14",
+          stopScheduledTime: "22:01:53",
+          pointInTime: true
+        }
+      ],
+      id: 0,
+      ndc: "string",
+      drugId: "string",
+      brandName: order.brandName,
+      dose: 2,
+      //doseUnit: "ea",
+      medicationUnitId: 0,
+      frequencyId: 0,
+      pointInTime: true,
+      orderNotes: "string",
+      medicationRouteId: 0
+    };
+    
+    //optimistic update
+    const tempId = uuid()
+    
+    const tempCartOrder = {
+      ...ord
+    }
+    
+    tempCartOrder.id = tempId
+    
+    const orders = [
+      ...this.cartOrders
+    ]
+
+    this.cartOrders = [
+      tempCartOrder,
+      ...this.cartOrders
+    ]
+
+    this.totalCount = this.totalCount + 1
+
+    try {
+      console.log('CartStore: POSTED 1: patientId: ', patientId, ' userId: ', userId)
+
+      // const cartOrder = await this.cartService.postCartOrder(ord, patientId, userId).toPromise()
+      const cartOrder = await this.medOrderService.postCartOrderByListOrderId(listOrderId, patientId, userId).toPromise()
 
       //reload the cart order from database
       const idx = this.cartOrders.indexOf(this.cartOrders.find( o => 

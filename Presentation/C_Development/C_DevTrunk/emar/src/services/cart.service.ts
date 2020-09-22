@@ -107,7 +107,7 @@ export class CartService {
       )
   }
 
-  /* POST - post all cart orders*/
+  /* POST - post all cart orders (checkout)*/
   postAllCartOrders(patientId: number, userId: number): Observable<any> {
     const headers = new HttpHeaders({ Accept: 'application/json', 'X-User': `${userId}`})
     const cartOrderUrl = `${this.cartUrl}/${patientId}/checkout` 

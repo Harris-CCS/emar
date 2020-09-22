@@ -9,6 +9,7 @@ import { Observable, TimeoutError } from 'rxjs';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { filter, map, mergeMap } from 'rxjs/operators';
 import { async } from 'rxjs/internal/scheduler/async';
+import { AuthService } from 'src/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -25,6 +26,7 @@ export class AppComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     // private userService: UserService,
     public userStoreService: UserStoreService,
+    public authService: AuthService,
   ) {
     // https://stackoverflow.com/questions/49632152/angular-2-how-to-access-active-route-outside-router-outlet
     this.pageTitle$ = this.router.events.pipe(
