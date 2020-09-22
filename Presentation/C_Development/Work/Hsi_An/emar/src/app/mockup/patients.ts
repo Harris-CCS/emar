@@ -81,7 +81,7 @@ export const PATIENTS: Patient[] = [
     ],
     patientAllergies: [
       {
-        actionStatus: '',
+        actionStatus: 'C',
         allergyDrugId: '',
         alternateName: '',
         comment: 'Mild Allergy',
@@ -101,7 +101,7 @@ export const PATIENTS: Patient[] = [
         severity: 'Mild',
       },
       {
-        actionStatus: '',
+        actionStatus: 'C',
         allergyDrugId: '',
         alternateName: '',
         comment: 'Stay away from dander',
@@ -121,7 +121,7 @@ export const PATIENTS: Patient[] = [
         severity: 'Moderate',
       },
       {
-        actionStatus: '',
+        actionStatus: 'C',
         allergyDrugId: '',
         alternateName: '',
         comment: 'Get an allergen filter',
@@ -141,7 +141,7 @@ export const PATIENTS: Patient[] = [
         severity: 'Mild',
       },
       {
-        actionStatus: '',
+        actionStatus: 'C',
         allergyDrugId: '',
         alternateName: '',
         comment: '',
@@ -161,7 +161,7 @@ export const PATIENTS: Patient[] = [
         severity: 'High',
       },
       {
-        actionStatus: '',
+        actionStatus: 'U',
         allergyDrugId: '',
         alternateName: '',
         comment: 'Get treatment',
@@ -183,6 +183,7 @@ export const PATIENTS: Patient[] = [
     ],
     homeMedications: [
       {
+        actionStatus: 'C',
         alternateName: '',
         category: '',
         class: '',
@@ -217,6 +218,7 @@ export const PATIENTS: Patient[] = [
         severity: '',
       },
       {
+        actionStatus: 'C',
         alternateName: '',
         category: '',
         class: '',
@@ -251,6 +253,7 @@ export const PATIENTS: Patient[] = [
         severity: '',
       },
       {
+        actionStatus: 'C',
         alternateName: '',
         category: '',
         class: '',
@@ -285,6 +288,7 @@ export const PATIENTS: Patient[] = [
         severity: '',
       },
       {
+        actionStatus: 'C',
         alternateName: '',
         category: '',
         class: '',
@@ -319,6 +323,7 @@ export const PATIENTS: Patient[] = [
         severity: '',
       },
       {
+        actionStatus: 'U',
         alternateName: '',
         category: '',
         class: '',
