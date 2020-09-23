@@ -1,5 +1,5 @@
 CREATE PROCEDURE [dbo].[pc_fdb_get_drc_info]
-  @ndc [varchar](11) = NULL
+  @medication_id [int] = NULL
 AS
 BEGIN
   SET NOCOUNT ON;
@@ -20,9 +20,12 @@ BEGIN
   
   declare @gcn_seqno numeric(6,0);
 
-  select @gcn_seqno = gcn_seqno
-  from dbo.fdb_ndc_info
-  where ndc=@ndc;
+  select top 1 @gcn_seqno = gcn_seqno
+  from dbo.medications m
+  inner join dbo.medication_details md on md.medication_id=m.id
+  inner join dbo.fdb_ndc_info fdb on fdb.medid=md.drug_id
+  where m.id=@medication_id
+    and m.drug_vendor='F';
 
   SELECT
     GCN_SEQNO,    

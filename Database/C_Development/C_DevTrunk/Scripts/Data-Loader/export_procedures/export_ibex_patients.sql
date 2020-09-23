@@ -83,6 +83,7 @@ as
                 , ltrim(rtrim([source].[custom_insurance_id])) as [custom_number]
                 , ltrim(rtrim([source].[person])) as              [person_number]
                 , ltrim(rtrim([source].[ibex])) as                [visit_start_datetime]
+                , ltrim(rtrim([source].[gender_system])) as       [gender_system]
         from      [<@export_database_name>].[dbo].[pat] as [source]
                   inner join [<@export_database_name>].[dbo].[org] as [sites] on [sites].[site] = [source].[site]
                   outer apply

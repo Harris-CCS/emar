@@ -229,6 +229,12 @@
     <None Include="Scripts\Data-Loader\development_data\dev_department_preferred_list_items.sql" />
     <None Include="Scripts\Data-Loader\development_data\dev_group_list_items.sql" />
     <None Include="Scripts\Data-Loader\development_data\dev_patients.sql" />
+    <Build Include="Tables\user_patients.sql" />
+    <None Include="Scripts\Data-Loader\user_data\user_patients.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_user_patients.sql" />
+    <Build Include="Tables\order_reactions.sql" />
+    <Build Include="Views\drug_interactions_view.sql" />
+    <Build Include="Programmability\Stored Procedures\pc_fdb_get_drug_interactions.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localhost.publish.xml" />

@@ -37,6 +37,19 @@ go
 /*******
  Indexes
 *******/
+
+create nonclustered index [ix__user_quick_list_items__user_id] on [dbo].[user_quick_list_items]
+    ([user_id] asc) 
+      include
+    ([medication_id]);
+go
+
+create nonclustered index [ix__user_quick_list_items__medication_id_site_id] on [dbo].[user_quick_list_items]
+    ([medication_id], [site_id]) 
+      include
+    ([user_id]);
+go
+
 /***********
  Foreign Key
 ***********/
@@ -106,6 +119,28 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'user_quick_list_items'
   , @level2type = N'CONSTRAINT'
   , @level2name = N'pk__user_quick_list_items__id';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'Default Index included during development'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'user_quick_list_items'
+  , @level2type = N'INDEX'
+  , @level2name = N'ix__user_quick_list_items__user_id';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'Default Index included during development'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'user_quick_list_items'
+  , @level2type = N'INDEX'
+  , @level2name = N'ix__user_quick_list_items__medication_id_site_id';
 go
 
 /***************

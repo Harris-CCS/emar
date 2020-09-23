@@ -66,6 +66,7 @@ insert into [#table_order] values
     ('dbo','site_options','site_data'),
     ('dbo','sites','site_data'),
     --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ('dbo','user_patients','user_data'),
     ('dbo','user_quick_list_items','user_data'),
     ('dbo','users','user_data');
     --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1,7 +1,7 @@
 use master;
 
 declare 
-    @show_all bit = 0;
+    @show_all bit = 1;
 
 with cte_database_count
      as (select 'emar_bacpac' as               [database_name]

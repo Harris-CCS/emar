@@ -45,7 +45,8 @@ create table [dbo].[patients]
     , [person_number]                  [varchar](25) null
     , [deactivation_datetime]          [datetimeoffset](7) null
     , [visit_start_datetime]           [datetimeoffset](7) null
-    , constraint [pk__patients__id] primary key clustered([id] asc));
+    , [gender_system] VARCHAR(10) NULL, 
+    constraint [pk__patients__id] primary key clustered([id] asc));
 go
 
 /********
@@ -595,3 +596,11 @@ execute [sys].[sp_addextendedproperty]
   , @level2type = N'COLUMN'
   , @level2name = N'visit_start_datetime';
 go
+EXEC sp_addextendedproperty @name = N'MS_Description',
+    @value = N'System used to define the gender field.  BS= Brith Sex  GE= Gender',
+    @level0type = N'SCHEMA',
+    @level0name = N'dbo',
+    @level1type = N'TABLE',
+    @level1name = N'patients',
+    @level2type = N'COLUMN',
+    @level2name = N'gender_system'
