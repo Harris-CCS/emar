@@ -414,5 +414,18 @@ namespace Emar.Core.Patients.Repository
             return _context.FdbAllergyName
                 .Where(whereLambda);
         }
+
+        public IEnumerable<FdbAllergyName> GetAllergyFdbAllergyNamesByPcHiclSeqno(string pcHiclSeqno, Expression<Func<FdbAllergyName, bool>> wherePredicate = null)
+        {
+            Expression<Func<FdbAllergyName, bool>> whereLambda = f => f.PcHiclSeqno == pcHiclSeqno;
+
+            if (wherePredicate != null)
+            {
+                whereLambda = whereLambda.And(wherePredicate);
+            }
+
+            return _context.FdbAllergyName
+                .Where(whereLambda);
+        }
     }
 }

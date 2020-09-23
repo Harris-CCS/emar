@@ -94,11 +94,12 @@ namespace Emar.Core.MedicationReactions
             Dictionary<string, string> checklist = null,
             long? patientId = null)
         {
+            var drugDBVendor = optionRepository.GetOption(siteId, OptionNames.DRUG_DB_VENDOR);
             var drugDB = new DrugDB(
                 patientRepository,
                 homeMedicationRepository,
                 optionRepository,
-                optionRepository.GetOption(siteId, OptionNames.DRUG_DB_VENDOR));
+                drugDBVendor);
             var reactionsCheckResult = new DrugDB.ReactionsCheckResult();
 
             if (patientId != null)
@@ -126,7 +127,7 @@ namespace Emar.Core.MedicationReactions
                     checklist = GetChecklist(checkMedications);
                 }
 
-                reactionsCheckResult = drugDB.CheckReactions(siteId, (long)patientId, checklist);
+                reactionsCheckResult = drugDB.CheckReactions(siteId, (long)patientId, checklist, drugDBVendor);
             }
 
             return reactionsCheckResult;

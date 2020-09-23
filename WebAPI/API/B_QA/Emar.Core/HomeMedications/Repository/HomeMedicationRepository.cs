@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Emar.Core.HomeMedications.Repository
 {
-    public class HomeMedicationRepository: IHomeMedicationRepository
+    public class HomeMedicationRepository : IHomeMedicationRepository
     {
         private readonly EmarContext _context;
 
@@ -50,6 +50,15 @@ namespace Emar.Core.HomeMedications.Repository
                 join n in _context.FdbNdcInfo on p.DrugId equals n.GcnSeqno.ToString()
                 join s in _context.FdbBrandName on n.RoutedGenId equals s.RoutedGenId
                 select s;
+
+            return query.FirstOrDefault();
+        }
+        public FdbBrandName GetPatientHomeMedicationFdbBrandNameByPcRoutedGenId(string internalDrugId)
+        {
+            var query =
+                from p in (from p in _context.PatientHomeMedications select p).Where(u => u.InternalDrugId == internalDrugId)
+                join n in _context.FdbBrandName on p.InternalDrugId equals n.PcRoutedGenId
+                select n;
 
             return query.FirstOrDefault();
         }
