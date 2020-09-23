@@ -195,6 +195,7 @@ begin
     ---- emar specific procedures with external references
     drop procedure if exists [dbo].[create_FDB_search];
     drop procedure if exists [dbo].[pc_fdb_get_drc_info];
+    drop procedure if exists [dbo].[pc_fdb_get_drug_interactions];
     drop procedure if exists [dbo].[pc_fdb_meds_search];
 
 end;
