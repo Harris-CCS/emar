@@ -33,6 +33,6 @@ export class PatientMedOrderStoreService {
 
   async fetchPatientMedOrder(patientId) {
     this.patientMedOrder = await this.patientMedOrderService.getPatientCurrentOrders(patientId).toPromise();
-    console.log('PatientMedOrderStore - fetchPatientMedOrder: patientMedOrder: ', this.patientMedOrder, this._patientMedOrder.getValue()[7])
+    // console.log('PatientMedOrderStore - fetchPatientMedOrder: patientMedOrder: ', this.patientMedOrder, this._patientMedOrder.getValue()[7])
   }
 }

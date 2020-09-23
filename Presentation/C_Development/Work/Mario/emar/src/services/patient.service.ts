@@ -37,15 +37,15 @@ export class PatientService {
       .pipe(catchError(this.handleError<PatientResponse>('getPatients')));
   }
 
-  getPatientAPI(patientId: number): Observable<Patient> {
+  getPatient(patientId: number): Observable<Patient> {
     const headers = new HttpHeaders({ Accept: 'application/json' });
     const url = `${this.patientUrl}/${patientId}`;
 
-    console.log('patient.service: getPatientAPI patientId:', patientId);
-    console.log('patient.service: getPatientAPI url:', url);
+    console.log('patient.service: getPatient patientId:', patientId);
+    console.log('patient.service: getPatient url:', url);
     return this.http
       .get<Patient>(url, { headers })
-      .pipe(catchError(this.handleError<Patient>('getPatientAPI')));
+      .pipe(catchError(this.handleError<Patient>('getPatient')));
   }
 
   /* Initial - Get patient JSON by extId1 (site id) and extId2 (patient id - PCED ibex) */
@@ -72,7 +72,7 @@ export class PatientService {
     return orders;
   }
 
-  getPatient(patientId: number): Patient {
+  getPatientByMock(patientId: number): Patient {
     const patient = PATIENTS.find((p) => {
       return p.id === patientId;
     });

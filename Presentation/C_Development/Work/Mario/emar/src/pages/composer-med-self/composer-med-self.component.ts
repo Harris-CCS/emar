@@ -22,7 +22,7 @@ export class ComposerMedSelfComponent implements OnInit {
   ngOnInit(): void {
     const patientId: number = +this.route.snapshot.params['id'];
 
-    this.patient = this.patientService.getPatient(patientId);
+    this.patient = this.patientService.getPatientByMock(patientId);
 
     // this.patientService
     //   .getPatient(patientId)
