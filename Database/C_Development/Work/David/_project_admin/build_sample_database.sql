@@ -342,6 +342,13 @@ select [ibex]
      , [vspain]
      , [custom_insurance_id]
      , [eun]
+     , [gender_system]
+     , [doctor]
+     , [resident]
+     , [drextender]
+     , [primarynurse]
+     , [extender]
+     , [firstdoctor]
 into [ibex_sample].[dbo].[pat]
 from   [ibex].[dbo].[pat];
 
@@ -455,4 +462,4 @@ dbcc shrinkdatabase([ibex_sample]);
 
 print '---- Backup';
 
-backup database [ibex_sample] to disk = N'$(current_path)\..\Scripts\Data-Loader\sample_data\ibex_sample.bak' with blocksize = 65536, maxtransfersize = 1048576, init, compression, stats = 9, copy_only;
+backup database [ibex_sample] to disk = N'$(current_path)ibex_sample.bak' with blocksize = 65536, maxtransfersize = 1048576, init, compression, stats = 9, copy_only;

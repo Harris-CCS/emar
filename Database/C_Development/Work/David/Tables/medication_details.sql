@@ -18,6 +18,14 @@ go
 /*******
  Indexes
 *******/
+
+create index [ix__medication_details__medication_id] on [dbo].[medication_details]
+    ([medication_id] asc) 
+      include
+    ([drug_id]);
+
+go
+
 /***********
  Foreign Key
 ***********/
@@ -44,6 +52,17 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'medication_details'
   , @level2type = N'CONSTRAINT'
   , @level2name = N'pk__medication_details__id';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'Index to get the drug_id needed to join into the fdb tables'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'medication_details'
+  , @level2type = N'INDEX'
+  , @level2name = N'ix__medication_details__medication_id';
 go
 
 /***************
@@ -87,16 +106,13 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'medication_id';
 go
 
-go
-
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'External Vendor Drug Database Identifier
     FDB: MEDID (MED Medication ID (Stable ID))
     Multum: dnum
-These 3 columns will be carried as a set ndc,drug_id,brand_name
-while drug_id and brand_name are vendor specific concepts and can be derived from ndc number
-this will aid in display and lookup performance.
+These 2 columns will be carried as a set drug_id,brand_name
+drug_id and brand_name are vendor specific concepts.
 '
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'

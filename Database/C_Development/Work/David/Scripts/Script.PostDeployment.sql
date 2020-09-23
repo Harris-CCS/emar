@@ -57,8 +57,9 @@ LVL: 002 SEQ: 014 TBL: dbo.preferred_medication_routes
 LVL: 002 SEQ: 015 TBL: dbo.prompt_choices
 LVL: 002 SEQ: 016 TBL: dbo.site_formulary
 LVL: 002 SEQ: 017 TBL: dbo.site_formulary_match
-LVL: 002 SEQ: 018 TBL: dbo.user_permissions
-LVL: 002 SEQ: 019 TBL: dbo.user_quick_list_items
+LVL: 002 SEQ: 018 TBL: dbo.user_patients
+LVL: 002 SEQ: 019 TBL: dbo.user_permissions
+LVL: 002 SEQ: 020 TBL: dbo.user_quick_list_items
 LVL: 003 SEQ: 001 TBL: dbo.order_administrations
 LVL: 003 SEQ: 002 TBL: dbo.patient_cart_orders
 LVL: 004 SEQ: 001 TBL: dbo.cart_order_administrations
@@ -126,6 +127,7 @@ if '$(load_data)' = 'sample'
         :r ..\Scripts\Data-Loader\export_procedures\export_ibex_site_formulary.sql
         :r ..\Scripts\Data-Loader\export_procedures\export_ibex_site_formulary_match.sql
         :r ..\Scripts\Data-Loader\export_procedures\export_ibex_sites.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_user_patients.sql
         :r ..\Scripts\Data-Loader\export_procedures\export_ibex_user_quick_list_items.sql
         :r ..\Scripts\Data-Loader\export_procedures\export_ibex_users.sql
 
@@ -166,6 +168,7 @@ if '$(load_data)' = 'sample'
         :r ..\Scripts\Data-Loader\site_data\preferred_medication_routes.sql
         :r ..\Scripts\Data-Loader\site_data\site_formulary.sql
         :r ..\Scripts\Data-Loader\site_data\site_formulary_match.sql
+        :r ..\Scripts\Data-Loader\user_data\user_patients.sql
         :r ..\Scripts\Data-Loader\user_data\user_quick_list_items.sql
 
         select @dev_custom_data_site_id = [id]
@@ -193,6 +196,8 @@ begin
     drop procedure if exists [dbo].[create_FDB_search];
     drop procedure if exists [dbo].[pc_fdb_get_drc_info];
     drop procedure if exists [dbo].[pc_fdb_meds_search];
+
+end;
 
 drop procedure if exists [dbo].[export_ibex_antimicrobial_indication_items];
 drop procedure if exists [dbo].[export_ibex_antimicrobial_indications];
@@ -226,11 +231,9 @@ drop procedure if exists [dbo].[export_ibex_site_formulary];
 drop procedure if exists [dbo].[export_ibex_site_formulary_match];
 drop procedure if exists [dbo].[export_ibex_site_options];
 drop procedure if exists [dbo].[export_ibex_sites];
+drop procedure if exists [dbo].[export_ibex_user_patients];
 drop procedure if exists [dbo].[export_ibex_user_quick_list_items];
 drop procedure if exists [dbo].[export_ibex_users];
-
-end;
-
 
 --- variables global to all diagram_ published scripts
 declare
