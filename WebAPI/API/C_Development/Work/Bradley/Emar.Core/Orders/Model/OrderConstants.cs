@@ -31,7 +31,27 @@
         OnHold = 4,
         PendingDiscontinue = 5,
         Discontinued = 6,
-        Completed = 7
+        Completed = 7,
+        Deleted = 8
     }
 
+    /// <summary>
+    /// Order administration statuses
+    /// </summary>
+    public enum OrderAdministrationStatus
+    {
+        Pending,
+        Acknowledged,
+        OnGoing,
+        OnHold,
+        Given,
+        Late
+    }
+
+    public static class Constants
+    {
+        #region UserQuickList Constants
+        public const string MostUsedTabTitle = "Most Used";
+        #endregion
+    }
 }

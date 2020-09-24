@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Linq;
+using Emar.Core.FdbObjects.Model.Mappings;
 using Emar.Core.Helpers;
+using Emar.Core.Medications.Model;
 using Emar.Core.Medications.Model.Mappings;
+using Emar.Core.Orders.Repository;
 using Emar.Core.Orders.Service;
 using Emar.Core.Users.Model.Mappings;
 using Emar.Data.Entities;
@@ -10,7 +13,7 @@ namespace Emar.Core.Orders.Model.Mappings
 {
     public static class OrderMapper
     {
-        public static PatientOrderDto MapOrder(PatientOrder patientOrder, string dateFormat, string orderBase,
+        public static PatientOrderDto MapOrder(PatientOrder patientOrder, string dateFormat, string drugDBVendor, string orderBase,
             string adminBase)
         {
             if (patientOrder == null)
@@ -51,7 +54,13 @@ namespace Emar.Core.Orders.Model.Mappings
                 EndDatetime = patientOrder.EndDateTime,
                 //EndDate = DateTimeHelper.GetDate(patientOrder.EndDateTime, dateFormat),
                 //EndTime = DateTimeHelper.GetTime(patientOrder.EndDateTime),
-                OrderNotes = patientOrder.OrderNotes
+                OrderNotes = patientOrder.OrderNotes,
+                OrderAdministrations = patientOrder.OrderAdministrations?.Select(admin => MapOrderAdministration(admin, dateFormat, OrderStatuses.Pending, null)).ToList(),
+                OrderInteractions = patientOrder.OrderInteractions?.Select(interaction => MedicationMapper.MapOrderInteraction(interaction, drugDBVendor)).ToList(),
+                AllergyReactions = patientOrder.AllergyReactionsView?.Select(reaction => MedicationMapper.MapAllergyReactionView(reaction, drugDBVendor)).ToList(),
+                FdbBrandName = FdbObjectsMapper.MapFdbBrandName(patientOrder.FdbBrandName)
+                ////OrderEvents = patientOrder.OrderEvents?.Select(OrderMapper.MapOrderEvent).Where(@event => @event.AdministrationId == null).ToList()
+                ////OrderEvents = patientOrder.OrderEvents?.Select(ev => OrderMapper.MapOrderEvent(ev)).ToList()
             };
 
             patientOrderDto.OrderAdministrations =
@@ -78,6 +87,60 @@ namespace Emar.Core.Orders.Model.Mappings
                 patientOrderDto.NextActionTime = admin.TimeNeedingAction;
 
             return patientOrderDto;
+        }
+
+        public static PatientOrder MapCartOrderToOrder(PatientCartOrder cartOrder)
+        {
+            if (cartOrder == null)
+            {
+                return null;
+            }
+
+            PatientOrder patientOrder = new PatientOrder
+            {
+                PatientId = cartOrder.PatientId,
+                AddUserId = cartOrder.UserId,
+                AddDatetime = cartOrder.AddDatetime,
+                //OrderingPhysicianId = cartOrder.OrderingPhysicianId,
+                //Ndc = cartOrder.Ndc,
+                //DrugId = cartOrder.DrugId,
+                //BrandName = cartOrder.BrandName,
+                MedicationId = cartOrder.MedicationId,
+                Dose = cartOrder.Dose,
+                MedicationUnitId = cartOrder.MedicationUnitId,
+                MedicationRouteId = cartOrder.MedicationRouteId,
+                Priority = cartOrder.Priority,
+                FrequencyScheduleId = cartOrder.FrequencyScheduleId,
+                Prn = cartOrder.Prn,
+                PointInTime = cartOrder.PointInTime,
+                OrderStatus = OrderStatuses.Pending.ToString(),
+                BeginDatetime = cartOrder.BeginDatetime,
+                EndDateTime = cartOrder.EndDatetime,
+                OrderNotes = cartOrder.OrderNotes,
+                OrderAdministrations = cartOrder.CartOrderAdministrations?.Select(MapCartToOrderAdministration).ToList(),
+                OrderInteractions = cartOrder.OrderInteractions,
+                OrderReactions = cartOrder.OrderReactions,
+                FdbBrandName = cartOrder.FdbBrandName
+            };
+
+            return patientOrder;
+        }
+
+        public static OrderAdministration MapCartToOrderAdministration(CartOrderAdministration cartOrderAdministration)
+        {
+            if (cartOrderAdministration == null)
+            {
+                return null;
+            }
+
+            OrderAdministration administration = new OrderAdministration
+            {
+                AdministrationScheduledDatetime = cartOrderAdministration.AdministrationScheduledDatetime,
+                StopScheduledDatetime = cartOrderAdministration.StopScheduledDatetime,
+                PointInTime = cartOrderAdministration.PointInTime
+            };
+
+            return administration;
         }
 
         public static OrderAdministrationDto MapOrderAdministration(OrderAdministration administration,
@@ -174,6 +237,51 @@ namespace Emar.Core.Orders.Model.Mappings
                         "add_quicklist_order_to_cart",
                         "POST")
                 };
+            return ret;
+        }
+
+        public static UserQuickListItem MapUserQuickListItemDto(UserQuickListItemDto dbObj)
+        {
+            if (dbObj == null)
+                return null;
+
+            var ret = new UserQuickListItem
+            {
+                Id = (int)dbObj.Id,
+                SiteId = dbObj.SiteId,
+                UserId = dbObj.UserId,
+                //Ndc = dbObj.Ndc,
+                //DrugId = dbObj.DrugId,
+                //BrandName = dbObj.BrandName,
+                MedicationId = dbObj.MedicationId,
+                Dose = dbObj.Dose,
+                MedicationUnitId = dbObj.MedicationUnitId,
+                MedicationRouteId = dbObj.MedicationRouteId,
+                FrequencyScheduleId = dbObj.FrequencyId,
+                OrderNotes = dbObj.OrderNotes//,
+                ////UsagesThisWeek = dbObj.UsagesThisWeek,
+                ////WeeklyUsageRollingAverage = dbObj.WeeklyUsageRollingAverage,
+                ////FrequencySchedule = dbObj.FrequencySchedule,
+                ////MedicationRoute = dbObj.MedicationRoute,
+                ////MedicationUnit = dbObj.MedicationUnit,
+                ////Site = dbObj.Site,
+                ////User = dbObj.User,
+                ////PatientCartOrders = dbObj.PatientCartOrders
+
+
+                //UserId = dbObj.UserId,
+                //SiteId = dbObj.SiteId,
+                //Id = dbObj.Id,
+                //Ndc = dbObj.Ndc,
+                //DrugId = dbObj.DrugId,
+                //BrandName = dbObj.BrandName,
+                //Dose = dbObj.Dose,
+                //DoseUnit = MedicationMapper.MapMedicationUnit(dbObj.MedicationUnit),
+                //MedicationRoute = MedicationMapper.MapMedicationRoute(dbObj.MedicationRoute),
+                //FrequencySchedule = MedicationMapper.MapMedicationFrequency(dbObj.FrequencySchedule),
+                //OrderNotes = dbObj.OrderNotes
+            };
+
             return ret;
         }
 
@@ -280,5 +388,458 @@ namespace Emar.Core.Orders.Model.Mappings
                 };
             return ret;
         }
+
+        #region Model mappers
+        public static MedicationModel MapOrderItemToModel(EmarOrderType orderType, object item, long patientId, IOrderRepository orderRepository)
+        {
+            return MapOrderItemToModel(orderType, item, patientId, -99, orderRepository);
+        }
+
+        public static MedicationModel MapOrderItemDtoToModel(EmarOrderType orderType, object item, long patientId, IOrderRepository orderRepository)
+        {
+            return MapOrderItemDtoToModel(orderType, item, patientId, -99, orderRepository);
+        }
+
+        public static MedicationModel MapOrderItemToModel(EmarOrderType orderType, object item, long patientId, int userId, IOrderRepository orderRepository)
+        {
+            return
+                orderType == EmarOrderType.UserQuickListItem ? OrderMapper.MapUserQuickListItemToModel((UserQuickListItem)item, patientId, orderRepository) :
+                orderType == EmarOrderType.DepartmentPreferredListItem ? OrderMapper.MapDepartmentPreferredListItemToModel((DepartmentPreferredListItem)item, patientId, userId, orderRepository) :
+                orderType == EmarOrderType.GroupRememberedOrder ? OrderMapper.MapGroupListItemToModel((GroupListItem)item, patientId, userId, orderRepository) :
+                null;
+        }
+
+        public static MedicationModel MapOrderItemDtoToModel(EmarOrderType orderType, object item, long patientId, int userId, IOrderRepository orderRepository)
+        {
+            return
+                orderType == EmarOrderType.UserQuickListItem ? OrderMapper.MapUserQuickListItemDtoToModel((UserQuickListItemDto)item, patientId, orderRepository) :
+                orderType == EmarOrderType.DepartmentPreferredListItem ? OrderMapper.MapDepartmentPreferredListItemDtoToModel((DepartmentPreferredItemDto)item, patientId, userId, orderRepository) :
+                orderType == EmarOrderType.GroupRememberedOrder ? OrderMapper.MapGroupListItemDtoToModel((GroupListItemDto)item, patientId, userId, orderRepository) :
+                null;
+        }
+
+        public static MedicationModel MapUserQuickListItemToModel(UserQuickListItem item, long patientId, IOrderRepository orderRepository)
+        {
+            if (item == null)
+            {
+                return null;
+            }
+
+            return new MedicationModel
+            {
+                SiteId = item.SiteId,
+                PatientId = patientId,
+                UserId = item.UserId,
+                SourceTable = SourceTables.UserQuickListItems,
+                SourceTableId = item.Id,
+                Type = EmarOrderType.UserQuickListItem,
+                ActionStatus = null,
+                AddDatetime = null,
+                AddUserId = null,
+                AlternateName = null,
+                BeginDatetime = null,
+                //BrandName = item.BrandName,
+                ActiveName = orderRepository.GetUserQuickListItemFdbBrandName(item.Id)?.Active,
+                ActiveId = orderRepository.GetUserQuickListItemFdbBrandName(item.Id)?.PcRoutedGenId?.ToString(),
+                Category = null,
+                ChangeDatetime = null,
+                ChangeUserId = null,
+                Class = null,
+                Comment = item.OrderNotes,
+                Dose = item.Dose,
+                DrugId = item.Medication.DrugId,
+                EndDatetime = null,
+                FrequencyScheduleId = item.FrequencyScheduleId,
+                InternalDrugId = null,
+                IsActive = null,
+                MedicationDrugId = null,
+                MedicationRouteId = null,
+                MedicationUnitId = null,
+                //Ndc = item.Ndc,
+                OrderPhysicianUserId = null,
+                OrderStatus = null,
+                ParentDrugId = null,
+                ParentDrugName = null,
+                PointInTime = null,
+                Priority = null,
+                Prn = null,
+                Reaction = null,
+                Schedule = null,
+                Severity = null,
+
+                Name = null,
+                AllergyDrugId = null,
+                InformationSource = null,
+                PersonNumber = null,
+                AccountNumber = null
+            };
+        }
+
+        public static MedicationModel MapUserQuickListItemDtoToModel(UserQuickListItemDto item, long patientId, IOrderRepository orderRepository)
+        {
+            if (item == null)
+            {
+                return null;
+            }
+
+            return new MedicationModel
+            {
+                SiteId = item.SiteId,
+                PatientId = patientId,
+                UserId = item.UserId,
+                SourceTable = SourceTables.UserQuickListItems,
+                SourceTableId = item.Id,
+                Type = EmarOrderType.UserQuickListItem,
+                ActionStatus = null,
+                AddDatetime = null,
+                AddUserId = null,
+                AlternateName = null,
+                BeginDatetime = null,
+                //BrandName = item.BrandName,
+                ActiveName = orderRepository.GetUserQuickListItemFdbBrandName(item.Id)?.Active,
+                ActiveId = orderRepository.GetUserQuickListItemFdbBrandName(item.Id)?.PcRoutedGenId?.ToString(),
+                Category = null,
+                ChangeDatetime = null,
+                ChangeUserId = null,
+                Class = null,
+                Comment = item.OrderNotes,
+                Dose = item.Dose,
+                DrugId = item.Medication.DrugId,
+                EndDatetime = null,
+                FrequencyScheduleId = item.FrequencySchedule.Id,
+                InternalDrugId = null,
+                IsActive = null,
+                MedicationDrugId = null,
+                MedicationRouteId = null,
+                MedicationUnitId = null,
+                //Ndc = item.Ndc,
+                OrderPhysicianUserId = null,
+                OrderStatus = null,
+                ParentDrugId = null,
+                ParentDrugName = null,
+                PointInTime = null,
+                Priority = null,
+                Prn = null,
+                Reaction = null,
+                Schedule = null,
+                Severity = null,
+
+                Name = null,
+                AllergyDrugId = null,
+                InformationSource = null,
+                PersonNumber = null,
+                AccountNumber = null
+            };
+        }
+
+        public static MedicationModel MapDepartmentPreferredListItemToModel(DepartmentPreferredListItem item, long patientId, int userId, IOrderRepository orderRepository)
+        {
+            if (item == null)
+            {
+                return null;
+            }
+
+            return new MedicationModel
+            {
+                SiteId = item.SiteId,
+                PatientId = patientId,
+                UserId = userId,
+                SourceTable = SourceTables.DepartmentPreferredListItems,
+                SourceTableId = item.Id,
+                Type = EmarOrderType.DepartmentPreferredListItem,
+                ActionStatus = null,
+                AddDatetime = null,
+                AddUserId = null,
+                AlternateName = null,
+                BeginDatetime = null,
+                //BrandName = item.BrandName,
+                ActiveName = orderRepository.GetDepartmentPreferredListItemFdbBrandName(item.Id)?.Active,
+                ActiveId = orderRepository.GetDepartmentPreferredListItemFdbBrandName(item.Id)?.PcRoutedGenId?.ToString(),
+                Category = null,
+                ChangeDatetime = null,
+                ChangeUserId = null,
+                Class = null,
+                Comment = item.OrderNotes,
+                Dose = item.Dose,
+                DrugId = item.Medication.DrugId,
+                EndDatetime = null,
+                FrequencyScheduleId = item.FrequencyScheduleId,
+                InternalDrugId = null,
+                IsActive = null,
+                MedicationDrugId = null,
+                MedicationRouteId = null,
+                MedicationUnitId = null,
+                //Ndc = item.Ndc,
+                OrderPhysicianUserId = null,
+                OrderStatus = null,
+                ParentDrugId = null,
+                ParentDrugName = null,
+                PointInTime = null,
+                Priority = null,
+                Prn = null,
+                Reaction = null,
+                Schedule = null,
+                Severity = null,
+
+                Name = null,
+                AllergyDrugId = null,
+                InformationSource = null,
+                PersonNumber = null,
+                AccountNumber = null
+            };
+        }
+
+        public static MedicationModel MapDepartmentPreferredListItemDtoToModel(DepartmentPreferredItemDto item, long patientId, int userId, IOrderRepository orderRepository)
+        {
+            if (item == null)
+            {
+                return null;
+            }
+
+            return new MedicationModel
+            {
+                SiteId = item.SiteId,
+                PatientId = patientId,
+                UserId = userId,
+                SourceTable = SourceTables.DepartmentPreferredListItems,
+                SourceTableId = item.Id,
+                Type = EmarOrderType.DepartmentPreferredListItem,
+                ActionStatus = null,
+                AddDatetime = null,
+                AddUserId = null,
+                AlternateName = null,
+                BeginDatetime = null,
+                //BrandName = item.BrandName,
+                ActiveName = orderRepository.GetDepartmentPreferredListItemFdbBrandName(item.Id)?.Active,
+                ActiveId = orderRepository.GetDepartmentPreferredListItemFdbBrandName(item.Id)?.PcRoutedGenId?.ToString(),
+                Category = null,
+                ChangeDatetime = null,
+                ChangeUserId = null,
+                Class = null,
+                Comment = item.OrderNotes,
+                Dose = item.Dose,
+                DrugId = item.Medication.DrugId,
+                EndDatetime = null,
+                FrequencyScheduleId = item.FrequencySchedule.Id,
+                InternalDrugId = null,
+                IsActive = null,
+                MedicationDrugId = null,
+                MedicationRouteId = null,
+                MedicationUnitId = null,
+                //Ndc = item.Ndc,
+                OrderPhysicianUserId = null,
+                OrderStatus = null,
+                ParentDrugId = null,
+                ParentDrugName = null,
+                PointInTime = null,
+                Priority = null,
+                Prn = null,
+                Reaction = null,
+                Schedule = null,
+                Severity = null,
+
+                Name = null,
+                AllergyDrugId = null,
+                InformationSource = null,
+                PersonNumber = null,
+                AccountNumber = null
+            };
+        }
+
+        public static MedicationModel MapGroupListItemToModel(GroupListItem item, long patientId, int userId, IOrderRepository orderRepository)
+        {
+            if (item == null)
+            {
+                return null;
+            }
+
+            return new MedicationModel
+            {
+                SiteId = item.SiteId,
+                PatientId = patientId,
+                UserId = userId,
+                SourceTable = SourceTables.GroupListItems,
+                SourceTableId = item.Id,
+                Type = EmarOrderType.GroupRememberedOrder,
+                ActionStatus = null,
+                AddDatetime = null,
+                AddUserId = null,
+                AlternateName = null,
+                BeginDatetime = null,
+                //BrandName = item.BrandName,
+                ActiveName = orderRepository.GetGroupRememberedOrderItemFdbBrandName(item.Id)?.Active,
+                ActiveId = orderRepository.GetGroupRememberedOrderItemFdbBrandName(item.Id)?.PcRoutedGenId?.ToString(),
+                Category = null,
+                ChangeDatetime = null,
+                ChangeUserId = null,
+                Class = null,
+                Comment = item.OrderNotes,
+                Dose = item.Dose,
+                DrugId = item.Medication.DrugId,
+                EndDatetime = null,
+                FrequencyScheduleId = item.FrequencyScheduleId,
+                InternalDrugId = null,
+                IsActive = null,
+                MedicationDrugId = null,
+                MedicationRouteId = null,
+                MedicationUnitId = null,
+                //Ndc = item.Ndc,
+                OrderPhysicianUserId = null,
+                OrderStatus = null,
+                ParentDrugId = null,
+                ParentDrugName = null,
+                PointInTime = null,
+                Priority = null,
+                Prn = null,
+                Reaction = null,
+                Schedule = null,
+                Severity = null,
+
+                Name = null,
+                AllergyDrugId = null,
+                InformationSource = null,
+                PersonNumber = null,
+                AccountNumber = null
+            };
+        }
+
+        public static MedicationModel MapGroupListItemDtoToModel(GroupListItemDto item, long patientId, int userId, IOrderRepository orderRepository)
+        {
+            if (item == null)
+            {
+                return null;
+            }
+
+            return new MedicationModel
+            {
+                SiteId = item.SiteId,
+                PatientId = patientId,
+                UserId = userId,
+                SourceTable = SourceTables.GroupListItems,
+                SourceTableId = item.Id,
+                Type = EmarOrderType.GroupRememberedOrder,
+                ActionStatus = null,
+                AddDatetime = null,
+                AddUserId = null,
+                AlternateName = null,
+                BeginDatetime = null,
+                //BrandName = item.BrandName,
+                ActiveName = orderRepository.GetGroupRememberedOrderItemFdbBrandName(item.Id)?.Active,
+                ActiveId = orderRepository.GetGroupRememberedOrderItemFdbBrandName(item.Id)?.PcRoutedGenId?.ToString(),
+                Category = null,
+                ChangeDatetime = null,
+                ChangeUserId = null,
+                Class = null,
+                Comment = item.OrderNotes,
+                Dose = item.Dose,
+                DrugId = item.Medication.DrugId,
+                EndDatetime = null,
+                FrequencyScheduleId = item.FrequencySchedule.Id,
+                InternalDrugId = null,
+                IsActive = null,
+                MedicationDrugId = null,
+                MedicationRouteId = null,
+                MedicationUnitId = null,
+                //Ndc = item.Ndc,
+                OrderPhysicianUserId = null,
+                OrderStatus = null,
+                ParentDrugId = null,
+                ParentDrugName = null,
+                PointInTime = null,
+                Priority = null,
+                Prn = null,
+                Reaction = null,
+                Schedule = null,
+                Severity = null,
+
+                Name = null,
+                AllergyDrugId = null,
+                InformationSource = null,
+                PersonNumber = null,
+                AccountNumber = null
+            };
+        }
+
+        public static MedicationModel MapPatientOrderToModel(PatientOrder order, int? userId, int? siteId)
+        {
+            if (order == null)
+            {
+                return null;
+            }
+
+            return new MedicationModel
+            {
+                Id = order.Id,
+                SiteId = siteId ?? -1,
+                PatientId = order.PatientId,
+                UserId = userId ?? -1,
+                SourceTable = SourceTables.PatientOrders,
+                SourceTableId = order.Id,
+                Type = EmarOrderType.PatientOrder,
+                ActionStatus = null,
+                AddDatetime = order.AddDatetime,
+                AddUserId = order.AddUserId,
+                AlternateName = null,
+                BeginDatetime = null,
+                //BrandName = order.BrandName,
+                ActiveName = order.FdbBrandName?.Active,
+                ActiveId = order.FdbBrandName?.PcRoutedGenId?.ToString(),
+                Category = null,
+                ChangeDatetime = null,
+                ChangeUserId = null,
+                Class = null,
+                Comment = order.OrderNotes,
+                Dose = order.Dose,
+                DrugId = order.Medication.DrugId,
+                EndDatetime = null,
+                FrequencyScheduleId = order.FrequencyScheduleId,
+                InternalDrugId = order.FdbBrandName?.PcRoutedGenId,
+                IsActive = null,
+                MedicationDrugId = null,
+                MedicationRouteId = order.MedicationRouteId,
+                MedicationUnitId = order.MedicationUnitId,
+                //Ndc = order.Ndc,
+                OrderPhysicianUserId = null,
+                OrderStatus = null,
+                ParentDrugId = null,
+                ParentDrugName = null,
+                PointInTime = order.PointInTime,
+                Priority = order.Priority,
+                Prn = order.Prn,
+                Reaction = null,
+                Schedule = null,
+                Severity = null,
+
+                Name = null,
+                AllergyDrugId = null,
+                InformationSource = null,
+                PersonNumber = null,
+                AccountNumber = null
+            };
+        }
+
+        public static MedicationInteractionReaction MedicationInteractionsReactions(MedicationModel medication)
+        {
+            if (medication == null)
+            {
+                return null;
+            }
+
+            return new MedicationInteractionReaction
+            {
+                SiteId = medication.SiteId,
+                PatientId = medication.PatientId,
+                UserId = medication.UserId,
+                SourceTable = medication.SourceTable,
+                SourceTableId = medication.SourceTableId,
+                Type = medication.Type,
+                BrandName = medication.BrandName,
+                ActiveName = medication.ActiveName,
+                ActiveId = medication.ActiveId,
+                Interactions = medication.Interactions,
+                Reactions = medication.Reactions
+            };
+        }
+        #endregion
     }
 }

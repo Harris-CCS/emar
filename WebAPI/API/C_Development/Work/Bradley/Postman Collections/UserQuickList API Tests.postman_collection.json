@@ -20,12 +20,50 @@
 							"\r",
 							"var jsonData = pm.response.json();\r",
 							"\r",
-							"pm.environment.set(\"QuickListUserId\", jsonData.quickListUserId);\r",
-							"pm.environment.set(\"QuickListItemId\", jsonData.quickListItemId);\r",
-							"pm.environment.set(\"CartOrderPatientId\", jsonData.cartOrderPatientId);\r",
-							"pm.environment.set(\"QuickListUserIdTabCount\", jsonData.quickListUserIdTabCount);\r",
-							"pm.environment.set(\"QuickListPoundUserId\", jsonData.quickListPoundUserId);\r",
-							"pm.environment.set(\"QuickListPoundUserIdTabCount\", jsonData.quickListPoundUserIdTabCount);\r",
+							"pm.environment.set(\"QuickListUserId\", jsonData.returnValues.quickListUserId);\r",
+							"pm.environment.set(\"QuickListItemId\", jsonData.returnValues.quickListItemId);\r",
+							"pm.environment.set(\"CartOrderPatientId\", jsonData.returnValues.cartOrderPatientId);\r",
+							"pm.environment.set(\"QuickListUserIdTabCount\", jsonData.returnValues.quickListUserIdTabCount);\r",
+							"pm.environment.set(\"QuickListPoundUserId\", jsonData.returnValues.quickListPoundUserId);\r",
+							"pm.environment.set(\"QuickListPoundUserIdTabCount\", jsonData.returnValues.quickListPoundUserIdTabCount);\r",
+							"pm.environment.set(\"QuickListPoundUserFirstTabCount\", jsonData.returnValues.quickListPoundUserFirstTabCount);\r",
+							"pm.environment.set(\"QuickListPoundUserSiteId\", jsonData.returnValues.quickListPoundUserSiteId);\r",
+							"\r",
+							"postman.setGlobalVariable(\"ValidateMedication\", (order) => {\r",
+							"    if(order.medication == undefined)\r",
+							"        return false;\r",
+							"    if(order.medication.displayName == undefined || order.medication.displayName == null || order.medication.displayName.trim() === \"\")\r",
+							"        return false;\r",
+							"    if(order.medication.medicationDetails == undefined || order.medication.medicationDetails == null || order.medication.medicationDetails.length == 0)\r",
+							"        return false;\r",
+							"     if(order.medication.medicationDetails.any(function (detail) {\r",
+							"        if(detail.brandName == undefined || detail.brandName == null || detail.brandName.trim() == \"\")\r",
+							"            return false;\r",
+							"        return true;\r",
+							"     }) == false)\r",
+							"         return false;\r",
+							"    return true;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "df98eb7b-ff04-47e1-adca-6289b9e2ed8d",
+						"exec": [
+							"Object.prototype.validateMedication = function(order) {\r",
+							"    return true;\r",
+							"    if(medication === null)\r",
+							"        return false;\r",
+							"    if(medication.displayName === null || medication.displayName.trim() === \"\")\r",
+							"        return false;\r",
+							"    if(medication.medicationDetails == null || medication.medicationDetails.length == 0)\r",
+							"        return false;\r",
+							"    return true;\r",
+							"};\r",
 							""
 						],
 						"type": "text/javascript"
@@ -40,7 +78,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"Ignore_UpdateSiteSixteenFrequencies\": \"with FrequencyCount as (select count(*) as [cnt] from [dbo].[frequency_schedules] where [frequency_schedules].[site_id] = 16), FrequencyIndex as (select row_number() over(order by [id]) - 1 as [idx], [frequency_schedules].[id] as [frequency_id] from [dbo].[frequency_schedules] where [frequency_schedules].[site_id] = 16), ListIndex as (select (row_number() over(order by [id]) - 1) % [FrequencyCount].[cnt] as [idx], [id] as [list_item_id] from [dbo].[user_quick_list_items] cross join [FrequencyCount]) update [d] set [frequency_schedule_id] = [f].[frequency_id] from   [dbo].[user_quick_list_items] [d] inner join [ListIndex] [l] on [d].[id] = [l].[list_item_id] inner join [FrequencyIndex] [f] on [l].[idx] = [f].[idx];\",\r\n    \"cartOrderPatientId\": \"SELECT id FROM patients WHERE site_id = 16 and last_name  = 'Robertson' and first_name = 'Frank'\",\r\n\t\"scheduleId\": \"SELECT id FROM frequency_schedules WHERE REPLACE(notes, ' ', '') = '0000,0400,0800,1200,1600,2000' AND site_id = 16\",\r\n    \"quickListUserId\": \"SELECT TOP 1 user_id FROM user_quick_list_items WHERE site_id = 16 GROUP BY user_id ORDER BY count(*) DESC\",\r\n    \"quickListItemId\": \"SELECT TOP 1 id FROM user_quick_list_items WHERE site_id = 16 and ISNULL(medication_unit_id, 0) > 0 and ISNULL(medication_route_id, 0) > 0 and user_id = <<quickListUserId>>\",\r\n    \"quickListUserIdTabCount\": \"DECLARE @userId int = <<quickListUserId>>; WITH letterCount AS (SELECT DISTINCT UPPER(SUBSTRING([brand_name], 1, 1)) as tab FROM [user_quick_list_items] WHERE UPPER(SUBSTRING([brand_name], 1, 1)) LIKE '[A-Z]' AND [user_id] = @userId) SELECT COUNT(*) + 1 + CASE WHEN EXISTS (SELECT TOP 1 1 FROM [user_quick_list_items] WHERE UPPER(SUBSTRING([brand_name], 1, 1)) NOT LIKE '[A-Z]' AND [user_id] = @userId) THEN 1 ELSE 0 END FROM letterCount;\",\r\n    \"quickListPoundUserId\": \"SELECT user_id FROM user_quick_list_items WHERE site_id = 16 AND UPPER(SUBSTRING([brand_name], 1, 1)) NOT LIKE '[A-Z]';\",\r\n    \"quickListPoundUserIdTabCount\": \"DECLARE @userId int = <<quickListPoundUserId>>; WITH letterCount AS (SELECT DISTINCT UPPER(SUBSTRING([brand_name], 1, 1)) as tab FROM [user_quick_list_items] WHERE UPPER(SUBSTRING([brand_name], 1, 1)) LIKE '[A-Z]' AND [user_id] = @userId) SELECT COUNT(*) + CASE WHEN EXISTS (SELECT TOP 1 1 FROM [user_quick_list_items] WHERE UPPER(SUBSTRING([brand_name], 1, 1)) NOT LIKE '[A-Z]' AND [user_id] = @userId) THEN 1 ELSE 0 END FROM letterCount;\",\r\n    \"Ignore\": \"UPDATE user_quick_list_items SET frequency_schedule_id = <<scheduleId>> WHERE id = <<quickListItemId>>;\",\r\n    \"Ignore2\": \"update [dbo].[user_quick_list_items] set [weekly_usage_rolling_average] = -1 where user_id = <<quickListUserId>>; set rowcount 100; update [dbo].[user_quick_list_items] set [weekly_usage_rolling_average] = 1.0 where user_id = <<quickListUserId>>; set rowcount 80; update [dbo].[user_quick_list_items] set [weekly_usage_rolling_average] = 1.0 where user_id = <<quickListUserId>>; set rowcount 60; update [dbo].[user_quick_list_items] set [weekly_usage_rolling_average] = 1.0 where user_id = <<quickListUserId>>; set rowcount 40; update [dbo].[user_quick_list_items] set [weekly_usage_rolling_average] = 1.0 where user_id = <<quickListUserId>>; set rowcount 20; update [dbo].[user_quick_list_items] set [weekly_usage_rolling_average] = 1.0 where user_id = <<quickListUserId>>; set rowcount 0;\"\r\n}",
+					"raw": "{\r\n    \"Ignore_UpdateSiteSixteenFrequencies\": \"with FrequencyCount as ( select count(*) as [cnt] from [dbo].[frequency_schedules] where [frequency_schedules].[site_id] = 16 ) , FrequencyIndex as ( select row_number() over(order by [id]) - 1 as [idx], [frequency_schedules].[id] as [frequency_id] from [dbo].[frequency_schedules] where [frequency_schedules].[site_id] = 16 ) , ListIndex as ( select (row_number() over(order by [id]) - 1) % [FrequencyCount].[cnt] as [idx], [id] as [list_item_id] from [dbo].[user_quick_list_items] cross join [FrequencyCount] WHERE site_id = 16 ) update [d] set [frequency_schedule_id] = [f].[frequency_id] from   [dbo].[user_quick_list_items] [d] inner join [ListIndex] [l] on [d].[id] = [l].[list_item_id] inner join [FrequencyIndex] [f] on [l].[idx] = [f].[idx];\",\r\n    \"cartOrderPatientId\": \"SELECT id FROM patients WHERE site_id = 16 and last_name  = 'Robertson' and first_name = 'Frank'\",\r\n\t\"scheduleId\": \"SELECT id FROM frequency_schedules WHERE REPLACE(notes, ' ', '') = '0000,0400,0800,1200,1600,2000' AND site_id = 16\",\r\n    \"quickListUserId\": \"SELECT TOP 1 user_id FROM user_quick_list_items WHERE site_id = 16 GROUP BY user_id ORDER BY count(*) DESC\",\r\n    \"quickListItemId\": \"SELECT TOP 1 id FROM user_quick_list_items WHERE site_id = 16 and ISNULL(medication_unit_id, 0) > 0 and ISNULL(medication_route_id, 0) > 0 and user_id = <<quickListUserId>>\",\r\n    \"quickListUserIdTabCount\": \"DECLARE @userId int = <<quickListUserId>>; WITH LetterList AS ( SELECT DISTINCT UPPER(SUBSTRING(m.display_name, 1, 1)) as tab FROM [user_quick_list_items] ql JOIN medications m ON ql.medication_id = m.id WHERE UPPER(SUBSTRING(m.display_name, 1, 1)) LIKE '[A-Z]' AND [user_id] = @userId ) , LetterCount AS (SELECT COUNT(*) cnt FROM LetterList) , NonLetterExists AS ( SELECT CASE WHEN EXISTS ( SELECT TOP 1 1 FROM [user_quick_list_items] ql JOIN medications m ON ql.medication_id = m.id WHERE UPPER(SUBSTRING(m.display_name, 1, 1)) NOT LIKE '[A-Z]' AND [user_id] = @userId) THEN 1 ELSE 0 END As Exist ) SELECT lc.cnt + 1 + non.Exist FROM LetterCount lc CROSS JOIN NonLetterExists non; \",\r\n    \"Combo1\": \"DECLARE @user_id int, @site_id int; SELECT @user_id = user_id, @site_id = ql.site_id FROM user_quick_list_items ql JOIN medications m ON ql.medication_id = m.id WHERE ql.site_id = 16 AND UPPER(SUBSTRING(m.display_name, 1, 1)) NOT LIKE '[A-Z]' GROUP BY user_id, ql.site_id; IF @@ROWCOUNT = 0 BEGIN SELECT @user_id = user_id, @site_id = ql.site_id FROM user_quick_list_items ql JOIN medications m ON ql.medication_id = m.id WHERE UPPER(SUBSTRING(m.display_name, 1, 1)) NOT LIKE '[A-Z]' GROUP BY user_id, ql.site_id; END DECLARE @tab char(1) = ( SELECT TOP 1 UPPER(SUBSTRING(m.display_name, 1, 1)) FROM user_quick_list_items ql JOIN medications m ON ql.medication_id = m.id WHERE user_id = @user_id and ql.site_id = @site_id AND UPPER(SUBSTRING(m.display_name, 1, 1)) LIKE '[A-Z]' GROUP BY UPPER(SUBSTRING(m.display_name, 1, 1)) ORDER BY UPPER(SUBSTRING(m.display_name, 1, 1)) ); DECLARE @cnt int = ( SELECT COUNT(*) FROM user_quick_list_items ql JOIN medications m ON ql.medication_id = m.id WHERE user_id = @user_id and ql.site_id = @site_id AND UPPER(SUBSTRING(m.display_name, 1, 1)) = @tab); SELECT CONCAT('quickListPoundUserId|', @user_id, '~quickListPoundUserSiteId|', @site_id, '~quickListPoundUserFirstTabCount|', @cnt);\",\r\n    \"quickListPoundUserIdTabCount\": \"DECLARE @userId int = <<quickListPoundUserId>>; WITH LetterList AS ( SELECT DISTINCT UPPER(SUBSTRING(m.display_name, 1, 1)) as tab FROM [user_quick_list_items] ql JOIN medications m ON ql.medication_id = m.id WHERE UPPER(SUBSTRING(m.display_name, 1, 1)) LIKE '[A-Z]' AND [user_id] = @userId ) , LetterCount AS ( SELECT COUNT(*) cnt FROM LetterList ) SELECT lc.cnt + 1 /* Pound tab */ FROM LetterCount lc\",\r\n    \"Ignore\": \"UPDATE user_quick_list_items SET frequency_schedule_id = <<scheduleId>> WHERE id = <<quickListItemId>>;\",\r\n    \"Ignore2\": \"update [dbo].[user_quick_list_items] set [weekly_usage_rolling_average] = -1 where user_id = <<quickListUserId>>; set rowcount 100; update [dbo].[user_quick_list_items] set [weekly_usage_rolling_average] = 1.0 where user_id = <<quickListUserId>>; set rowcount 80; update [dbo].[user_quick_list_items] set [weekly_usage_rolling_average] = 1.0 where user_id = <<quickListUserId>>; set rowcount 60; update [dbo].[user_quick_list_items] set [weekly_usage_rolling_average] = 1.0 where user_id = <<quickListUserId>>; set rowcount 40; update [dbo].[user_quick_list_items] set [weekly_usage_rolling_average] = 1.0 where user_id = <<quickListUserId>>; set rowcount 20; update [dbo].[user_quick_list_items] set [weekly_usage_rolling_average] = 1.0 where user_id = <<quickListUserId>>; set rowcount 0;\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -113,6 +151,36 @@
 							"pm.test(\"Some orders have a valid Unit\", function() {\r",
 							"    pm.expect(jsonData.currentTabContents.any(validUnitExists)).to.be.true;\r",
 							"})\r",
+							"\r",
+							"var validateMedicationFunction = eval(pm.globals.get(\"ValidateMedication\"));\r",
+							"\r",
+							"pm.test(\"Validate Medication on each order\", function(){\r",
+							"    pm.expect(jsonData.currentTabContents.all(validateMedicationFunction)).to.be.true;\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ee01c2a6-c10c-4a9f-b89e-448a7e25d1bc",
+						"exec": [
+							"// Object.prototype.validateMedication = function(order) {\r",
+							"//     if(order.medication == undefined)\r",
+							"//         return false;\r",
+							"//     if(order.medication.displayName == undefined || order.medication.displayName == null || order.medication.displayName.trim() === \"\")\r",
+							"//         return false;\r",
+							"//     if(order.medication.medicationDetails == undefined || order.medication.medicationDetails == null || order.medication.medicationDetails.length == 0)\r",
+							"//         return false;\r",
+							"//      if(order.medication.medicationDetails.any(function (detail) {\r",
+							"//         if(detail.brandName == undefined || detail.brandName == null || detail.brandName.trim() == \"\")\r",
+							"//             return false;\r",
+							"//         return true;\r",
+							"//      }) == false)\r",
+							"//          return false;\r",
+							"//     return true;\r",
+							"// };\r",
 							""
 						],
 						"type": "text/javascript"
@@ -176,8 +244,9 @@
 							"\r",
 							"var jsonData = pm.response.json();\r",
 							"\r",
+							"\r",
 							"pm.test(\"Returns 20 records\", function() {\r",
-							"    pm.expect(jsonData.currentTabContents.length).to.eql(20);\r",
+							"    pm.expect(jsonData.currentTabContents.length.toString()).to.eql(pm.environment.get(\"QuickListPoundUserFirstTabCount\"));\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Returns correct number of tabs\", function() {\r",
@@ -215,7 +284,12 @@
 							"pm.test(\"Some orders have a valid Unit\", function() {\r",
 							"    pm.expect(jsonData.currentTabContents.any(validUnitExists)).to.be.true;\r",
 							"})\r",
-							""
+							"\r",
+							"var validateMedicationFunction = eval(pm.globals.get(\"ValidateMedication\"));\r",
+							"\r",
+							"pm.test(\"Validate Medication on each order\", function(){\r",
+							"    pm.expect(jsonData.currentTabContents.all(validateMedicationFunction)).to.be.true;\r",
+							"})"
 						],
 						"type": "text/javascript"
 					}
@@ -302,14 +376,18 @@
 							"    pm.expect(jsonData.all(validFrequencyScheduleExists)).to.be.true;\r",
 							"})\r",
 							"\r",
-							"pm.test(\"No orders have a valid Route\", function() {\r",
-							"    pm.expect(jsonData.any(validRouteExists)).to.be.false;\r",
-							"})\r",
+							"// pm.test(\"No orders have a valid Route\", function() {\r",
+							"//     pm.expect(jsonData.any(validRouteExists)).to.be.false;\r",
+							"// })\r",
 							"\r",
-							"pm.test(\"No orders have a valid Unit\", function() {\r",
-							"    pm.expect(jsonData.any(validUnitExists)).to.be.false;\r",
-							"})\r",
-							""
+							"// pm.test(\"No orders have a valid Unit\", function() {\r",
+							"//     pm.expect(jsonData.any(validUnitExists)).to.be.false;\r",
+							"// })\r",
+							"\r",
+							"var validateMedicationFunction = eval(pm.globals.get(\"ValidateMedication\"));\r",
+							"pm.test(\"Validate Medication on each order\", function(){\r",
+							"    pm.expect(jsonData.all(validateMedicationFunction)).to.be.true;\r",
+							"})"
 						],
 						"type": "text/javascript"
 					}
@@ -335,7 +413,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{URL}}/api/userquicklists/tabs/%23?SiteId=16",
+					"raw": "{{URL}}/api/userquicklists/tabs/%23?SiteId={{QuickListPoundUserSiteId}}",
 					"host": [
 						"{{URL}}"
 					],
@@ -348,7 +426,7 @@
 					"query": [
 						{
 							"key": "SiteId",
-							"value": "16"
+							"value": "{{QuickListPoundUserSiteId}}"
 						}
 					]
 				}
@@ -365,8 +443,8 @@
 						"exec": [
 							"var jsonData = pm.response.json();\r",
 							"\r",
-							"pm.test(\"Returns 9 records\", function () {\r",
-							"    pm.expect(jsonData.length).to.eql(9);\r",
+							"pm.test(\"Returns 8 records\", function () {\r",
+							"    pm.expect(jsonData.length).to.eql(8);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Status code is 200\", function () {\r",
@@ -408,7 +486,10 @@
 							"    pm.expect(jsonData.any(validUnitExists)).to.be.true;\r",
 							"})\r",
 							"\r",
-							"//pm.environment.set(\"QuickListItemId\", jsonData[0].id);"
+							"var validateMedicationFunction = eval(pm.globals.get(\"ValidateMedication\"));\r",
+							"pm.test(\"Validate Medication on each order\", function(){\r",
+							"    pm.expect(jsonData.all(validateMedicationFunction)).to.be.true;\r",
+							"})"
 						],
 						"type": "text/javascript"
 					}
@@ -431,6 +512,12 @@
 						"key": "X-User",
 						"type": "text",
 						"value": "{{QuickListUserId}}"
+					},
+					{
+						"key": "X-User",
+						"value": "14",
+						"type": "text",
+						"disabled": true
 					}
 				],
 				"url": {
@@ -452,6 +539,11 @@
 						{
 							"key": "patientId",
 							"value": "12345"
+						},
+						{
+							"key": "patientId",
+							"value": "525",
+							"disabled": true
 						}
 					]
 				}
@@ -468,8 +560,8 @@
 						"exec": [
 							"var jsonData = pm.response.json();\r",
 							"\r",
-							"pm.test(\"Returns 9 records\", function() {\r",
-							"    pm.expect(jsonData.length).to.eql(9);\r",
+							"pm.test(\"Returns 8 records\", function() {\r",
+							"    pm.expect(jsonData.length).to.eql(8);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Status code is 200\", function () {\r",
@@ -503,6 +595,11 @@
 							"\r",
 							"pm.test(\"Some orders have a valid Unit\", function() {\r",
 							"    pm.expect(jsonData.any(validUnitExists)).to.be.true;\r",
+							"})\r",
+							"\r",
+							"var validateMedicationFunction = eval(pm.globals.get(\"ValidateMedication\"));\r",
+							"pm.test(\"Validate Medication on each order\", function(){\r",
+							"    pm.expect(jsonData.all(validateMedicationFunction)).to.be.true;\r",
 							"})"
 						],
 						"type": "text/javascript"
@@ -681,9 +778,20 @@
 							"    pm.expect(validateAdmins(jsonData.cartOrderAdministrations)).to.be.true;\r",
 							"})\r",
 							"\r",
-							"//pm.environment.unset(\"QuickListUserId\");\r",
-							"//pm.environment.unset(\"QuickListItemId\");\r",
-							"//pm.environment.unset(\"CartOrderPatientId\");"
+							"var validateMedicationFunction = eval(pm.globals.get(\"ValidateMedication\"));\r",
+							"pm.test(\"Validate Medication on each order\", function(){\r",
+							"    pm.expect(validateMedicationFunction(jsonData)).to.be.true;\r",
+							"})\r",
+							"\r",
+							"pm.environment.unset(\"QuickListUserId\");\r",
+							"pm.environment.unset(\"QuickListItemId\");\r",
+							"pm.environment.unset(\"CartOrderPatientId\");\r",
+							"pm.environment.unset(\"QuickListUserIdTabCount\");\r",
+							"pm.environment.unset(\"QuickListPoundUserId\");\r",
+							"pm.environment.unset(\"QuickListPoundUserIdTabCount\");\r",
+							"pm.environment.unset(\"QuickListPoundUserFirstTabCount\");\r",
+							"pm.environment.unset(\"QuickListPoundUserSiteId\");\r",
+							""
 						],
 						"type": "text/javascript"
 					}

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Emar.Core.FdbObjects.Model;
 using Emar.Core.Users.Model;
 
 namespace Emar.Core.Orders.Model
@@ -124,6 +125,8 @@ namespace Emar.Core.Orders.Model
         public UserDto OrderingPhysicianUser { get; set; }
 
         public DateTimeOffset? NextActionTime { get; set; }
+
+        public FdbBrandNameDto FdbBrandName { get; set; }
 
         public IEnumerable<AvailableActionDto> AvailableActions { get; set; }
     }

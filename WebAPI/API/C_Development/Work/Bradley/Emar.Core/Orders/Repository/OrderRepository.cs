@@ -63,12 +63,31 @@ namespace Emar.Core.Orders.Repository
                     .Include(order => order.AddUser)
                     .Include(order => order.OrderPhysicianUser)
                     .Include(order => order.FrequencySchedule)
+                    .Include(order => order.OrderInteractions)
+                        .ThenInclude(interaction => interaction.DrugInteractionView)
+                    .Include(order => order.AllergyReactionsView)
                     //.Include(order => order.Patient)
                     //    .ThenInclude(patient => patient.Site)
                     //        .ThenInclude(site => site.SiteOptions)
                     //            .ThenInclude(siteOptions => siteOptions.Option)
                     .Where(wherePredicate)
                     .AsEnumerable();
+        }
+
+        public IEnumerable<PatientOrder> GetPatientOrders(Expression<Func<PatientOrder, bool>> wherePredicate)
+        {
+            return _context.PatientOrders
+                .Where(wherePredicate)
+                .ToList()
+                .Select(order =>
+                {
+                    order.FdbBrandName =
+                    (from s in (from s in _context.FdbBrandName select s).Where(u => u.Medid.ToString() == order.Medication.DrugId)
+                     select s)
+                     .FirstOrDefault();
+                    return order;
+                })
+                .AsEnumerable();
         }
 
         public IEnumerable<OrderAdministration> GetAdministrations(long orderId)
@@ -192,6 +211,29 @@ namespace Emar.Core.Orders.Repository
                 .FirstOrDefault(i => i.Id == quickListItemId);
         }
 
+        public UserQuickListItem GetUserQuickListTabItem(long itemId, int? userId)
+        {
+            Expression<Func<UserQuickListItem, bool>> whereLambda = i => i.Id == itemId;
+
+            if (userId != null)
+            {
+                whereLambda = whereLambda.And(i => i.UserId == userId);
+            }
+
+            return _context.UserQuickListItems
+                .Where(whereLambda)
+                .FirstOrDefault();
+        }
+
+        public FdbBrandName GetUserQuickListItemFdbBrandName(long itemId)
+        {
+            var query =
+                from p in (from p in _context.UserQuickListItems select p).Where(u => u.Id == itemId)
+                join s in _context.FdbBrandName on p.Medication.DrugId equals s.Medid.ToString()
+                select s;
+
+            return query.FirstOrDefault();
+        }
         #endregion
 
         #region Department Preferred List Section
@@ -211,6 +253,24 @@ namespace Emar.Core.Orders.Repository
                 .Include(g => g.FrequencySchedule).ToList();
         }
 
+        public DepartmentPreferredListItem GetDepartmentPreferredItem(long itemId)
+        {
+            Expression<Func<DepartmentPreferredListItem, bool>> whereLambda = i => i.Id == itemId;
+
+            return _context.DepartmentPreferredListItems
+                .Where(whereLambda)
+                .FirstOrDefault();
+        }
+
+        public FdbBrandName GetDepartmentPreferredListItemFdbBrandName(long itemId)
+        {
+            var query =
+                from p in (from p in _context.DepartmentPreferredListItems select p).Where(u => u.Id == itemId)
+                join s in _context.FdbBrandName on p.Medication.DrugId equals s.Medid.ToString()
+                select s;
+
+            return query.FirstOrDefault();
+        }
         #endregion
 
         #region Groups Remembered Orders Section
@@ -231,6 +291,33 @@ namespace Emar.Core.Orders.Repository
                 .Include(g => g.FrequencySchedule).ToList();
         }
 
+        public GroupListItem GetGroupRememberedOrderItem(long itemId)
+        {
+            Expression<Func<GroupListItem, bool>> whereLambda = i => i.Id == itemId;
+
+            return _context.GroupListItems
+                .Where(whereLambda)
+                .FirstOrDefault();
+        }
+
+        public FdbBrandName GetGroupRememberedOrderItemFdbBrandName(long itemId)
+        {
+            var query =
+                from p in (from p in _context.GroupListItems select p).Where(u => u.Id == itemId)
+                join s in _context.FdbBrandName on p.Medication.DrugId equals s.Medid.ToString()
+                select s;
+
+            return query.FirstOrDefault();
+        }
+        #endregion
+
+        #region Allergies Section
+        public IEnumerable<PatientAllergy> GetAllergies(Func<PatientAllergy, bool> wherePredicate)
+        {
+            return _context.PatientAllergies
+                    .Where(wherePredicate)
+                    .AsEnumerable();
+        }
         #endregion
 
         #region Utility Methods

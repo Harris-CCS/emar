@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 using Emar.Core.Helpers;
 using Emar.Core.Patients.Model;
@@ -218,7 +220,6 @@ namespace Emar.Core.Patients.Repository
                 {"patientId", extIdParts[1]}
             };
 
-
             #region Version 346 code
 
             //var list = _context.Patients
@@ -261,7 +262,6 @@ namespace Emar.Core.Patients.Repository
             //};
 
             #endregion
-
             #region Annonymous Joins
             ////////var externalRootSitePatientId = _context.Patients
             ////////                                //.Where(wherePredicate)
@@ -390,6 +390,45 @@ namespace Emar.Core.Patients.Repository
                 default:
                     return null;
             }
+        }
+
+        public IEnumerable<PatientAllergy> GetAllergiesByPatientId(long patientId, Expression<Func<PatientAllergy, bool>> wherePredicate = null)
+        {
+            Expression<Func<PatientAllergy, bool>> whereLambda = a => a.PatientId == patientId;
+
+            if (wherePredicate != null)
+            {
+                whereLambda = whereLambda.And(wherePredicate);
+            }
+
+            return _context.PatientAllergies
+                .Where(whereLambda);
+        }
+
+        public IEnumerable<FdbAllergyName> GetAllergyFdbAllergyNames(string name, Expression<Func<FdbAllergyName, bool>> wherePredicate = null)
+        {
+            Expression<Func<FdbAllergyName, bool>> whereLambda = f => f.AllergyName == name;
+
+            if (wherePredicate != null)
+            {
+                whereLambda = whereLambda.And(wherePredicate);
+            }
+
+            return _context.FdbAllergyName
+                .Where(whereLambda);
+        }
+
+        public IEnumerable<FdbAllergyName> GetAllergyFdbAllergyNamesByPcHiclSeqno(string pcHiclSeqno, Expression<Func<FdbAllergyName, bool>> wherePredicate = null)
+        {
+            Expression<Func<FdbAllergyName, bool>> whereLambda = f => f.PcHiclSeqno == pcHiclSeqno;
+
+            if (wherePredicate != null)
+            {
+                whereLambda = whereLambda.And(wherePredicate);
+            }
+
+            return _context.FdbAllergyName
+                .Where(whereLambda);
         }
     }
 }
