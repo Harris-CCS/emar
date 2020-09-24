@@ -187,10 +187,46 @@ namespace Emar.Core.Medications.Repository
                 else if (searchType == Model.MedicationLookupDto.SearchType.quicklist)
                 {
                     //Perform the "user quicklist" search.
-                    //medsToReturn = Query/execute here.
-                    //This is outside the scope of EMAR-57, so I'll revisit it whenever I get to its ticket
-                    //See User Quick List Query With No Filtering.sql.
+                    //EMAR-321.  Winston Murdock, 09/24/2020
+                    var userQuickListQuery = from m in _context.Medications
+                                         //Join to the Medication Details table
+                                     join md in _context.MedicationDetails on m.Id equals md.MedicationId
+                                     //Join to the group_list_items table.
+                                     join uqli in _context.UserQuickListItems on m.Id equals uqli.MedicationId
+                                     //Where the drug vendor matches
+                                     where m.DrugVendor == "F"
+                                     //and the user id matches.
+                                     && uqli.UserId == userId
+                                     //and the length of the brand name is greater than zero.
+                                     && md.BrandName.Length > 0
+                                     //and where the SiteId = -1 (i.e. this is not a combo med)
+                                     && m.SiteId == -1
+                                     //and where the medication is active
+                                     && md.IsActive
+                                     //and one, or more, of these is true.
+                                     &&
+                                     (
+                                         EF.Functions.Like(md.BrandName, $"%{search}%") || //anywhere in brand name
+                                         EF.Functions.Like(md.ActiveList, $"{search}%") || //at the start of active list
+                                         EF.Functions.Like(md.ActiveList, $"%/ {search}%") //after a / and space in active list
+                                     )
+                                     //Order by the brand name.
+                                     orderby md.BrandName
+                                     //Select the MedicationDetails table.
+                                     //We'll use a mapper to grab only the columns we need and store into a DTO later on.
+                                     select md;
 
+                    //Run the query and return the results as a list.
+                    //This grouping prevents duplicate medication names from showing here.
+                    medsToReturn = userQuickListQuery
+                        .GroupBy(i => i.BrandName)
+                        .Select(i => i.Key)
+                        .ToList();
+
+                    //Regardless of which of these four searches we did,
+                    //return the list from the base search.
+                    //No formulary filtering needed.
+                    return medsToReturn;
                     throw new NotImplementedException();
                 }
                 else
@@ -265,12 +301,10 @@ namespace Emar.Core.Medications.Repository
                 else if (searchType == Model.MedicationLookupDto.SearchType.quicklist)
                 {
                     //Perform the "user quicklist" search.
-                    //medsListMatch = _context.MedicationLookups.FromSqlInterpolated($"").ToList();
-                    //medsListNoMatch = _context.MedicationLookups.FromSqlInterpolated($"").ToList();
-                    //This is outside the scope of EMAR-57, so I'll revisit it whenever I get to its ticket
-                    //See User Quick List Query With No Filtering.sql.
+                    //EMAR-319.  Winston Murdock, 09/24/2020
+                    medsListMatch = _context.MedicationLookups.FromSqlInterpolated($"SELECT DISTINCT md.brand_name, md.drug_id, md.medication_id, sfm.inpatient_match, sfm.outpatient_match, sfm.pyxis_match, fni.medid, fni.GCN_SEQNO, fni.HICL_SEQNO FROM medication_details md INNER JOIN medications med ON md.medication_id = med.id INNER JOIN site_formulary_match sfm ON med.id = sfm.medication_id INNER JOIN fdb_ndc_info fni on med.drug_id = CONVERT(varchar(50), fni.medid) INNER JOIN user_quick_list_items uqli on med.id = uqli.medication_id WHERE LEN(md.brand_name) > 0 AND md.is_active = 1 AND uqli.[user_id] = {userId} AND (md.brand_name LIKE {sLike1} OR md.active_list LIKE {sLike2} OR md.active_list LIKE {sLike3}) AND sfm.site_id = {siteId} ORDER BY md.brand_name").ToList();
 
-                    throw new NotImplementedException();
+                    medsListNoMatch = _context.MedicationLookups.FromSqlInterpolated($"SELECT DISTINCT md.brand_name, md.drug_id, md.medication_id, CONVERT(tinyint, 0) as inpatient_match, CONVERT(tinyint, 0) as outpatient_match, CONVERT(tinyint, 0) as pyxis_match, fni.medid, fni.GCN_SEQNO, fni.HICL_SEQNO FROM medication_details md INNER JOIN medications med ON md.medication_id = med.id LEFT JOIN site_formulary_match sfm  ON med.id = sfm.medication_id and sfm.site_id = {siteId} INNER JOIN fdb_ndc_info fni on med.drug_id = CONVERT(varchar(50), fni.medid) INNER JOIN user_quick_list_items uqli on med.id = uqli.medication_id WHERE LEN(md.brand_name) > 0 AND md.is_active = 1 AND uqli.[user_id] = {userId} AND sfm.inpatient_match IS NULL AND (md.brand_name LIKE {sLike1} OR md.active_list LIKE {sLike2} OR md.active_list LIKE {sLike3}) ORDER BY md.brand_name").ToList();
                 }
                 else
                 {
