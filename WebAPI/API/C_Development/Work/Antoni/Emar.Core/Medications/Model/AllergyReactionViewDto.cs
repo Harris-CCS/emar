@@ -7,10 +7,10 @@ namespace Emar.Core.Medications.Model
     {
         public long Id { get; set; }
         public long PatientAllergyId { get; set; }
-        public long? OrderId { get; set; }
+        public string PatientAllergyName { get; set; }
         public string OrderTable { get; set; }
-        public string BrandName { get; set; }
-        public string AllergyName { get; set; }
+        public long? OrderId { get; set; }
+        public string OrderBrandName { get; set; }
         internal int? OverrideReasonId { get; set; }
         public OverrideReasonDto OverrideReason { get; set; }
         internal int? OverrideReasonUserId { get; set; }

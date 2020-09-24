@@ -11,7 +11,7 @@ namespace Emar.Data.Entities
         [Column("id")]
         public long Id { get; set; }
         [Column("medication_interaction_id")]
-        public long MedicationInteractionId { get; set; }
+        public long? MedicationInteractionId { get; set; }
         [Column("drug_num")]
         public byte DrugNum { get; set; }
         [Column("patient_order_id")]

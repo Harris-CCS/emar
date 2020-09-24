@@ -9,7 +9,7 @@ namespace Emar.Core.Medications.Model
         public int SiteId { get; set; }
         public bool IsMedication { get; set; }
         public string Description { get; set; }
-        public virtual SiteDto Site { get; set; }
-        public virtual ICollection<MedicationInteractionDto> MedicationInteractions { get; set; }
+        internal virtual SiteDto Site { get; set; }
+        internal virtual ICollection<MedicationInteractionDto> MedicationInteractions { get; set; }
     }
 }
