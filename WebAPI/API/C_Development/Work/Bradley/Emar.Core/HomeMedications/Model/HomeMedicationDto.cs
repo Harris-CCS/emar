@@ -95,6 +95,8 @@ namespace Emar.Core.HomeMedications.Model
             set => _parentDrugName = value?.Trim();
         }
 
+        public string ActionStatus { get; set; }
+
         //public int AddUserId { get; set; }
         //public DateTimeOffset? AddDatetime { get; set; }
         //public int ChangeUserId { get; set; }

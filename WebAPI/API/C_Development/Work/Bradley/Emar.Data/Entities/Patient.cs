@@ -154,12 +154,14 @@ namespace Emar.Data.Entities
         [InverseProperty(nameof(Entities.Site.Patients))]
         public virtual Site Site { get; set; }
 
+        // For Foreign Key: fk__patients__patient_allergies
         [InverseProperty("Patient")]
         public virtual ICollection<PatientAllergy> PatientAllergies { get; set; }
 
         [InverseProperty("Patient")]
         public virtual ICollection<PatientCartOrder> PatientCartOrders { get; set; }
 
+        // For Foreign Key: fk__patients__patient_home_medications
         [InverseProperty("Patient")]
         public virtual ICollection<PatientHomeMedication> PatientHomeMedications { get; set; }
 

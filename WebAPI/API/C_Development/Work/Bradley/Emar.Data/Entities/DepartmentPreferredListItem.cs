@@ -17,19 +17,8 @@ namespace Emar.Data.Entities
         [StringLength(15)]
         public string DepartmentCode { get; set; }
 
-        [Column("ndc")]
-        [StringLength(32)]
-        public string Ndc { get; set; }
-
-        [Required]
-        [Column("drug_id")]
-        [StringLength(32)]
-        public string DrugId { get; set; }
-
-        [Required]
-        [Column("brand_name")]
-        [StringLength(255)]
-        public string BrandName { get; set; }
+        [Column("medication_id", TypeName = "int")]
+        public int MedicationId { get; set; }
 
         [Column("dose", TypeName = "decimal(11, 2)")]
         public decimal? Dose { get; set; }
@@ -43,12 +32,19 @@ namespace Emar.Data.Entities
         [Column("frequency_schedule_id", TypeName = "int")]
         public int? FrequencyScheduleId { get; set; }
 
+        [Column("duration_in_minutes", TypeName = "int")]
+        public int DurationInMinutes { get; set; }
+
         [Column("order_notes")]
         public string OrderNotes { get; set; }
 
         [ForeignKey(nameof(FrequencyScheduleId))]
         [InverseProperty(nameof(Entities.FrequencySchedule.DepartmentPreferredListItems))]
         public virtual FrequencySchedule FrequencySchedule { get; set; }
+
+        [ForeignKey(nameof(MedicationId))]
+        [InverseProperty(nameof(Entities.Medication.DepartmentPreferredListItems))]
+        public virtual Medication Medication { get; set; }
 
         [ForeignKey(nameof(MedicationRouteId))]
         [InverseProperty(nameof(Entities.MedicationRoute.DepartmentPreferredListItems))]

@@ -15,7 +15,7 @@ namespace Emar.Core.Carts.Model
         public long PatientCartOrderId { get; set; }
 
         internal string DateFormat { get; set; } = "MM/dd/yyyy";
-        internal string TimeFormat { get; set; } = "HH:mm:ss";
+        internal string TimeFormat { get; set; } = "HH:mm";
 
         /// <summary>
         /// Date and time the order administration is scheduled to start.  Includes the local time timezone offset from UTC.

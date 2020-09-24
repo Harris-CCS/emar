@@ -1,4 +1,5 @@
-﻿using Emar.Core.Orders.Model;
+﻿using System.Linq;
+using Emar.Core.Sites.Model.Mappings;
 using Emar.Data.Entities;
 
 namespace Emar.Core.Medications.Model.Mappings
@@ -56,14 +57,51 @@ namespace Emar.Core.Medications.Model.Mappings
                 SiteId = dbObj.SiteId,
                 PointInTime = dbObj.PointInTime,
                 Notes = dbObj.Notes
-                //int FrequencyTypeId { get; set; }
-                //int FrequencyTypeRecurring { get; set; }
-                //int FrequencyInterval { get; set; }
-                //int FrequencyIntervalUnitId { get; set; }
-                //TimeSpan IntervalStartTime { get; set; }
-                //short IntervalEndMinutes { get; set; }
             };
             
+            return ret;
+        }
+
+        public static MedicationDto MapMedication(Data.Entities.Medication dbObj)
+        {
+            if (dbObj == null)
+            {
+                return null;
+            }
+
+            var ret = new MedicationDto
+            {
+                Id = dbObj.Id,
+                SiteId = dbObj.SiteId,
+                Site = SiteMapper.MapSite(dbObj.Site),
+                DrugId = dbObj.DrugId,
+                DisplayName = dbObj.DisplayName,
+                DrugVendor = dbObj.DrugVendor,
+                MedicationDetails = dbObj.MedicationDetails?.Select(MapMedicationDetail).ToList()
+            };
+
+            return ret;
+        }
+
+        private static MedicationDetailDto MapMedicationDetail(MedicationDetail dbObj)
+        {
+            if (dbObj == null)
+            {
+                return null;
+            }
+
+            var ret = new MedicationDetailDto
+            {
+                Id = dbObj.Id,
+                MedicationId = dbObj.MedicationId,
+                DrugId = dbObj.DrugId,
+                BrandName = dbObj.BrandName,
+                ActiveList = dbObj.ActiveList,
+                Dose = dbObj.Dose,
+                MedicationUnitId = dbObj.MedicationUnitId,
+                IsActive = dbObj.IsActive
+            };
+
             return ret;
         }
     }

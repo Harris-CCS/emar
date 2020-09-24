@@ -347,35 +347,36 @@ namespace Emar.Core.Helpers
         }
     }
 
-    public static class DateTimeHelper
-    {
-        static string defaultDateFormat = @"yyyy-MM-dd";
-        static string defaultTimeFormat = @"HH:mm:ss";
 
-        public static string GetDateTime(DateTimeOffset? dateTime, string dateFormat = null, string timeFormat = null, bool includeTime = true)
-        {
-            dateFormat = (dateFormat ?? defaultDateFormat)
-                // Ensure that the date format returned is properly capitalized.
-                .Replace(@"YYYY", @"yyyy")
-                .Replace(@"YY", @"yy")
-                .Replace(@"mm", @"MM")
-                .Replace(@"DD", @"dd");
+    //// Retiring class - replaced it with properties that have lambdas to standard format strings
+    //{
+    //    static string defaultDateFormat = @"yyyy-MM-dd";
+    //    static string defaultTimeFormat = @"HH:mm:ss";
 
-            timeFormat ??= defaultTimeFormat;
+    //    public static string GetDateTime(DateTimeOffset? dateTime, string dateFormat = null, string timeFormat = null, bool includeTime = true)
+    //    {
+    //        dateFormat = (dateFormat ?? defaultDateFormat)
+    //            // Ensure that the date format returned is properly capitalized.
+    //            .Replace(@"YYYY", @"yyyy")
+    //            .Replace(@"YY", @"yy")
+    //            .Replace(@"mm", @"MM")
+    //            .Replace(@"DD", @"dd");
 
-            return dateFormat != null ? dateTime?.ToString(dateFormat + (includeTime ? @" " + timeFormat : @"")) : dateTime?.ToString();
-        }
+    //        timeFormat ??= defaultTimeFormat;
 
-        public static string GetDate(DateTimeOffset? dateTime, string dateFormat)
-        {
-            return GetDateTime(dateTime, dateFormat, null, false);
-        }
+    //        return dateFormat != null ? dateTime?.ToString(dateFormat + (includeTime ? @" " + timeFormat : @"")) : dateTime?.ToString();
+    //    }
 
-        public static string GetTime(DateTimeOffset? dateTime, string timeFormat = null)
-        {
-            return dateTime?.ToString(timeFormat ?? defaultTimeFormat);
-        }
-    }
+    //    public static string GetDate(DateTimeOffset? dateTime, string dateFormat)
+    //    {
+    //        return GetDateTime(dateTime, dateFormat, null, false);
+    //    }
+
+    //    public static string GetTime(DateTimeOffset? dateTime, string timeFormat = null)
+    //    {
+    //        return dateTime?.ToString(timeFormat ?? defaultTimeFormat);
+    //    }
+    //}
 
     public class EmarHttpContext
     {

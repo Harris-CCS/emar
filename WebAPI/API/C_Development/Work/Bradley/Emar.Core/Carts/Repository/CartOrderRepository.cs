@@ -56,6 +56,8 @@ namespace Emar.Core.Carts.Repository
         {
             var orders = _context.PatientCartOrders
                 .Include(order => order.CartOrderAdministrations)
+                .Include(order => order.Medication)
+                .ThenInclude(med => med.MedicationDetails)
                 .Include(order => order.MedicationRoute)
                 .Include(order=> order.FrequencySchedule)
                 .Include(order => order.MedicationUnit)
@@ -215,9 +217,10 @@ namespace Emar.Core.Carts.Repository
                             PatientId = cartOrder.PatientId,
                             AddUserId = cartOrder.UserId,
                             AddDatetime = cartOrder.AddDatetime,
-                            Ndc = cartOrder.Ndc,
-                            DrugId = cartOrder.DrugId,
-                            BrandName = cartOrder.BrandName,
+                            //Ndc = cartOrder.Ndc,
+                            //DrugId = cartOrder.DrugId,
+                            //BrandName = cartOrder.BrandName,
+                            MedicationId = cartOrder.MedicationId,
                             Dose = cartOrder.Dose,
                             MedicationUnitId = cartOrder.MedicationUnitId,
                             MedicationRouteId = cartOrder.MedicationRouteId,

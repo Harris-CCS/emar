@@ -55,6 +55,9 @@ namespace Emar.Api.Controllers
         {
             TemplateDto ret = _templateService.GetTemplateDefinition(templateId);
 
+            if (ret == null)
+                return NotFound($"Didn't find a template for tempate ID: {templateId}");
+
             return Ok(ret);
         }
     }

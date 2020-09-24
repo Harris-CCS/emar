@@ -22,6 +22,7 @@ namespace Emar.Data.Entities
         [Column("stop_scheduled_datetime", TypeName = "datetimeoffset")]
         public DateTimeOffset? StopScheduledDatetime { get; set; }
 
+        // For Foreign Key: fk__cart_order_administrations__patient_cart_orders
         [ForeignKey(nameof(PatientCartOrderId))]
         [InverseProperty(nameof(Entities.PatientCartOrder.CartOrderAdministrations))]
         public virtual PatientCartOrder PatientCartOrder { get; set; }

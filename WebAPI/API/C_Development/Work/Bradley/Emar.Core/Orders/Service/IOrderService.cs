@@ -9,8 +9,8 @@ namespace Emar.Core.Orders.Service
     public interface IOrderService
     {
         PagedList<PatientOrderDto> GetOrders(long? patientId, OrdersResourceParameters resourceParameters);
-        IEnumerable<PatientOrderDto> GetOrders(long patientId);
-        PatientOrderDto GetOrder(long orderId, OrdersResourceParameters resourceParameters);
+        IEnumerable<PatientOrderDto> GetOrders(long patientId, string orderLinkBase, string administrationLinkBase);
+        PatientOrderDto GetOrder(long orderId, OrdersResourceParameters resourceParameters, string orderLinkBase, string adminLinkBase);
         IEnumerable<OrderAdministrationDto> GetAdministrations(long orderId);
         OrderAdministrationDto GetAdministration(long administrationId);
         IEnumerable<OrderEventDto> GetEvents(long orderId);
@@ -32,5 +32,7 @@ namespace Emar.Core.Orders.Service
         ComposerOptionsDto GetComposerSetupData(string brandName);
         IEnumerable<MockFrequencyDto> GetFrequencies(int siteId);
         IEnumerable<MockUnitDto> GetUnits(in int siteId);
+        ActionResultDto FireActionAgainstOrder(in int orderId, string actionCode);
+        ActionResultDto FireActionAgainstAdministration(in int administrationId, string actionCode);
     }
 }

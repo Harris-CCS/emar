@@ -9,6 +9,7 @@ namespace Emar.Data.Entities
     {
         public Action()
         {
+            // For Foreign Key: fk__order_events__actions
             OrderEvents = new HashSet<OrderEvent>();
         }
 
@@ -28,6 +29,7 @@ namespace Emar.Data.Entities
         [Column("is_active")]
         public bool IsActive { get; set; }
 
+        // For Foreign Key: fk__order_events__actions
         [InverseProperty("Action")]
         public virtual ICollection<OrderEvent> OrderEvents { get; set; }
     }
