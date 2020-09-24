@@ -145,6 +145,10 @@ namespace Emar.Data.Entities
         [Column("visit_start_datetime", TypeName = "datetimeoffset")]
         public DateTimeOffset? VisitStartDatetime { get; set; }
 
+        [Column("gender_system", TypeName = "varchar(10)")]
+        public string GenderSystem { get; set; }
+
+
         [ForeignKey(nameof(SiteId))]
         [InverseProperty(nameof(Entities.Site.Patients))]
         public virtual Site Site { get; set; }

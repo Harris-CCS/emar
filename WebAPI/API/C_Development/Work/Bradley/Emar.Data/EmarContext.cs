@@ -39,6 +39,7 @@ namespace Emar.Data
         public virtual DbSet<OrderEvent> OrderEvents { get; set; }
         public virtual DbSet<OrderInteraction> OrderInteractions { get; set; }
         public virtual DbSet<OrderReaction> OrderReactions { get; set; }
+        public virtual DbSet<OverrideReason> OverrideReasons { get; set; }
         public virtual DbSet<Patient> Patients { get; set; }
         public virtual DbSet<PatientAllergy> PatientAllergies { get; set; }
         public virtual DbSet<PatientCartOrder> PatientCartOrders { get; set; }
@@ -844,6 +845,8 @@ namespace Emar.Data
                     .IsFixedLength();
 
                 entity.Property(e => e.WardCode).IsUnicode(false);
+
+                entity.Property(e => e.GenderSystem).IsUnicode(false);
 
                 entity.HasOne(d => d.Site)
                     .WithMany(p => p.Patients)
