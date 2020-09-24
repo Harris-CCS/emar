@@ -1,4 +1,7 @@
-﻿using Emar.Core.Orders.Model;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Emar.Core.Orders.Model;
 using Emar.Data.Entities;
 
 namespace Emar.Core.Medications.Model.Mappings
@@ -42,6 +45,23 @@ namespace Emar.Core.Medications.Model.Mappings
             return ret;
         }
 
+        internal static MedicationLookupDto MapMedicatilDetailToMedLookupDTO(MedicationDetail dbObj)
+        {
+            if (dbObj == null)
+            {
+                return null;
+            }
+
+            var ret = new MedicationLookupDto
+            {
+                BrandName = dbObj.BrandName,
+                MedicationId = dbObj.MedicationId,
+                DrugId = dbObj.DrugId
+            };
+            
+            return ret;
+        }
+
         public static FrequencyScheduleDto MapMedicationFrequency(FrequencySchedule dbObj)
         {
             if (dbObj == null)
@@ -63,7 +83,46 @@ namespace Emar.Core.Medications.Model.Mappings
                 //TimeSpan IntervalStartTime { get; set; }
                 //short IntervalEndMinutes { get; set; }
             };
-            
+
+            return ret;
+        }
+
+        public static MedicationDto MapMedication(Data.Entities.Medication dbObj)
+        {
+            if (dbObj == null)
+            {
+                return null;
+            }
+
+            var ret = new MedicationDto
+            {
+                Id = dbObj.Id,
+                SiteId = dbObj.SiteId,
+                DisplayName = dbObj.DisplayName,
+                MedicationDetails = dbObj.MedicationDetails?.Select(MapMedicationDetail).ToList()
+            };
+
+            return ret;
+        }
+
+        private static MedicationDetailDto MapMedicationDetail(MedicationDetail dbObj)
+        {
+            if (dbObj == null)
+            {
+                return null;
+            }
+
+            var ret = new MedicationDetailDto
+            {
+                Id = dbObj.Id,
+                MedicationId = dbObj.MedicationId,
+                DrugId = dbObj.DrugId,
+                BrandName = dbObj.BrandName,
+                Dose = dbObj.Dose,
+                MedicationUnitId = dbObj.MedicationUnitId,
+                MedicationRouteId = dbObj.MedicationRouteId
+            };
+
             return ret;
         }
     }

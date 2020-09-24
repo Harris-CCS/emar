@@ -6,6 +6,7 @@ namespace Emar.Data.Entities
     [Table("fdb_brand_name")]
     public partial class FdbBrandName
     {
+        //[Key]
         [Column("MEDID", TypeName = "numeric(8, 0)")]
         public decimal Medid { get; set; }
         [Column("long_brand_name")]

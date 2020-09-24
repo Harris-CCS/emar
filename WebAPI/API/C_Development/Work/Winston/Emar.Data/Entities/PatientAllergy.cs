@@ -21,12 +21,12 @@ namespace Emar.Data.Entities
         [Column("internal_drug_id")]
         [StringLength(32)]
         public string InternalDrugId { get; set; }
-        [Column("ndc")]
-        [StringLength(32)]
-        public string Ndc { get; set; }
-        [Column("drug_id")]
-        [StringLength(32)]
-        public string DrugId { get; set; }
+        //[Column("ndc")]
+        //[StringLength(32)]
+        //public string Ndc { get; set; }
+        //[Column("drug_id")]
+        //[StringLength(32)]
+        //public string DrugId { get; set; }
         [Column("name")]
         [StringLength(255)]
         public string Name { get; set; }
@@ -76,6 +76,13 @@ namespace Emar.Data.Entities
         [Column("account_number")]
         [StringLength(25)]
         public string AccountNumber { get; set; }
+
+        [Column("medication_id", TypeName = "int")]
+        public int? MedicationId { get; set; }
+
+        [ForeignKey(nameof(MedicationId))]
+        [InverseProperty(nameof(Entities.Medication.PatientAllergys))]
+        public virtual Medication Medication { get; set; }
 
         [ForeignKey(nameof(AddUserId))]
         [InverseProperty(nameof(User.PatientAllergiesAddUser))]

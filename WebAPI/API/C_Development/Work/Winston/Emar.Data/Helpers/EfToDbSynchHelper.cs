@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime;
 using System.Text;
+using System.Text.Json;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace Emar.Data.Helpers
 {
@@ -21,37 +23,74 @@ namespace Emar.Data.Helpers
             _context = context;
         }
 
-        public EfDiscrepancyReport CompareEfToDb()
+        public object CompareEfToDb(EfToDbSynchHelperParams parms)
         {
             List<EfTableAttributes> tables = 
                 new List<EfTableAttributes>(SurveyEfEntities().OrderBy(t => t.EntityName));
 
-#if TestingInternalDatatypeProblems
-            //for (int i = tables.Count - 1; i > 0; i--)
-            //{
-            //    if (tables[i].EntityName == "PatientCartOrder") continue;
-            //    tables.RemoveAt(i);
-            //}
-            while (tables.Count > 1)
-                tables.RemoveAt(1);
-
-            // Check the bottom of this file for definition of the example SQL table
+#if TestingEfUtility
+            var tablesToKeep =
+                ",BradSimpleChild,BradSimpleParent,BradTwoKeyChild,BradTwoKeyParent,BradTwoFksChild,BradTwoFksParent,";
+                //",OrderEvent,OrderAdministrations,PatientOrders"; //",Action,PatientOrder,BradNameChild,BradNameParent,";
+            for (int i = tables.Count - 1; i >= 0; i--)
+            {
+                if (tablesToKeep.Contains("," + tables[i].EntityName + ","))
+                    continue;
+                tables.RemoveAt(i);
+            }
 #endif
 
             if (ProblemsExitInEfDefinitions(tables, out EfDiscrepancyReport report))
                 return report;
 
-            CompareSurveyToDatabase(tables, report);
+            CompareSurveyToDatabase(tables, parms, report);
 
-            if (!report.Files.Any()) return null;
+            if (!report.Files.Any()) return tables;
+
+            return report;
+        }
+
+        public EfDiscrepancyReport AddTables(EfToDbSynchHelperParams parms)
+        {
+            var tables = new List<EfTableAttributes>(SurveyEfEntities());
+            var report = new EfDiscrepancyReport();
+
+            foreach (var table in parms.TablesToAdd)
+            {
+                var existingEntity = tables.FirstOrDefault(t => t.SqlTableName == table);
+                if(existingEntity != null)
+                    report.RegisterProblem(existingEntity, ReportProblem.RequestedNewTableAlreadyExists);
+                else
+                {
+                    var tblObj = new EfTableAttributes {SqlTableName = table, CreateNewTable = true};
+                    tables.Add(tblObj);
+                    // Adding the Report Table here so that we are sure the first declaration of
+                    // the report notes it as "CreateNew"
+                    report.GetFile(tblObj.SqlTableName, tblObj.EntityName, true);
+                }
+            }
+
+            CompareSurveyToDatabase(tables, parms, report);
 
             return report;
         }
 
         #region Survey Code
-     
+
         private List<EfTableAttributes> SurveyEfEntities()
         {
+            var contextPropertyNames = new Dictionary<string, string>();
+            foreach (var propertyInfo in _context.GetType().GetProperties())
+            {
+                var propTypeSplit = propertyInfo.PropertyType.FullName?
+                    .Split('[', ']', StringSplitOptions.RemoveEmptyEntries);
+                if (propTypeSplit != null && propTypeSplit.Length == 1)
+                    continue;
+
+                var entityName = propTypeSplit?[1].Split(',')[0];
+                contextPropertyNames.Add(entityName, propertyInfo.Name);
+            }
+
             var tbls = new List<EfTableAttributes>();
             foreach (IEntityType entity in _context.Model.GetEntityTypes().OrderBy(a => a.Name))
             {
@@ -59,7 +98,8 @@ namespace Emar.Data.Helpers
                     new EfTableAttributes
                     {
                         EntityName = entity.Name,
-                        SqlTableName = entity.GetTableName(),
+                        ContextPropertyName = contextPropertyNames[entity.Name],
+                        SqlTableName = entity.GetTableName()
                     };
 
                 var columns = new List<EfColumnAttributes>();
@@ -83,77 +123,384 @@ namespace Emar.Data.Helpers
                         col.SetKeyColumn();
                     columns.Add(col);
                 }
-
-                var foreignKeys = new List<EfForeignKeyAttributes>();
-                foreach (var fk in entity.GetForeignKeys())
-                {
-                    EfForeignKeyAttributes fkObj = new EfForeignKeyAttributes();
-                    fkObj.DeclaringEntityType = fk.DeclaringEntityType;
-                    fkObj.DeclaringEntityProperties = fk.Properties;
-                    fkObj.DeclaringEntityNavigationProperty = fk.DependentToPrincipal.Name;
-                    
-                    fkObj.PrincipalEntityType = fk.PrincipalEntityType;
-                    fkObj.PrincipalEntityNavigationProperty = fk.PrincipalToDependent.Name;
-
-
-                    fkObj.DeleteBehavior = fk.DeleteBehavior;
-                    fkObj.ConstraintName = fk.GetConstraintName();
-
-                    //var DependentToPrincipal = fk.DependentToPrincipal;
-                    //var IsOwnership = fk.IsOwnership;
-                    //var IsRequired = fk.IsRequired;
-                    //var IsUnique = fk.IsUnique;
-                    //var PrincipalKey = fk.PrincipalKey;
-                    //var PrincipalToDependent = fk.PrincipalToDependent;
-                    //string constraintName = fk.GetConstraintName();
-                    //var a = fk.AsForeignKey();
-                    //var y = fk.GetDefaultName();
-                    //var z = fk.GetNavigations();
-
-                    //IEnumerable<INavigation> navigationsFrom = fk.FindNavigationsFrom(entity);
-                    //IEnumerable<INavigation> navigationsTo = fk.FindNavigationsTo(entity);
-
-                    foreignKeys.Add(fkObj);
-                }
-
                 table.Columns = columns;
-                table.ForeignKeys = foreignKeys;
 
                 tbls.Add(table);
+            }
+
+            foreach (IEntityType entity in _context.Model.GetEntityTypes().OrderBy(a => a.Name))
+            {
+                var table = tbls.FirstOrDefault(t => t.EntityFullName == entity.Name);
+                Debug.Assert(table != null, nameof(table) + " != null");
+
+                var foreignKeys = entity.GetForeignKeys()
+                    .Select(fk => new EfForeignKeyAttributes(table, tbls)
+                    {
+                        DeclaringEntityProperties = fk.Properties.Select(property => property.Name).ToList(),
+                        DeclaringEntityNavigationProperty = fk.DependentToPrincipal.Name,
+                        PrincipalEntityTypeFullName = fk.PrincipalEntityType.Name,
+                        PrincipalEntityNavigationProperty = fk.PrincipalToDependent.Name,
+                        DeleteBehavior = fk.DeleteBehavior,
+                        ConstraintName = fk.GetConstraintName()
+                    })
+                    .ToList();
+
+                table.ForeignKeys = foreignKeys;
             }
 
             return tbls;
         }
 
-        internal class EfTableAttributes
+        public class EfTableAttributes
         {
-            private string _entityName;
+            private bool _createNewTable;
 
-            internal string EntityName
+            public string EntityName
             {
-                get => _entityName;
+                get =>    EntityFullName.Substring(EntityFullName.LastIndexOf('.') + 1);
                 set
                 {
-                    if (value.Contains('.'))
-                        _entityName = value.Substring(value.LastIndexOf('.') + 1);
-                    else
-                        _entityName = value;
+                    Debug.Assert(value.Contains('.'), "EntityName must be assigned as the fully-qualified name.");
+                    EntityFullName = value;
                 }
             }
+            public string EntityFullName { get; private set; }
 
-            internal List<EfColumnAttributes> Columns { get; set; }
-            internal List<EfForeignKeyAttributes> ForeignKeys { get; set; }
+            public List<EfColumnAttributes> Columns { get; set; }
+            public List<EfForeignKeyAttributes> ForeignKeys { get; set; } = new List<EfForeignKeyAttributes>();
             public String SqlTableName { get; set; }
+            public string ContextPropertyName { get; set; }
+
+            public bool CreateNewTable
+            {
+                get => _createNewTable;
+                set
+                {
+                    _createNewTable = value;
+                    if (value)
+                    {
+                        EntityFullName = PascalNameFromSqlName(SqlTableName);
+                        if (EntityFullName.EndsWith('s'))
+                            EntityFullName = EntityFullName.Substring(0, EntityFullName.Length - 1);
+                        ContextPropertyName = EntityFullName + "s";
+                        EntityFullName = "Emar.Data.Entities." + EntityFullName;
+                    }
+                }
+            }
         }
 
-        internal class EfColumnAttributes
+        public class EfForeignKeyAttributes
+        {
+            // DeclaringEntityType
+            private EfTableAttributes _parentTable;
+            private readonly IEnumerable<EfTableAttributes> _tableList;
+            internal EfTableAttributes ParentTable => _parentTable;
+
+            internal EfTableAttributes PrincipalTable => _tableList.FirstOrDefault(t =>
+                t.EntityName == (SqlPrincipalEntityType?.Substring(SqlPrincipalEntityType.LastIndexOf('.') + 1) ??
+                                 PrincipalEntityType?.Substring(PrincipalEntityType.LastIndexOf('.') + 1)));
+
+            // Entity Properties //
+            internal List<string> DeclaringEntityProperties { get; set; }
+            internal string DeclaringEntityNavigationProperty { get; set; }
+
+            internal string PrincipalEntityType =>
+                PrincipalEntityTypeFullName?.Substring(PrincipalEntityTypeFullName.LastIndexOf('.') + 1);
+            internal string PrincipalEntityTypeFullName { get; set; }
+            internal DeleteBehavior DeleteBehavior { get; set; }
+            internal string ConstraintName { get; set; }
+            internal string PrincipalEntityNavigationProperty { get; set; }
+
+            // SQL-generated Entity Properties //
+            internal List<string> SqlDeclaringEntityProperties { get; set; }
+            internal string SqlDeclaringEntityNavigationProperty { get; set; }
+            internal string SqlPrincipalEntityType { get; set; }
+
+            internal string SqlPrincipalEntityTypeFullName => SqlPrincipalEntityType == null
+                ? null
+                : "Emar.Data.Entities." + SqlPrincipalEntityType;
+            internal DeleteBehavior SqlDeleteBehavior { get; set; }
+            internal string SqlConstraintName { get; set; }
+            internal string SqlPrincipalEntityNavigationProperty { get; set; }
+
+            // SQL Fields //
+            private string _fkName;
+            private string _declaringEntityTable;
+            private string _principalEntityTable;
+            private string _declaringEntityFields;
+            private bool _duplicatePrincipalForeignKeys;
+
+            // Derived Properties //
+            internal bool AccountedFor { get; set; } = false;
+            internal bool SqlOnly => string.IsNullOrEmpty(DeclaringEntityNavigationProperty);
+            internal bool EntityOnly => string.IsNullOrEmpty(SqlDeclaringEntityNavigationProperty);
+
+            // Constructor
+            public EfForeignKeyAttributes(SqlDataReader reader, EfTableAttributes parentTable,
+                IEnumerable<EfTableAttributes> tableList)
+            {
+                _tableList = tableList;
+                _parentTable = parentTable;
+                ReadTheReader(reader);
+            }
+
+            public EfForeignKeyAttributes(EfTableAttributes parentTable,
+                IEnumerable<EfTableAttributes> tableList)
+            {
+                _tableList = tableList;
+                _parentTable = parentTable;
+            }
+
+            // SQL Properties
+            internal void RegisterSqlValues(SqlDataReader reader)
+            {
+                ReadTheReader(reader);
+            }
+
+            internal void SetAccountedFor()
+            {
+                AccountedFor = true;
+            }
+
+            private void ReadTheReader(SqlDataReader reader)
+            {
+                _fkName = reader["name"].ToString();
+                _declaringEntityTable = reader["DeclaringEntityTable"].ToString();
+                _principalEntityTable = reader["PrincipalEntityTable"].ToString();
+                _declaringEntityFields = reader["DeclaringEntityFields"].ToString();
+                _duplicatePrincipalForeignKeys = Convert.ToInt16(reader["DuplicatePrincipalForeignKeys"]) == 1;
+
+                SqlConstraintName = _fkName;
+
+                if (_declaringEntityFields != null)
+                    SqlDeclaringEntityProperties = new List<string>(
+                        _declaringEntityFields
+                            .Replace(" ", "")
+                            .Split(',', StringSplitOptions.RemoveEmptyEntries).Select(field =>
+                                _parentTable.Columns.FirstOrDefault(c => c.SqlName == field)?.ClrName)
+                    );
+
+                var principalTable = _tableList.FirstOrDefault(t => t.SqlTableName == _principalEntityTable);
+                if (principalTable == null)
+                    return;
+
+                SqlPrincipalEntityType = principalTable.EntityName;
+                
+                if (_duplicatePrincipalForeignKeys)
+                {
+                    SqlDeclaringEntityNavigationProperty = SqlDeclaringEntityProperties[0]
+                        .EndsWith("Id", StringComparison.InvariantCultureIgnoreCase)
+                        ? SqlDeclaringEntityProperties[0].Substring(0, SqlDeclaringEntityProperties[0].Length - 2)
+                        : SqlDeclaringEntityProperties[0];
+
+                    if (!SqlDeclaringEntityNavigationProperty.EndsWith(SqlDeclaringEntityNavigationProperty))
+                        throw new NotImplementedException("Didn't account for name of foreign key column not ending with 'foreign_table' + 'Id'");
+                }
+                else
+                    SqlDeclaringEntityNavigationProperty = principalTable.EntityName;
+
+                SqlPrincipalEntityNavigationProperty = (_duplicatePrincipalForeignKeys)
+                    ? ParentTable.EntityName + SqlDeclaringEntityNavigationProperty
+                    : _parentTable.EntityName + "s";
+
+                SqlDeleteBehavior = DeleteBehavior.ClientSetNull;
+            }
+
+            //private bool TableHasMultipleKeysToSameTable(string sqlPrincipalEntityType)
+            //{
+            //    var ret =
+            //        _parentTable.ForeignKeys
+            //            .Where(k
+            //                => k.PrincipalEntityType == sqlPrincipalEntityType
+            //                   || k.SqlPrincipalEntityType == sqlPrincipalEntityType).ToList().Count > 1;
+
+            //    return ret;
+            //}
+
+            public bool SqlDoesntMatchEntity()
+            {
+                if (DeclaringEntityProperties.Where((t, i) => t != SqlDeclaringEntityProperties[i]).Any())
+                    return true;
+                if (PrincipalEntityType != SqlPrincipalEntityType)
+                    return true;
+                //if (DeleteBehavior != SqlDeleteBehavior)
+                //    return true;
+                //// Decided that differences in NavigationProperty are not germane enough to constitute a discrepancy ////
+                //if (SqlPrincipalEntityNavigationProperty != PrincipalEntityNavigationProperty)
+                //{
+                //    if(!PrincipalEntityNavigationProperty.StartsWith(ParentTable.EntityName) 
+                //    || !PrincipalEntityNavigationProperty.EndsWith(SqlDeclaringEntityNavigationProperty))
+                //        return true;
+                //}
+                //if (DeclaringEntityNavigationProperty != SqlDeclaringEntityNavigationProperty)
+                //    return true;
+
+                return false;
+            }
+
+            public bool MatchesKeyCharacteristics(EfForeignKeyAttributes entityKey, out bool constNameMatches)
+            {
+                constNameMatches = SqlConstraintName == entityKey.ConstraintName;
+
+                if (SqlDeclaringEntityProperties.Where((t, i) =>
+                        entityKey.DeclaringEntityProperties.Count <= i || t != entityKey.DeclaringEntityProperties[i])
+                    .Any())
+                {
+                    return false;
+                }
+
+                //// Name of the Navigation Properties doesn't have to match
+                //if (SqlDeclaringEntityNavigationProperty != entityKey.DeclaringEntityNavigationProperty)
+                //    return false;
+                //if (SqlPrincipalEntityNavigationProperty != entityKey.PrincipalEntityNavigationProperty)
+                //    return false;
+                
+                if (SqlPrincipalEntityType != entityKey.PrincipalEntityType)
+                    return false;
+                return SqlDeleteBehavior == entityKey.DeleteBehavior;
+            }
+
+            public string CorrectionCode(FileSegment segment, string commentLine)
+            {
+                switch (segment)
+                {
+                    case FileSegment.EntityForeignKeysDeclaring:
+                        var principalEntityType = PrincipalEntityType ?? SqlPrincipalEntityType;
+                        if (SqlDeclaringEntityProperties != null)
+                        {
+                            string propertyNameString;
+                            if (SqlDeclaringEntityProperties.Count == 1)
+                                propertyNameString = SqlDeclaringEntityProperties[0];
+                            else
+                                propertyNameString = SqlDeclaringEntityProperties.Aggregate("",
+                                    (current, property) => current + ((current == "" ? "" : ", ") + property));
+
+                            return (string.IsNullOrEmpty(commentLine)
+                                       ? ""
+                                       : $"// {commentLine}" + Environment.NewLine) +
+                                   $"// For Foreign Key: {SqlConstraintName}" + Environment.NewLine +
+                                   Environment.NewLine +
+                                   $"[ForeignKey(nameof({propertyNameString}))]" +
+                                   Environment.NewLine +
+                                   $"[InverseProperty(nameof(Entities.{SqlPrincipalEntityType}.{SqlPrincipalEntityNavigationProperty}))]" +
+                                   Environment.NewLine +
+                                   $"public virtual {principalEntityType} {SqlDeclaringEntityNavigationProperty} {{ get; set; }}";
+                        }
+                        else if (DeclaringEntityProperties != null)
+                        {
+                            string propertyNameString;
+                            if (DeclaringEntityProperties.Count == 1)
+                                propertyNameString = DeclaringEntityProperties[0];
+                            else
+                                propertyNameString = DeclaringEntityProperties.Aggregate("",
+                                    (current, property) => current + ((current == "" ? "" : ", ") + property));
+
+                            return (string.IsNullOrEmpty(commentLine)
+                                       ? ""
+                                       : $"// {commentLine} " + Environment.NewLine) +
+                                   $"// For Foreign Key: {ConstraintName} " + Environment.NewLine +
+                                   Environment.NewLine +
+                                   $"[ForeignKey(nameof({propertyNameString}))]" + 
+                                   Environment.NewLine +
+                                   $"[InverseProperty(nameof(Entities.{PrincipalEntityType}.{PrincipalEntityNavigationProperty}))] " +
+                                   Environment.NewLine +
+                                   $"public virtual {principalEntityType} {DeclaringEntityNavigationProperty} {{ get; set; }}";
+                        }
+                        else
+                            throw new ArgumentException("from EfForeignKeyAttributes.CorrectionCode(), shouldn't have gotten here.");
+                    case FileSegment.EntityForeignKeysInverse:
+                        return (string.IsNullOrEmpty(commentLine)
+                                   ? ""
+                                   : $"// {commentLine}" + Environment.NewLine) +
+                               $"// For Foreign Key: {SqlConstraintName}" + Environment.NewLine +
+                               $"[InverseProperty(\"{SqlDeclaringEntityNavigationProperty}\")]" +
+                               Environment.NewLine +
+                               $"public virtual ICollection<{ParentTable.EntityName}> {SqlPrincipalEntityNavigationProperty} {{ get; set; }}";
+
+                    case FileSegment.EntityForeignKeysConstructor:
+                        return (string.IsNullOrEmpty(commentLine)
+                                   ? ""
+                                   : $"// {commentLine}" + Environment.NewLine) +
+                               $"public {PrincipalTable.EntityName}()" + Environment.NewLine +
+                               "{" + Environment.NewLine +
+                               $"    // For Foreign Key: {SqlConstraintName}" + Environment.NewLine +
+                               $"    {SqlPrincipalEntityNavigationProperty} = new HashSet<{ParentTable.EntityName}>();" +
+                               Environment.NewLine +
+                               "}";
+
+                    case FileSegment.ContextOnModelCreating:
+                        if (!EntityOnly)
+                            return (string.IsNullOrEmpty(commentLine)
+                                       ? ""
+                                       : $"// {commentLine}" + Environment.NewLine) +
+                                   $"modelBuilder.Entity<{ParentTable.EntityName}>(entity =>" +
+                                   Environment.NewLine +
+                                   "{" + Environment.NewLine +
+                                   $"    entity.HasOne(d => d.{SqlDeclaringEntityNavigationProperty})" +
+                                   Environment.NewLine +
+                                   $"        .WithMany(p => p.{SqlPrincipalEntityNavigationProperty})" +
+                                   Environment.NewLine +
+                                   ((SqlDeclaringEntityProperties.Count == 1)
+                                       ? $"        .HasForeignKey(d => d.{SqlDeclaringEntityProperties[0]})"
+                                       : "ERROR!!!! (multikey)") + Environment.NewLine +
+                                   $"        .OnDelete(DeleteBehavior.{SqlDeleteBehavior.ToString()})" +
+                                   Environment.NewLine +
+                                   $"        .HasConstraintName(\"{SqlConstraintName}\");" +
+                                   Environment.NewLine +
+                                   "});";
+                        else
+                        {
+                            //// Side-lining the logic for intelligently duplicating the scaffolding method of
+                            //// Assigning the DeleteBehavior for now...
+                            //bool enumerateDeletBehav = false;
+                            //foreach (var property in SqlDeclaringEntityProperties)
+                            //{
+                            //    var col = ParentTable.Columns.FirstOrDefault(c => c.ClrName == property);
+                            //    if (col?.Required ?? false)
+                            //        enumerateDeletBehav = true;
+                            //}
+
+                            //var deleteBehavior = !enumerateDeletBehav
+                            //    ? ""
+                            //    : $"        .OnDelete(DeleteBehavior.{DeleteBehavior.ToString()})" +
+                            //      Environment.NewLine;
+                            var deleteBehavior = $"        .OnDelete(DeleteBehavior.{DeleteBehavior.ToString()})" +
+                                                 Environment.NewLine;
+
+                            return (string.IsNullOrEmpty(commentLine)
+                                       ? ""
+                                       : $"// {commentLine} " + Environment.NewLine) +
+                                   $"modelBuilder.Entity<{ParentTable.EntityName}>(entity =>" +
+                                   Environment.NewLine +
+                                   "{" + Environment.NewLine +
+                                   $"    entity.HasOne(d => d.{DeclaringEntityNavigationProperty})" +
+                                   Environment.NewLine +
+                                   $"        .WithMany(p => p.{PrincipalEntityNavigationProperty})" +
+                                   Environment.NewLine +
+                                   (DeclaringEntityProperties.Count == 1
+                                       ? $"        .HasForeignKey(d => d.{DeclaringEntityProperties[0]})"
+                                       : "ERROR!!!! (multikey)") + Environment.NewLine +
+                                   deleteBehavior +
+                                   $"        .HasConstraintName(\"{ConstraintName}\");" +
+                                   Environment.NewLine +
+                                   "});";
+                        }
+
+                    default:
+                        throw new ArgumentException("from EfForeignKeyAttributes.CorrectionCode()",
+                            nameof(segment));
+                }
+            }
+        }
+
+        public class EfColumnAttributes
         {
             internal EfTableAttributes Parent { get; set; }
 
             // Properties from the Annotations
-            internal string SqlName { get; set; }
-            internal bool KeyColumn { get; private set; }
-            internal bool Required { get; set; }
+            public string SqlName { get; set; }
+            public bool KeyColumn { get; private set; }
+            public bool Required { get; set; }
             private string _sqlDataType;
             public string SqlDataType
             {
@@ -162,11 +509,11 @@ namespace Emar.Data.Helpers
             }
 
             // ClrProperties
-            internal string ClrName { get; set; }
-            internal Type ClrDataType { get; set; }
-            internal int? MaxStringLength { get; set; }
-            internal bool? IsUnicode { get; set; } = true;
-            internal bool? IsFixWidth { get; set; }
+            public string ClrName { get; set; }
+            public Type ClrDataType { get; set; }
+            public int? MaxStringLength { get; set; }
+            public bool? IsUnicode { get; set; } = true;
+            public bool? IsFixWidth { get; set; }
 
             // DB Properties
             private string _dbDataType;
@@ -175,6 +522,11 @@ namespace Emar.Data.Helpers
             //public bool? SqlNullable { get; set; }
 
             public bool ExistsInDb => _dbNullable != null;
+
+            internal void SetNullableForNewTablesColumns(bool nullable)
+            {
+                _dbNullable = nullable;
+            }
 
             internal void SetKeyColumn()
             {
@@ -397,24 +749,12 @@ namespace Emar.Data.Helpers
             }
         }
 
-        internal class EfForeignKeyAttributes
-        {
-            public IEntityType DeclaringEntityType;
-            public IEnumerable<IProperty> DeclaringEntityProperties { get; set; }
-            internal string DeclaringEntityNavigationProperty { get; set; }
-
-            public IEntityType PrincipalEntityType { get; set; }
-
-            public DeleteBehavior DeleteBehavior { get; set; }
-            public string ConstraintName { get; set; }
-            public string PrincipalEntityNavigationProperty { get; set; }
-        }
-        
         #endregion
 
         #region Model Checking
 
-        private void CompareSurveyToDatabase(List<EfTableAttributes> tables, EfDiscrepancyReport report)
+        private void CompareSurveyToDatabase(List<EfTableAttributes> tables, EfToDbSynchHelperParams parms,
+            EfDiscrepancyReport report)
         {
             // Create a list of tables that need to be removed from the model because they don't exist in the DB
             var tablesToRemove = new List<EfTableAttributes>();
@@ -423,7 +763,20 @@ namespace Emar.Data.Helpers
                 conn.Open();
                 foreach (var tbl in tables)
                 {
-                    using (var comm = new SqlCommand($"SELECT count(*) FROM sys.tables WHERE name = '{tbl.SqlTableName}'",
+                    if (tbl.CreateNewTable)
+                    {
+                        report.RegisterProblem(tbl, ReportProblem.DocumentNewTable);
+                        tbl.Columns = new List<EfColumnAttributes>();
+                    }
+                    if (parms.EntitiesNotMapped.Contains(tbl.EntityName))
+                    {
+                        // Add to the list of tables to remove below so that we don't claim all columns are missing
+                        tablesToRemove.Add(tbl);
+                        continue;
+                    }
+
+                    using (var comm = new SqlCommand(
+                        $"SELECT count(*) FROM sys.tables WHERE name = '{tbl.SqlTableName}'",
                         conn))
                     {
                         var x = Convert.ToInt16(comm.ExecuteScalar());
@@ -445,32 +798,87 @@ namespace Emar.Data.Helpers
                                     // Find the record in the list of columns
                                     var col = tbl.Columns.FirstOrDefault(c => c.SqlName == colName);
                                     if (col?.SqlName == null)
-                                        RegisterMissingColumn(tbl, colName, sqlDataType, sqlNullable, primaryKey,
-                                            report);
+                                    {
+                                        tbl.Columns.Add(RegisterMissingColumn(tbl, colName, sqlDataType, sqlNullable, primaryKey,
+                                            report));
+                                    }
                                     else
                                         col.RecordDbPropertiesAndConfirm(sqlDataType, sqlNullable, primaryKey, report);
                                 }
                             }
+
+                            //// Foreign Key Stuff ////
+                            comm.CommandText = string.Format(FOREIGN_KEY_QUERY, tbl.SqlTableName);
+                            using (var reader = comm.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    var fkName = reader["name"].ToString();
+                                    var existingKey = tbl.ForeignKeys.FirstOrDefault(k => k.ConstraintName == fkName);
+                                    if (existingKey != null)
+                                        existingKey.RegisterSqlValues(reader);
+                                    else
+                                    {
+                                        var fk = new EfForeignKeyAttributes(reader, tbl, tables);
+                                        if (fk.PrincipalEntityTypeFullName == null
+                                            && fk.SqlPrincipalEntityTypeFullName == null)
+                                        {
+                                            if(parms.ForeignKeysToIgnore == null 
+                                               || !parms.ForeignKeysToIgnore.Contains(fk.SqlConstraintName))
+                                                report.RegisterProblem(fk, ReportProblem.ForeignTableNotInModel);
+                                        }
+                                        else 
+                                            tbl.ForeignKeys.Add(fk);
+                                    }
+                                }
+                            }
+
+                            var sqlOnlyKeys = new List<EfForeignKeyAttributes>();
+                            var entityOnlyKeys = new List<EfForeignKeyAttributes>();
+                            foreach (var foreignKey in tbl.ForeignKeys)
+                            {
+                                if (foreignKey.SqlOnly)
+                                    sqlOnlyKeys.Add(foreignKey);
+                                else if (foreignKey.EntityOnly)
+                                    entityOnlyKeys.Add(foreignKey);
+                                else if (foreignKey.SqlDoesntMatchEntity())
+                                    report.RegisterProblem(foreignKey, ReportProblem.ForeignKeyDoesntMatch);
+                            }
+
+                            for (var i = 0; i < sqlOnlyKeys.Count; i++)
+                            {
+                                var sqlKey = sqlOnlyKeys[i];
+                                for (var index = entityOnlyKeys.Count - 1; index >= 0; index--)
+                                {
+                                    if (!sqlKey.MatchesKeyCharacteristics(entityOnlyKeys[index], out bool namesMatch))
+                                        continue;
+
+                                    Debug.Assert(!namesMatch);
+
+                                    report.RegisterProblem(sqlKey, ReportProblem.ForeignKeyNameChanged);
+                                    entityOnlyKeys.RemoveAt(index);
+                                    sqlKey.SetAccountedFor();
+                                    break;
+                                }
+                            }
+
+                            foreach (var sqlKey in sqlOnlyKeys.Where(k => !k.AccountedFor))
+                                report.RegisterProblem(sqlKey, ReportProblem.ForeignKeySqlOnly);
+
+                            foreach (var entityKey in entityOnlyKeys)
+                                report.RegisterProblem(entityKey, ReportProblem.ForeignKeyEntityOnly);
                         }
                     }
-
-                    //using (var comm = new SqlCommand(string.Format(FOREIGN_KEY_QUERY, tbl.SqlTableName), conn))
-                    //{
-                    //}
                 }
             }
 
             foreach (var table in tablesToRemove) 
                 tables.Remove(table);
 
-            foreach (var table in tables)
+            foreach (var column in tables.SelectMany(table => table.Columns.Where(column => !column.ExistsInDb)))
             {
-                foreach (var column in table.Columns)
-                {
-                    if (!column.ExistsInDb)
-                        report.RegisterProblem(column, FileSegment.EntityProperties,
-                            ReportProblem.ColumnNotInDatabase, null);
-                }
+                report.RegisterProblem(column, FileSegment.EntityProperties,
+                    ReportProblem.ColumnNotInDatabase, null);
             }
         }
 
@@ -528,50 +936,48 @@ namespace Emar.Data.Helpers
 
         private void RegisterTableNotExists(EfTableAttributes tblObj, EfDiscrepancyReport report)
         {
-            report.RegisterProblemTableNotExists(tblObj);
+            report.RegisterProblem(tblObj, ReportProblem.DbTableMissing);
         }
 
-        private void RegisterMissingColumn(EfTableAttributes tblObj, string colName,
+        private EfColumnAttributes RegisterMissingColumn(EfTableAttributes tblObj, string colName,
             string sqlDataType, bool nullable, bool keyColumn, EfDiscrepancyReport report)
         {
             report.RegisterProblem(tblObj, colName, sqlDataType, nullable, keyColumn, FileSegment.EntityProperties,
                 ReportProblem.DbColumnMissing);
+            
+            // Create the Column Object to return for inclusion in the Tables Columns collection
 
+            var clrType = SqlToClrDataType(sqlDataType, nullable, out bool? isUnicode,
+                out bool? isFixWidth, out int? maxStringLength); //, out bool? unicode, out bool noteAsRequired);
+            var propertyName = PascalNameFromSqlName(colName);
 
-            //var clrType = SqlToClrDataType(sqlDataType, nullable); //, out bool? unicode, out bool noteAsRequired);
-            //var propertyName = PascalNameFromSqlName(sqlColName);
+            var ret = new EfColumnAttributes
+            {
+                Parent = tblObj,
+                SqlName = colName,
+                Required = !nullable,
+                SqlDataType = sqlDataType,
+                ClrName = propertyName,
+                ClrDataType = clrType,
+                MaxStringLength = maxStringLength,
+                IsUnicode = isUnicode,
+                IsFixWidth = isFixWidth
+            };
+            if (keyColumn) ret.SetKeyColumn();
+            ret.SetNullableForNewTablesColumns(nullable);
 
-            //RegisterProblem(string sqlTableName, string enetityName, string sqlColumnName,
-            //    ReportProblem problem, List < ProblemDto > correctionCode)
-            ////var correctionCode = EfDiscrepancyCodeCorrectionFragment.CreateCorrectionCode(entityName, sqlColName,
-            ////    sqlDataType, keyColumn, nullable, clrType, propertyName, unicode, noteAsRequired,
-            ////    ReportProblem.DbColumnMissing);
-
-            ////report.RegisterProblem(sqlTableName, entityName, sqlColName, ReportProblem.DbColumnMissing,
-            ////    correctionCode);
-
-            //var ret = new EfColumnAttributes
-            //{
-            //    Required = !nullable,
-            //    ClrDataType = clrType,
-            //    ClrName = propertyName,
-            //    IsUnicode = unicode,
-            //    SqlDataType = sqlDataType,
-            //    SqlName = sqlColName
-            //};
-
-            //return ret;
+            return ret;
         }
 
         public class EfDiscrepancyReport
         {
             internal List<EfDiscrepancyFile> Files { get; set; }= new List<EfDiscrepancyFile>();
 
-            private EfDiscrepancyFile GetFile(string sqlTableName, string entityName)
+            internal EfDiscrepancyFile GetFile(string sqlTableName, string entityName, bool newTable = false)
             {
                 var file = Files.FirstOrDefault(t => t.SqlTableName == sqlTableName);
                 if (file?.SqlTableName == null)
-                    Files.Add(file = new EfDiscrepancyFile(sqlTableName, entityName));
+                    Files.Add(file = new EfDiscrepancyFile(sqlTableName, entityName, newTable));
 
                 return file;
             }
@@ -589,6 +995,9 @@ namespace Emar.Data.Helpers
                     case ReportProblem.ColumnNotInDatabase:
                     case ReportProblem.DbDataTypeNotMatchDefinedSqlType:
                     case ReportProblem.DataTypeNullableButColumnDoesntTakeNulls:
+                    case ReportProblem.DataTypeNotNullableButColumnTakesNulls:
+                    case ReportProblem.PropertyImproperlyFlaggedAsKey:
+                    case ReportProblem.PropertyNotFlaggedAsKey:
                         file = GetFile(problemColumn.Parent.SqlTableName, problemColumn.Parent.EntityName);
                         segmentObj = file.GetFileSegment(FileSegment.EntityProperties);
                         segmentObj.CorrectionFragments.Add(
@@ -618,45 +1027,131 @@ namespace Emar.Data.Helpers
                 var file = GetFile(tblObj.SqlTableName, tblObj.EntityName);
                 var segment = file.GetFileSegment(fSegment);
                 segment.CorrectionFragments.Add(new EfDiscrepancyCodeCorrectionFragment(sqlColumnName, sqlDataType,
-                    sqlNullable, sqlKeyColumn, problem));
+                    sqlNullable, sqlKeyColumn, problem, tblObj.CreateNewTable));
             }
 
             /// <summary>
-            /// Used for SQL Table Not Exists
+            /// For problems with the Foreign Keys
             /// </summary>
-            /// <param name="tblObj">Table object which points to SQL table that doesn't exist</param>
-            internal void RegisterProblemTableNotExists(EfTableAttributes tblObj)
+            /// <param name="tbl"></param>
+            /// <param name="fk"></param>
+            /// <param name="problem"></param>
+            internal void RegisterProblem(EfForeignKeyAttributes fk, ReportProblem problem)
             {
-                var file = GetFile(tblObj.SqlTableName, tblObj.EntityName);
-                var segmentObj = file.GetFileSegment(FileSegment.TableLevel);
-                segmentObj.CorrectionFragments.Add(new EfDiscrepancyCodeCorrectionFragment(ReportProblem.DbTableMissing,
-                    tblObj.SqlTableName));
+                switch (problem)
+                {
+                    case ReportProblem.ForeignTableNotInModel:
+                        GetFile(fk.ParentTable.SqlTableName, fk.ParentTable.EntityName)
+                            .GetFileSegment(FileSegment.TableLevel)
+                            .CorrectionFragments.Add(
+                                new EfDiscrepancyCodeCorrectionFragment(fk.ParentTable, problem, fk.SqlConstraintName)
+                            );
+
+                        return;
+                    case ReportProblem.ForeignKeyNameChanged:
+                        GetFile(CONTEXT_NAME, CONTEXT_NAME)
+                            .GetFileSegment(FileSegment.ContextOnModelCreating)
+                            .CorrectionFragments.Add(
+                                new EfDiscrepancyCodeCorrectionFragment(fk, problem, FileSegment.ContextOnModelCreating)
+                            );
+                        return;
+                }
+
+                GetFile(fk.ParentTable.SqlTableName, fk.ParentTable.EntityName)
+                    .GetFileSegment(FileSegment.EntityForeignKeysDeclaring)
+                    .CorrectionFragments.Add(
+                        new EfDiscrepancyCodeCorrectionFragment(fk, problem, FileSegment.EntityForeignKeysDeclaring)
+                    );
+
+                GetFile(fk.PrincipalTable.SqlTableName, fk.PrincipalTable.EntityName)
+                    .GetFileSegment(FileSegment.EntityForeignKeysInverse)
+                    .CorrectionFragments.Add(
+                        new EfDiscrepancyCodeCorrectionFragment(fk, problem, FileSegment.EntityForeignKeysInverse)
+                    );
+
+                GetFile(fk.PrincipalTable.SqlTableName, fk.PrincipalTable.EntityName)
+                    .GetFileSegment(FileSegment.EntityForeignKeysConstructor)
+                    .CorrectionFragments.Add(
+                        new EfDiscrepancyCodeCorrectionFragment(fk, problem, FileSegment.EntityForeignKeysConstructor)
+                    );
+
+                GetFile(CONTEXT_NAME, CONTEXT_NAME)
+                    .GetFileSegment(FileSegment.ContextOnModelCreating)
+                    .CorrectionFragments.Add(
+                        new EfDiscrepancyCodeCorrectionFragment(fk, problem, FileSegment.ContextOnModelCreating)
+                    );
+            }
+
+            /// <summary>
+            /// Used for SQL Table-level issues (new table, table doesn't exist, etc.)
+            /// </summary>
+            /// <param name="tblObj">Table object which has the issue</param>
+            /// <param name="problem">Which issue (doesn't exist, or not in model)</param>
+            internal void RegisterProblem(EfTableAttributes tblObj, ReportProblem problem)
+            {
+                GetFile(tblObj.SqlTableName, tblObj.EntityName,problem == ReportProblem.DocumentNewTable)
+                    .GetFileSegment(FileSegment.TableLevel)
+                    .CorrectionFragments.Add(
+                        new EfDiscrepancyCodeCorrectionFragment(tblObj, problem, null)
+                    );
             }
 
             public string CreateOutputText()
             {
                 var sb = new StringBuilder();
                 bool contextOnModelCreatingPrinted = false;
-                foreach (var file in Files)
+                foreach (var file in Files.OrderBy(f => f.EntityName))
                 {
                     sb.AppendLine();
                     sb.AppendLine();
-                    sb.AppendLine($"File:  {file.FileName}");
+                    if (file.NewFile)
+                    {
+                        var s =
+                            $"File:  {file.FileName} -- (Create the file {file.EntityName}.cs with the following contents)";
+                        sb.AppendLine(s);
+                        sb.AppendLine(new string('-', s.Length));
+                        sb.AppendLine("");
+                        sb.AppendLine("using System.Collections.Generic;");
+                        sb.AppendLine("using System.ComponentModel.DataAnnotations;");
+                        sb.AppendLine("using System.ComponentModel.DataAnnotations.Schema;");
+                        sb.AppendLine("");
+                        sb.AppendLine("namespace Emar.Data.Entities");
+                        sb.AppendLine("{");
+                        sb.AppendLine($"    [Table(\"{file.SqlTableName}\")]");
+                        sb.AppendLine($"    public class {file.EntityName}");
+                        sb.AppendLine("    {");
+                    }
+                    else
+                        sb.AppendLine($"File:  {file.FileName}");
 
                     FileSegment lastSegment = FileSegment.None;
                     string lastEntity = "";
-                    foreach (var segment in file.FileSegments)
+                    foreach (var segment in file.FileSegments.OrderBy(s =>
                     {
-                        if (lastSegment == FileSegment.ContextOnModelCreating && lastEntity != segment.EntityName)
+                        return s.Segment switch
                         {
+                            FileSegment.ContextOnModelCreating => 1,
+                            FileSegment.None => 0,
+                            FileSegment.TableLevel => 2,
+                            FileSegment.EntityForeignKeysConstructor => 3,
+                            FileSegment.EntityProperties => 4,
+                            FileSegment.EntityForeignKeysDeclaring => 5,
+                            FileSegment.EntityForeignKeysInverse => 6,
+                            _ => 99
+                        };
+                    }))
+                    {
+                        if (lastSegment == FileSegment.ContextOnModelCreating && lastEntity != segment.EntityName
+                        || lastSegment == FileSegment.ContextOnModelCreating && segment.Segment != FileSegment.ContextOnModelCreating)
+                        {
+                            sb.AppendLine("        });");
                             sb.AppendLine();
-                            sb.AppendLine("\t\t});");
                         }
                         lastSegment = segment.Segment;
                         lastEntity = segment.EntityName;
 
                         string line;
-                        if((line = $"{SegmentName(segment, ref contextOnModelCreatingPrinted)}") != "")
+                        if((line = $"{SegmentName(segment, ref contextOnModelCreatingPrinted)}") != "" && !file.NewFile)
                         {
                             sb.AppendLine();
                             sb.AppendLine(line);
@@ -664,17 +1159,18 @@ namespace Emar.Data.Helpers
 
                         foreach (var fragment in segment.CorrectionFragments)
                         {
-                            sb.AppendLine();
                             foreach (var ln in fragment.CorrectionCode.Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries))
                             {
-                                sb.AppendLine($"\t\t{ln}");
+                                sb.AppendLine($"        {ln}");
                             }
+                            sb.AppendLine();
                         }
                     }
-                    if (file.EntityName  == CONTEXT_NAME)
+
+                    if (lastSegment == FileSegment.ContextOnModelCreating)
                     {
+                        sb.AppendLine("        });");
                         sb.AppendLine();
-                        sb.AppendLine("\t\t});");
                     }
                 }
 
@@ -690,13 +1186,17 @@ namespace Emar.Data.Helpers
                     case FileSegment.ContextOnModelCreating:
                         var ret = 
                         (!contextOnModelCreatingPrinted ? 
-                            "\tOnModelCreating() Method:" + Environment.NewLine + Environment.NewLine
-                            :"") + 
-                        $"\t\tmodelBuilder.Entity<Entities.{segment.EntityName}>(entity =>" + Environment.NewLine + 
-                        "\t\t{";
+                            "    OnModelCreating() Method:" + Environment.NewLine + Environment.NewLine
+                            :"");
 
                         contextOnModelCreatingPrinted = true;
                         return ret;
+                    case FileSegment.EntityForeignKeysDeclaring:
+                        return "\tTop of the Foreign Keys section:";
+                    case FileSegment.EntityForeignKeysInverse:
+                        return "\tBelow the 'Foreign Keys' section, where the keys only have the [InverseProperty]:";
+                    case FileSegment.EntityForeignKeysConstructor:
+                        return "\tIn the Class' Constructor:";
                     case FileSegment.TableLevel:
                         return "";
                     default:
@@ -713,19 +1213,21 @@ namespace Emar.Data.Helpers
 
             internal string FileName => EntityName + ".cs";
 
+            internal bool NewFile { get; set; }
+
             internal List<EfDiscrepancyFileSegment> FileSegments { get; set; } =
                 new List<EfDiscrepancyFileSegment>();
 
-            internal EfDiscrepancyFile(string sqlTableName, string entityName)
+            internal EfDiscrepancyFile(string sqlTableName, string entityName, bool newFile)
             {
                 SqlTableName = sqlTableName;
                 EntityName = entityName ?? PascalNameFromSqlName(sqlTableName);
+                NewFile = newFile;
             }
 
             internal EfDiscrepancyFileSegment GetFileSegment(FileSegment segment, string entityName = null)
             {
-                EfDiscrepancyFileSegment returnSegment;
-                returnSegment = string.IsNullOrWhiteSpace(entityName)
+                var returnSegment = string.IsNullOrWhiteSpace(entityName)
                     ? FileSegments.FirstOrDefault(c => c.Segment == segment)
                     : FileSegments.FirstOrDefault(c => c.Segment == segment && c.EntityName == entityName);
                 if (returnSegment == null)
@@ -748,24 +1250,6 @@ namespace Emar.Data.Helpers
         public class EfDiscrepancyCodeCorrectionFragment
         {
             public string CorrectionCode { get; set; }
-            //public string SqlColumnName { get; private set; }
-            //public string PropertyName { get; private set; }
-            //public FileSegment SectionOfFile { get; set; }
-            //internal ReportProblem Error { get; set; }
-            //public string ErrorDescription => Error.ToString();
-            //public string ErrorDetails { get; set; }
-
-            //internal EfDiscrepancyCodeCorrectionFragment(string sqlColumnName)
-            //{
-            //    SqlColumnName = sqlColumnName;
-            //    PropertyName = PascalNameFromSqlName(sqlColumnName);
-            //}
-
-            //internal EfDiscrepancyCodeCorrectionFragment(string sqlColumnName, string propertyName)
-            //{
-            //    SqlColumnName = sqlColumnName;
-            //    PropertyName = propertyName;
-            //}
 
             internal EfDiscrepancyCodeCorrectionFragment(EfColumnAttributes colObj, ReportProblem problem,
                 string problemDetails)
@@ -777,6 +1261,9 @@ namespace Emar.Data.Helpers
                     case ReportProblem.AnnotationSqlDatatypeNotMatchClrDatatype:
                     case ReportProblem.DbDataTypeNotMatchDefinedSqlType:
                     case ReportProblem.DataTypeNullableButColumnDoesntTakeNulls:
+                    case ReportProblem.PropertyNotFlaggedAsKey:
+                    case ReportProblem.DataTypeNotNullableButColumnTakesNulls:
+                    case ReportProblem.PropertyImproperlyFlaggedAsKey:
                         CorrectionCode =
                             "// Update Property in Entity file" + Environment.NewLine + 
                             (string.IsNullOrWhiteSpace(problemDetails) ? ""
@@ -808,11 +1295,13 @@ namespace Emar.Data.Helpers
                         break;
                     case ReportProblem.ContextNotUnicodePropertyMissing:
                         CorrectionCode =
-                            "\t// Add entity.Property setting described below" + Environment.NewLine +
+                            $"modelBuilder.Entity<{colObj.Parent.EntityName}>(entity =>" + Environment.NewLine +
+                            "{" + Environment.NewLine +
+                            "    // Add entity.Property setting described below" + Environment.NewLine +
                             (string.IsNullOrWhiteSpace(problemDetails)
                                 ? ""
-                                : $"\t// Problem: {problemDetails}" + Environment.NewLine + Environment.NewLine) +
-                            $"\tentity.Property(e => e.{colObj.ClrName}).IsUnicode(false);";
+                                : $"    // Problem: {problemDetails}" + Environment.NewLine + Environment.NewLine) +
+                            $"    entity.Property(e => e.{colObj.ClrName}).IsUnicode(false);";
                         break;
                     case ReportProblem.ContextNotUnicodePropertyToBeRemoved:
                         CorrectionCode =
@@ -823,13 +1312,13 @@ namespace Emar.Data.Helpers
                             $"\tentity.Property(e => e.{colObj.ClrName}).IsUnicode(false);";
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(problem), problem,
+                         throw new ArgumentOutOfRangeException(nameof(problem), problem,
                             "in EfDiscrepancyCodeCorrectionFragment.constructor()");
                 }
             }
 
             public EfDiscrepancyCodeCorrectionFragment(string sqlColumnName, string sqlDataType, in bool sqlNullable,
-                in bool sqlKeyColumn, ReportProblem problem)
+                in bool sqlKeyColumn, ReportProblem problem, bool newTable)
             {
                 if (problem != ReportProblem.DbColumnMissing)
                     throw new NotImplementedException(
@@ -840,29 +1329,69 @@ namespace Emar.Data.Helpers
                 var keyRequiredText = sqlKeyColumn ? ", Key" : (includeRequired ? ", Required" : "");
 
                 CorrectionCode =
-                    "// Missing column to be added to the Entity" + Environment.NewLine +
+                    (newTable ? "": "// Missing column to be added to the Entity" + Environment.NewLine) +
                     $"[Column(\"{sqlColumnName}\", TypeName = \"{sqlDataType}\")" + $"{keyRequiredText}]" +
                     Environment.NewLine +
                     $"public {clrType} {propertyName} {{ get; set; }}";
             }
 
-            public EfDiscrepancyCodeCorrectionFragment(ReportProblem reportProblem, string problemDetails)
+            public EfDiscrepancyCodeCorrectionFragment(EfTableAttributes tblObj, ReportProblem problem,
+                string problemDetails)
             {
-                switch (reportProblem)
+                switch (problem)
                 {
                     case ReportProblem.DbTableMissing:
                         CorrectionCode =
-                            $"The DB Table {problemDetails} doesn't exist.  Remove this file from the project." +
+                            $"The DB Table {tblObj.SqlTableName} doesn't exist. " + Environment.NewLine +
+                            "Remove this file from the project, or add it to the \"EntitiesNotMapped\" list in the body of the \"Confirm\" call)." +
                             Environment.NewLine +
                             $"This will also cause you to have to update the {CONTEXT_NAME} to remove the corresponding DB Set" +
                             Environment.NewLine +
-                            $"and possibly an OnModelCreating() \"modelBuilder.Entity<{problemDetails}>(entity => \" section." +
+                            $"and an OnModelCreating() \"modelBuilder.Entity<{tblObj.EntityName}>(entity => \" section." +
                             Environment.NewLine;
                         break;
+                    case ReportProblem.ForeignTableNotInModel:
+                        CorrectionCode =
+                            $"The DB Table {tblObj.SqlTableName} has a foreign key, '{problemDetails}', which points to table not included in the model.";
+                        break;
+                    case ReportProblem.DocumentNewTable:
+                        CorrectionCode = "";
+                        break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(reportProblem), reportProblem, 
+                        throw new ArgumentOutOfRangeException(nameof(problem), problem, 
                             "From EfDiscrepancyCodeFragment.ctor (the one with 2 args)");
                 }   
+            }
+
+            public EfDiscrepancyCodeCorrectionFragment(EfForeignKeyAttributes fk, ReportProblem problem,
+                FileSegment segment)
+            {
+                string commentLine = "";
+                switch (problem)
+                {
+                    case ReportProblem.ForeignKeyDoesntMatch:
+                        commentLine =
+                            "Found discrepancy in how the foreign key definition between EF and DB - compare to existing code.";
+                        break;
+                    case ReportProblem.ForeignKeyEntityOnly:
+                        commentLine =
+                            "Found foreign key defined in EF that doesn't exist in the DB.";
+                        break;
+                    case ReportProblem.ForeignKeySqlOnly:
+                        if (!fk.ParentTable.CreateNewTable)
+                            commentLine =
+                                "Found foreign key defined in DB that doesn't exist in the EF.";
+                        break;
+                    case ReportProblem.ForeignKeyNameChanged:
+                        commentLine =
+                            $"Foreign Key name in the database, \"{fk.SqlConstraintName}\", differs from the declared name (for the same key).";
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(problem), problem,
+                            "in EfDiscrepancyCodeCorrectionFragment.constructor()");
+                }
+
+                CorrectionCode = fk.CorrectionCode(segment, commentLine);
             }
         }
 
@@ -882,7 +1411,14 @@ namespace Emar.Data.Helpers
             ContextFixedLengthPropertyMissing,
             ContextFixedLengthPropertyToBeRemoved,
             DbDataTypeNotMatchDefinedSqlType,
-            DbTableMissing
+            DbTableMissing,
+            ForeignKeyDoesntMatch,
+            ForeignKeyNameChanged,
+            ForeignKeySqlOnly,
+            ForeignKeyEntityOnly,
+            RequestedNewTableAlreadyExists,
+            DocumentNewTable,
+            ForeignTableNotInModel
         }
 
         #endregion
@@ -944,6 +1480,63 @@ namespace Emar.Data.Helpers
             }
         }
 
+        private static Type SqlToClrDataType(string dataType, bool nullable, out bool? isUnicode,
+            out bool? isFixWidth, out int? maxStringLength)
+        {
+            var dtParts = dataType.Split(new[] { '(', ')', ',' });
+
+            isFixWidth = null;
+            isUnicode = null;
+            maxStringLength = null;
+            switch (dtParts[0].ToLower())
+            {
+                case "varchar":
+                    if(dtParts[1].ToUpper() != "MAX")
+                        maxStringLength =  Convert.ToInt32(dtParts[1]);
+                    return typeof(string);
+                case "char":
+                    if (dtParts[1].ToUpper() != "MAX")
+                        maxStringLength = Convert.ToInt32(dtParts[1]);
+                    isFixWidth = true;
+                    return typeof(string);
+                case "nvarchar":
+                    if (dtParts[1].ToUpper() != "MAX")
+                        maxStringLength = Convert.ToInt32(dtParts[1]);
+                    isUnicode = true;
+                    return typeof(string);
+                case "nchar":
+                    if (dtParts[1].ToUpper() != "MAX")
+                        maxStringLength = Convert.ToInt32(dtParts[1]);
+                    isFixWidth = true;
+                    isUnicode = true;
+                    return typeof(string);
+                case "time":
+                    return nullable ? typeof(TimeSpan?) : typeof(TimeSpan);
+                case "date":
+                    return nullable ? typeof(DateTime?) : typeof(DateTime);
+                case "datetimeoffset":
+                    return nullable ? typeof(DateTimeOffset?) : typeof(DateTimeOffset);
+                case "bit":
+                    return nullable ? typeof(bool?) : typeof(bool);
+                case "tinyint":
+                    return nullable ? typeof(byte?) : typeof(byte);
+                case "smallint":
+                    return nullable ? typeof(short?) : typeof(short);
+                case "int":
+                    return nullable ? typeof(int?) : typeof(int);
+                case "bigint":
+                    return nullable ? typeof(long?) : typeof(long);
+                case "decimal":
+                case "numeric":
+                    return nullable ? typeof(decimal?) : typeof(decimal);
+                case "varbinary":
+                    return typeof(byte[]);
+                default:
+                    throw new NotImplementedException(
+                        $"SqlToClrDataTypeString() switch doesn't cover case: '{dtParts[0]}");
+            }
+        }
+
         private static string ClrDataTypeToString(Type dataType)
         {
             switch (dataType.ToString())
@@ -986,45 +1579,73 @@ namespace Emar.Data.Helpers
         #endregion
 
 
-        private const string COLUMN_QUERY = "SELECT	c.name, \n\r" +
-                                            "TYPE_NAME(system_type_id) + \n\r" +
-                                            "CASE\n\r" +
-                                            "WHEN TYPE_NAME(system_type_id) LIKE '%char' and max_length = -1 \n\r" +
-                                            "THEN '(max)' \n\r" +
-                                            "WHEN TYPE_NAME(system_type_id) LIKE 'n%char' \n\r" +
-                                            "THEN CONCAT('(', max_length / 2, ')')\n\r" +
-                                            "WHEN TYPE_NAME(system_type_id) LIKE '%char' \n\r" +
-                                            "OR TYPE_NAME(system_type_id) = 'binary'  \n\r" +
-                                            "THEN CONCAT('(', max_length, ')')\n\r" +
-                                            "WHEN TYPE_NAME(system_type_id) = 'numeric' \n\r" +
-                                            "OR TYPE_NAME(system_type_id) = 'decimal' \n\r" + 
-                                            "THEN CONCAT('(', precision, ',', scale, ')')\n\r" +
-                                            "ELSE ''\n\r" +
-                                            "END AS datatype\n\r" +
-                                            ", is_nullable\n\r" +
-                                            ", CASE WHEN ic.index_id IS NULL THEN 0 ELSE 1 END AS KeyColumn\n\r" +
-                                            "FROM    sys.columns c\n\r" +
-                                            "JOIN sys.indexes i\n\r" +
-                                            "ON c.object_id = i.object_id\n\r" +
-                                            "AND i.is_primary_key = 1\n\r" +
-                                            "LEFT JOIN sys.index_columns ic\n\r" +
-                                            "ON ic.object_id = i.object_id\n\r" +
-                                            "AND i.index_id = ic.index_id\n\r" +
-                                            "AND c.column_id = ic.column_id\n\r" +
-                                            "WHERE c.object_id = OBJECT_ID('{0}')\n\r";
+        private const string COLUMN_QUERY =
+            "SELECT	c.name, \n\r" +
+            "TYPE_NAME(system_type_id) + \n\r" +
+            "CASE\n\r" +
+            "WHEN TYPE_NAME(system_type_id) LIKE '%char' and max_length = -1 \n\r" +
+            "THEN '(max)' \n\r" +
+            "WHEN TYPE_NAME(system_type_id) LIKE 'n%char' \n\r" +
+            "THEN CONCAT('(', max_length / 2, ')')\n\r" +
+            "WHEN TYPE_NAME(system_type_id) LIKE '%char' \n\r" +
+            "OR TYPE_NAME(system_type_id) = 'binary'  \n\r" +
+            "THEN CONCAT('(', max_length, ')')\n\r" +
+            "WHEN TYPE_NAME(system_type_id) = 'numeric' \n\r" +
+            "OR TYPE_NAME(system_type_id) = 'decimal' \n\r" +
+            "THEN CONCAT('(', precision, ',', scale, ')')\n\r" +
+            "ELSE ''\n\r" +
+            "END AS datatype\n\r" +
+            ", is_nullable\n\r" +
+            ", CASE WHEN ic.index_id IS NULL THEN 0 ELSE 1 END AS KeyColumn\n\r" +
+            "FROM    sys.columns c\n\r" +
+            "JOIN sys.indexes i\n\r" +
+            "ON c.object_id = i.object_id\n\r" +
+            "AND i.is_primary_key = 1\n\r" +
+            "LEFT JOIN sys.index_columns ic\n\r" +
+            "ON ic.object_id = i.object_id\n\r" +
+            "AND i.index_id = ic.index_id\n\r" +
+            "AND c.column_id = ic.column_id\n\r" +
+            "WHERE c.object_id = OBJECT_ID('{0}')\n\r";
 
-        private const string FOREIGN_KEY_QUERY = "";
+        private const string FOREIGN_KEY_QUERY =
+            "WITH dupKeyToTables AS ( \r\n" +
+            "	select	principalentitytable = object_name(referenced_object_id) \r\n" +
+            "	from	sys.foreign_keys k  \r\n" +
+            "	where	parent_object_id = object_id('{0}') \r\n" +
+            "	group by object_name(referenced_object_id) \r\n" +
+            "	having count(*) > 1 \r\n" +
+            ") \r\n" +
+            "select	name,   \r\n" +
+            "		DeclaringEntityTable = object_name(parent_object_id),  \r\n" +
+            "		PrincipalEntityTable = object_name(referenced_object_id),  \r\n" +
+            "		substring (  \r\n" +
+            "		(  \r\n" +
+            "			select ', ' + col_name(parent_object_id, parent_column_id)   \r\n" +
+            "			from sys.foreign_key_columns c  \r\n" +
+            "			where c.constraint_object_id = k.object_id  \r\n" +
+            "			order by constraint_column_id  \r\n" +
+            "			for xml path, type  \r\n" +
+            "		).value('.[1]', 'nvarchar(max)'),  \r\n" +
+            "		3, 8000) as DeclaringEntityFields, \r\n" +
+            "		case when d.principalentitytable is not null then 1 else 0 end as DuplicatePrincipalForeignKeys \r\n" +
+            "from	sys.foreign_keys k  \r\n" +
+            "left join dupkeytotables d \r\n" +
+            "		on object_name(referenced_object_id) = d.principalentitytable \r\n" +
+            "where	parent_object_id = object_id('{0}')";
     }
 
     public enum FileSegment
     {
-        EntityProperties,
         ContextOnModelCreating,
         None,
-        TableLevel
+        TableLevel,
+        EntityForeignKeysConstructor,
+        EntityProperties,
+        EntityForeignKeysDeclaring,
+        EntityForeignKeysInverse
     }
 
-#if TestingInternalDatatypeProblems
+#if TestingEfUtility_bogus
 
 /**** Go to "C:\Users\bm70142\OneDrive - harriscomputer\Documents\PulseCheck work\Testing Data for EfToDbSynchHelper.sql"
  **** for SQL data to create sample tables */

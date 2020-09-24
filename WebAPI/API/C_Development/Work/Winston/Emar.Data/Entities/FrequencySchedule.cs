@@ -69,5 +69,9 @@ namespace Emar.Data.Entities
 
         [InverseProperty("FrequencySchedule")]
         public virtual ICollection<UserQuickListItem> UserQuickListItems { get; set; }
+
+        [ForeignKey(nameof(SiteId))]
+        [InverseProperty(nameof(Entities.Site.FrequencySchedules))]
+        public virtual Site Site { get; set; }
     }
 }

@@ -26,15 +26,15 @@ namespace Emar.Data.Entities
         [Column("add_datetime", TypeName = "datetimeoffset"), Required]
         public DateTimeOffset AddDatetime { get; set; }
 
-        [Column("ndc")]
-        [StringLength(32)]
-        public string Ndc { get; set; }
+        //[Column("ndc")]
+        //[StringLength(32)]
+        //public string Ndc { get; set; }
 
-        [Column("drug_id", TypeName = "varchar(32)"), Required]
-        public string DrugId { get; set; }
+        //[Column("drug_id", TypeName = "varchar(32)"), Required]
+        //public string DrugId { get; set; }
 
-        [Column("brand_name", TypeName = "nvarchar(255)"), Required]
-        public string BrandName { get; set; }
+        //[Column("brand_name", TypeName = "nvarchar(255)"), Required]
+        //public string BrandName { get; set; }
 
         [Column("dose", TypeName = "decimal(11,2)")]
         public decimal? Dose { get; set; }
@@ -69,6 +69,12 @@ namespace Emar.Data.Entities
         [Column("user_quick_list_item_id", TypeName = "int")]
         public int? UserQuickListItemId { get; set; }
 
+        [Column("medication_id", TypeName = "int")]
+        public int MedicationId { get; set; }
+
+        [ForeignKey(nameof(MedicationId))]
+        [InverseProperty(nameof(Entities.Medication.PatientCartOrders))]
+        public virtual Medication Medication { get; set; }
 
         [ForeignKey(nameof(FrequencyScheduleId))]
         [InverseProperty(nameof(Entities.FrequencySchedule.PatientCartOrders))]

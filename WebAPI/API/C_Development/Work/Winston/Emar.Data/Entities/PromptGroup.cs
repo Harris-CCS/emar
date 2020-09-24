@@ -17,14 +17,10 @@ namespace Emar.Data.Entities
         [Column("id")]
         public int Id { get; set; }
 
-        [Required]
-        [Column("name")]
-        [StringLength(20)]
+        [Column("name", TypeName = "varchar(20)"), Required]
         public string Name { get; set; }
-        
-        [Required]
-        [Column("title")]
-        [StringLength(50)]
+
+        [Column("title", TypeName = "varchar(50)"), Required]
         public string Title { get; set; }
 
 

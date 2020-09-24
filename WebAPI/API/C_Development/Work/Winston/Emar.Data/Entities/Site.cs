@@ -13,10 +13,14 @@ namespace Emar.Data.Entities
             GroupListItems = new HashSet<GroupListItem>();
             MedicationRoutes = new HashSet<MedicationRoute>();
             MedicationUnits = new HashSet<MedicationUnit>();
+            Medications = new HashSet<Medication>();
             Patients = new HashSet<Patient>();
             UserQuickListItems = new HashSet<UserQuickListItem>();
             Users = new HashSet<User>();
             SiteOptions = new HashSet<SiteOption>();
+            SiteFormularyMatchs = new HashSet<SiteFormularyMatch>();
+            FrequencySchedules = new HashSet<FrequencySchedule>();
+            SiteFormularys = new HashSet<SiteFormulary>();
         }
 
         [Key]
@@ -43,6 +47,9 @@ namespace Emar.Data.Entities
         public virtual ICollection<MedicationRoute> MedicationRoutes { get; set; }
 
         [InverseProperty("Site")]
+        public virtual ICollection<Medication> Medications { get; set; }
+
+        [InverseProperty("Site")]
         public virtual ICollection<MedicationUnit> MedicationUnits { get; set; }
 
         [InverseProperty("Site")]
@@ -56,6 +63,15 @@ namespace Emar.Data.Entities
 
         [InverseProperty("Site")]
         public virtual ICollection<SiteOption> SiteOptions { get; set; }
+
+        [InverseProperty("Site")]
+        public virtual ICollection<SiteFormularyMatch> SiteFormularyMatchs { get; set; }
+
+        [InverseProperty("Site")]
+        public virtual ICollection<FrequencySchedule> FrequencySchedules { get; set; }
+
+        [InverseProperty("Site")]
+        public virtual ICollection<SiteFormulary> SiteFormularys { get; set; }
 
         //  This foreign key is not in the database, and can't be enforceable if it were:
         //    - The datatypes don't line up, and 

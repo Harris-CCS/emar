@@ -18,14 +18,17 @@ namespace Emar.Data.Entities
         [Column("group_name", TypeName = "nvarchar(255)"), Required]
         public string GroupName { get; set; }
 
-        [Column("ndc", TypeName = "varchar(32)")]
-        public string Ndc { get; set; }
+        //[Column("ndc", TypeName = "varchar(32)")]
+        //public string Ndc { get; set; }
 
-        [Column("drug_id", TypeName = "varchar(32)")]
-        public string DrugId { get; set; }
+        //[Column("drug_id", TypeName = "varchar(32)")]
+        //public string DrugId { get; set; }
 
-        [Column("brand_name", TypeName = "nvarchar(255)"), Required]
-        public string BrandName { get; set; }
+        //[Column("brand_name", TypeName = "nvarchar(255)"), Required]
+        //public string BrandName { get; set; }
+
+        [Column("medication_id", TypeName = "int")]
+        public int MedicationId { get; set; }
 
         [Column("dose", TypeName = "decimal(11, 2)")]
         public decimal? Dose { get; set; }
@@ -42,6 +45,9 @@ namespace Emar.Data.Entities
         [Column("order_notes", TypeName = "nvarchar(MAX)")]
         public string OrderNotes { get; set; }
 
+        [ForeignKey(nameof(MedicationId))]
+        [InverseProperty(nameof(Entities.Medication.GroupListItems))]
+        public virtual Medication Medication { get; set; }
 
         [ForeignKey(nameof(FrequencyScheduleId))]
         [InverseProperty(nameof(Entities.FrequencySchedule.GroupListItems))]

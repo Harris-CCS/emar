@@ -16,24 +16,28 @@ namespace Emar.Data.Entities
         [Key]
         [Column("id")]
         public int Id { get; set; }
+
         [Column("prompt_group_id")]
         public int PromptGroupId { get; set; }
+
         [Column("sequence")]
         public short Sequence { get; set; }
         [Required]
+
         [Column("prompt")]
         [StringLength(200)]
         public string PromptText { get; set; }
+
         [Required]
         [Column("is_active")]
         public bool IsActive { get; set; }
-        [Required]
-        [Column("prompt_type")]
-        [StringLength(20)]
+
+        [Column("prompt_type", TypeName = "varchar(20)"), Required]
         public string PromptType { get; set; }
-        [Column("prompt_default")]
-        [StringLength(100)]
+
+        [Column("prompt_default", TypeName = "varchar(100)")]
         public string PromptDefault { get; set; }
+
         [Column("required")]
         public bool Required { get; set; }
 
@@ -42,5 +46,7 @@ namespace Emar.Data.Entities
         public virtual PromptGroup PromptGroup { get; set; }
         [InverseProperty("Prompt")]
         public virtual ICollection<PromptChoice> PromptChoices { get; set; }
+
+
     }
 }

@@ -32,8 +32,8 @@ namespace Emar.Data.Entities
         [Column("administration_scheduled_datetime", TypeName = "datetimeoffset"), Required]
         public DateTimeOffset AdministrationScheduledDatetime { get; set; }
 
-        [Column("administration_input_datetime", TypeName = "datetimeoffset")]
-        public DateTimeOffset? AdministrationInputDatetime { get; set; }
+        //[Column("administration_input_datetime", TypeName = "datetimeoffset")]
+        //public DateTimeOffset? AdministrationInputDatetime { get; set; }
 
         [Column("administering_user_id", TypeName = "int")]
         public int? AdministeringUserId { get; set; }
@@ -58,6 +58,9 @@ namespace Emar.Data.Entities
 
         [Column("acknowledge_datetime", TypeName = "datetimeoffset")]
         public DateTimeOffset? AcknowledgeDatetime { get; set; }
+
+        [Column("administration_system_datetime", TypeName = "datetimeoffset")]
+        public DateTimeOffset? AdministrationSystemDatetime { get; set; }
 
         [ForeignKey(nameof(AcknowledgeUserId))]
         [InverseProperty(nameof(User.OrderAdministrationsAcknowledgeUser))]

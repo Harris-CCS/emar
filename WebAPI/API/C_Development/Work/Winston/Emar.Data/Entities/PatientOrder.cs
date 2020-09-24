@@ -36,16 +36,16 @@ namespace Emar.Data.Entities
         [Column("end_datetime", TypeName = "datetimeoffset")]
         public DateTimeOffset? EndDateTime { get; set; }
 
-        [Column("ndc")]
-        [StringLength(32)]
-        public string Ndc { get; set; }
+        //[Column("ndc")]
+        //[StringLength(32)]
+        //public string Ndc { get; set; }
 
-        [Column("drug_id", TypeName = "varchar(32)")]
-        public string DrugId { get; set; }
+        //[Column("drug_id", TypeName = "varchar(32)")]
+        //public string DrugId { get; set; }
 
-        [Column("brand_name")]
-        [StringLength(255)]
-        public string BrandName { get; set; }
+        //[Column("brand_name")]
+        //[StringLength(255)]
+        //public string BrandName { get; set; }
 
         [Column("dose", TypeName = "decimal(11,2)")]
         public decimal? Dose { get; set; }
@@ -77,9 +77,19 @@ namespace Emar.Data.Entities
         [NotMapped]
         public string OrderStatusCode { get; set; } = "Pending";
 
+        [Column("medication_id", TypeName = "int")]
+        public int MedicationId
+        {
+            get; set;
+        }
+
         [ForeignKey(nameof(AddUserId))]
         [InverseProperty(nameof(User.PatientOrdersAddUser))]
         public virtual User AddUser { get; set; }
+
+        [ForeignKey(nameof(MedicationId))]
+        [InverseProperty(nameof(Entities.Medication.PatientOrders))]
+        public virtual Medication Medication { get; set; }
 
         [ForeignKey(nameof(FrequencyScheduleId))]
         [InverseProperty(nameof(Entities.FrequencySchedule.PatientOrders))]

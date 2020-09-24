@@ -153,6 +153,9 @@ namespace Emar.Api
             services.AddScoped<IDoseRangeCheckingInfoService, DoseRangeCheckingInfoService>();
             services.AddScoped<IDoseRangeCheckingInfoRepository, DoseRangeCheckingInfoRepository>();
 
+            services.AddScoped<IMedicationService, MedicationService>();
+            services.AddScoped<IMedicationRepository, MedicationRepository>();
+
             services.AddScoped<IOptionService, OptionService>();
             services.AddScoped<IOptionRepository, OptionRepository>();
 

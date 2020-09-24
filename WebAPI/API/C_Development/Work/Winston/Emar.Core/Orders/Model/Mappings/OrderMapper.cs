@@ -27,9 +27,9 @@ namespace Emar.Core.Orders.Model.Mappings
                 AddTime = DateTimeHelper.GetTime(patientOrder.AddDatetime),
                 OrderingPhysicianId = patientOrder.OrderingPhysicianId,
                 OrderingPhysicianUser = UserMapper.MapUser(patientOrder.OrderPhysicianUser),
-                Ndc = patientOrder.Ndc,
-                DrugId = patientOrder.DrugId,
-                BrandName = patientOrder.BrandName,
+                //Ndc = patientOrder.Ndc,
+                //DrugId = patientOrder.DrugId,
+                //BrandName = patientOrder.BrandName,
                 Dose = patientOrder.Dose,
                 DoseUnit = MedicationMapper.MapMedicationUnit(patientOrder.MedicationUnit),
                 MedicationRoute = MedicationMapper.MapMedicationRoute(patientOrder.MedicationRoute),
@@ -52,18 +52,6 @@ namespace Emar.Core.Orders.Model.Mappings
                 ////OrderEvents = patientOrder.OrderEvents?.Select(ev => OrderMapper.MapOrderEvent(ev)).ToList()
             };
 
-            patientOrderDto.NextActionTime = null;
-            if (patientOrderDto.OrderAdministrations != null)
-                foreach (var admin in patientOrderDto.OrderAdministrations.Where(admin =>
-                    admin.TimeNeedingAction.HasValue))
-                {
-                    if (!patientOrderDto.NextActionTime.HasValue ||
-                        patientOrderDto.NextActionTime > admin.TimeNeedingAction)
-                    {
-                        patientOrderDto.NextActionTime = admin.TimeNeedingAction;
-                    }
-                }
-
             return patientOrderDto;
         }
 
@@ -74,13 +62,13 @@ namespace Emar.Core.Orders.Model.Mappings
                 return null;
             }
 
-             OrderAdministrationDto administrationDto = new OrderAdministrationDto
+            OrderAdministrationDto administrationDto = new OrderAdministrationDto
             {
                 DateFormat = dateFormat,
                 Id = administration.Id,
                 OrderId = administration.PatientOrderId,
                 AdministrationScheduledDatetime = administration.AdministrationScheduledDatetime,
-                AdministrationInputDatetime = administration.AdministrationInputDatetime,
+                //AdministrationInputDatetime = administration.AdministrationInputDatetime,
                 AdministrationDatetime = administration.AdministrationDatetime,
                 AdministeringUserId = administration.AdministeringUserId,
                 StopScheduledDatetime = administration.StopScheduledDatetime,
@@ -134,9 +122,11 @@ namespace Emar.Core.Orders.Model.Mappings
                 UserId = dbObj.UserId,
                 SiteId = dbObj.SiteId,
                 Id = dbObj.Id,
-                Ndc = dbObj.Ndc,
-                DrugId = dbObj.DrugId,
-                BrandName = dbObj.BrandName,
+                //Ndc = dbObj.Ndc,
+                //DrugId = dbObj.DrugId,
+                //BrandName = dbObj.BrandName,
+                MedicationId = dbObj.MedicationId,
+                Medication = MedicationMapper.MapMedication(dbObj.Medication),
                 Dose = dbObj.Dose,
                 DoseUnit = MedicationMapper.MapMedicationUnit(dbObj.MedicationUnit),
                 MedicationRoute = MedicationMapper.MapMedicationRoute(dbObj.MedicationRoute),
@@ -167,9 +157,9 @@ namespace Emar.Core.Orders.Model.Mappings
                 DepartmentCode = dbObj.DepartmentCode,
                 SiteId = dbObj.SiteId,
                 Id = dbObj.Id,
-                Ndc = dbObj.Ndc,
-                DrugId = dbObj.DrugId,
-                BrandName = dbObj.BrandName,
+                //Ndc = dbObj.Ndc,
+                //DrugId = dbObj.DrugId,
+                //BrandName = dbObj.BrandName,
                 Dose = dbObj.Dose,
                 DoseUnit = MedicationMapper.MapMedicationUnit(dbObj.MedicationUnit),
                 MedicationRoute = MedicationMapper.MapMedicationRoute(dbObj.MedicationRoute),
@@ -200,9 +190,9 @@ namespace Emar.Core.Orders.Model.Mappings
                 SiteId = dbObj.SiteId,
                 GroupName = dbObj.GroupName,
                 Id = dbObj.Id,
-                Ndc = dbObj.Ndc,
-                DrugId = dbObj.DrugId,
-                BrandName = dbObj.BrandName,
+                //Ndc = dbObj.Ndc,
+                //DrugId = dbObj.DrugId,
+                //BrandName = dbObj.BrandName,
                 Dose = dbObj.Dose,
                 DoseUnit = MedicationMapper.MapMedicationUnit(dbObj.MedicationUnit),
                 MedicationRoute = MedicationMapper.MapMedicationRoute(dbObj.MedicationRoute),

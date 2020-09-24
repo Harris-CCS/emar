@@ -196,7 +196,7 @@
             Dose Range Checking Info Controller
             </summary>
         </member>
-        <member name="M:Emar.Api.Controllers.MedicationsController.#ctor(Emar.Core.Medications.Service.IDoseRangeCheckingInfoService)">
+        <member name="M:Emar.Api.Controllers.MedicationsController.#ctor(Emar.Core.Medications.Service.IDoseRangeCheckingInfoService,Emar.Core.Medications.Service.IMedicationService,Emar.Core.Options.Service.IOptionService)">
             <summary>
             Constructor
             </summary>
@@ -215,7 +215,7 @@
             <remarks>
             </remarks>
         </member>
-        <member name="M:Emar.Api.Controllers.MedicationsController.GetMedByBrandName(System.String,System.String,System.Int32,System.String,System.Int32)">
+        <member name="M:Emar.Api.Controllers.MedicationsController.GetMedByBrandName(System.String,System.String,System.Int32,System.String,System.Int32,System.String)">
             <summary>
             Medication search by brand name
             </summary>
@@ -227,22 +227,28 @@
             </param>
             <param name="siteId">
             The id of the site that we are searching in.
+            Is pulled from the request header.
             </param>
             <param name="searchType">
             The type of list to search in.
+            all = all
+            deptpreferredlist = department preferred list
+            formulary = formulary
+            groups = groups
             quicklist = user's quick list
-            deptpreferredlist =  department preferred list
-            groups =  groups
-            formulary =  formulary
-            empty = all
             </param>
             <param name="userId">
             The id of the current user.
-            Pulled from the request header.
+            Is pulled from the request header.
             Used when searching in the user-specific quick list.
             </param>
+            /// <param name="deptCode">
+            The department of the patient.
+            Is pulled from the request header.
+            Used when searching in the department preferred list.
+            </param>
             
-            <returns>TBD</returns>
+            <returns>A alphabetically sorted list of medication names that match the search criteria.</returns>
             <remarks>
             </remarks>
         </member>
@@ -487,6 +493,21 @@
             <param name="quickListItemId">The QuickList Item to move into the cart</param>
             <param name="patientId">the patient that the cart is intended for</param>
             <returns></returns>
+        </member>
+        <member name="T:Emar.Api.Controllers.ReturnReport">
+            <summary>
+            Output for the ad hoc SQL Queries
+            </summary>
+        </member>
+        <member name="P:Emar.Api.Controllers.ReturnReport.ReturnValues">
+            <summary>
+            Response Values
+            </summary>
+        </member>
+        <member name="P:Emar.Api.Controllers.ReturnReport.PerformanceReport">
+            <summary>
+            If any SQL query takes more than the threshold amount of time, it will be reported here
+            </summary>
         </member>
     </members>
 </doc>

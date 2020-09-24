@@ -23,16 +23,16 @@ namespace Emar.Data.Entities
         [Column("user_id", TypeName = "int"), Required]
         public int UserId { get; set; }
 
-        [Column("ndc")]
-        [StringLength(32)]
-        public string Ndc { get; set; }
+        //[Column("ndc")]
+        //[StringLength(32)]
+        //public string Ndc { get; set; }
 
-        [Column("drug_id")]
-        [StringLength(32)]
-        public string DrugId { get; set; }
+        //[Column("drug_id")]
+        //[StringLength(32)]
+        //public string DrugId { get; set; }
 
-        [Column("brand_name", TypeName = "nvarchar(255)"), Required]
-        public string BrandName { get; set; }
+        //[Column("brand_name", TypeName = "nvarchar(255)"), Required]
+        //public string BrandName { get; set; }
 
         [Column("dose", TypeName = "decimal(11, 2)")]
         public decimal? Dose { get; set; }
@@ -55,10 +55,19 @@ namespace Emar.Data.Entities
         [Column("weekly_usage_rolling_average", TypeName = "decimal(9, 3)")]
         public decimal? WeeklyUsageRollingAverage { get; set; }
 
+        [Column("medication_id")]
+        public int? MedicationId { get; set; }
+
+        [Column("duration_in_minutes", TypeName = "int")]
+        public int DurationInMinutes { get; set; }
 
         [ForeignKey(nameof(FrequencyScheduleId))]
         [InverseProperty(nameof(Entities.FrequencySchedule.UserQuickListItems))]
         public virtual FrequencySchedule FrequencySchedule { get; set; }
+
+        [ForeignKey(nameof(MedicationId))]
+        [InverseProperty(nameof(Entities.Medication.UserQuickListItems))]
+        public virtual Medication Medication { get; set; }
 
         [ForeignKey(nameof(MedicationRouteId))]
         [InverseProperty(nameof(Entities.MedicationRoute.UserQuickListItems))]
