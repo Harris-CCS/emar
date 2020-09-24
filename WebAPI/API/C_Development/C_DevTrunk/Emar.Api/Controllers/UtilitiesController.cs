@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Dynamic;
 using System.Linq;
+using System.Threading;
 using Emar.Core.Sites.Service;
 using Emar.Data;
 using Emar.Data.Helpers;
@@ -29,10 +32,14 @@ namespace Emar.Api.Controllers
             try
             {
                 var rpt = new EfToDbSynchHelper(_context).CompareEfToDb(parm);
-                if (rpt == null)
-                    return Ok("No problems found");
 
-                var rptText = rpt.CreateOutputText();
+                if (rpt.GetType() != typeof(EfToDbSynchHelper.EfDiscrepancyReport))
+                {
+                    var tables = (IEnumerable<Emar.Data.Helpers.EfToDbSynchHelper.EfTableAttributes>) rpt;
+                    return Ok(tables);
+                }
+
+                var rptText = ((EfToDbSynchHelper.EfDiscrepancyReport)rpt).CreateOutputText();
                 return Ok(rptText);
             }
             catch (Exception e)
@@ -48,14 +55,15 @@ namespace Emar.Api.Controllers
             }
         }
 
-        [HttpPost("api/EfConfiguration/AddTable")]
+        [HttpPost("api/EfConfiguration/Tables")]
         public ActionResult<string> AddTablesToEfConfiguration([FromBody] EfToDbSynchHelperParams parm)
         {
-            throw new NotImplementedException();
             try
             {
-                new EfToDbSynchHelper(_context).CompareEfToDb(parm);
-                return Ok();
+                var rpt = new EfToDbSynchHelper(_context).AddTables(parm);
+
+                var rptText = ((EfToDbSynchHelper.EfDiscrepancyReport)rpt).CreateOutputText();
+                return Ok(rptText);
             }
             catch (Exception e)
             {
@@ -76,7 +84,7 @@ namespace Emar.Api.Controllers
         public ActionResult<Dictionary<string,string>> GetTestingVariables(
             [FromBody] Dictionary<string,string> queryStrings)
         {
-            var ret = new Dictionary<string,string>();
+            var ret = new ReturnReport();
 
             bool errorEncountered = false;
             using (var conn = new SqlConnection(_context.Database.GetDbConnection().ConnectionString))
@@ -98,7 +106,7 @@ namespace Emar.Api.Controllers
                                 var tokenEnd = commText.IndexOf(">>", tokenStart, StringComparison.Ordinal);
                                 var token = commText.Substring(tokenStart + 2, tokenEnd - tokenStart - 2);
 
-                                if (!ret.TryGetValue(token, out var tokenValue))
+                                if (!ret.ReturnValues.TryGetValue(token, out var tokenValue))
                                 {
                                     // Make it return the bad value
                                     tokenError = token;
@@ -111,7 +119,14 @@ namespace Emar.Api.Controllers
                             if (tokenError == "")
                             {
                                 comm.CommandText = commText;
+                                var stopwatch = new Stopwatch();
+                                stopwatch.Start();
                                 queryResult = comm.ExecuteScalar()?.ToString();
+                                stopwatch.Stop();
+                                if (stopwatch.ElapsedMilliseconds > 200)
+                                {
+                                    ret.AddPerformanceReport(query.Key, stopwatch.ElapsedMilliseconds);
+                                }
                             }
                             else
                             {
@@ -136,12 +151,12 @@ namespace Emar.Api.Controllers
                             // SELECT CONCAT('QuickListItemId|', @quickListItemId, '~QuickListUserId|', @quickListUserId)",
                             foreach (var ss in queryResult.Split('~').Select(s => s.Split('|')))
                             {
-                                ret.Add(ss[0], ss[1]);
+                                ret.ReturnValues.Add(ss[0], ss[1]);
                             }
                         }
                         else if (!query.Key.StartsWith("Ignore", StringComparison.InvariantCultureIgnoreCase) || 
                                  tokenError != "")
-                            ret.Add(query.Key, queryResult);
+                            ret.AddResponse(query.Key, queryResult);
                     }
                 }
             }
@@ -150,6 +165,36 @@ namespace Emar.Api.Controllers
                 return BadRequest(ret);
 
             return Ok(ret);
+        }
+    }
+
+    /// <summary>
+    /// Output for the ad hoc SQL Queries
+    /// </summary>
+    public class ReturnReport
+    {
+        /// <summary>
+        /// Response Values
+        /// </summary>
+        public Dictionary<string, string> ReturnValues { get; private set; }
+        
+        /// <summary>
+        /// If any SQL query takes more than the threshold amount of time, it will be reported here
+        /// </summary>
+        public Dictionary<string, long> PerformanceReport { get; private set; }
+
+        internal void AddPerformanceReport(string queryKey, in long elapsedMilliseconds)
+        {
+            PerformanceReport ??= new Dictionary<string, long>();
+
+            PerformanceReport.Add(queryKey,elapsedMilliseconds);
+        }
+
+        internal void AddResponse(string queryKey, string queryResult)
+        {
+            ReturnValues ??= new Dictionary<string, string>();
+
+            ReturnValues.Add(queryKey,queryResult);
         }
     }
 }

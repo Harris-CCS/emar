@@ -47,7 +47,7 @@ namespace Emar.Core.HomeMedications.Repository
         {
             var query =
                 from p in (from p in _context.PatientHomeMedications select p).Where(u => u.Id == medicationId)
-                join n in _context.FdbNdcInfo on p.DrugId equals n.GcnSeqno.ToString()
+                join n in _context.FdbNdcInfo on p.Medication.DrugId equals n.GcnSeqno.ToString()
                 join s in _context.FdbBrandName on n.RoutedGenId equals s.RoutedGenId
                 select s;
 

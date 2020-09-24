@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using Emar.Core.Carts.Model;
@@ -59,6 +60,8 @@ namespace Emar.Core.Carts.Repository
         {
             var orders = _context.PatientCartOrders
                 .Include(order => order.CartOrderAdministrations)
+                .Include(order => order.Medication)
+                .ThenInclude(med => med.MedicationDetails)
                 .Include(order => order.MedicationRoute)
                 .Include(order => order.FrequencySchedule)
                 .Include(order => order.MedicationUnit)
@@ -74,13 +77,26 @@ namespace Emar.Core.Carts.Repository
 
         public IEnumerable<PatientCartOrder> GetPatientCartOrders(Expression<Func<PatientCartOrder, bool>> wherePredicate = null)
         {
+            if(wherePredicate == null)
+                return _context.PatientCartOrders
+                    .ToList()
+                    .Select(order =>
+                    {
+                        order.FdbBrandName =
+                            (from s in (from s in _context.FdbBrandName select s).Where(u => u.Medid.ToString(CultureInfo.InvariantCulture) == order.Medication.DrugId)
+                                select s)
+                            .FirstOrDefault();
+                        return order;
+                    })
+                    .AsEnumerable();
+
             return _context.PatientCartOrders
                 .Where(wherePredicate)
                 .ToList()
                 .Select(order =>
                 {
                     order.FdbBrandName =
-                    (from s in (from s in _context.FdbBrandName select s).Where(u => u.Medid.ToString() == order.DrugId)
+                    (from s in (from s in _context.FdbBrandName select s).Where(u => u.Medid.ToString() == order.Medication.DrugId)
                      select s)
                      .FirstOrDefault();
                     return order;

@@ -10,14 +10,19 @@ namespace Emar.Data.Entities
         [Key]
         [Column("id")]
         public long Id { get; set; }
+        
         [Column("medication_interaction_id")]
-        public long? MedicationInteractionId { get; set; }
+        public long MedicationInteractionId { get; set; }
+        
         [Column("drug_num")]
         public byte DrugNum { get; set; }
+        
         [Column("patient_order_id")]
         public long? PatientOrderId { get; set; }
+        
         [Column("patient_cart_order_id")]
         public long? PatientCartOrderId { get; set; }
+        
         [Column("patient_home_medication_id")]
         public long? PatientHomeMedicationId { get; set; }
 

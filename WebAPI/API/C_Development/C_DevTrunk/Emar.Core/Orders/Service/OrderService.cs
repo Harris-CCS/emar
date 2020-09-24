@@ -36,17 +36,17 @@ namespace Emar.Core.Orders.Service
 
         public OrderService(
             IOrderRepository orderRepository,
-            ICartOrderRepository cartRepository,
+            ICartOrderRepository cartOrderRepository,
             IHomeMedicationRepository homeMedicationRepository,
             IPatientRepository patientRepository,
             IOptionRepository optionRepository,
              IInteractionRepository interactionRepository)
         {
             _orderRepository = orderRepository;
-            _cartOrderRepository = cartRepository;
+            _cartOrderRepository = cartOrderRepository;
             _homeMedicationRepository = homeMedicationRepository;
             _patientRepository = patientRepository;
-            _optionRepository = optionRepository;
+            _optionRepository = optionRepository ?? throw new ArgumentNullException(nameof(optionRepository));
             _interactionRepository = interactionRepository;
         }
 
@@ -65,12 +65,12 @@ namespace Emar.Core.Orders.Service
             var dateFormat = _optionRepository.GetOption(orders[0].Patient.SiteId, OptionNames.LONG_DATE_FORMAT);
             var drugDBVendor = _optionRepository.GetOption(orders[0].Patient.SiteId, OptionNames.DRUG_DB_VENDOR);
 
-            var ordersList = orders.Select(order => OrderMapper.MapOrder(order, dateFormat, drugDBVendor)).ToList();
+            var ordersList = orders.Select(order => OrderMapper.MapOrder(order, dateFormat, drugDBVendor, null,null)).ToList();
 
             return new PagedList<PatientOrderDto>(ordersList, orders.TotalCount, orders.CurrentPage, orders.PageSize);
         }
 
-        public IEnumerable<PatientOrderDto> GetOrders(long patientId)
+        public IEnumerable<PatientOrderDto> GetOrders(long patientId, string orderBase, string adminBase)
         {
             var orders = _orderRepository.GetOrders(patientId).ToList();
 
@@ -79,13 +79,18 @@ namespace Emar.Core.Orders.Service
             var dateFormat = _optionRepository.GetOption(siteId, OptionNames.LONG_DATE_FORMAT);
             var drugDBVendor = _optionRepository.GetOption(siteId, OptionNames.DRUG_DB_VENDOR);
 
-            return orders.Select(order => OrderMapper.MapOrder(order, dateFormat, drugDBVendor)).ToList()
+            var retOrders = orders
+                .Select(order => OrderMapper.MapOrder(order, dateFormat, drugDBVendor, orderBase, adminBase))
+                .ToList()
                 // sort all the orders that don't have a "Next Action Time" to the bottom of the list
                 .OrderBy(o => o.NextActionTime == null ? 1 : 0)
-                .ThenBy(o => o.NextActionTime);
+                .ThenBy(o => o.NextActionTime).ToList();
+
+            return retOrders;
         }
 
-        public PatientOrderDto GetOrder(long orderId, OrdersResourceParameters resourceParameters)
+        public PatientOrderDto GetOrder(long orderId, OrdersResourceParameters resourceParameters, string orderBase,
+            string adminBase)
         {
             var order = _orderRepository.GetOrder(orderId, resourceParameters);
 
@@ -98,7 +103,7 @@ namespace Emar.Core.Orders.Service
             var dateFormat = _optionRepository.GetOption(siteId, OptionNames.LONG_DATE_FORMAT);
             var drugDBVendor = _optionRepository.GetOption(siteId, OptionNames.DRUG_DB_VENDOR);
 
-            var orderDto = OrderMapper.MapOrder(order, dateFormat, drugDBVendor);
+            var orderDto = OrderMapper.MapOrder(order, dateFormat, drugDBVendor, orderBase, adminBase);
 
             return orderDto;
         }
@@ -111,7 +116,7 @@ namespace Emar.Core.Orders.Service
             var administrations = _orderRepository.GetAdministrations(orderId);
 
             return administrations
-                .Select(administration => OrderMapper.MapOrderAdministration(administration, dateFormat)).ToList();
+                .Select(administration => OrderMapper.MapOrderAdministration(administration, dateFormat, OrderStatuses.Pending, null)).ToList();
         }
 
         public OrderAdministrationDto GetAdministration(long administrationId)
@@ -119,7 +124,7 @@ namespace Emar.Core.Orders.Service
             var administration = _orderRepository.GetAdministration(administrationId);
             var siteId = _orderRepository.GetSiteForOrder(administration.PatientOrderId);
             var administrationDto = OrderMapper.MapOrderAdministration(administration,
-                _optionRepository.GetOption(siteId, OptionNames.LONG_DATE_FORMAT));
+                _optionRepository.GetOption(siteId, OptionNames.LONG_DATE_FORMAT), OrderStatuses.Pending, null);
 
             return administrationDto;
         }
@@ -164,6 +169,7 @@ namespace Emar.Core.Orders.Service
         }
 
         #region User Quick List Services
+
         public UserQuickListFrameworkDto GetInitialUserQuickList(in int userId, int? siteId,
             string tabLinkBase, string orderLinkBase)
         {
@@ -191,7 +197,7 @@ namespace Emar.Core.Orders.Service
             if (mostUsedItems.Any())
             {
                 firstTabContents = mostUsedItems.Select(item => OrderMapper.MapUserQuickListItem(item, orderLinkBase))
-                    .OrderBy(i => i.BrandName).ToList();
+                    .OrderBy(i => i.Medication.DisplayName).ToList();
                 tabList.Insert(0, new KeyValuePair<string, int>(Constants.MostUsedTabTitle, mostUsedItems.Count()));
             }
             else
@@ -199,7 +205,7 @@ namespace Emar.Core.Orders.Service
                 var items = _orderRepository.GetUserQuickListTabItems(userId, siteId, tabList[0].Key).ToList();
 
                 firstTabContents = items.Select(dbObj => OrderMapper.MapUserQuickListItem(dbObj, orderLinkBase))
-                    .OrderBy(i => i.BrandName).ToList();
+                    .OrderBy(i => i.Medication.DisplayName).ToList();
             }
 
             ///IEnumerable<MedicationInteractionReaction> inter = interactionchaecking(firstTabContents + map to dto)
@@ -222,9 +228,7 @@ namespace Emar.Core.Orders.Service
                 return null;
 
             var orderedTabItems = tabItems.Select(item => OrderMapper.MapUserQuickListItem(item, orderLinkBase))
-                .OrderBy(i => i.BrandName)
-                .ToList();
-
+                .OrderBy(i => i.Medication.DisplayName).ToList();
             if (siteId != null)
             {
                 orderedTabItems = AddInteractions(orderedTabItems.ToList(), siteId ?? 0, userId, patientId);
@@ -325,14 +329,13 @@ namespace Emar.Core.Orders.Service
             var dateFormat = _optionRepository.GetOption(siteId, OptionNames.LONG_DATE_FORMAT);
             var drugDBVendor = _optionRepository.GetOption(siteId, OptionNames.DRUG_DB_VENDOR);
 
-            var ret = CartOrderMapper.MapCartOrder(newCartOrder, dateFormat, drugDBVendor);
-            return ret;
-
-            /////////return CartOrderMapper.MapCartOrder(newCartOrder, dateFormat, drugDBVendor);
+            return CartOrderMapper.MapCartOrder(newCartOrder, dateFormat, drugDBVendor);
         }
-        #endregion
+
+        #endregion User Quick List Services
 
         #region Department Preferred List Services
+
         public IEnumerable<DepartmentPreferredItemDto> GetDepartmentPreferredList(in int siteId, string departmentCode,
             string linkBase)
         {
@@ -343,7 +346,7 @@ namespace Emar.Core.Orders.Service
             if (!orders.Any()) return null;
 
             return orders.Select(item => OrderMapper.MapDepartmentPreferredListItem(item, linkBase))
-                .OrderBy(i => i.BrandName);
+                .OrderBy(i => i.Medication.DisplayName);
         }
 
         public CartOrderDto CopyDepartmentPreferredItemToCart(in int userId, int departmentPreferredItemId, long patientId)
@@ -363,6 +366,7 @@ namespace Emar.Core.Orders.Service
         #endregion
 
         #region Group Remembered Order Services
+
         public GroupsRememberedOrdersDto GetGroupsRememberedOrdersList(int siteId, string departmentCode,
             string linkBase)
         {
@@ -421,6 +425,17 @@ namespace Emar.Core.Orders.Service
 
             return medications;
         }
+
+        public ActionResultDto FireActionAgainstOrder(in int orderId, string actionCode)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ActionResultDto FireActionAgainstAdministration(in int administrationId, string actionCode)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 }

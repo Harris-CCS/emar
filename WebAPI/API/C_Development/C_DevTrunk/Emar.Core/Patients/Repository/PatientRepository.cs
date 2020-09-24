@@ -90,6 +90,9 @@ namespace Emar.Core.Patients.Repository
                     .Include(patient => patient.PatientOrders)
                         .ThenInclude(order => order.OrderAdministrations)
                     .Include(patient => patient.PatientOrders)
+                        .ThenInclude(order => order.Medication)
+                            .ThenInclude(m => m.MedicationDetails)
+                    .Include(patient => patient.PatientOrders)
                         .ThenInclude(order => order.MedicationRoute)
                     .Include(patient => patient.PatientOrders)
                         .ThenInclude(order => order.MedicationUnit)
@@ -387,6 +390,45 @@ namespace Emar.Core.Patients.Repository
                 default:
                     return null;
             }
+        }
+
+        public IEnumerable<PatientAllergy> GetAllergiesByPatientId(long patientId, Expression<Func<PatientAllergy, bool>> wherePredicate = null)
+        {
+            Expression<Func<PatientAllergy, bool>> whereLambda = a => a.PatientId == patientId;
+
+            if (wherePredicate != null)
+            {
+                whereLambda = whereLambda.And(wherePredicate);
+            }
+
+            return _context.PatientAllergies
+                .Where(whereLambda);
+        }
+
+        public IEnumerable<FdbAllergyName> GetAllergyFdbAllergyNames(string name, Expression<Func<FdbAllergyName, bool>> wherePredicate = null)
+        {
+            Expression<Func<FdbAllergyName, bool>> whereLambda = f => f.AllergyName == name;
+
+            if (wherePredicate != null)
+            {
+                whereLambda = whereLambda.And(wherePredicate);
+            }
+
+            return _context.FdbAllergyName
+                .Where(whereLambda);
+        }
+
+        public IEnumerable<FdbAllergyName> GetAllergyFdbAllergyNamesByPcHiclSeqno(string pcHiclSeqno, Expression<Func<FdbAllergyName, bool>> wherePredicate = null)
+        {
+            Expression<Func<FdbAllergyName, bool>> whereLambda = f => f.PcHiclSeqno == pcHiclSeqno;
+
+            if (wherePredicate != null)
+            {
+                whereLambda = whereLambda.And(wherePredicate);
+            }
+
+            return _context.FdbAllergyName
+                .Where(whereLambda);
         }
 
         public IEnumerable<PatientAllergy> GetAllergiesByPatientId(long patientId, Expression<Func<PatientAllergy, bool>> wherePredicate = null)
