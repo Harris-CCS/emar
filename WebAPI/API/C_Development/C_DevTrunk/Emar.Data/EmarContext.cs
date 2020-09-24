@@ -35,6 +35,7 @@ namespace Emar.Data
         public virtual DbSet<Option> Options { get; set; }
         public virtual DbSet<OrderAdministration> OrderAdministrations { get; set; }
         public virtual DbSet<OrderEvent> OrderEvents { get; set; }
+        public virtual DbSet<OrderInteraction> OrderInteractions { get; set; }
         public virtual DbSet<OrderReaction> OrderReactions { get; set; }
         public virtual DbSet<Patient> Patients { get; set; }
         public virtual DbSet<PatientAllergy> PatientAllergies { get; set; }
@@ -91,7 +92,7 @@ namespace Emar.Data
             {
                 entity.ToView("allergy_reactions_view");
 
-                entity.Property(e => e.AllergyName).IsUnicode(false);
+                entity.Property(e => e.PatientAllergyName).IsUnicode(false);
 
                 entity.Property(e => e.OrderTable).IsUnicode(false);
 

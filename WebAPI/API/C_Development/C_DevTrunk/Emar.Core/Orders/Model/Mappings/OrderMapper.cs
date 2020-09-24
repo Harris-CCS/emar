@@ -73,6 +73,59 @@ namespace Emar.Core.Orders.Model.Mappings
             return patientOrderDto;
         }
 
+        public static PatientOrder MapCartOrderToOrder(PatientCartOrder cartOrder)
+        {
+            if (cartOrder == null)
+            {
+                return null;
+            }
+
+            PatientOrder patientOrder = new PatientOrder
+            {
+                PatientId = cartOrder.PatientId,
+                AddUserId = cartOrder.UserId,
+                AddDatetime = cartOrder.AddDatetime,
+                //OrderingPhysicianId = cartOrder.OrderingPhysicianId,
+                Ndc = cartOrder.Ndc,
+                DrugId = cartOrder.DrugId,
+                BrandName = cartOrder.BrandName,
+                Dose = cartOrder.Dose,
+                MedicationUnitId = cartOrder.MedicationUnitId,
+                MedicationRouteId = cartOrder.MedicationRouteId,
+                Priority = cartOrder.Priority,
+                FrequencyScheduleId = cartOrder.FrequencyScheduleId,
+                Prn = cartOrder.Prn,
+                PointInTime = cartOrder.PointInTime,
+                OrderStatus = OrderStatuses.Pending.ToString(),
+                BeginDatetime = cartOrder.BeginDatetime,
+                EndDateTime = cartOrder.EndDatetime,
+                OrderNotes = cartOrder.OrderNotes,
+                OrderAdministrations = cartOrder.CartOrderAdministrations?.Select(MapCartToOrderAdministration).ToList(),
+                OrderInteractions = cartOrder.OrderInteractions,
+                OrderReactions = cartOrder.OrderReactions,
+                FdbBrandName = cartOrder.FdbBrandName
+            };
+
+            return patientOrder;
+        }
+
+        public static OrderAdministration MapCartToOrderAdministration(CartOrderAdministration cartOrderAdministration)
+        {
+            if (cartOrderAdministration == null)
+            {
+                return null;
+            }
+
+            OrderAdministration administration = new OrderAdministration
+            {
+                AdministrationScheduledDatetime = cartOrderAdministration.AdministrationScheduledDatetime,
+                StopScheduledDatetime = cartOrderAdministration.StopScheduledDatetime,
+                PointInTime = cartOrderAdministration.PointInTime
+            };
+
+            return administration;
+        }
+
         public static OrderAdministrationDto MapOrderAdministration(OrderAdministration administration, string dateFormat)
         {
             if (administration == null)
