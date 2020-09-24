@@ -32,13 +32,8 @@ namespace Emar.Data.Entities
         [StringLength(32)]
         public string InternalDrugId { get; set; }
 
-        [Column("ndc")]
-        [StringLength(32)]
-        public string Ndc { get; set; }
-
-        [Column("drug_id")]
-        [StringLength(32)]
-        public string DrugId { get; set; }
+        [Column("medication_id", TypeName = "int")]
+        public int? MedicationId { get; set; }
 
         [Column("name")]
         [StringLength(255)]
@@ -102,8 +97,7 @@ namespace Emar.Data.Entities
         [Column("action_status", TypeName = "char(1)")]
         public string ActionStatus { get; set; }
 
-        [Column("last_taken_note")]
-        [StringLength(100)]
+        [Column("last_taken_note", TypeName = "nvarchar(100)")]
         public string LastTakenNote { get; set; }
 
 
@@ -115,6 +109,11 @@ namespace Emar.Data.Entities
         [InverseProperty(nameof(Entities.User.PatientHomeMedicationsChangeUser))]
         public virtual User ChangeUser { get; set; }
 
+        // For Foreign Key: fk__patient_home_medications__medications
+        [ForeignKey(nameof(MedicationId))]
+        [InverseProperty(nameof(Entities.Medication.PatientHomeMedications))]
+        public virtual Medication Medication { get; set; }
+
         [ForeignKey(nameof(MedicationRouteId))]
         [InverseProperty(nameof(Entities.MedicationRoute.PatientHomeMedications))]
         public virtual MedicationRoute MedicationRoute { get; set; }
@@ -123,6 +122,7 @@ namespace Emar.Data.Entities
         [InverseProperty(nameof(Entities.MedicationUnit.PatientHomeMedications))]
         public virtual MedicationUnit MedicationUnit { get; set; }
 
+        // For Foreign Key: fk__patients__patient_home_medications
         [ForeignKey(nameof(PatientId))]
         [InverseProperty(nameof(Entities.Patient.PatientHomeMedications))]
         public virtual Patient Patient { get; set; }

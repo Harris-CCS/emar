@@ -28,14 +28,17 @@ namespace Emar.Data.Entities
         [ForeignKey(nameof(SiteId))]
         [InverseProperty(nameof(Entities.Site.OverrideReasons))]
         public virtual Site Site { get; set; }
+
+
         [InverseProperty("OverrideReason")]
         public virtual ICollection<MedicationInteraction> MedicationInteractions { get; set; }
+        
         [InverseProperty("OverrideReason")]
         public virtual ICollection<OrderReaction> OrderReactions { get; set; }
-
-
+        
         [InverseProperty("OverrideReason")]
         public virtual ICollection<AllergyReactionView> AllergyReactionsView { get; set; }
+        
         [InverseProperty("OverrideReason")]
         public virtual ICollection<DrugInteractionView> DrugInteractionsView { get; set; }
     }

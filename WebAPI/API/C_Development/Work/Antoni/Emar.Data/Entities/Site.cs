@@ -10,8 +10,12 @@ namespace Emar.Data.Entities
         public Site()
         {
             DepartmentPreferredListItems = new HashSet<DepartmentPreferredListItem>();
+            // For Foreign Key: fk__frequency_schedules__sites
+            FrequencySchedules = new HashSet<FrequencySchedule>();
             GroupListItems = new HashSet<GroupListItem>();
             MedicationRoutes = new HashSet<MedicationRoute>();
+            //For Foreign Key: fk__medications__sites
+            Medications = new HashSet<Medication>();
             MedicationUnits = new HashSet<MedicationUnit>();
             OverrideReasons = new HashSet<OverrideReason>();
             Patients = new HashSet<Patient>();
@@ -60,5 +64,13 @@ namespace Emar.Data.Entities
 
         [InverseProperty("Site")]
         public virtual ICollection<SiteOption> SiteOptions { get; set; }
+
+        // For Foreign Key: fk__frequency_schedules__sites
+        [InverseProperty("Site")]
+        public virtual ICollection<FrequencySchedule> FrequencySchedules { get; set; }
+
+        // For Foreign Key: fk__medications__sites
+        [InverseProperty("Site")]
+        public virtual ICollection<Medication> Medications { get; set; }
     }
 }

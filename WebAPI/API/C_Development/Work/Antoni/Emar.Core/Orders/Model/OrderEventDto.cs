@@ -4,6 +4,10 @@ namespace Emar.Core.Orders.Model
 {
     public class OrderEventDto
     {
+        internal string DateFormat { get; set; } = "MM/dd/yyyy";
+        internal string TimeFormat { get; set; } = "HH:mm";
+
+
         /// <summary>
         /// Unique order event identifier
         /// </summary>
@@ -23,15 +27,16 @@ namespace Emar.Core.Orders.Model
         /// Date and time the order event took place.  Includes the local time timezone offset from UTC.
         /// </summary>
         public DateTimeOffset EventDateTime { get; set; }
-        public string EventDate { get; set; }
-        public string EventTime { get; set; }
+        public string EventDate => EventDateTime.ToString(DateFormat);
+        public string EventTime => EventDateTime.ToString(TimeFormat);
+
 
         /// <summary>
         /// Date and time the order event was entered in the system.  Includes the local time timezone offset from UTC.
         /// </summary>
         public DateTimeOffset SystemDateTime { get; set; }
-        public string SystemDate { get; set; }
-        public string SystemTime { get; set; }
+        public string SystemDate => SystemDateTime.ToString(DateFormat);
+        public string SystemTime => SystemDateTime.ToString(TimeFormat);
 
         /// <summary>
         /// Unique user identifier

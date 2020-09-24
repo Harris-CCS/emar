@@ -24,9 +24,11 @@ namespace Emar.Core.Carts.Model.Mappings
                 AddDatetime = order.AddDatetime,
                 //AddDate = DateTimeHelper.GetDate(order.AddDatetime, dateFormat),
                 //AddTime = DateTimeHelper.GetTime(order.AddDatetime),
-                Ndc = order.Ndc,
-                DrugId = order.DrugId,
-                BrandName = order.BrandName,
+                //Ndc = order.Ndc,
+                //DrugId = order.DrugId,
+                //BrandName = order.BrandName,
+                MedicationId = order.MedicationId,
+                Medication = MedicationMapper.MapMedication(order.Medication),
                 Dose = order.Dose,
                 DoseUnit = MedicationMapper.MapMedicationUnit(order.MedicationUnit),
                 MedicationRoute = MedicationMapper.MapMedicationRoute(order.MedicationRoute),
@@ -62,9 +64,10 @@ namespace Emar.Core.Carts.Model.Mappings
                 PatientId = orderDto.PatientId,
                 UserId = orderDto.UserId,
                 AddDatetime = orderDto.AddDatetime,
-                Ndc = orderDto.Ndc,
-                DrugId = orderDto.DrugId,
-                BrandName = orderDto.BrandName,
+                //Ndc = orderDto.Ndc,
+                //DrugId = orderDto.DrugId,
+                //BrandName = orderDto.BrandName,
+                MedicationId = orderDto.MedicationId,
                 Dose = orderDto.Dose,
                 MedicationUnitId = orderDto.MedicationUnitId,
                 MedicationRouteId = orderDto.MedicationRouteId,
@@ -83,7 +86,8 @@ namespace Emar.Core.Carts.Model.Mappings
             return order;
         }
 
-        public static CartOrderAdministrationDto MapCartOrderAdministration(CartOrderAdministration administration, string dateFormat)
+        public static CartOrderAdministrationDto MapCartOrderAdministration(CartOrderAdministration administration,
+            string dateFormat)
         {
             if (administration == null)
                 return null;
@@ -157,7 +161,7 @@ namespace Emar.Core.Carts.Model.Mappings
                 AddUserId = order.UserId,
                 AlternateName = null,
                 BeginDatetime = null,
-                BrandName = order.BrandName,
+                //BrandName = order.BrandName,
                 ActiveName = order.FdbBrandName?.Active,
                 ActiveId = order.FdbBrandName?.PcRoutedGenId?.ToString(),
                 Category = null,
@@ -166,7 +170,7 @@ namespace Emar.Core.Carts.Model.Mappings
                 Class = null,
                 Comment = order.OrderNotes,
                 Dose = order.Dose,
-                DrugId = order.DrugId,
+                //DrugId = order.DrugId,
                 EndDatetime = null,
                 FrequencyScheduleId = order.FrequencyScheduleId,
                 InternalDrugId = null,
@@ -174,7 +178,7 @@ namespace Emar.Core.Carts.Model.Mappings
                 MedicationDrugId = null,
                 MedicationRouteId = order.MedicationRouteId,
                 MedicationUnitId = order.MedicationUnitId,
-                Ndc = order.Ndc,
+                //Ndc = order.Ndc,
                 OrderPhysicianUserId = null,
                 OrderStatus = null,
                 ParentDrugId = null,

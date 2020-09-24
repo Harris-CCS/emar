@@ -2,6 +2,7 @@
 
 namespace Emar.Data.Entities
 {
+    [NotMapped]
     public class DoseRangeCheckingInfo
     {
         [Column("GCN_SEQNO")]
