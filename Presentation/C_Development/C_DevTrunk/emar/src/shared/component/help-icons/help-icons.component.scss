@@ -1,3 +1,4 @@
+@import "../../../variables";
 
 .real-vertical-list {
     list-style-type: none;
@@ -5,19 +6,9 @@
     margin: 0;
     text-align: left;
   }
-  .icons li {
+.icons li {
     padding: 3px;
-    background-color: white;
-    color: black;
-  }
-  .icons li img {
+}
+.icons li img {
     margin-right: 3px;
-  }
-  .icons .tooltip-inner{
-    background-color: #D3D3D3;
-    color: black;
-  }
-  .icons-box .arrow::before {
-    border-top-color: white;
-  }
-  
+} 

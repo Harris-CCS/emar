@@ -7,15 +7,8 @@
     float: left;
     height: 100%;
 }
-.pd-right-btn {
-    position: absolute;
-    top: 2px;
-    right: 0;
-}
-.pd-left-btn {
-    position: absolute;
-    top: 2px;
-    left: 0;
+.pd-btn {
+    padding: 0.2rem 0.2rem;
 }
 .pd-relative {
     position: relative;
@@ -44,10 +37,21 @@
     text-align: center;
     vertical-align: middle;
 }
-.pd-line {
-    background: url("/assets/img/grayLine.png") 50% repeat-y;/* #C7C7C7; */
-    text-align: center;
+.pd-null-column {
+    position: absolute;
+    background-color:rgba(0, 0, 0, 0.05);
+    left: -25px;
+    width: 25px;
+    top: 0;
+    bottom:0;
 }
+.pd-line {
+    border: 1px solid #C7C7C7;
+    // background-color: lighten($e-orange, 35%);
+    // opacity: 50%; opacity will be set for content too - so for now rgb
+    background-color: rgb(255, 244, 233, 0.4)
+}
+
 .pd-time { /* 5 characters */
     width: 50px;
     text-align: center;
@@ -83,4 +87,87 @@
 }
 table.debug {
     border-collapse: collapse;
+}
+
+::ng-deep .pd-given .tooltip-inner {
+    background-color: $e-status-given;
+}
+::ng-deep .pd-given .arrow::before {
+    border-top-color: $e-status-given;
+}
+::ng-deep .pd-due .tooltip-inner {
+    background-color: $e-status-due;
+    white-space: nowrap;
+}
+::ng-deep .pd-due .arrow::before {
+    border-top-color: $e-status-due;
+}
+::ng-deep .pd-pending .tooltip-inner {
+    background-color: $e-status-scheduled;
+}
+::ng-deep .pd-pending .arrow::before {
+    border-top-color: $e-status-scheduled;
+}
+::ng-deep .pd-acknowledged .tooltip-inner {
+    background-color: $e-status-acknowledged;
+}
+::ng-deep .pd-acknowledged .arrow::before {
+    border-top-color: $e-status-acknowledged;
+}
+::ng-deep .pd-held .tooltip-inner {
+    background-color: $e-status-held;
+}
+::ng-deep .pd-held .arrow::before {
+    border-top-color: $e-status-held;
+}
+
+.order-status-pending {
+    color: $e-status-pending;
+}
+.order-status-ongoing {
+    color: $e-status-ongoing;
+}
+.order-status-acknowledged {
+    color: $e-status-acknowledged;
+}
+.order-status-given {
+    color: $e-status-given;
+}
+.order-status-due {
+    color: $e-status-due;
+}
+.order-status-held {
+    color: $e-status-held;
+}
+.pd-btn-admin {
+    width: 9rem;
+    margin: 0.1rem;
+}
+::ng-deep .pd-admin-box {
+    min-width: 30rem;
+    font-size: 1rem;
+}
+::ng-deep .pd-admin-box .popover-body{
+    padding: 0;
+}
+.pd-actions-column {
+    width: 1%;
+    display: table; 
+    margin-left: 0.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem; 
+}
+.pd-actions-line {
+    display: table-row;
+    white-space: nowrap;
+}
+.pd-summary-column {
+    width: 100%;
+    min-height: 10rem;
+    border-right: solid 1px $gray-L-20;
+    position: relative;
+}
+.btn-close {
+    font-weight: bold;
+    
 }

@@ -1,6 +1,6 @@
 import { Frequency } from './frequency';
 import { Duration } from './duration';
-
+import { MedicationRoute } from './medication-route';
 
 export interface Order {
     id: number,
@@ -8,7 +8,7 @@ export interface Order {
     name: string,
     dose: string,
     route: string,
-    frequency?: Frequency,
+    frequency?: Frequency, // TODO delete
     duration?: Duration,
     startTime: string,
     endTime?: string,
@@ -18,10 +18,14 @@ export interface Order {
     allergies?: any,
     drugs?: any,
     prn?: boolean,
-    priority?: string, // STAT, Routine
+    priority?: string, // 2 (STAT), Routine
     orderType?: string, // Scheduled
-    orderStatus?: string, // Pending
-    orderAdministrations?: OrderAdministration[]
+    orderStatus?: string, // Pending, Ongoing, Held, Pending Discontinue, Discontinued, Completed, Cancelled, Deleted
+    missedDose?: boolean,
+    orderAdministrations?: OrderAdministration[],
+    frequencySchedule?: FrequencySchedule,
+    medicationRoute?: MedicationRoute,
+    pointInTime?: boolean
 }
 
 export interface OrderAdministration {
@@ -39,5 +43,16 @@ export interface OrderAdministration {
     pointInTime?: boolean,
     onHold?: boolean,
     missedDose?: boolean,
-    administrationStatus?: string
+    administrationStatus?: string // Given, OnHold, Missed, Pending, Late, Ongoing
+    availableActions?: AdministrationAction[]
+}
+
+export interface FrequencySchedule {
+    scheduleName?: string;
+}
+
+export interface AdministrationAction {
+    availableAction?: number,
+	buttonText: string,
+	link?: string
 }

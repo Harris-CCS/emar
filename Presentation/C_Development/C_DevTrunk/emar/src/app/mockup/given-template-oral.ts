@@ -1,8 +1,8 @@
 import { GivenTemplate } from '../interfaces/given-template';
 
-export const GIVEN_TEMPLATE_EAR: GivenTemplate  = {
-    "id": 1,
-    "name": "Ear",
+export const GIVEN_TEMPLATE_ORAL: GivenTemplate  = {
+    "id": 2,
+    "name": "Oral",
     "promptGroups": [
         {
             "id": 1,
@@ -55,21 +55,54 @@ export const GIVEN_TEMPLATE_EAR: GivenTemplate  = {
                             "id": 1,
                             "promptId": 4,
                             "sequence": 1,
-                            "choiceText": "Left"
+                            "choiceText": "P.O."
                         },
                         {
                             "id": 2,
                             "promptId": 4,
                             "sequence": 2,
-                            "choiceText": "Right"
+                            "choiceText": "S.L."
                         },
                         {
                             "id": 3,
                             "promptId": 4,
                             "sequence": 3,
-                            "choiceText": "Bilaterally"
+                            "choiceText": "Buccal"
                         }
                     ],
+                    "isActive": true
+                },
+                {
+                    "id": 105,
+                    "promptGroupId": 1,
+                    "sequence": 5,
+                    "prompt": "Medication crushed prior to administration",
+                    "type": "CheckBox",
+                    "default": null,
+                    "required": false,
+                    "promptChoices": [],
+                    "isActive": true
+                },
+                {
+                    "id": 106,
+                    "promptGroupId": 1,
+                    "sequence": 5,
+                    "prompt": "Mixed in",
+                    "type": "FreeText",
+                    "default": null,
+                    "required": false,
+                    "promptChoices": [],
+                    "isActive": true
+                },
+                {
+                    "id": 1057,
+                    "promptGroupId": 1,
+                    "sequence": 5,
+                    "prompt": "Patient vomited during or soon after administration",
+                    "type": "CheckBox",
+                    "default": null,
+                    "required": false,
+                    "promptChoices": [],
                     "isActive": true
                 },
                 {
@@ -399,6 +432,6 @@ export const GIVEN_TEMPLATE_EAR: GivenTemplate  = {
         }
     ],
     "active": true,
-    "title": "Ear Give Template",
+    "title": "Oral Give Template",
     "siteId": -1
 }
