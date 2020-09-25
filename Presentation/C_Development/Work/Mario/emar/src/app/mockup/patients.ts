@@ -193,7 +193,7 @@ export const PATIENTS: Patient[] = [
         id: 1,
         internalDrugId: '',
         isActive: true,
-        lastTaken: '2020-07-12T14:30:00',
+        lastTakenNote: '2020-07-12T14:30:00',
         medicationDrugId: '',
         medicationRoute: {
           id: 5,
@@ -228,7 +228,7 @@ export const PATIENTS: Patient[] = [
         id: 2,
         internalDrugId: '',
         isActive: true,
-        lastTaken: '2020-07-11T08:00:00',
+        lastTakenNote: '2020-07-11T08:00:00',
         medicationDrugId: '',
         medicationRoute: {
           id: 5,
@@ -263,7 +263,7 @@ export const PATIENTS: Patient[] = [
         id: 3,
         internalDrugId: '',
         isActive: true,
-        lastTaken: '2020-07-12T19:30:00',
+        lastTakenNote: '2020-07-12T19:30:00',
         medicationDrugId: '',
         medicationRoute: {
           id: 5,
@@ -298,7 +298,7 @@ export const PATIENTS: Patient[] = [
         id: 4,
         internalDrugId: '',
         isActive: true,
-        lastTaken: '2020-07-13T07:30:00',
+        lastTakenNote: '2020-07-13T07:30:00',
         medicationDrugId: '',
         medicationRoute: {
           id: 5,
@@ -333,7 +333,7 @@ export const PATIENTS: Patient[] = [
         id: 5,
         internalDrugId: '',
         isActive: true,
-        lastTaken: '2020-07-12T18:00:00',
+        lastTakenNote: '2020-07-12T18:00:00',
         medicationDrugId: '',
         medicationRoute: {
           id: 5,

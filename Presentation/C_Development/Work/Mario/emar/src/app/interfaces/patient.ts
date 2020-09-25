@@ -88,6 +88,6 @@ interface IHomeMeds {
   unit: string;
   route: string;
   schedule?: string;
-  lastTaken?: string;
+  lastTakenNote?: string;
   comment?: string;
 }

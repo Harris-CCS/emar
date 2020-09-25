@@ -43,7 +43,7 @@ export class ComposerSchedulerService {
   private siteMedicationUnitsUrl: string = 'api/orders/composerOptions/units';
   private doseCheckingBaseUrl: string = 'api/GetDoseRangeCheckingInfo';
 
-  // Behavior Subjects to trigger actions based on UI Interraction
+  // Behavior Subjects to trigger actions based on UI Interaction
   resetComponentMedFormId: BehaviorSubject<number> = new BehaviorSubject(-1);
   resetAllComponentMedFormIds: BehaviorSubject<boolean> = new BehaviorSubject(
     false
@@ -71,13 +71,10 @@ export class ComposerSchedulerService {
   }
 
   registerComposerMedComponent(newMedComponent: ComposerMedComponent): number {
-    // let modal = this.findModal(newModal.modalId);
 
-    // if (modal) {
-    //   this.modals.splice(this.modals.indexOf(modal), 1);
-    // }
     this.composerMedComponents.push(newMedComponent);
     this.newMedComponentAdded.next(true);
+    // console.log('composerMedComponentsRegister', this.composerMedComponents);
     return this.composerMedComponents.length - 1;
   }
 
@@ -117,7 +114,8 @@ export class ComposerSchedulerService {
     const invalidMedComponent = this.composerMedComponents.find(
       (medComponent) => medComponent.isMedComposerFormInvalid()
     );
-    // console.log('checkOverallValidity', invalidMedComponent);
+    // console.log('checkOverallValidity', this.composerMedComponents.length);
+    // console.log('checkOverallMedOrderValidity', this.composerMedComponents, 'ComponentFound', invalidMedComponent);
     return invalidMedComponent ? false : true;
   }
 

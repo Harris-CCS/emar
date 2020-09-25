@@ -135,10 +135,12 @@ export class FrequencyFormComponent implements OnInit {
         this.startTimeValidator,
         this.startTimeValidator.bind(this),
       ]),
-      endTime: new FormControl(this.initialEndDateTime, [
-        this.endTimeValidator,
-        this.endTimeValidator.bind(this),
-      ]),
+      endTime: new FormControl(this.initialEndDateTime,
+        //   [
+        //   this.endTimeValidator,
+        //   this.endTimeValidator.bind(this),
+        // ]
+      ),
     });
     // this.formReady.emit(this.frequencyForm);
     this.composerSchedulerService.addFormGroup(
@@ -151,7 +153,7 @@ export class FrequencyFormComponent implements OnInit {
       if (
         this.composerSchedulerService.resetComponentMedFormId &&
         this.composerSchedulerService.resetComponentMedFormId.value ===
-          this.medComponentId
+        this.medComponentId
       ) {
         this.resetFrequencyForm();
       }
@@ -238,8 +240,8 @@ export class FrequencyFormComponent implements OnInit {
     const matchingFrequency = !frequencyName
       ? null
       : this.frequencies.find(
-          (fndFrequency) => fndFrequency.frequencyName === frequencyName
-        );
+        (fndFrequency) => fndFrequency.frequencyName === frequencyName
+      );
     this.changeSelectedFrequency(matchingFrequency);
   }
 
@@ -292,9 +294,9 @@ export class FrequencyFormComponent implements OnInit {
         term.length < 0
           ? []
           : // : FREQUENCIES.filter((f) =>
-            this.frequencies
-              .filter((f) => new RegExp(term, 'mi').test(f.frequencyName))
-              .slice(0, 10)
+          this.frequencies
+            .filter((f) => new RegExp(term, 'mi').test(f.frequencyName))
+            .slice(0, 10)
       )
       // TODO this.frequencies but this is undefined
     );
@@ -364,14 +366,6 @@ export class FrequencyFormComponent implements OnInit {
   durationValidator(control: AbstractControl): { [key: string]: any } | null {
     // console.log('durationControl', control);
     // console.log('durationValidatorThis', this);
-    if (!this || !this.frequencyForm) {
-      return null;
-    } else if (this.noDurationOrDateTimesEntered()) {
-      return {
-        error:
-          '** Must select either Duration and Duration Unit, or Start and End Times',
-      };
-    }
     if (
       !control ||
       !this ||
@@ -405,16 +399,15 @@ export class FrequencyFormComponent implements OnInit {
   durationUnitValidator(
     control: AbstractControl
   ): { [key: string]: any } | null {
-    if (!this || !this.frequencyForm) {
-      return null;
-    } else if (this.noDurationOrDateTimesEntered()) {
-      return {
-        error:
-          '** Must select either Duration and Duration Unit, or Start and End Times',
-      };
-    }
-    if (
-      !control ||
+    // if (!this || !this.frequencyForm) {
+    //   return null;
+    // } else if (this.noDurationOrDateTimesEntered()) {
+    //   return {
+    //     error:
+    //       '** Must select either Duration and Duration Unit, or Start and End Times',
+    //   };
+    //
+    if (!control ||
       !this ||
       !this.frequencyForm ||
       this.frequencyForm.get('duration').invalid ||
@@ -422,13 +415,15 @@ export class FrequencyFormComponent implements OnInit {
     ) {
       return null;
     } else if (
-      this.frequencyForm.get('duration').valid &&
+      this.frequencyForm.get('duration').valid && this.selectedDuration &&
       (control.value === undefined ||
         control.value === null ||
-        control.value === '')
+        control.value === '' ||
+        Object.keys(this.frequencyForm.get('durationUnit').value).length ===
+        0)
     ) {
       return {
-        error: '** Duration Unit is required when Numeric Duration is defined',
+        error: '** Duration Unit is required when Numeric Duration is selected',
       };
     }
     return null;
@@ -562,9 +557,9 @@ export class FrequencyFormComponent implements OnInit {
     return !this.frequencyForm.get('duration').value &&
       (!this.frequencyForm.get('durationUnit').value ||
         Object.keys(this.frequencyForm.get('durationUnit').value).length ===
-          0) &&
+        0) &&
       // !this.frequencyForm.get('startTime').value &&
-      !this.frequencyForm.get('endTime').value
+      !this.frequencyForm.get('startTime').value
       ? true
       : false;
   }

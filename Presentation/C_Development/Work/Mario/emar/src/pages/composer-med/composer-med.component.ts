@@ -46,12 +46,11 @@ export class ComposerMedComponent implements OnInit {
     private userStoreService: UserStoreService,
     private patientStoreService: PatientStoreService,
     private composerSchedulerService: ComposerSchedulerService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-    console.log('composerSchedulerThis', this.composerSchedulerService);
+    // console.log('composerSchedulerThis', this.composerSchedulerService);
     this.options = this.composerSchedulerService.getBrandNameOptions();
-    // console.log('options', this.options);
     if (
       this.composerMedFormIndex === undefined ||
       this.composerMedFormIndex === null
@@ -68,7 +67,7 @@ export class ComposerMedComponent implements OnInit {
       if (
         this.composerSchedulerService.resetComponentMedFormId &&
         this.composerSchedulerService.resetComponentMedFormId.value ===
-          this.composerMedFormIndex
+        this.composerMedFormIndex
       ) {
         this.composerMedForm.reset();
       }
@@ -77,8 +76,8 @@ export class ComposerMedComponent implements OnInit {
   }
 
   isMedComposerFormInvalid(): boolean {
-    const isInvalid: boolean = this.composerMedForm.invalid ? true : false;
-    // console.log('isMedComponentValid', isInvalid, this.isMedComponentInvalid);
+    const isInvalid: boolean = (this.composerMedForm.status && (this.composerMedForm.status === 'INVALID' || this.composerMedForm.invalid)) ? true : false;
+    // console.log('isMedComponentValid', isInvalid, this.isMedComponentInvalid, this.composerMedForm);
     if (this.isMedComponentInvalid !== isInvalid) {
       this.isMedComponentInvalid = isInvalid;
       this.composerSchedulerService.shouldCheckOverallMedOrderValidity.next(
