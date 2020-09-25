@@ -16,7 +16,7 @@ namespace Emar.Core.Orders.Model
         public long OrderId { get; set; }
 
         internal string DateFormat { get; set; } = "dd/MM/yyyy";
-        internal string TimeFormat { get; set; } = "HH:mm:ss";
+        private string TimeFormat { get; set; } = "HH:mm";
 
         /// <summary>
         /// Date and time the order administration is scheduled to start.  Includes the local time timezone offset from UTC.
@@ -28,9 +28,9 @@ namespace Emar.Core.Orders.Model
         /// <summary>
         /// Date and time the order administration actually started.  Includes the local time timezone offset from UTC.
         /// </summary>
-        public DateTimeOffset? AdministrationInputDatetime { get; set; }
-        public string AdministrationInputDate => AdministrationInputDatetime?.ToString(DateFormat);
-        public string AdministrationInputTime => AdministrationInputDatetime?.ToString(TimeFormat);
+        public DateTimeOffset? AdministrationSystemDatetime { get; set; }
+        public string AdministrationSystemDate => AdministrationSystemDatetime?.ToString(DateFormat);
+        public string AdministrationSystemTime => AdministrationSystemDatetime?.ToString(TimeFormat);
 
         /// <summary>
         /// Date and time the order administration start was recorded.  Includes the local time timezone offset from UTC.
@@ -121,7 +121,7 @@ namespace Emar.Core.Orders.Model
             OnGoing
         }
 
-        private AdministrationStatuses AdministrationStatusCode
+        internal AdministrationStatuses AdministrationStatusCode
         {
             get
             {
@@ -129,7 +129,7 @@ namespace Emar.Core.Orders.Model
                     return AdministrationStatuses.OnHold;
                 if (MissedDose)
                     return AdministrationStatuses.Missed;
-                if (AdministrationInputDatetime == null)
+                if (AdministrationSystemDatetime == null)
                 {
                     if (AdministrationScheduledDatetime > DateTimeOffset.Now)
                         return AdministrationStatuses.Pending;
@@ -168,6 +168,8 @@ namespace Emar.Core.Orders.Model
         /// Patient order administration events.
         /// </summary>
         public IEnumerable<OrderEventDto> AdministrationEvents { get; set; }
+
+        public IEnumerable<AvailableActionDto> AvailableActions { get; set; }
     }
 
 }

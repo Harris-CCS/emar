@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Emar.Api.Helpers;
 using Emar.Core.Carts.Model;
+using Emar.Core.Medications.Model;
 using Emar.Core.Orders.Model;
 using Emar.Core.Orders.Service;
 using Emar.Core.Sites.Model;
@@ -70,22 +71,30 @@ namespace Emar.Api.Controllers
         /// <summary>
         /// Create an order in the user/patient's cart as a copy of the Department Preferred List order
         /// </summary>
+        /// <param name="mediaType">Media type from the "Accept" header</param>
         /// <param name="userId">The user who is placing the order in the cart</param>
         /// <param name="departmentPreferredItemId">The Department Preferred List Item to move into the patient's cart</param>
         /// <param name="patientId">the patient that the cart is intended for</param>
         /// <returns></returns>
-        [HttpPost("/api/patients/{patientId}/departmentPreferredLists/{departmentPreferredItemId}/cartOrders",
-            Name = nameof(CopyDepartmentPreferredItemToCart))]
+        [HttpPost("api/patients/{patientId}/departmentPreferredLists/{departmentPreferredItemId}/cartOrders", Name = nameof(CopyDepartmentPreferredItemToCart))]
         [ProducesResponseType(typeof(CartOrderDto), 200)] // (OK) - the resource is sent in the response
-        //[ProducesResponseType(400)] // (bad request) - indicates a bad request (e.g. wrong parameter)
+        [ProducesResponseType(400)] // (bad request) - indicates a bad request (e.g. wrong parameter)
         [ProducesResponseType(404)] // (not found) - the resource does not exits
-        //[ProducesResponseType(406)] // (not acceptable) - the server does not support the required representation
+        [ProducesResponseType(406)] // (not acceptable) - the server does not support the required representation
         public ActionResult<CartOrderDto> CopyDepartmentPreferredItemToCart(
+            [FromHeader(Name = "Accept")] string mediaType,
             [FromHeader(Name = "X-User")] int userId,
             int departmentPreferredItemId,
             long patientId)
         {
-         
+            if (!MediaTypes.IsValidMediaType(mediaType))
+            {
+                return BadRequest("Unsupported media type header provided.");
+            }
+
+            //var newCartOrder = _orderService.CopyDepartmentPreferredItemToCart(userId, departmentPreferredItemId, patientId);
+
+            //return Ok(newCartOrder);
             return NotFound(
                 $"This endpoint hasn't been coded yet.");
         }

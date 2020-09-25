@@ -1,4 +1,5 @@
-﻿using Emar.Core.Options.Repository;
+﻿using Emar.Core.Options.Model;
+using Emar.Core.Options.Repository;
 using Emar.Data;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace Emar.Core.Medications.Repository
         private readonly IOptionRepository _optionRepository;
         private string _vendor;
         private IDrugDbRepository _vendorRepository;
-
+        
         public MedicationRepository(EmarContext context, IOptionRepository optionRepository)
         {
             _context = context;
@@ -43,7 +44,7 @@ namespace Emar.Core.Medications.Repository
             //As of now, we're only doing FDB.
             //We'll figure out the others in Phase 2.
             //Winston Murdock, 09/10/2020.
-            _vendor = _optionRepository.GetOption(siteId, "DRUG_DB_VENDOR");
+            _vendor = _optionRepository.GetOption(siteId, OptionNames.DRUG_DB_VENDOR);
 
             if (_vendor == "M")
             {

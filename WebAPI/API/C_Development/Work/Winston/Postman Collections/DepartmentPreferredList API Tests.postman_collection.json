@@ -6,42 +6,50 @@
 	},
 	"item": [
 		{
-			"name": "Get Site Id for tests",
+			"name": "Testing Values From Database",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
-						"id": "dc587de0-1a18-4d37-98ff-ba584b923155",
+						"id": "2ab33e9b-8a32-494e-8e24-f18ef1238d43",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
 							"});\r",
 							"\r",
 							"var jsonData = pm.response.json();\r",
-							"pm.environment.set(\"SiteId\", jsonData);\r",
-							""
+							"\r",
+							"pm.environment.set(\"SiteId\", jsonData.returnValues.siteId);\r",
+							"pm.environment.set(\"NumForNoDept\", jsonData.returnValues.numForSite);\r",
+							"pm.environment.set(\"NumForDept\", jsonData.returnValues.numForSiteDept);"
 						],
 						"type": "text/javascript"
 					}
 				}
 			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
 				"method": "GET",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"SiteId\": \"SELECT id FROM sites WHERE name = 'Automation Test_Multum'\",\r\n    \"NumForSite\": \"SELECT cnt = COUNT(*) FROM department_preferred_list_items WHERE site_id = <<SiteId>>\",\r\n    \"NumForSiteDept\": \"SELECT cnt = COUNT(*) FROM department_preferred_list_items WHERE site_id = <<SiteId>> and department_code = 'Main ED'\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "{{URL}}/api/sites?sitename=Automation%20Test_Multum",
+					"raw": "{{URL}}/api/testingvariables",
 					"host": [
 						"{{URL}}"
 					],
 					"path": [
 						"api",
-						"sites"
-					],
-					"query": [
-						{
-							"key": "sitename",
-							"value": "Automation%20Test_Multum"
-						}
+						"testingvariables"
 					]
 				}
 			},
@@ -61,8 +69,8 @@
 							"\r",
 							"var jsonData = pm.response.json();\r",
 							"\r",
-							"pm.test(\"Returns 25 records\", function() {\r",
-							"    pm.expect(jsonData.length).to.eql(25);\r",
+							"pm.test(\"Returns correct number of records\", function() {\r",
+							"    pm.expect(jsonData.length.toString()).to.eql(pm.environment.get(\"NumForNoDept\"));\r",
 							"});\r",
 							"\r",
 							"pm.test(\"No Links returned\", function() {\r",
@@ -96,6 +104,11 @@
 							"\r",
 							"pm.test(\"Some orders have a valid Unit\", function() {\r",
 							"    pm.expect(jsonData.any(validUnitExists)).to.be.true;\r",
+							"})\r",
+							"\r",
+							"var validateMedicationFunction = eval(pm.globals.get(\"ValidateMedication\"));\r",
+							"pm.test(\"Validate Medication on each order\", function(){\r",
+							"    pm.expect(jsonData.all(validateMedicationFunction)).to.be.true;\r",
 							"})\r",
 							""
 						],
@@ -147,8 +160,8 @@
 							"\r",
 							"var jsonData = pm.response.json();\r",
 							"\r",
-							"pm.test(\"Returns 25 records\", function() {\r",
-							"    pm.expect(jsonData.length).to.eql(25);\r",
+							"pm.test(\"Returns correct number of records\", function() {\r",
+							"    pm.expect(jsonData.length.toString()).to.eql(pm.environment.get(\"NumForNoDept\"));\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Links returned\", function() {\r",
@@ -182,6 +195,11 @@
 							"\r",
 							"pm.test(\"Some orders have a valid Unit\", function() {\r",
 							"    pm.expect(jsonData.any(validUnitExists)).to.be.true;\r",
+							"})\r",
+							"\r",
+							"var validateMedicationFunction = eval(pm.globals.get(\"ValidateMedication\"));\r",
+							"pm.test(\"Validate Medication on each order\", function(){\r",
+							"    pm.expect(jsonData.all(validateMedicationFunction)).to.be.true;\r",
 							"})\r",
 							""
 						],
@@ -232,8 +250,8 @@
 							"\r",
 							"var jsonData = pm.response.json();\r",
 							"\r",
-							"pm.test(\"Returns 12 records\", function() {\r",
-							"    pm.expect(jsonData.length).to.eql(12);\r",
+							"pm.test(\"Returns correct number of records\", function() {\r",
+							"    pm.expect(jsonData.length.toString()).to.eql(pm.environment.get(\"NumForDept\"));\r",
 							"});\r",
 							"\r",
 							"pm.test(\"No Links returned\", function() {\r",
@@ -267,6 +285,11 @@
 							"\r",
 							"pm.test(\"Some orders have a valid Unit\", function() {\r",
 							"    pm.expect(jsonData.any(validUnitExists)).to.be.true;\r",
+							"})\r",
+							"\r",
+							"var validateMedicationFunction = eval(pm.globals.get(\"ValidateMedication\"));\r",
+							"pm.test(\"Validate Medication on each order\", function(){\r",
+							"    pm.expect(jsonData.all(validateMedicationFunction)).to.be.true;\r",
 							"})\r",
 							""
 						],
@@ -317,8 +340,8 @@
 							"\r",
 							"var jsonData = pm.response.json();\r",
 							"\r",
-							"pm.test(\"Returns 12 records\", function() {\r",
-							"    pm.expect(jsonData.length).to.eql(12);\r",
+							"pm.test(\"Returns correct number of records\", function() {\r",
+							"    pm.expect(jsonData.length.toString()).to.eql(pm.environment.get(\"NumForDept\"));\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Links returned\", function() {\r",
@@ -354,7 +377,15 @@
 							"    pm.expect(jsonData.any(validUnitExists)).to.be.true;\r",
 							"})\r",
 							"\r",
-							"pm.environment.unset(\"SiteId\");"
+							"var validateMedicationFunction = eval(pm.globals.get(\"ValidateMedication\"));\r",
+							"pm.test(\"Validate Medication on each order\", function(){\r",
+							"    pm.expect(jsonData.all(validateMedicationFunction)).to.be.true;\r",
+							"})\r",
+							"\r",
+							"pm.environment.unset(\"SiteId\");\r",
+							"pm.environment.unset(\"SiteId\", jsonData.siteId);\r",
+							"pm.environment.unset(\"NumForNoDept\");\r",
+							"pm.environment.unset(\"NumForDept\");"
 						],
 						"type": "text/javascript"
 					}

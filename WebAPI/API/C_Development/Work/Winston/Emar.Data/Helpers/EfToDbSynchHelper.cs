@@ -1261,8 +1261,8 @@ namespace Emar.Data.Helpers
                     case ReportProblem.AnnotationSqlDatatypeNotMatchClrDatatype:
                     case ReportProblem.DbDataTypeNotMatchDefinedSqlType:
                     case ReportProblem.DataTypeNullableButColumnDoesntTakeNulls:
-                    case ReportProblem.PropertyNotFlaggedAsKey:
                     case ReportProblem.DataTypeNotNullableButColumnTakesNulls:
+                    case ReportProblem.PropertyNotFlaggedAsKey:
                     case ReportProblem.PropertyImproperlyFlaggedAsKey:
                         CorrectionCode =
                             "// Update Property in Entity file" + Environment.NewLine + 
@@ -1312,7 +1312,7 @@ namespace Emar.Data.Helpers
                             $"\tentity.Property(e => e.{colObj.ClrName}).IsUnicode(false);";
                         break;
                     default:
-                         throw new ArgumentOutOfRangeException(nameof(problem), problem,
+                        throw new ArgumentOutOfRangeException(nameof(problem), problem,
                             "in EfDiscrepancyCodeCorrectionFragment.constructor()");
                 }
             }

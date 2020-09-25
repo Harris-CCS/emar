@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <Compile Remove="Entities\BradNameExample.cs" />
-    <Compile Remove="Entities\MedicationDetail.cs" />
   </ItemGroup>
 
   <ItemGroup>

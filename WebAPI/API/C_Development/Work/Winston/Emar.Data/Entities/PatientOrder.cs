@@ -12,6 +12,8 @@ namespace Emar.Data.Entities
         {
             OrderAdministrations = new HashSet<OrderAdministration>();
             OrderEvents = new HashSet<OrderEvent>();
+            OrderInteractions = new HashSet<OrderInteraction>();
+            OrderReactions = new HashSet<OrderReaction>();
         }
 
         [Key]
@@ -36,17 +38,9 @@ namespace Emar.Data.Entities
         [Column("end_datetime", TypeName = "datetimeoffset")]
         public DateTimeOffset? EndDateTime { get; set; }
 
-        //[Column("ndc")]
-        //[StringLength(32)]
-        //public string Ndc { get; set; }
-
-        //[Column("drug_id", TypeName = "varchar(32)")]
-        //public string DrugId { get; set; }
-
-        //[Column("brand_name")]
-        //[StringLength(255)]
-        //public string BrandName { get; set; }
-
+        [Column("medication_id", TypeName = "int")]
+        public int MedicationId { get; set; }
+        
         [Column("dose", TypeName = "decimal(11,2)")]
         public decimal? Dose { get; set; }
 
@@ -74,26 +68,21 @@ namespace Emar.Data.Entities
         [Column("order_notes", TypeName = "nvarchar(MAX)")]
         public string OrderNotes { get; set; }
 
-        [NotMapped]
-        public string OrderStatusCode { get; set; } = "Pending";
-
-        [Column("medication_id", TypeName = "int")]
-        public int MedicationId
-        {
-            get; set;
-        }
+        //[NotMapped]
+        //public string OrderStatusCode { get; set; } = "Pending";
 
         [ForeignKey(nameof(AddUserId))]
         [InverseProperty(nameof(User.PatientOrdersAddUser))]
         public virtual User AddUser { get; set; }
 
-        [ForeignKey(nameof(MedicationId))]
-        [InverseProperty(nameof(Entities.Medication.PatientOrders))]
-        public virtual Medication Medication { get; set; }
-
         [ForeignKey(nameof(FrequencyScheduleId))]
         [InverseProperty(nameof(Entities.FrequencySchedule.PatientOrders))]
         public virtual FrequencySchedule FrequencySchedule { get; set; }
+
+        // For Foreign Key: fk__patient_orders__medications
+        [ForeignKey(nameof(MedicationId))]
+        [InverseProperty(nameof(Entities.Medication.PatientOrders))]
+        public virtual Medication Medication { get; set; }
 
         [ForeignKey(nameof(MedicationRouteId))]
         [InverseProperty(nameof(Entities.MedicationRoute.PatientOrders))]
@@ -116,5 +105,19 @@ namespace Emar.Data.Entities
 
         [InverseProperty("PatientOrder")]
         public virtual ICollection<OrderEvent> OrderEvents { get; set; }
+
+        [InverseProperty("PatientOrder")]
+        public virtual ICollection<OrderInteraction> OrderInteractions { get; set; }
+
+        [InverseProperty("PatientOrder")]
+        public virtual ICollection<OrderReaction> OrderReactions { get; set; }
+
+
+        [ForeignKey("OrderId")]
+        [InverseProperty("PatientOrder")]
+        public virtual ICollection<AllergyReactionView> AllergyReactionsView { get; set; }
+
+        [NotMapped]
+        public FdbBrandName? FdbBrandName { get; set; }
     }
 }

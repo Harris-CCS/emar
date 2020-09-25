@@ -7,11 +7,10 @@ namespace Emar.Data.Entities
     [Table("medication_details")]
     public class MedicationDetail
     {
-        [Key]
-        [Column("id")]
+        [Column("id", TypeName = "int"), Key]
         public int Id { get; set; }
-        
-        [Column("medication_id")]
+
+        [Column("medication_id", TypeName = "int")]
         public int MedicationId { get; set; }
 
         [Column("drug_id", TypeName = "varchar(32)"), Required]
@@ -20,24 +19,25 @@ namespace Emar.Data.Entities
         [Column("brand_name", TypeName = "nvarchar(255)"), Required]
         public string BrandName { get; set; }
 
-        [Column("dose", TypeName = "decimal(11, 2)")]
-        public decimal? Dose { get; set; }
-        
-        [Column("medication_unit_id")]
-        public int? MedicationUnitId { get; set; }
-        
-        [Column("medication_route_id")]
-        public int? MedicationRouteId { get; set; }
-
         [Column("active_list", TypeName = "nvarchar(max)"), Required]
         public string ActiveList { get; set; }
 
-        // Missing column to be added to the Entity
+        [Column("dose", TypeName = "decimal(11,2)")]
+        public decimal? Dose { get; set; }
+
+        [Column("medication_unit_id", TypeName = "int")]
+        public int? MedicationUnitId { get; set; }
+
+        [Column("medication_route_id", TypeName = "int")]
+        public int? MedicationRouteId { get; set; }
+
         [Column("is_active", TypeName = "bit")]
         public bool IsActive { get; set; }
 
-        [ForeignKey(nameof(MedicationId))]
-        [InverseProperty(nameof(Entities.Medication.MedicationDetails))]
-        public virtual Medication Medication { get; set; }
+
+       // For Foreign Key: fk__medication_details__medications
+       [ForeignKey(nameof(MedicationId))]
+       [InverseProperty(nameof(Entities.Medication.MedicationDetails))]
+       public virtual Medication Medication { get; set; }
     }
 }

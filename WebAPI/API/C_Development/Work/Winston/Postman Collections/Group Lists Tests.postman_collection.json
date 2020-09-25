@@ -48,6 +48,56 @@
 			"response": []
 		},
 		{
+			"name": "Testing Values From Database",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "dc8da346-6a27-4a89-8692-44298fcee950",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.environment.set(\"SiteId\", jsonData.returnValues.siteId);\r",
+							"pm.environment.set(\"NumForNoDept\", jsonData.returnValues.numForSite);\r",
+							"pm.environment.set(\"NumForDept\", jsonData.returnValues.numForSiteDept);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"SiteId\": \"SELECT id FROM sites WHERE name = 'Automation Test_Multum'\",\r\n    \"NumForSite\": \"SELECT cnt = COUNT(*) FROM department_preferred_list_items WHERE site_id = <<SiteId>>\",\r\n    \"NumForSiteDept\": \"SELECT cnt = COUNT(*) FROM department_preferred_list_items WHERE site_id = <<SiteId>> and department_code = 'Main ED'\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/testingvariables",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"testingvariables"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "List for Site (no Department no Pt)",
 			"event": [
 				{

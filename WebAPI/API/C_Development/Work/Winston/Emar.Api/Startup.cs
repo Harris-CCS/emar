@@ -32,7 +32,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
-
+using Emar.Core.HomeMedications.Service;
+using Emar.Core.HomeMedications.Repository;
 
 namespace Emar.Api
 {
@@ -152,6 +153,11 @@ namespace Emar.Api
 
             services.AddScoped<IDoseRangeCheckingInfoService, DoseRangeCheckingInfoService>();
             services.AddScoped<IDoseRangeCheckingInfoRepository, DoseRangeCheckingInfoRepository>();
+
+            services.AddScoped<IHomeMedicationService, HomeMedicationService>();
+            services.AddScoped<IHomeMedicationRepository, HomeMedicationRepository>();
+
+            services.AddScoped<IInteractionRepository, InteractionRepository>();
 
             services.AddScoped<IMedicationService, MedicationService>();
             services.AddScoped<IMedicationRepository, MedicationRepository>();

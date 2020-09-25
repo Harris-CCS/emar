@@ -10,17 +10,18 @@ namespace Emar.Data.Entities
         public Site()
         {
             DepartmentPreferredListItems = new HashSet<DepartmentPreferredListItem>();
+            // For Foreign Key: fk__frequency_schedules__sites
+            FrequencySchedules = new HashSet<FrequencySchedule>();
             GroupListItems = new HashSet<GroupListItem>();
             MedicationRoutes = new HashSet<MedicationRoute>();
-            MedicationUnits = new HashSet<MedicationUnit>();
+            //For Foreign Key: fk__medications__sites
             Medications = new HashSet<Medication>();
+            MedicationUnits = new HashSet<MedicationUnit>();
+            OverrideReasons = new HashSet<OverrideReason>();
             Patients = new HashSet<Patient>();
             UserQuickListItems = new HashSet<UserQuickListItem>();
             Users = new HashSet<User>();
             SiteOptions = new HashSet<SiteOption>();
-            SiteFormularyMatchs = new HashSet<SiteFormularyMatch>();
-            FrequencySchedules = new HashSet<FrequencySchedule>();
-            SiteFormularys = new HashSet<SiteFormulary>();
         }
 
         [Key]
@@ -47,10 +48,10 @@ namespace Emar.Data.Entities
         public virtual ICollection<MedicationRoute> MedicationRoutes { get; set; }
 
         [InverseProperty("Site")]
-        public virtual ICollection<Medication> Medications { get; set; }
+        public virtual ICollection<MedicationUnit> MedicationUnits { get; set; }
 
         [InverseProperty("Site")]
-        public virtual ICollection<MedicationUnit> MedicationUnits { get; set; }
+        public virtual ICollection<OverrideReason> OverrideReasons { get; set; }
 
         [InverseProperty("Site")]
         public virtual ICollection<Patient> Patients { get; set; }
@@ -64,19 +65,12 @@ namespace Emar.Data.Entities
         [InverseProperty("Site")]
         public virtual ICollection<SiteOption> SiteOptions { get; set; }
 
-        [InverseProperty("Site")]
-        public virtual ICollection<SiteFormularyMatch> SiteFormularyMatchs { get; set; }
-
+        // For Foreign Key: fk__frequency_schedules__sites
         [InverseProperty("Site")]
         public virtual ICollection<FrequencySchedule> FrequencySchedules { get; set; }
 
+        // For Foreign Key: fk__medications__sites
         [InverseProperty("Site")]
-        public virtual ICollection<SiteFormulary> SiteFormularys { get; set; }
-
-        //  This foreign key is not in the database, and can't be enforceable if it were:
-        //    - The datatypes don't line up, and 
-        //    - values exist in ExternalIds that don't point to the patients table
-        //[InverseProperty("Site")]
-        //public virtual ExternalIdEntity ExternalIds { get; set; }
+        public virtual ICollection<Medication> Medications { get; set; }
     }
 }

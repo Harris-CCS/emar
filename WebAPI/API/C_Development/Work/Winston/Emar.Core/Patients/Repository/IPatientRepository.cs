@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 using Emar.Core.Helpers;
 using Emar.Core.ResourceParameters;
 using Emar.Data.Entities;
@@ -15,5 +17,8 @@ namespace Emar.Core.Patients.Repository
         Dictionary<string, string> GetExternalRootSitePatientId(string number, GetPatientBy getPatientBy, string rootType);
         Patient GetPatientByNumber(string number, GetPatientBy getPatientBy, bool includeOrders = false);
         int GetSiteIdForPatient(long patientId);
+        IEnumerable<PatientAllergy> GetAllergiesByPatientId(long patientId, Expression<Func<PatientAllergy, bool>> wherePredicate);
+        IEnumerable<FdbAllergyName> GetAllergyFdbAllergyNames(string name, Expression<Func<FdbAllergyName, bool>> wherePredicate = null);
+        IEnumerable<FdbAllergyName> GetAllergyFdbAllergyNamesByPcHiclSeqno(string pcHiclSeqno, Expression<Func<FdbAllergyName, bool>> wherePredicate = null);
     }
 }

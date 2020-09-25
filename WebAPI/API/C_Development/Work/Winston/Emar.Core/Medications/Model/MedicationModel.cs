@@ -1,20 +1,41 @@
 ﻿using System;
+using System.Collections.Generic;
+using static Emar.Core.Helpers.AppConstants;
 
 namespace Emar.Core.Medications.Model
 {
-    public class Medication
+    public class MedicationInteractionReaction
     {
+        public int SiteId { get; set; }
+        public long? PatientId { get; set; }
+        public int UserId { get; set; }
+        public string SourceTable { get; set; }
+        public long? SourceTableId { get; set; }
+        public EmarOrderType Type { get; set; }
+        public string BrandName { get; set; }
+        public string ActiveName { get; set; }
+        public string ActiveId { get; set; }
+
+        public List<Dictionary<string, string>> Interactions { get; set; } = new List<Dictionary<string, string>>();
+        public List<Dictionary<string, string>> Reactions { get; set; } = new List<Dictionary<string, string>>();
+    }
+
+    public class MedicationModel
+    {
+        public long Id { get; set; }
         public int SiteId { get; set; }
         public long PatientId { get; set; }
         public int UserId { get; set; }
         public string SourceTable { get; set; }
         public long? SourceTableId { get; set; }
-        public MedicationType Type { get; set; }
+        public EmarOrderType Type { get; set; }
         public DateTimeOffset? AddDatetime { get; set; }
         public int? AddUserId { get; set; }
         public string AlternateName { get; set; }
         public DateTimeOffset? BeginDatetime { get; set; }
         public string BrandName { get; set; }
+        public string ActiveName { get; set; }
+        public string ActiveId { get; set; }
         public string Category { get; set; }
         public DateTimeOffset? ChangeDatetime { get; set; }
         public int? ChangeUserId { get; set; }
@@ -41,15 +62,27 @@ namespace Emar.Core.Medications.Model
         public string Schedule { get; set; }
         public string Severity { get; set; }
 
-        public enum MedicationType
+        ///  these stuff exist in allergies but not in home meds
+        public string Name { get; set; }
+        public string AllergyDrugId { get; set; }
+        public string ActionStatus { get; set; }
+        public string InformationSource { get; set; }
+        public string PersonNumber { get; set; }
+        public string AccountNumber { get; set; }
+
+        public List<Dictionary<string, string>> Interactions { get; set; } = new List<Dictionary<string, string>>();
+        public List<Dictionary<string, string>> Reactions { get; set; } = new List<Dictionary<string, string>>();
+
+        public string GetName()
         {
-            PatientOrder,
-            CartOrder,
-            HomeMedication,
-            UserQuickListItem,
-            DepartmentPreferredListItem,
-            GroupListItem,
-            ComposerSearch
+            if (BrandName.Equals(ActiveName) || String.IsNullOrWhiteSpace(ActiveName))
+            {
+                return BrandName;
+            }
+            else
+            {
+                return BrandName + " (" + ActiveName + ")";
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Emar.Core.Helpers;
+using Emar.Core.Options.Model;
 using Emar.Core.Options.Repository;
 using Emar.Core.Patients.Model;
 using Emar.Core.Patients.Model.Mappings;
@@ -33,9 +34,13 @@ namespace Emar.Core.Patients.Service
             }
 
             var patientList = new List<PatientDto>();
+
             foreach (Patient patient in patients)
             {
-                patientList.Add(PatientMapper.MapPatient(patient, _optionRepository.GetOption(patient.SiteId, AppConstants.LongDateFormat)));
+                var dateFormat = _optionRepository.GetOption(patient.SiteId, OptionNames.LONG_DATE_FORMAT);
+                var drugDBVendor = _optionRepository.GetOption(patient.SiteId, OptionNames.DRUG_DB_VENDOR);
+
+                patientList.Add(PatientMapper.MapPatient(patient, dateFormat, drugDBVendor));
             }
 
             return new PagedList<PatientDto>(patientList, patients.TotalCount, patients.CurrentPage, patients.PageSize);
@@ -50,7 +55,10 @@ namespace Emar.Core.Patients.Service
                 return null;
             }
 
-            PatientDto patientDto = PatientMapper.MapPatient(patient, _optionRepository.GetOption(patient.SiteId, AppConstants.LongDateFormat));
+            var dateFormat = _optionRepository.GetOption(patient.SiteId, OptionNames.LONG_DATE_FORMAT);
+            var drugDBVendor = _optionRepository.GetOption(patient.SiteId, OptionNames.DRUG_DB_VENDOR);
+
+            PatientDto patientDto = PatientMapper.MapPatient(patient, dateFormat, drugDBVendor);
 
             return patientDto;
         }
@@ -69,7 +77,9 @@ namespace Emar.Core.Patients.Service
                 return null;
 
             Patient patient = _patientRepository.GetPatient(patientId, null, includeOrders);
-            PatientDto patientDto = PatientMapper.MapPatient(patient, _optionRepository.GetOption(patient.SiteId, AppConstants.LongDateFormat));
+            var dateFormat = _optionRepository.GetOption(patient.SiteId, OptionNames.LONG_DATE_FORMAT);
+            var drugDBVendor = _optionRepository.GetOption(patient.SiteId, OptionNames.DRUG_DB_VENDOR);
+            PatientDto patientDto = PatientMapper.MapPatient(patient, dateFormat, drugDBVendor);
 
             return patientDto;
         }
@@ -85,7 +95,9 @@ namespace Emar.Core.Patients.Service
         public PatientDto GetPatientByNumber(string number, GetPatientBy getPatientBy, bool includeOrders)
         {
             Patient patient = _patientRepository.GetPatientByNumber(number, getPatientBy, includeOrders);
-            PatientDto patientDto = PatientMapper.MapPatient(patient, _optionRepository.GetOption(patient.SiteId, AppConstants.LongDateFormat));
+            var dateFormat = _optionRepository.GetOption(patient.SiteId, OptionNames.LONG_DATE_FORMAT);
+            var drugDBVendor = _optionRepository.GetOption(patient.SiteId, OptionNames.DRUG_DB_VENDOR);
+            PatientDto patientDto = PatientMapper.MapPatient(patient, dateFormat, drugDBVendor);
 
             return patientDto;
         }

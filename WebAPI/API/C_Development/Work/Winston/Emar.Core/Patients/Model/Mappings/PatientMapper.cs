@@ -12,7 +12,7 @@ namespace Emar.Core.Patients.Model.Mappings
 {
     public static class PatientMapper
     {
-        public static PatientDto MapPatient(Patient pt, string dateFormat)
+        public static PatientDto MapPatient(Patient pt, string dateFormat, string drugDBVendor)
         {
             if (pt == null)
                 return null;
@@ -68,8 +68,9 @@ namespace Emar.Core.Patients.Model.Mappings
                 PersonNumber = pt.PersonNumber,
                 VisitStartDatetime = pt.VisitStartDatetime,
                 DeactivationDatetime = pt.DeactivationDatetime,
-                PatientImageSrc = EmarHttpContext.AppBaseUrl + "/" + AppConstants.ImagesRoute + "/patients/" + pt.Id.ToString(),
-                Orders = pt.PatientOrders?.Select(o => OrderMapper.MapOrder(o, dateFormat)).ToList(),
+                PatientImageSrc = EmarHttpContext.AppBaseUrl + "/" + AppConstants.ImagesRoute + "/patients/" +
+                                  pt.Id.ToString(),
+                Orders = pt.PatientOrders?.Select(o => OrderMapper.MapOrder(o, dateFormat, drugDBVendor, null, null)).ToList(),
                 Site = SiteMapper.MapSite(pt.Site),
                 PatientIndicators = pt.PatientIndicators?.Select(MapPatientIndicator).ToList(),
                 PatientAllergies = pt.PatientAllergies?.Select(MapPatientAllergy).ToList(),
@@ -133,6 +134,7 @@ namespace Emar.Core.Patients.Model.Mappings
             if (allergy == null)
                 return null;
 
+            // TODO: Map the MedicationId
             var retDto = new PatientAllergyDto
             {
                 Id = allergy.Id,
@@ -142,7 +144,7 @@ namespace Emar.Core.Patients.Model.Mappings
                 InternalDrugId = allergy.InternalDrugId,
                 //Ndc = allergy.Ndc,
                 //DrugId = allergy.DrugId,
-                //Name = allergy.Name,
+                Name = allergy.Name,
                 AlternateName = allergy.AlternateName,
                 AllergyDrugId = allergy.AllergyDrugId,
                 IsActive = allergy.IsActive,
@@ -159,7 +161,9 @@ namespace Emar.Core.Patients.Model.Mappings
                 //ChangeUser = UserMapper.MapUser(allergy.ChangeUser),
                 //ChangeDatetime = allergy.ChangeDatetime,
                 ActionStatus = allergy.ActionStatus,
-                InformationSourceCode = allergy.InformationSource
+                InformationSourceCode = allergy.InformationSource,
+                PersonNumber = allergy.PersonNumber,
+                AccountNumber = allergy.AccountNumber
             };
 
             return retDto;
@@ -170,6 +174,7 @@ namespace Emar.Core.Patients.Model.Mappings
             if (dbObj == null)
                 return null;
 
+            // TODO: Map the MedicationId
             var retDto = new HomeMedicationDto
             {
                 Id = dbObj.Id,
@@ -179,7 +184,7 @@ namespace Emar.Core.Patients.Model.Mappings
                 InternalDrugId = dbObj.InternalDrugId,
                 //Ndc = dbObj.Ndc,
                 //DrugId = dbObj.DrugId,
-                //Name = dbObj.Name,
+                Name = dbObj.Name,
                 AlternateName = dbObj.AlternateName,
                 MedicationDrugId = dbObj.MedicationDrugId,
                 IsActive = dbObj.IsActive,
@@ -192,7 +197,7 @@ namespace Emar.Core.Patients.Model.Mappings
                 MedicationUnitId = dbObj.MedicationUnitId,
                 MedicationUnit = MedicationMapper.MapMedicationUnit(dbObj.MedicationUnit),
                 MedicationRouteId = dbObj.MedicationRouteId,
-                MedicationRoute = MedicationMapper.MapMedicationRoute(dbObj.MedicationRoute)
+                MedicationRoute = MedicationMapper.MapMedicationRoute(dbObj.MedicationRoute),
 
                 //AddUserId = allergy.AddUserId,
                 //AddUser = UserMapper.MapUser(allergy.AddUser),
@@ -200,10 +205,13 @@ namespace Emar.Core.Patients.Model.Mappings
                 //ChangeUserId = allergy.ChangeUserId,
                 //ChangeUser = UserMapper.MapUser(allergy.ChangeUser),
                 //ChangeDatetime = allergy.ChangeDatetime,
+
+                ActionStatus = dbObj.ActionStatus,
+                LastTakenNote = dbObj.LastTakenNote
             };
 
             if (retDto.MedicationRoute == null && retDto.MedicationRouteId != null)
-                retDto.MedicationRoute = new MedicationRouteDto {Id = retDto.MedicationRouteId.Value};
+                retDto.MedicationRoute = new MedicationRouteDto { Id = retDto.MedicationRouteId.Value };
 
             if (retDto.MedicationUnit == null && retDto.MedicationUnitId != null)
                 retDto.MedicationUnit = new MedicationUnitDto { Id = retDto.MedicationUnitId.Value };

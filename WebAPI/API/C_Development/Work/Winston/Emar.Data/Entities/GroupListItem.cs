@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Emar.Data.Entities
@@ -18,17 +19,11 @@ namespace Emar.Data.Entities
         [Column("group_name", TypeName = "nvarchar(255)"), Required]
         public string GroupName { get; set; }
 
-        //[Column("ndc", TypeName = "varchar(32)")]
-        //public string Ndc { get; set; }
-
-        //[Column("drug_id", TypeName = "varchar(32)")]
-        //public string DrugId { get; set; }
-
-        //[Column("brand_name", TypeName = "nvarchar(255)"), Required]
-        //public string BrandName { get; set; }
-
         [Column("medication_id", TypeName = "int")]
         public int MedicationId { get; set; }
+
+        [Column("duration_in_minutes", TypeName = "int")]
+        public int DurationInMinutes { get; set; }
 
         [Column("dose", TypeName = "decimal(11, 2)")]
         public decimal? Dose { get; set; }
@@ -45,13 +40,15 @@ namespace Emar.Data.Entities
         [Column("order_notes", TypeName = "nvarchar(MAX)")]
         public string OrderNotes { get; set; }
 
-        [ForeignKey(nameof(MedicationId))]
-        [InverseProperty(nameof(Entities.Medication.GroupListItems))]
-        public virtual Medication Medication { get; set; }
 
         [ForeignKey(nameof(FrequencyScheduleId))]
         [InverseProperty(nameof(Entities.FrequencySchedule.GroupListItems))]
         public virtual FrequencySchedule FrequencySchedule { get; set; }
+
+        // For Foreign Key: fk__group_list_items__medications
+        [ForeignKey(nameof(MedicationId))]
+        [InverseProperty(nameof(Entities.Medication.GroupListItems))]
+        public virtual Medication Medication { get; set; }
 
         [ForeignKey(nameof(MedicationRouteId))]
         [InverseProperty(nameof(Entities.MedicationRoute.GroupListItems))]

@@ -6,7 +6,6 @@ using Emar.Core.Medications.Model;
 using Emar.Core.Medications.Service;
 using Emar.Core.Options.Service;
 using Microsoft.AspNetCore.Mvc;
-//todo for Hsi-An
 namespace Emar.Api.Controllers
 {
     /// <summary>
@@ -24,7 +23,7 @@ namespace Emar.Api.Controllers
         public MedicationsController(IDoseRangeCheckingInfoService service, IMedicationService medService, IOptionService optService)
         {
             _doseRangeCheckingInfoService = service ?? throw new ArgumentNullException(nameof(service));
-            _medicationService = medService?? throw new ArgumentNullException(nameof(medService));
+            _medicationService = medService ?? throw new ArgumentNullException(nameof(medService));
             _optionService = optService ?? throw new ArgumentNullException(nameof(optService));
         }
 
@@ -34,20 +33,20 @@ namespace Emar.Api.Controllers
         /// <param name="mediaType">
         /// Media type from Accept header.
         /// </param>
-        /// <param name="ndc">
-        /// Unique order identifier.
+        /// <param name="medid">
+        /// The medication/drug ID.
         /// </param>
         /// <returns>The dose range info for the medication that has the passed in NDC</returns>
         /// <remarks>
         /// </remarks>
-        [HttpGet("api/GetDoseRangeCheckingInfo/{ndc}", Name = nameof(GetDoseRangeCheckingInfo))]
+        [HttpGet("api/GetDoseRangeCheckingInfo/{medid}", Name = nameof(GetDoseRangeCheckingInfo))]
         [ProducesResponseType(200)] // (OK) - the resource is sent in the response
         [ProducesResponseType(400)] // (bad request) - indicates a bad request (e.g. wrong parameter)
         [ProducesResponseType(404)] // (not found) - the resource does not exits
         public ActionResult<IEnumerable<DoseRangeCheckingInfoDto>> GetDoseRangeCheckingInfo
         (
             [FromHeader(Name = "Accept")] string mediaType,
-            string ndc
+            string medid
         )
         {
             if (!MediaTypes.IsValidMediaType(mediaType))
@@ -55,16 +54,16 @@ namespace Emar.Api.Controllers
                 return BadRequest("Unsupported media type header provided.");
             }
 
-            if (ndc == null)
+            if (medid == null)
             {
-                return BadRequest("NDC is missing.");
+                return BadRequest("medid is missing.");
             }
 
-            var doseRangeCheckInfos = _doseRangeCheckingInfoService.DoseRangeCheckInfos(ndc);
+            var doseRangeCheckInfos = _doseRangeCheckingInfoService.DoseRangeCheckInfos(medid);
 
             if (doseRangeCheckInfos == null || !doseRangeCheckInfos.Any())
             {
-                return NotFound($"Dose Range Checking Info for ndc {ndc} was not found.");
+                return NotFound($"Dose Range Checking Info for medid {medid} was not found.");
             }
 
             return Ok(doseRangeCheckInfos);

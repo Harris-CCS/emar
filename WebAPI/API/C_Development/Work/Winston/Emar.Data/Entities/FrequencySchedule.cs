@@ -55,6 +55,11 @@ namespace Emar.Data.Entities
         public string Notes { get; set; }
 
 
+        // For Foreign Key: fk__frequency_schedules__sites
+        [ForeignKey(nameof(SiteId))]
+        [InverseProperty(nameof(Entities.Site.FrequencySchedules))]
+        public virtual Site Site { get; set; }
+
         [InverseProperty("FrequencySchedule")]
         public virtual ICollection<DepartmentPreferredListItem> DepartmentPreferredListItems { get; set; }
 
@@ -69,9 +74,5 @@ namespace Emar.Data.Entities
 
         [InverseProperty("FrequencySchedule")]
         public virtual ICollection<UserQuickListItem> UserQuickListItems { get; set; }
-
-        [ForeignKey(nameof(SiteId))]
-        [InverseProperty(nameof(Entities.Site.FrequencySchedules))]
-        public virtual Site Site { get; set; }
     }
 }

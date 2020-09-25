@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using Emar.Api.Helpers;
 using Emar.Core.Helpers;
 using Emar.Core.Orders.Model;
 using Emar.Core.Orders.Service;
 using Emar.Core.ResourceParameters;
-using Emar.Data.Entities;
 using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,21 +23,20 @@ namespace Emar.Api.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly IOrderService _orderService;
-        private readonly IPropertyMappingService _propertyMappingService;
+        //private readonly IPropertyMappingService _propertyMappingService;
         private readonly IPropertyCheckerService _propertyCheckerService;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="orderService"></param>
-        /// <param name="propertyMappingService"></param>
         /// <param name="propertyCheckerService"></param>
         public OrdersController(IOrderService orderService,
-                                  IPropertyMappingService propertyMappingService,
+                                  //IPropertyMappingService propertyMappingService,
                                   IPropertyCheckerService propertyCheckerService)
         {
             _orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
-            _propertyMappingService = propertyMappingService ?? throw new ArgumentNullException(nameof(propertyMappingService));
+            //_propertyMappingService = propertyMappingService ?? throw new ArgumentNullException(nameof(propertyMappingService));
             _propertyCheckerService = propertyCheckerService ?? throw new ArgumentNullException(nameof(propertyCheckerService));
         }
 
@@ -109,8 +106,14 @@ namespace Emar.Api.Controllers
             if ((long.TryParse(patientId, out long ptId) ? ptId : -1) < 1)
                 return BadRequest($"Patient ID {patientId} is not valid");
 
+            // Get the order base for the Action links
+            var orderLinkBase = Url.Link(nameof(ExecuteOrderAction), 
+                new { orderId = -99, actionCode = "XAction"});
+            var administrationLinkBase = Url.Link(nameof(ExecuteAdministrationAction),
+                new { administrationId = -99, actionCode = "XAction" });
+
             //PagedList<PatientOrderDto> orders = _orderService.GetOrders(null, resourceParameters);
-            var orders = _orderService.GetOrders(ptId).ToList();
+            var orders = _orderService.GetOrders(ptId, orderLinkBase, administrationLinkBase).ToList();
 
             if (!orders.Any())
                 return NotFound($"No orders found for Patient ID: {ptId}.");
@@ -190,7 +193,14 @@ namespace Emar.Api.Controllers
                 return BadRequest();
             }
 
-            var order = _orderService.GetOrder(orderId, resourceParameters);
+            // Get the order base for the Action links
+            var orderLinkBase = Url.Link(nameof(ExecuteOrderAction),
+                new { orderId = -99, actionCode = "XAction" });
+            var administrationLinkBase = Url.Link(nameof(ExecuteAdministrationAction),
+                new { administrationId = -99, actionCode = "XAction" });
+
+
+            var order = _orderService.GetOrder(orderId, resourceParameters, orderLinkBase, administrationLinkBase);
 
             if (order == null)
             {
@@ -412,6 +422,83 @@ namespace Emar.Api.Controllers
             }
 
             return Ok(@event);
+        }
+
+
+        /// <summary>
+        /// Executes one of the standards actions against an Order
+        /// </summary>
+        /// <param name="mediaType"></param>
+        /// <param name="orderId"></param>
+        /// <param name="actionCode"></param>
+        /// <returns></returns>
+        [HttpPost("{orderId}/actions/{actionCode}", Name = "ExecuteOrderAction")]
+        [ProducesResponseType(200)] // (OK) - the resource is sent in the response
+        [ProducesResponseType(400)] // (bad request) - indicates a bad request (e.g. wrong parameter)
+        [ProducesResponseType(404)] // (not found) - the resource does not exits
+        [ProducesResponseType(406)] // (not acceptable) - the server does not support the required representation
+        public ActionResult<ActionResultDto> ExecuteOrderAction(
+            //[FromHeader(Name = "Accept")] string mediaType,
+            int orderId,
+            string actionCode
+        )
+        {
+            //if (!MediaTypes.IsValidMediaType(mediaType))
+            //{
+            //    return BadRequest("Unsupported media type header provided.");
+            //}
+
+            ActionResultDto actionReturn = _orderService.FireActionAgainstOrder(orderId, actionCode);
+
+            //if (@event == null)
+            //{
+            //    return NotFound($"Patient order event with id {eventId} was not found");
+            //}
+
+            //if (!@event.OrderId.Equals(orderId))
+            //{
+            //    return NotFound($"Patient order event with id {eventId} is not part of patient order with id {orderId}");
+            //}
+
+            return Ok(actionReturn);
+        }
+
+        /// <summary>
+        /// Executes one of the standards actions against an Order
+        /// </summary>
+        /// <param name="mediaType"></param>
+        /// <param name="administrationId">ID of the Order Administration to fire the action against</param>
+        /// <param name="actionCode"></param>
+        /// <returns></returns>
+        [HttpPost("administrations/{administrationId}/actions/{actionCode}", Name = "ExecuteAdministrationAction")]
+        [ProducesResponseType(200)] // (OK) - the resource is sent in the response
+        [ProducesResponseType(400)] // (bad request) - indicates a bad request (e.g. wrong parameter)
+        [ProducesResponseType(404)] // (not found) - the resource does not exits
+        [ProducesResponseType(406)] // (not acceptable) - the server does not support the required representation
+        public ActionResult<ActionResultDto> ExecuteAdministrationAction(
+            //[FromHeader(Name = "Accept")] string mediaType,
+            int administrationId,
+            string actionCode
+        )
+        {
+            //if (!MediaTypes.IsValidMediaType(mediaType))
+            //{
+            //    return BadRequest("Unsupported media type header provided.");
+            //}
+
+            ActionResultDto actionReturn = _orderService.FireActionAgainstAdministration(administrationId, actionCode);
+
+            //if (@event == null)
+            //{
+            //    return NotFound($"Patient order event with id {eventId} was not found");
+            //}
+
+            //if (!@event.OrderId.Equals(orderId))
+            //{
+            //    return NotFound($"Patient order event with id {eventId} is not part of patient order with id {orderId}");
+            //}
+
+            return Ok(actionReturn);
         }
 
         private string CreateOrdersResourceUri(BaseResourceParameters resourceParameters, ResourceUriType type)
