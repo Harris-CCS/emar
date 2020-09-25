@@ -1,6 +1,6 @@
 export interface MedicationRoute {
-    id: number;
-    siteId: number;
-    routeName: string;
-    pointInTime: boolean;
+    id?: number;
+    siteId?: number;
+    routeName?: string;
+    pointInTime?: boolean;
 }
