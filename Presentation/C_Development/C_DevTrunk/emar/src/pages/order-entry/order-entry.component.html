@@ -11,7 +11,7 @@
           user cannot scroll behind the modal container.
      -->
     <div *ngIf="performModalActions('medComposer', 'orders-container')" id="orders-container"
-        [ngStyle]="{'position': 'relative'}"
+        [ngStyle]="{'position': 'relative', 'width': '100%', 'height':'100%'}"
         [ngClass]="{'overflow-vertical-off': isModalVisible('medComposer'), 'overflow-vertical-on': true}">
         <div class="page-content-wrapper">
             <composer-med-modal></composer-med-modal>

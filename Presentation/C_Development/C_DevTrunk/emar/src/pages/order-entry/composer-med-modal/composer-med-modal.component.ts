@@ -4,6 +4,8 @@ import {
   Input,
   ViewChild,
   AfterViewInit,
+  AfterContentChecked,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { ModalService } from '../../../services/modal.service';
 import { ThrowStmt } from '@angular/compiler';
@@ -25,7 +27,7 @@ import {
   templateUrl: './composer-med-modal.component.html',
   styleUrls: ['./composer-med-modal.component.scss'],
 })
-export class ComposerMedModalComponent implements OnInit, AfterViewInit {
+export class ComposerMedModalComponent implements OnInit, AfterViewInit, AfterContentChecked {
   // @Input() modalTitle: string;
   @ViewChild('acc') accordionComponent: NgbAccordion;
   modalTitle: string = '';
@@ -38,16 +40,18 @@ export class ComposerMedModalComponent implements OnInit, AfterViewInit {
   gotData: boolean = false;
   userSiteId: number = null;
   doseOptions: Array<DoseOption> = [];
+  activeIds: Array<String> = ['medComponent-0'];
 
   constructor(
     private modalService: ModalService,
     private composerSchedulerService: ComposerSchedulerService,
     private medOrderService: MedOrderService,
     private cartStoreService: CartStoreService,
-    private userStoreService: UserStoreService
+    private userStoreService: UserStoreService,
+    private cdref: ChangeDetectorRef
   ) {
     this.userSiteId = this.userStoreService.userSiteId;
-    console.log('userSiteId', this.userSiteId);
+    // console.log('userSiteId', this.userSiteId);
     this.continueOrder = this.continueOrder.bind(this);
     this.cancelOrder = this.cancelOrder.bind(this);
     this.checkOrder = this.checkOrder.bind(this);
@@ -58,8 +62,10 @@ export class ComposerMedModalComponent implements OnInit, AfterViewInit {
     this.modalService.modalOpening.subscribe((data) => {
       // Get initial data from source (quick list, department list, group, or new order)
       this.initialData = data;
-      console.log('initialData', this.initialData);
-      console.log('initialDataBrandName', this.initialData.med.brandName);
+      this.composerMedComponents = this.composerSchedulerService.getComposerMedComponents();
+      // console.log('initialData', this.initialData);
+      // console.log('initialDataBrandName', this.initialData.med.brandName);
+      // console.log('dataBrandName', data);
 
       this.composerSchedulerService
         .getBrandNameOptionsFromAPI(this.initialData.med.brandName)
@@ -71,11 +77,11 @@ export class ComposerMedModalComponent implements OnInit, AfterViewInit {
           ) {
             this.composerSchedulerService.setBrandNameOptions(response);
             const getBrandNameOptions = this.composerSchedulerService.getBrandNameOptions();
-            console.log(
-              'Set Brand Name Options: ',
-              this.composerSchedulerService
-            );
-            console.log('Get Brand Name Options: ', getBrandNameOptions);
+            // console.log(
+            //   'Set Brand Name Options: ',
+            //   this.composerSchedulerService
+            // );
+            // console.log('Get Brand Name Options: ', getBrandNameOptions);
 
             if (
               this.composerSchedulerService.getBrandNameOptions() &&
@@ -87,6 +93,7 @@ export class ComposerMedModalComponent implements OnInit, AfterViewInit {
               )
             ) {
               this.gotData = true;
+              // console.log('gotData', this.gotData);
             }
           }
         });
@@ -165,7 +172,7 @@ export class ComposerMedModalComponent implements OnInit, AfterViewInit {
       this.getMed()
     ) {
       this.composerSchedulerService.addNewComposerMedComponent();
-      // console.log('componentAddAttempt');
+      // console.log('componentAddAttempt', this.composerMedComponents);
     }
     this.composerSchedulerService.addNewMedComponent.subscribe(() => {
       if (this.composerSchedulerService.addNewMedComponent.value) {
@@ -175,9 +182,11 @@ export class ComposerMedModalComponent implements OnInit, AfterViewInit {
     });
     this.composerSchedulerService.newMedComponentAdded.subscribe(() => {
       if (this.composerSchedulerService.newMedComponentAdded.value) {
-        // console.log('ComponentAddedMedEventHeard');
         this.addNewMedComponent = false;
         this.composerMedComponents = this.composerSchedulerService.getComposerMedComponents();
+        this.accordionComponent.collapseAll();
+        this.activeIds = [`medComponent-${this.composerMedComponents.length - 1}`];
+        // console.log('ComponentAddedMedEventHeard', this.composerMedComponents);
         this.composerSchedulerService.shouldCheckOverallMedOrderValidity.next(
           true
         );
@@ -210,7 +219,7 @@ export class ComposerMedModalComponent implements OnInit, AfterViewInit {
     if (this.accordionComponent) {
       this.accordionComponent.panelChange.subscribe(
         (panelChangeEvent: NgbPanelChangeEvent) => {
-          console.log('this.accordion', this.accordionComponent);
+          // console.log('this.accordion', this.accordionComponent);
           // console.log('panelChangeEvent', panelChangeEvent);
           // if (!panelChangeEvent.nextState && panelChangeEvent.panelId) {
           // this.composerMedComponents = this.composerSchedulerService.getComposerMedComponents();
@@ -219,6 +228,7 @@ export class ComposerMedModalComponent implements OnInit, AfterViewInit {
             //   'this.composerMedComponents',
             //   this.composerMedComponents
             // );
+            // console.log('panelChange');
             this.accordionComponent.panels.forEach((panel) => {
               // console.log('panel: ', panel.id, panel.isOpen);
               if (panel.isOpen) {
@@ -226,7 +236,7 @@ export class ComposerMedModalComponent implements OnInit, AfterViewInit {
                   panel.id.split('-').pop(),
                   10
                 );
-
+                // this.activeIds = [`medComponent-${medComponentId}`];
                 this.setMedComponentText(medComponentId);
                 // console.log(
                 //   'updatedMedComponent',
@@ -239,6 +249,15 @@ export class ComposerMedModalComponent implements OnInit, AfterViewInit {
         }
       );
     }
+  }
+
+  ngAfterContentChecked() {
+    // console.log('contentChecked');
+    this.cdref.detectChanges();
+  }
+
+  getPanelCardClass(): string {
+    return (this.composerMedComponents.length === 1) ? 'hide-panel' : '';
   }
 
   // gotMedData(): boolean {
@@ -292,6 +311,7 @@ export class ComposerMedModalComponent implements OnInit, AfterViewInit {
     // console.log('setMedComponentText0', this.composerMedComponents, id);
     if (this.composerMedComponents && this.composerMedComponents[id]) {
       const data = this.composerMedComponents[id].composerMedForm.value;
+      // console.log('setMedComponentData', this.composerMedComponents[id]);
       let textLine1: string;
       let textLine2: string;
 
@@ -509,6 +529,7 @@ export class ComposerMedModalComponent implements OnInit, AfterViewInit {
   continueOrder(): void {
     // console.log('continueThis', this);
     this.composerSchedulerService.addNewComposerMedComponent();
+    this.cdref.detectChanges();
     // console.log('componentAddAttemptFromContinueButton');
   }
 
@@ -530,10 +551,12 @@ export class ComposerMedModalComponent implements OnInit, AfterViewInit {
 
   validOrder(): string {
     // alert('Valid Order!');
+    // console.log('overallOrderValid', this.overallOrderValid);
     return this.overallOrderValid ? 'VALID' : 'INVALID';
   }
 
   isMedComposerFormInvalid(id: number) {
+    // console.log('isMedComposerFormInvalid', id, this.composerMedComponents);
     return this.composerMedComponents[id].isMedComposerFormInvalid();
   }
 
@@ -545,6 +568,9 @@ export class ComposerMedModalComponent implements OnInit, AfterViewInit {
     // console.log('removeComposerMedComponentsStart', this.composerMedComponents);
     this.composerSchedulerService.removeMedComponent(id);
     this.composerMedComponents = this.composerSchedulerService.getComposerMedComponents();
+    if (this.composerMedComponents.length === 1) {
+      this.activeIds = [`medComponent-${this.composerMedComponents.length - 1}`];
+    }
     this.composerSchedulerService.shouldCheckOverallMedOrderValidity.next(true);
     // console.log('removeComposerMedComponentsDone', this.composerMedComponents);
   }
@@ -605,7 +631,7 @@ export class ComposerMedModalComponent implements OnInit, AfterViewInit {
   };
 
   handleToggle(event: Event) {
-    console.log('handleToggleEvent', event);
+    // console.log('handleToggleEvent', event);
     // alert('handle toggle!');
   }
 }

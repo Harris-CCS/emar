@@ -26,10 +26,15 @@
                     [ngbPopover]="dosingInfo" [autoClose]="'outside'">
                     {{getModalHeaderParameterValue('title')}}
                 </span>
+                <button class="btn btn-med btn-validity"
+                    [ngClass]="{'is-invalid': getModalHeaderParameterValue('button', 'validOrder', 'onClick') === 'INVALID', 'is-valid': true}"
+                    [innerText]="getModalHeaderParameterValue('button', 'validOrder', 'onClick')"
+                    [ngbTooltip]="getModalHeaderParameterValue('button', 'validOrder', 'toolTip')" [openDelay]="500">
+                </button>
             </span>
         </div>
         <div [ngStyle]="{'display': 'flex', 'justify-content': 'space-between', 'padding-left': '5px' }">
-            <div [ngStyle]="{'font-size': '0.9rem', 'line-height': '1.2em'}">
+            <div [ngStyle]="{'font-size': '1.1rem', 'line-height': '1.2em'}">
                 <div *ngFor="let field of modalHeaderParameters.fields">
                     <div><em>{{field.label}}</em>{{field.value}}
                     </div>
@@ -44,6 +49,7 @@
                         [openDelay]="500">&#10025;</button>
                     <button class="button-secondary button-raised" [ngStyle]="{'margin-left':'5px'}"
                         (click)="getModalHeaderParameterValue('button', 'continue', 'onClick')"
+                        [disabled]="getModalHeaderParameterValue('button', 'validOrder', 'onClick') !== 'VALID'"
                         [ngbTooltip]="getModalHeaderParameterValue('button', 'continue', 'toolTip')"
                         [openDelay]="500">{{getModalHeaderParameterValue('button', 'continue', 'name')}}</button>&nbsp;
                 </span>
@@ -62,13 +68,13 @@
                     </button>
                 </span>
             </div>
-            <div>
+            <!-- <div>
                 <button class="btn btn-med btn-validity"
                     [ngClass]="{'is-invalid': getModalHeaderParameterValue('button', 'validOrder', 'onClick') === 'INVALID', 'is-valid': true}"
                     [innerText]="getModalHeaderParameterValue('button', 'validOrder', 'onClick')"
                     [ngbTooltip]="getModalHeaderParameterValue('button', 'validOrder', 'toolTip')" [openDelay]="500">
                 </button>
-            </div>
+            </div> -->
         </div>
     </div>
 </ng-template>

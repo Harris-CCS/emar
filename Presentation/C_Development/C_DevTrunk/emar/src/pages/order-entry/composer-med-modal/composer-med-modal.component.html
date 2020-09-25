@@ -1,63 +1,60 @@
 <app-modal modalId="medComposer" blocking="true" closebtn="true" [modalTitle]="setModalHeaderParameters()"
     [modalHeaderParameters]="modalHeaderParameters">
-    <ngb-accordion #acc="ngbAccordion" class="accordion" [activeIds]="['medComponent-0']" [destroyOnHide]="false"
+    <ngb-accordion #acc="ngbAccordion" class="accordion" [activeIds]="activeIds" [destroyOnHide]="false"
         closeOthers="true">
-        <!-- <ngb-accordion #acc="ngbAccordion" class="accordion" [activeIds]="['medComponent-0']" [destroyOnHide]="false"
-        closeOthers="true"> -->
         <ng-container *ngIf="gotData">
-            <ngb-panel [id]="'medComponent-' + i" *ngFor="let medComponent of composerMedComponents; let i = index">
-                <ng-template ngbPanelHeader>
-                    <div class="accordion-panel-header"
-                        [ngClass]="{'active': isMedComponentPanelSelected('medComponent-' + i)}">
-                        <button class="d-flex align-items-center justify-content-between ml-2 accordion-panel-toggle"
-                            [ngClass]="{'active': isMedComponentPanelSelected('medComponent-' + i)}"
-                            id="'medComponent-' + i +'-panel'" ngbPanelToggle>
-                            <div class="panel-id">
-                                <span>{{i + 1}}</span>
+            <ng-container>
+                <ngb-panel [id]="'medComponent-' + i" *ngFor="let medComponent of composerMedComponents; let i = index"
+                    cardClass="hide-panel" [ngClass]="{'is-invalid': isMedComposerFormInvalid(i), 'is-valid': true}">
+                    <ng-template *ngIf="composerMedComponents.length > 1" ngbPanelHeader>
+                        <div class="accordion-panel-header"
+                            [ngClass]="{'active': isMedComponentPanelSelected('medComponent-' + i)}">
+                            <button
+                                class="d-flex align-items-center justify-content-between ml-2 accordion-panel-toggle"
+                                [ngClass]="{'active': isMedComponentPanelSelected('medComponent-' + i)}"
+                                id="'medComponent-' + i +'-panel'" ngbPanelToggle>
+                                <div class="order-left">
+                                    <div class="panel-id">
+                                        <span>Order #{{i + 1}}</span>
+                                    </div>
+                                    <div>
+                                        <button
+                                            [ngClass]="{'is-invalid': isMedComposerFormInvalid(i), 'is-valid': true}"
+                                            class="btn btn-med align-items-center justify-content-between ml-2 btn-validity"
+                                            [innerText]="getMedComponentValidityText(i)"
+                                            ngbTooltip="Order Component Validity Status" container="body"
+                                            [openDelay]="500">
+                                        </button>
+                                    </div>
+                                    <div class="panel-title">
+                                        <span [innerHTML]="medComponent.title || setMedComponentText(i)">
+                                        </span>
+                                    </div>
+                                </div>
+                                <button
+                                    class="btn btn-sm align-items-center justify-content-between ml-2 accordion-toggle"
+                                    [ngClass]="{'active': isMedComponentPanelSelected('medComponent-' + i)}"></button>
+                            </button>
+                            <div class="panel-buttons">
+                                <button class="btn btn-sm align-items-center justify-content-between ml-2 reset"
+                                    (click)="resetComposerMedComponent(i)">Reset</button>
+                                <!-- <button *ngIf="i !== 0" -->
+                                <button [disabled]="i === 0" [ngClass]="{'hide': i === 0}"
+                                    class="btn btn-sm align-items-center justify-content-between ml-2"
+                                    [ngStyle]="{'color':'#fff', 'font-weight': 'bold'}" ngbTooltip="Discard"
+                                    container="body" (click)="removeMedComponent(i)">X</button>
                             </div>
-                            <div class="panel-title">
-                                <span [innerHTML]="medComponent.title || setMedComponentText(i)">
-                                    <!-- <span [innerHTML]="setMedComponentText(i)"> -->
-                                </span>
-                            </div>
-                            <div>
-                                <button [ngClass]="{'is-invalid': isMedComposerFormInvalid(i), 'is-valid': true}"
-                                    class="btn btn-med align-items-center justify-content-between ml-2 btn-validity"
-                                    [innerText]="getMedComponentValidityText(i)"
-                                    ngbTooltip="Order Component Validity Status" [openDelay]="500">
-                                </button>
-                            </div>
-                            <button class="btn btn-sm align-items-center justify-content-between ml-2 accordion-toggle"
-                                [ngClass]="{'active': isMedComponentPanelSelected('medComponent-' + i)}"></button>
-                        </button>
-                        <div class="panel-buttons">
-                            <button class="btn btn-sm align-items-center justify-content-between ml-2 reset"
-                                (click)="resetComposerMedComponent(i)">Reset</button>
-                            <button *ngIf="i !== 0" class="btn btn-sm align-items-center justify-content-between ml-2"
-                                [ngStyle]="{'color':'#fff', 'font-weight': 'bold'}" ngbTooltip="Discard"
-                                (click)="removeMedComponent(i)">X</button>
                         </div>
-                    </div>
-                </ng-template>
-                <ng-template ngbPanelContent>
-                    <composer-med [composerMedForm]="medComponent.composerMedForm" [composerMedFormIndex]="i">
-                    </composer-med>
-                </ng-template>
-            </ngb-panel>
-            <ngb-panel *ngIf="addNewMedComponent" [id]="getLatestMedComponentDOMId()"
-                title="getLatestMedComponentDOMId()">
-                <ng-template ngbPanelHeader>
-                    <button class="d-flex align-items-center justify-content-between accordion-panel-header"
-                        ngbPanelToggle>
-                        <span [ngStyle]="{'text-align':'left','white-space': 'pre-line'}">
-                        </span>
-                        <button class="btn btn-sm btn-outline-primary ml-2 accordion-toggle"></button>
-                    </button>
-                </ng-template>
-                <ng-template ngbPanelContent>
-                    <composer-med></composer-med>
-                </ng-template>
-            </ngb-panel>
+                    </ng-template>
+                    <ng-template ngbPanelContent>
+                        <composer-med [composerMedForm]="medComponent.composerMedForm" [composerMedFormIndex]="i">
+                        </composer-med>
+                    </ng-template>
+                </ngb-panel>
+            </ng-container>
+            <ng-container *ngIf="addNewMedComponent">
+                <composer-med></composer-med>
+            </ng-container>
         </ng-container>
     </ngb-accordion>
 </app-modal>

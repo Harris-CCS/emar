@@ -503,8 +503,9 @@ export class HeaderPatientComponent implements OnInit {
           });
           this.homeMedsTableStructure.appendTableBodyCell(false, {
             isHeaderCell: false,
-            data: med.lastTaken || ' ',
-            dataType: med.lastTaken ? 'date' : 'string',
+            data: med.lastTakenNote || ' ',
+            // dataType: med.lastTakenNote ? 'date' : 'string',
+            dataType: 'string',
             className: 'align-center',
           });
           this.homeMedsTableStructure.appendTableBodyCell(false, {
