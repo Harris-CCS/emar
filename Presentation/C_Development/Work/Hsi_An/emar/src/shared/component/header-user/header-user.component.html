@@ -8,7 +8,7 @@
   <div class="header-user">
     <div class="user-icons">
       <a class="notification" href="#" placement="bottom" ngbTooltip="Notifications"></a>
-      <a class="help" href="#" placement="bottom" [ngbTooltip]="Legend" tooltipClass="icons-tooltip"></a>
+      <a class="help" placement="bottom" [ngbPopover]="Legend" placement="bottom" ngbTooltip="Icon meaning"></a>
       <ng-template #Legend>
         <help-icons></help-icons>
       </ng-template>

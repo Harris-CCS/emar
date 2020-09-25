@@ -58,6 +58,8 @@ $red-L-10: lighten($red, 10%);
 $red-D-10: darken($red, 10%);
 $red-D-20: darken($red, 20%);
 
+$gray-L-20: lighten($gray, 20%);
+
 /* button effects */
 $primary-button: $red-D-10;
 $primary-button-hover: $red;
@@ -68,3 +70,13 @@ $secondary-button-hover: $red;
 /* tab effects */
 $primary-tab: $blue-D-10;
 $secondary-tab: color.adjust($blue-D-10, $lightness: 8%);
+
+/* order status, administration status */
+$e-status-pending: $e-red;
+$e-status-ongoing: $black;
+$e-status-scheduled: $black;
+$e-status-given: #009933;
+$e-status-held: $yellow;
+$e-status-due: $e-red;
+$e-status-acknowledged: $e-blue-yonder;
+$e-status-cancelled: $gray;

@@ -18,13 +18,13 @@ body {
   text-rendering: geometricPrecision;
 }
 
-body .popover {
+.my-popover.popover {
   max-width: 80% !important;
   max-height: 80% !important;
   overflow: visible;
 }
 
-body .popover .arrow {
+.my-popover.popover .arrow {
   display: none;
 }
 
@@ -286,8 +286,6 @@ body .popover .arrow {
     transform: rotate(360deg);
   }
 }
-
-
 
 /* ng-bootstrap overwrite*/
 

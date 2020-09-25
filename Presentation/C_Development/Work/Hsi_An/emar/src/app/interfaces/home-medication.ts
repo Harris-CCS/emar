@@ -12,7 +12,7 @@ export interface HomeMedication {
   id: number;
   internalDrugId: string;
   isActive: boolean;
-  lastTaken: string;
+  lastTakenNote: string;
   medicationDrugId: string;
   medicationRoute: MedicationRoute;
   medicationUnit: MedicationUnit;
