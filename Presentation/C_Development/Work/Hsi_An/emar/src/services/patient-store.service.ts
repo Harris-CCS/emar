@@ -40,6 +40,10 @@ export class PatientStoreService {
     // return this._patient.getValue().id || 657
   }
 
+  get patientDeptCode(): string{
+    return this._patient.getValue().departmentCode
+  }
+
   get patientAllergies(): Allergy[] {
     return this._patient.getValue().patientAllergies || [];
   }

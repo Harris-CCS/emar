@@ -3,13 +3,13 @@
         <!-- <li class="list-group-item" *ngFor="let item of displayCartItems"> -->
         <li class="list-group-item" *ngFor="let item of cartStoreService.cartOrders$ | async; trackBy: cartOrdersTrackFn">
             <span id="cart_{{item.id}}"></span>
-            <span [ngClass]="{'unresolved allergy-dot': item.allergies?.length, 'placeholder-dot': item.allergies?.length === 0, 'allergy-loader': !item.allergies}" 
+            <span [ngClass]="{'unresolved allergy-dot': item.allergyReactions?.length, 'placeholder-dot': item.allergyReactions?.length === 0, 'allergy-loader': !item.allergyReactions}" 
                   placement="right" 
-                  ngbTooltip="Allergy Reaction placeholder">
+                  ngbTooltip={{item.allergyReactionsText}}>
             </span>
-            <span [ngClass]="{'unresolved drug-dot' : item.drugs?.length, 'placeholder-dot': item.drugs?.length === 0, 'drug-loader': !item.drugs}"
+            <span [ngClass]="{'unresolved drug-dot' : item.orderInteractions?.length, 'placeholder-dot': item.orderInteractions?.length === 0, 'drug-loader': !item.orderInteractions}"
                   placement="right" 
-                  ngbTooltip="Medication Interaction placeholder">
+                  ngbTooltip={{item.drugInteractionsText}}>
             </span>
             <label for="cart_{{item.id}}" (click)="editCartItem(item)">{{item.displayName}} {{item.displayDose}} {{item.displayDoseUnit}} {{item.displayFrequency}} {{item.displayRoute}}</label>
             <!-- <button class="button delete" (click)="removeCartItem(item)"></button> -->

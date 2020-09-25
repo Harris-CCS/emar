@@ -69,7 +69,7 @@ export class OrderEntryComponent implements OnInit {
     // this.patient = this.patientService.getPatient(this.patientId);
     //this.orders = this.patientService.getPatientOrders(this.patientId);
     // this.getCurrentListOrders()
-    this.getCartListOrders();
+    // this.getCartListOrders();
 
     // this.patientService
     //   .getPatient(this.patientId)
@@ -136,31 +136,31 @@ export class OrderEntryComponent implements OnInit {
   //   })
   // }
 
-  cartListOrders() {
-    return this.cartOrders;
-  }
+  // cartListOrders() {
+  //   return this.cartOrders;
+  // }
 
-  getCartListOrders() {
-    //return ORDERS.slice(2, 5);
-    //return (this.cartOrders = this.medOrderService.getCartOrders());
-    this.cartService
-      .getCartOrders(this.patientId, this.userStoreService.userId)
-      .subscribe((o) => {
-        if (o) {
-          console.log('OrderEntry: getCartListOrders: ', o.orders);
-          this.cartOrders = o.orders.map((x) => ({
-            ...x,
-            displayName: x.brandName,
-            displayRoute: x.medicationRoute ? x.medicationRoute.routeName : '',
-            displayFrequency: x.frequencyId,
-            displayDose: x.dose,
-            displayDoseUnit: x.doseUnit ? x.doseUnit.printName : '',
-            allergies: [],
-            drugs: [],
-          }));
-        }
-      });
-  }
+  // getCartListOrders() {
+  //   //return ORDERS.slice(2, 5);
+  //   //return (this.cartOrders = this.medOrderService.getCartOrders());
+  //   this.cartService
+  //     .getCartOrders(this.patientId, this.userStoreService.userId)
+  //     .subscribe((o) => {
+  //       if (o) {
+  //         console.log('OrderEntry: getCartListOrders: ', o.orders);
+  //         this.cartOrders = o.orders.map((x) => ({
+  //           ...x,
+  //           displayName: x.brandName,
+  //           displayRoute: x.medicationRoute ? x.medicationRoute.routeName : '',
+  //           displayFrequency: x.frequencyId,
+  //           displayDose: x.dose,
+  //           displayDoseUnit: x.doseUnit ? x.doseUnit.printName : '',
+  //           allergies: [],
+  //           drugs: [],
+  //         }));
+  //       }
+  //     });
+  // }
 
   // getCartListOrders() {
   //   //return ORDERS.slice(2, 5);
