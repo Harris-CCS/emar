@@ -23,6 +23,10 @@ namespace Emar.Data.Entities
             PatientHomeMedications = new HashSet<PatientHomeMedication>();
             // For Foreign Key: fk__patient_orders__medications
             PatientOrders = new HashSet<PatientOrder>();
+            // For Foreign Key: fk__site_formulary__medications
+            SiteFormularys = new HashSet<SiteFormulary>();
+            // For Foreign Key: fk__site_formulary_match__medications
+            SiteFormularyMatchs = new HashSet<SiteFormularyMatch>();
             // For Foreign Key: fk__user_quick_list_items__medications
             UserQuickListItems = new HashSet<UserQuickListItem>();
         }
@@ -76,5 +80,13 @@ namespace Emar.Data.Entities
         // For Foreign Key: fk__user_quick_list_items__medications
         [InverseProperty("Medication")]
         public virtual ICollection<UserQuickListItem> UserQuickListItems { get; set; }
+
+
+        [InverseProperty("Medication")]
+        public virtual ICollection<SiteFormulary> SiteFormularys { get; set; }
+
+        [InverseProperty("Medication")]
+        public virtual ICollection<SiteFormularyMatch> SiteFormularyMatchs { get; set; }
+
     }
 }

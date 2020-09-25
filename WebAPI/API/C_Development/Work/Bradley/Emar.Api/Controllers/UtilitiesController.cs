@@ -27,7 +27,10 @@ namespace Emar.Api.Controllers
         }
 
         [HttpGet("api/EfConfiguration/Confirm")]
-        public ActionResult<string> ConfirmEfConfiguration([FromBody] EfToDbSynchHelperParams parm)
+        public ActionResult<string> ConfirmEfConfiguration(
+            [FromBody] EfToDbSynchHelperParams parm
+            ,[FromHeader(Name = "DebuggingOutput")] bool debugOutput
+        )
         {
             try
             {
@@ -35,11 +38,14 @@ namespace Emar.Api.Controllers
 
                 if (rpt.GetType() != typeof(EfToDbSynchHelper.EfDiscrepancyReport))
                 {
+                    if (!debugOutput)
+                        return Ok();
+
                     var tables = (IEnumerable<Emar.Data.Helpers.EfToDbSynchHelper.EfTableAttributes>) rpt;
                     return Ok(tables);
                 }
 
-                var rptText = ((EfToDbSynchHelper.EfDiscrepancyReport)rpt).CreateOutputText();
+                var rptText = ((EfToDbSynchHelper.EfDiscrepancyReport) rpt).CreateOutputText();
                 return Ok(rptText);
             }
             catch (Exception e)
@@ -51,6 +57,7 @@ namespace Emar.Api.Controllers
                     next = next.InnerException;
                     message = next.Message + " -- " + message;
                 }
+
                 return Problem(message);
             }
         }

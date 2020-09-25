@@ -202,8 +202,6 @@ namespace Emar.Data
 
             modelBuilder.Entity<FdbAllergyName>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.HasIndex(e => e.AllergyName)
                     .HasName("NonClusteredIndex-20140611-103253");
 
@@ -232,8 +230,6 @@ namespace Emar.Data
 
             modelBuilder.Entity<FdbBrandName>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.HasIndex(e => e.BrandName)
                     .HasName("NonClusteredIndex-20140611-101716");
 
@@ -268,8 +264,6 @@ namespace Emar.Data
 
             modelBuilder.Entity<FdbNdcInfo>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.HasIndex(e => e.Ndc)
                     .HasName("ndc");
 
@@ -911,9 +905,44 @@ namespace Emar.Data
                     .IsUnique();
             });
 
+            modelBuilder.Entity<SiteFormulary>(entity =>
+            {
+                entity.Property(e => e.HospitalDrugCode).IsUnicode(false);
+
+                entity.Property(e => e.ServiceCode).IsUnicode(false);
+
+                entity.HasOne(d => d.Site)
+                    .WithMany(p => p.SiteFormularys)
+                    .HasForeignKey(d => d.SiteId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__site_formulary__sites");
+
+                entity.HasOne(d => d.Medication)
+                    .WithMany(p => p.SiteFormularys)
+                    .HasForeignKey(d => d.MedicationId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__site_formulary__medications");
+            });
+
+            modelBuilder.Entity<SiteFormularyMatch>(entity =>
+            {
+
+                entity.HasOne(d => d.Site)
+                    .WithMany(p => p.SiteFormularyMatchs)
+                    .HasForeignKey(d => d.SiteId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__site_formulary_match__sites");
+
+                entity.HasOne(d => d.Medication)
+                    .WithMany(p => p.SiteFormularyMatchs)
+                    .HasForeignKey(d => d.MedicationId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk__site_formulary_match__medications");
+            });
+
             modelBuilder.Entity<SiteOption>(entity =>
             {
-                entity.HasIndex(e => new { e.OptionValue, e.OptionId, e.SiteId })
+                entity.HasIndex(e => new {e.OptionValue, e.OptionId, e.SiteId})
                     .HasName("site_options__option_id_site_id");
 
                 entity.Property(e => e.OptionValue)
