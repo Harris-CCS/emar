@@ -21,6 +21,7 @@ import { ComposerOptions } from '../app/interfaces/composerOptions';
 import { Site } from '../app/interfaces/site';
 import { Frequency } from '../app/interfaces/frequency';
 import { Unit } from '../app/interfaces/unit';
+import { DoseOption } from '../app/interfaces/doseOption';
 
 import { ComposerMedComponent } from '../pages/composer-med/composer-med.component';
 import { ModalService } from '../services/modal.service';
@@ -34,11 +35,13 @@ export class ComposerSchedulerService {
   private composerMedComponents: Array<ComposerMedComponent>;
   private composerBrandNameOptions: ComposerOptions;
   private siteData: Array<Site> = [];
+  private dosingOptions: Array<DoseOption>;
 
   private brandNameOptionsUrl: string = 'api/orders/composerOptions';
   private siteMedicationFrequenciesUrl: string =
     'api/orders/composerOptions/frequencies';
   private siteMedicationUnitsUrl: string = 'api/orders/composerOptions/units';
+  private doseCheckingBaseUrl: string = 'api/GetDoseRangeCheckingInfo';
 
   // Behavior Subjects to trigger actions based on UI Interraction
   resetComponentMedFormId: BehaviorSubject<number> = new BehaviorSubject(-1);
@@ -161,6 +164,19 @@ export class ComposerSchedulerService {
       .pipe(catchError(this.handleError<any>('getSiteMedicationUnitsFromAPI')));
   }
 
+  getDosingOptionsFromAPI(id: string): Observable<any> {
+    const headers = new HttpHeaders({ Accept: 'application/json' });
+    const fullDosingOptionsUrl = `${this.doseCheckingBaseUrl}/${id}`;
+    // console.log(
+    //   'ComposerScheduler: getDosingOptionsFromAPI: fullDosingUrl: ',
+    //   fullDosingOptionsUrl
+    // );
+
+    return this.http
+      .get<any>(fullDosingOptionsUrl, { headers })
+      .pipe(catchError(this.handleError<any>('getDosingOptionsFromAPI')));
+  }
+
   /* Handle Http Request failed */
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
@@ -228,5 +244,15 @@ export class ComposerSchedulerService {
     } else {
       return siteIndex;
     }
+  }
+
+  getDosingOptions(): Array<DoseOption> {
+    // console.log('get this.dosingOptions', this.dosingOptions);
+    return this.dosingOptions || [];
+  }
+
+  setDosingOptions(options: DoseOption[]) {
+    // console.log('set this.dosingOptions', this.dosingOptions);
+    this.dosingOptions = options;
   }
 }

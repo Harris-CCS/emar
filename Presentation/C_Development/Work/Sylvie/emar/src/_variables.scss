@@ -51,12 +51,12 @@ $white:        #ffffff;
 $blue-L-20: lighten($blue, 20%);
 $blue-L-10: lighten($blue, 10%);
 $blue-D-10: darken($blue, 10%);
-$blue-D-20: draken($blue, 20%);
+$blue-D-20: darken($blue, 20%);
 
 $red-L-20: lighten($red, 20%);
 $red-L-10: lighten($red, 10%);
 $red-D-10: darken($red, 10%);
-$red-D-20: draken($red, 20%);
+$red-D-20: darken($red, 20%);
 
 /* button effects */
 $primary-button: $red-D-10;

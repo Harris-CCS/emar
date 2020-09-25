@@ -2,6 +2,7 @@ import { MedicationUnit } from './medication-unit';
 import { MedicationRoute } from './medication-route';
 
 export interface HomeMedication {
+  actionStatus: string;
   alternateName: string;
   category: string;
   class: string;

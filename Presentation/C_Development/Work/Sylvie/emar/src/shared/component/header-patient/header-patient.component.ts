@@ -28,26 +28,23 @@ export class HeaderPatientComponent implements OnInit {
   allergiesTableStructure: SimpleTableComponent;
   homeMedsTableStructure: SimpleTableComponent;
 
-  constructor() {}
+  constructor() { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   getPatientFullName(): string {
     // console.log('patientGetFullName', this.patient);
     const fullName: string =
       this.patient.fullName ||
-      `${this.patient.firstName} ${
-        this.patient.middleName ? `${this.patient.middleName} ` : ''
-      }${this.patient.lastName}${
-        this.patient.nameSuffix ? `, ${this.patient.nameSuffix}` : ''
+      `${this.patient.firstName} ${this.patient.middleName ? `${this.patient.middleName} ` : ''
+      }${this.patient.lastName}${this.patient.nameSuffix ? `, ${this.patient.nameSuffix}` : ''
       }`;
     return fullName;
   }
 
   getPatientLocation(): string {
-    return (this.patientLocation = `${
-      this.patient.wardCode ? `${this.patient.wardCode}` : ''
-    }${this.patient.roomBedCode ? `${this.patient.roomBedCode}` : ''}`);
+    return (this.patientLocation = `${this.patient.wardCode ? `${this.patient.wardCode}` : ''
+      }${this.patient.roomBedCode ? `${this.patient.roomBedCode}` : ''}`);
   }
 
   getPatientUrgencyColor(): string {
@@ -57,14 +54,14 @@ export class HeaderPatientComponent implements OnInit {
       return '#DCDCDC';
       /*
      'R' => 'Red',
-     'Y' => 'Yellow',
-     'G' => 'Green',
-     'B' => 'Blue',
-     'P' => 'Purple',
-     'Z' => 'Orange',
-     'Q' => 'Pink',
-     'K' => 'Gray',
-     'X' => 'Black'
+     'Y' => 'Yellow',
+     'G' => 'Green',
+     'B' => 'Blue',
+     'P' => 'Purple',
+     'Z' => 'Orange',
+     'Q' => 'Pink',
+     'K' => 'Gray',
+     'X' => 'Black'
 */
       // switch (this.patient.urgency) {
       //   case 'R':
@@ -292,9 +289,8 @@ export class HeaderPatientComponent implements OnInit {
         this.vitalsTableStructure.appendTableHeaderCell(false, {
           isHeaderCell: true,
           data: this.patient.vsDatetimeDate
-            ? `${this.patient.vsDatetimeDate} ${
-                this.patient.vsDatetimeTime || ''
-              }`
+            ? `${this.patient.vsDatetimeDate} ${this.patient.vsDatetimeTime || ''
+            }`
             : this.patient.vsDatetime,
           dataType: this.patient.vsDatetimeDate ? 'string' : 'date',
         });
@@ -374,6 +370,10 @@ export class HeaderPatientComponent implements OnInit {
       });
       this.allergiesTableStructure.appendTableHeaderCell(false, {
         isHeaderCell: true,
+        data: 'Status',
+      });
+      this.allergiesTableStructure.appendTableHeaderCell(false, {
+        isHeaderCell: true,
         data: 'Reaction',
       });
       this.allergiesTableStructure.appendTableHeaderCell(false, {
@@ -395,31 +395,37 @@ export class HeaderPatientComponent implements OnInit {
             isHeaderCell: true,
             data: `${alg.name} ${alg.alternateName || ''}`,
             dataType: 'string',
-            className: 'align-center',
+            className: alg.actionStatus.toUpperCase() === 'C' ? 'align-center' : 'align-center italics',
+          });
+          this.allergiesTableStructure.appendTableBodyCell(false, {
+            isHeaderCell: false,
+            data: alg.actionStatus.toUpperCase() === 'C' ? 'Confirmed' : 'Unconfirmed',
+            dataType: 'string',
+            className: alg.actionStatus.toUpperCase() === 'C' ? 'align-center' : 'align-center italics',
           });
           this.allergiesTableStructure.appendTableBodyCell(false, {
             isHeaderCell: false,
             data: alg.reaction,
             dataType: 'string',
-            className: 'align-center',
+            className: alg.actionStatus.toUpperCase() === 'C' ? 'align-center' : 'align-center italics',
           });
           this.allergiesTableStructure.appendTableBodyCell(false, {
             isHeaderCell: false,
             data: alg.severity,
             dataType: 'string',
-            className: 'align-center',
+            className: alg.actionStatus.toUpperCase() === 'C' ? 'align-center' : 'align-center italics',
           });
           this.allergiesTableStructure.appendTableBodyCell(false, {
             isHeaderCell: false,
             data: alg.informationSource || ' ',
             dataType: 'string',
-            className: 'align-center',
+            className: alg.actionStatus.toUpperCase() === 'C' ? 'align-center' : 'align-center italics',
           });
           this.allergiesTableStructure.appendTableBodyCell(false, {
             isHeaderCell: false,
             data: alg.comment,
             dataType: 'string',
-            className: 'align-center',
+            className: alg.actionStatus.toUpperCase() === 'C' ? 'align-center' : 'align-center italics',
           });
         }
       }
@@ -464,7 +470,7 @@ export class HeaderPatientComponent implements OnInit {
       });
       // Table Data
       for (const med of this.patient.homeMedications) {
-        if (med.isActive) {
+        if (med.isActive && med.actionStatus.toUpperCase() === 'C') {
           this.homeMedsTableStructure.appendTableBodyCell(true, {
             isHeaderCell: true,
             data: `${med.name} ${med.alternateName || ''}`,
@@ -473,21 +479,19 @@ export class HeaderPatientComponent implements OnInit {
           });
           this.homeMedsTableStructure.appendTableBodyCell(false, {
             isHeaderCell: false,
-            data: `${med.dose} ${
-              med.medicationUnit && med.medicationUnit.unitName
-                ? med.medicationUnit.unitName
-                : ' '
-            }`,
+            data: `${med.dose} ${med.medicationUnit && med.medicationUnit.unitName
+              ? med.medicationUnit.unitName
+              : ' '
+              }`,
             dataType: 'string',
             className: 'align-center',
           });
           this.homeMedsTableStructure.appendTableBodyCell(false, {
             isHeaderCell: false,
-            data: `${
-              med.medicationRoute && med.medicationRoute.routeName
-                ? med.medicationRoute.routeName
-                : ' '
-            }`,
+            data: `${med.medicationRoute && med.medicationRoute.routeName
+              ? med.medicationRoute.routeName
+              : ' '
+              }`,
             dataType: 'string',
             className: 'align-center',
           });

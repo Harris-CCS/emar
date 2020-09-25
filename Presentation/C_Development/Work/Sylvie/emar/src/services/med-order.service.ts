@@ -5,12 +5,14 @@ import { catchError, debounceTime, distinctUntilChanged, map, tap, switchMap } f
 
 import { Medication } from '../app/interfaces/medication';
 import { Order } from '../app/interfaces/order';
+import { CartOrder } from '../app/interfaces/cart-order';
 
 import { ORDERS } from '../app/mockup/orders';
 import { MEDICATIONS } from '../app/mockup/medications';
 import { SelectorMatcher } from '@angular/compiler';
 
 import { UserStoreService } from '../services/user-store.service';
+import { PatientStoreService } from '../services/patient-store.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,12 +21,13 @@ import { UserStoreService } from '../services/user-store.service';
 export class MedOrderService {
 
   private siteId = this.userStoreService.userSiteId
+  private patientId = this.patientStoreService.patientId
 
   /* URL to WebAPI */
-  private userQuickListsUrl = 'api/userquicklists'
+  private userQuickListsUrl = '/api/userquicklists'
   private deptPreferredListUrl = `/api/sites/${this.siteId}/departmentPreferredLists`
   private groupListUrl = `/api/sites/${this.siteId}/groupsrememberedorderslists`
-  private orderUrl = 'api/orders'
+  private orderUrl = '/api/orders'
   //private cartUrl = 'api/carts'
 
   private currentOrders: Order[];
@@ -45,6 +48,7 @@ export class MedOrderService {
   constructor( 
     private http: HttpClient,
     private userStoreService: UserStoreService,
+    private patientStoreService: PatientStoreService,
   ) { 
   
     this.currentOrders = ORDERS.slice(0, 6);
@@ -77,15 +81,15 @@ export class MedOrderService {
   // }
 
   //API data  
-  getCurrentOrders(patientId: number): Observable<any> {
-    const headers = new HttpHeaders({ Accept: 'application/json'})
-    const patientCurOrderUrl = `${this.orderUrl}?patientId=${patientId}`
-    console.log('MedOrderService: getCurrentOrdersAPI: patientCurOrderUrl: ', patientCurOrderUrl)
+  // getCurrentOrders(patientId: number): Observable<any> {
+  //   const headers = new HttpHeaders({ Accept: 'application/json'})
+  //   const patientCurOrderUrl = `${this.orderUrl}?patientId=${patientId}`
+  //   console.log('MedOrderService: getCurrentOrdersAPI: patientCurOrderUrl: ', patientCurOrderUrl)
 
-    return this.http
-      .get<any>(patientCurOrderUrl, { headers })
-      .pipe(catchError(this.handleError<any>('getCurrentOrdersAPI')))
-  }
+  //   return this.http
+  //     .get<any>(patientCurOrderUrl, { headers })
+  //     .pipe(catchError(this.handleError<any>('getCurrentOrdersAPI')))
+  // }
 
   /* Cart Orders */
   // getCartOrders(): Order[] {
@@ -160,10 +164,11 @@ export class MedOrderService {
   getUserQuickLists(): Observable<any> {
     const xuser = this.userStoreService.userId?.toString()
     console.log('XXXXXXXXXXXX xuser:', xuser)
-    const headers = new HttpHeaders({ Accept: 'application/json', 'X-User': xuser })
+    const headers = new HttpHeaders({ Accept: 'application/json', 'X-User': xuser, 'X-Site': `${this.siteId}`, 'X-Patient': `${this.patientId}`})
+    const url = `${this.userQuickListsUrl}?siteId=${this.siteId}&patientId=${this.patientId}`
 
     return this.http
-      .get<any>(this.userQuickListsUrl, { headers })
+      .get<any>(url, { headers })
       .pipe(
         tap(_ => console.log('med-order.service: getUserQuickLists HTTP Client - GET')),
         catchError(this.handleError<any>('getUserQuickLists')))
@@ -193,6 +198,21 @@ export class MedOrderService {
     // } else {
     //   return this.quickListOrders.filter((m) => m.name.startsWith(tab))
     // }
+  }
+
+  /* POST - post a cart order by UserQuickList item id*/
+  postCartOrderByListOrderId(listOrderId: number, patientId: number, userId: number): Observable<any> {
+
+    const headers = new HttpHeaders({ Accept: 'application/json', 'X-User': `${userId}`, 'X-Site': `${this.siteId}`, 'X-Patient': `${patientId}`})
+    const url = `${this.userQuickListsUrl}/${listOrderId}/cartOrders/${patientId}`
+    console.log('MedOrderService: postCartOrderByListOrderId: url: ', url)
+
+    return this.http
+      .post<any>(url, null, { headers })
+      .pipe(
+        tap(_ => console.log(`POST CART ORDER List Order ID=${listOrderId} by userID=${userId} for paitnetID=${patientId}`)),
+        catchError(this.handleError<any>('postCartOrderByListOrderId'))
+      )
   }
 
   /* QuickList Orders */

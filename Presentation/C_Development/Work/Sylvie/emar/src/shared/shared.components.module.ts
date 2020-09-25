@@ -11,7 +11,10 @@ import { MedSearchComponent } from './component/med-search/med-search.component'
 import { PipesModule } from './pipes/pipes.module';
 import { SimpleTableComponent } from './component/simple-table/simple-table.component';
 import { DateTimeModalComponent } from './component/date-time-modal/date-time-modal.component';
+import { NotAuthComponent } from './component/not-auth/not-auth.component';
+import { BootstrapComponent } from './component/bootstrap/bootstrap.component';
 import { HelpIconsComponent } from './component/help-icons/help-icons.component';
+import { DosingInfoComponent } from './component/dosing-info/dosing-info.component';
 
 @NgModule({
   declarations: [
@@ -22,14 +25,17 @@ import { HelpIconsComponent } from './component/help-icons/help-icons.component'
     MedSearchComponent,
     SimpleTableComponent,
     DateTimeModalComponent,
-    HelpIconsComponent
+    NotAuthComponent,
+    BootstrapComponent,
+    HelpIconsComponent,
+    DosingInfoComponent,
   ],
   imports: [
     CommonModule,
     NgbModule,
     FormsModule,
     PipesModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   exports: [
     HeaderUserComponent,
@@ -38,7 +44,9 @@ import { HelpIconsComponent } from './component/help-icons/help-icons.component'
     ModalComponent,
     MedSearchComponent,
     SimpleTableComponent,
-    DateTimeModalComponent
+    DateTimeModalComponent,
+    BootstrapComponent,
+    DateTimeModalComponent,
   ],
   bootstrap: [MedSearchComponent],
 })
