@@ -44,7 +44,7 @@ export class CartService {
           }
           return {...res.body, xPagination}
         }),
-        catchError(this.handleError<any>('getCartOrders'))
+        // catchError(this.handleError<any>('getCartOrders'))
       )
   }
 
@@ -59,7 +59,7 @@ export class CartService {
       .put<any>(cartOrderUrl, order, { headers })
       .pipe(
         tap(_ => console.log(`PUT CART ORDER by userID=${userId}`)),
-        catchError(this.handleError<any>('updateCartOrder'))
+        // catchError(this.handleError<any>('updateCartOrder'))
       )
   }
 
@@ -70,10 +70,10 @@ export class CartService {
     console.log('CartService: deleteCartOrder: cartOrderUrl: ', cartOrderUrl)
 
     return this.http
-      .delete<any>(cartOrderUrl, { headers })
+      .delete<any>(cartOrderUrl, { headers, observe: 'response' })
       .pipe(
         tap(_ => console.log(`DELETE CART ORDER by ID=${cartOrderId}`)),
-        catchError(this.handleError<any>('deleteCartOrder'))
+        // catchError(this.handleError<any>('deleteCartOrder'))
       )
   }
 
@@ -87,11 +87,11 @@ export class CartService {
       .delete<any>(cartOrderUrl, { headers })
       .pipe(
         tap(_ => console.log(`DELETE ALL CART ORDER by PatientID=${patientId}`)),
-        catchError(this.handleError<any>('deleteAllCartOrders'))
+      //   catchError(this.handleError<any>('deleteAllCartOrders'))
       )
   }
 
-  /* POST - post a cart order */
+  /* POST - post a cart order - NOT IN USE */
   postCartOrder(order: CartOrder, patientId: number, userId: number): Observable<any> {
   // postCartOrder(order: {}, patientId: number, userId: number): Observable<any> {
     const headers = new HttpHeaders({ Accept: 'application/json', 'X-User': `${userId}`})
@@ -117,7 +117,7 @@ export class CartService {
       .post<any>(cartOrderUrl, null, { headers })
       .pipe(
         tap(_ => console.log(`POST all cart orders for patientId=${patientId}`)),
-        catchError(this.handleError<any>('postAllCartOrders'))
+        // catchError(this.handleError<any>('postAllCartOrders'))
     );
   }
 
@@ -126,6 +126,8 @@ export class CartService {
     return (error: any): Observable<T> => {
       console.error('CartService-handleError: ERROR: ', error);
       console.error('CartService-handleError: STATUS: ', error.status);
+      // result = error
+      // console.error('CartService-handleError: result: ', result);
       return of(result as T);
     };
   }

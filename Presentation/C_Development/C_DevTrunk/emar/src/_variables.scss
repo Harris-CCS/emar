@@ -58,6 +58,11 @@ $red-L-10: lighten($red, 10%);
 $red-D-10: darken($red, 10%);
 $red-D-20: darken($red, 20%);
 
+$yellow-L-20: lighten($yellow, 20%);
+$yellow-L-10: lighten($yellow, 10%);
+$yellow-D-10: darken($yellow, 10%);
+$yellow-D-20: darken($yellow, 20%);
+
 $gray-L-20: lighten($gray, 20%);
 
 /* button effects */
@@ -70,6 +75,14 @@ $secondary-button-hover: $red;
 /* tab effects */
 $primary-tab: $blue-D-10;
 $secondary-tab: color.adjust($blue-D-10, $lightness: 8%);
+
+/* Allergy Reaction Warning */
+$allergyReaction: $yellow;
+$allergyReactionMinor: $yellow-D-10;
+
+/* Drug Interaction Warning */
+$drugInteraction: $red;
+$drugInteractionMinor: $red-D-10;
 
 /* order status, administration status */
 $e-status-pending: $e-red;

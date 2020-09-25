@@ -16,7 +16,9 @@ export class DeleteAllCartOrdersModalComponent implements OnInit {
   patientId: number;
   isDone: boolean = false;
   isProcessing: boolean = false;
-
+  isSuccess: boolean = false
+  hasError: boolean = false
+  errorMessage: string
 
   constructor(
     private modalService: ModalService,
@@ -41,18 +43,27 @@ export class DeleteAllCartOrdersModalComponent implements OnInit {
     this.modalService.close('deleteAllCartOrder');
   }
 
-  confirmedDelete = () => {
+  confirmedDelete = async () => {
     console.log('confirmedDelete for parientId: ', this.getPatient());
     this.patientId = this.getPatient();
 
     this.isProcessing = true;
 
-    setTimeout(() => {
-        this.cartStoreService.deleteAllCartOrders(this.getPatient(), this.userStoreService.userId)
-        //API success
-        this.isDone = true;
-        setTimeout( () => this.modalService.close('deleteAllCartOrder'), 2000)
-      }, 1000)
+    try {
+      await this.cartStoreService.deleteAllCartOrders(this.getPatient(), this.userStoreService.userId)
+
+      this.isDone = true;
+      this.isSuccess = true;
+      
+      setTimeout( () => this.modalService.close('deleteAllCartOrder'), 2000)
+
+    } catch (err) {
+      this.isDone = true;
+      this.hasError = true;
+      this.errorMessage = `${err.status} ${err.statusText} ${err.error}`
+      
+      setTimeout( () => this.modalService.close('deleteAllCartOrder'), 2000)
+    }
 
     // setTimeout( () => {
     //   this.cartService.deleteAllCartOrders(this.getPatient(), 6473).subscribe(

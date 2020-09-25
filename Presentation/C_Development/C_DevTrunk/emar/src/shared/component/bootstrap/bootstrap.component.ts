@@ -65,6 +65,8 @@ export class BootstrapComponent implements OnInit {
     if (this.route.snapshot.queryParams['dest'] === 'medservice') {
       console.log(`BootstrapComponent: NAVIGATE to patients/${this.patientStoreService.patientId}/orders`)
       this.router.navigate([`patients/${this.patientStoreService.patientId}/orders`])
+    } else if (this.route.snapshot.queryParams['dest'] === 'marpatient') {
+      this.router.navigate([`patients/${this.patientStoreService.patientId}`])
     } else {
       this.router.navigate(['patients'])
     }
