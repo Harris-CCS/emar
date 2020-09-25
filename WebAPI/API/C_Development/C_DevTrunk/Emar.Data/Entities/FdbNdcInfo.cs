@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Emar.Data.Entities
 {
     [Table("fdb_ndc_info")]
+
     public partial class FdbNdcInfo
     {
         [Required]

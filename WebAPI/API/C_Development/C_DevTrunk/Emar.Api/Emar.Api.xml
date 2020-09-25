@@ -9,13 +9,11 @@
             Patient Cart Orders Controller
             </summary>
         </member>
-        <member name="M:Emar.Api.Controllers.CartOrdersController.#ctor(Emar.Core.Carts.Service.ICartOrderService,Emar.Core.Helpers.IPropertyMappingService,Emar.Core.Helpers.IPropertyCheckerService)">
+        <member name="M:Emar.Api.Controllers.CartOrdersController.#ctor(Emar.Core.Carts.Service.ICartOrderService)">
             <summary>
             Constructor
             </summary>
             <param name="cartOrderService"></param>
-            <param name="propertyMappingService"></param>
-            <param name="propertyCheckerService"></param>
         </member>
         <member name="M:Emar.Api.Controllers.CartOrdersController.GetCartOrders(System.String,System.Nullable{System.Int32},System.Nullable{System.Int64})">
             <summary>
@@ -47,7 +45,7 @@
             </param>
             <returns>An ActionResult of type CartOrderDto</returns>
         </member>
-        <member name="M:Emar.Api.Controllers.CartOrdersController.AddCartOrder(System.String,System.Nullable{System.Int32},Emar.Core.Carts.Model.CartOrderDto,System.Nullable{System.Int64})">
+        <member name="M:Emar.Api.Controllers.CartOrdersController.AddCartOrder(System.String,System.Nullable{System.Int32},Emar.Core.Carts.Model.CartOrderIuDto,System.Nullable{System.Int64})">
             <summary>
             Add a cart order for a patient the user entered.
             </summary>
@@ -68,7 +66,7 @@
             The JSON in the request body can **NOT** have Order and Administrations Ids set **OR** they **MUST** be set to 0.
             </remarks>
         </member>
-        <member name="M:Emar.Api.Controllers.CartOrdersController.UpdateCartOrder(System.String,System.Nullable{System.Int32},Emar.Core.Carts.Model.CartOrderDto,System.Int64)">
+        <member name="M:Emar.Api.Controllers.CartOrdersController.UpdateCartOrder(System.String,System.Nullable{System.Int32},Emar.Core.Carts.Model.CartOrderIuDto,System.Int64)">
             <summary>
             Update a cart order.
             </summary>
@@ -152,38 +150,15 @@
             <param name="departmentCode">(Optional) If provided, the list will be for a specific department (if not provided, the entire list for the Site)</param>
             <returns></returns>
         </member>
-        <member name="M:Emar.Api.Controllers.DepartmentPreferredListsController.CopyDepartmentPreferredItemToCart(System.Int32,System.Int32,System.Int64)">
+        <member name="M:Emar.Api.Controllers.DepartmentPreferredListsController.CopyDepartmentPreferredItemToCart(System.String,System.Int32,System.Int32,System.Int64)">
             <summary>
             Create an order in the user/patient's cart as a copy of the Department Preferred List order
             </summary>
+            <param name="mediaType">Media type from the "Accept" header</param>
             <param name="userId">The user who is placing the order in the cart</param>
             <param name="departmentPreferredItemId">The Department Preferred List Item to move into the patient's cart</param>
             <param name="patientId">the patient that the cart is intended for</param>
             <returns></returns>
-        </member>
-        <member name="T:Emar.Api.Controllers.DoseRangeCheckingInfoController">
-            <summary>
-            Dose Range Checking Info Controller
-            </summary>
-        </member>
-        <member name="M:Emar.Api.Controllers.DoseRangeCheckingInfoController.#ctor(Emar.Core.Medications.Service.IDoseRangeCheckingInfoService)">
-            <summary>
-            Constructor
-            </summary>
-        </member>
-        <member name="M:Emar.Api.Controllers.DoseRangeCheckingInfoController.GetDoseRangeCheckingInfo(System.String,System.String)">
-            <summary>
-            Get the dose range checking info for a medication.
-            </summary>
-            <param name="mediaType">
-            Media type from Accept header.
-            </param>
-            <param name="ndc">
-            Unique order identifier.
-            </param>
-            <returns>The dose range info for the medication that has the passed in NDC</returns>
-            <remarks>
-            </remarks>
         </member>
         <member name="T:Emar.Api.Controllers.GroupsRememberedOrdersController">
             <summary>
@@ -206,7 +181,7 @@
             <param name="departmentCode">(Optional) If provided, the list will be for a specific department (if not provided, the entire list for the Site)</param>
             <returns></returns>
         </member>
-        <member name="M:Emar.Api.Controllers.GroupsRememberedOrdersController.CopyGropusRememberedItemToCart(System.Int32,System.Int32,System.Int64)">
+        <member name="M:Emar.Api.Controllers.GroupsRememberedOrdersController.CopyGroupsRememberedItemToCart(System.Int32,System.Int32,System.Int64)">
             <summary>
             Create an order in the user/patient's cart as a copy of the Groups Remembered List order
             </summary>
@@ -215,20 +190,80 @@
             <param name="patientId">the patient that the cart is intended for</param>
             <returns></returns>
         </member>
+        <member name="T:Emar.Api.Controllers.MedicationsController">
+            <summary>
+            Dose Range Checking Info Controller
+            </summary>
+        </member>
+        <member name="M:Emar.Api.Controllers.MedicationsController.#ctor(Emar.Core.Medications.Service.IDoseRangeCheckingInfoService,Emar.Core.Medications.Service.IMedicationService,Emar.Core.Options.Service.IOptionService)">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:Emar.Api.Controllers.MedicationsController.GetDoseRangeCheckingInfo(System.String,System.String)">
+            <summary>
+            Get the dose range checking info for a medication.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="medid">
+            The medication/drug ID.
+            </param>
+            <returns>The dose range info for the medication that has the passed in NDC</returns>
+            <remarks>
+            </remarks>
+        </member>
+        <member name="M:Emar.Api.Controllers.MedicationsController.GetMedByBrandName(System.String,System.String,System.Int32,System.String,System.Int32,System.String)">
+            <summary>
+            Medication search by brand name
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="brandName">
+            The medication brand name we are searching for.
+            </param>
+            <param name="siteId">
+            The id of the site that we are searching in.
+            Is pulled from the request header.
+            </param>
+            <param name="searchType">
+            The type of list to search in.
+            all = all
+            deptpreferredlist = department preferred list
+            formulary = formulary
+            groups = groups
+            quicklist = user's quick list
+            </param>
+            <param name="userId">
+            The id of the current user.
+            Is pulled from the request header.
+            Used when searching in the user-specific quick list.
+            </param>
+            /// <param name="deptCode">
+            The department of the patient.
+            Is pulled from the request header.
+            Used when searching in the department preferred list.
+            </param>
+            
+            <returns>A alphabetically sorted list of medication names that match the search criteria.</returns>
+            <remarks>
+            </remarks>
+        </member>
         <member name="T:Emar.Api.Controllers.OrdersController">
             <summary>
             Patient Orders Controller
             </summary>
         </member>
-        <member name="M:Emar.Api.Controllers.OrdersController.#ctor(Emar.Core.Orders.Service.IOrderService,Emar.Core.Helpers.IPropertyMappingService,Emar.Core.Helpers.IPropertyCheckerService)">
+        <member name="M:Emar.Api.Controllers.OrdersController.#ctor(Emar.Core.Orders.Service.IOrderService,Emar.Core.Helpers.IPropertyCheckerService)">
             <summary>
             Constructor
             </summary>
             <param name="orderService"></param>
-            <param name="propertyMappingService"></param>
             <param name="propertyCheckerService"></param>
         </member>
-        <member name="M:Emar.Api.Controllers.OrdersController.GetOrders(System.String,System.String,System.String,System.String)">
+        <member name="M:Emar.Api.Controllers.OrdersController.GetOrders(System.String,System.String)">
             <summary>
             Get a list of orders in the system.
             </summary>
@@ -356,6 +391,24 @@
             <remarks>
             </remarks>
         </member>
+        <member name="M:Emar.Api.Controllers.OrdersController.ExecuteOrderAction(System.Int32,System.String)">
+            <summary>
+            Executes one of the standards actions against an Order
+            </summary>
+            <param name="mediaType"></param>
+            <param name="orderId"></param>
+            <param name="actionCode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.OrdersController.ExecuteAdministrationAction(System.Int32,System.String)">
+            <summary>
+            Executes one of the standards actions against an Order
+            </summary>
+            <param name="mediaType"></param>
+            <param name="administrationId">ID of the Order Administration to fire the action against</param>
+            <param name="actionCode"></param>
+            <returns></returns>
+        </member>
         <member name="M:Emar.Api.Controllers.PatientsController.GetPatients(System.String,System.String,System.String,System.Nullable{System.Int32},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
             <summary>
             Get a list of patients in the system.
@@ -427,35 +480,53 @@
             </param>
             <returns>An IActionResult of IEnumerable of type PatientDto</returns>
         </member>
-        <member name="M:Emar.Api.Controllers.UserQuickListsController.GetUserQuickListInitial(System.Int32,System.Nullable{System.Int32},System.Nullable{System.Int64})">
+        <member name="M:Emar.Api.Controllers.UserQuickListsController.GetUserQuickListInitial(System.String,System.Int32,System.Nullable{System.Int32},System.Nullable{System.Int64})">
             <summary>
             Return initial information about a User's Quick List:
             will return the name and contents of the first Quick List tab,
             and a list of all the tabs that will return remembered orders
             </summary>
+            <param name="mediaType">Media type from the "Accept" header</param>
             <param name="userId">The user to retrieve the quick list for (provided in the header)</param>
             <param name="siteId">(Optional) The Site to retrieve the user's quick list for (if omitted, return the user's quick list for all sites)</param>
             <param name="patientId">(Optional) If provided, then HATEOAS links will be created to allow for the adding of the order directly to the patient's/user's cart</param>
             <returns></returns>
         </member>
-        <member name="M:Emar.Api.Controllers.UserQuickListsController.GetUserQuickListTab(System.Int32,System.Nullable{System.Int32},System.Nullable{System.Int64},System.String)">
+        <member name="M:Emar.Api.Controllers.UserQuickListsController.GetUserQuickListTab(System.String,System.Int32,System.Nullable{System.Int32},System.Nullable{System.Int64},System.String)">
             <summary>
             Return the contents for one tab of a User's Quick List
             </summary>
+            <param name="mediaType">Media type from the "Accept" header</param>
             <param name="userId">The user to retrieve the quick list for (provided in the header)</param>
             <param name="siteId">(Optional) The Site to retrieve the user's quick list for (if omitted, return the user's quick list for all sites)</param>
             <param name="patientId">(Optional) If provided, then HATEOAS links will be created to allow for the adding of the order directly to the patient's/user's cart</param>
             <param name="tabTitle">the tab to retrieve remembered orders for</param>
             <returns></returns>
         </member>
-        <member name="M:Emar.Api.Controllers.UserQuickListsController.CopyQuickListItemToCart(System.Int32,System.Int32,System.Int64)">
+        <member name="M:Emar.Api.Controllers.UserQuickListsController.CopyQuickListItemToCart(System.String,System.Int32,System.Int32,System.Int64)">
             <summary>
             Create an order in the user/patient's cart as a copy of the quicklist order
             </summary>
+            <param name="mediaType">Media type from the "Accept" header</param>
             <param name="userId">The user who owns the Cart</param>
             <param name="quickListItemId">The QuickList Item to move into the cart</param>
             <param name="patientId">the patient that the cart is intended for</param>
             <returns></returns>
+        </member>
+        <member name="T:Emar.Api.Controllers.ReturnReport">
+            <summary>
+            Output for the ad hoc SQL Queries
+            </summary>
+        </member>
+        <member name="P:Emar.Api.Controllers.ReturnReport.ReturnValues">
+            <summary>
+            Response Values
+            </summary>
+        </member>
+        <member name="P:Emar.Api.Controllers.ReturnReport.PerformanceReport">
+            <summary>
+            If any SQL query takes more than the threshold amount of time, it will be reported here
+            </summary>
         </member>
     </members>
 </doc>

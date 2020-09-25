@@ -50,6 +50,8 @@ namespace Emar.Data
         public virtual DbSet<PromptChoice> PromptChoices { get; set; }
         public virtual DbSet<PromptGroup> PromptGroups { get; set; }
         public virtual DbSet<Site> Sites { get; set; }
+        public virtual DbSet<SiteFormulary> SiteFormulary { get; set; }
+        public virtual DbSet<SiteFormularyMatch> SiteFormularyMatch { get; set; }
         public virtual DbSet<SiteOption> SiteOptions { get; set; }
         public virtual DbSet<Template> Templates { get; set; }
         public virtual DbSet<TemplatePromptGroup> TemplatePromptGroups { get; set; }
@@ -58,6 +60,10 @@ namespace Emar.Data
 
         //SP entities
         public virtual DbSet<DoseRangeCheckingInfo> DoseRangeCheckingInfos { get; set; }
+
+        //not table or SP.
+        public virtual DbSet<MedicationLookup> MedicationLookups { get; set; }
+
 
         // Testing Code
 #if  TestingEfUtility
@@ -367,6 +373,16 @@ namespace Emar.Data
                     .HasForeignKey(d => d.SiteId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk__medications__sites");
+            });
+
+
+            modelBuilder.Entity<MedicationLookup>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.BrandName).IsUnicode(false);
+
+                entity.Property(e => e.DrugId).IsUnicode(false);
             });
 
             modelBuilder.Entity<MedicationRoute>(entity =>

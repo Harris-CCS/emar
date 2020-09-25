@@ -14,10 +14,10 @@ namespace Emar.Core.Medications.Service
             _doseRangeCheckingInfoRepository = doseRangeCheckingInfoRepository;
         }
 
-        public IEnumerable<DoseRangeCheckingInfoDto> DoseRangeCheckInfos(string ndc)
+        public IEnumerable<DoseRangeCheckingInfoDto> DoseRangeCheckInfos(string medid)
         {
             //List of entities.
-            var infos = _doseRangeCheckingInfoRepository.RetrieveDoseRangeCheckingInfo(ndc);
+            var infos = _doseRangeCheckingInfoRepository.RetrieveDoseRangeCheckingInfo(medid);
 
             //List of DTO objects.
             List<DoseRangeCheckingInfoDto> infoDtos = new List<DoseRangeCheckingInfoDto>();

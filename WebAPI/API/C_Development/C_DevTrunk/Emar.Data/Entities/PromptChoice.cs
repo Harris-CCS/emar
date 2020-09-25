@@ -11,13 +11,14 @@ namespace Emar.Data.Entities
         [Key]
         [Column("id")]
         public int Id { get; set; }
+
         [Column("prompt_id")]
         public int PromptId { get; set; }
+
         [Column("sequence")]
         public short Sequence { get; set; }
-        [Required]
-        [Column("choice_text")]
-        [StringLength(50)]
+
+        [Column("choice_text", TypeName = "varchar(50)"), Required]
         public string ChoiceText { get; set; }
 
         [ForeignKey(nameof(PromptId))]

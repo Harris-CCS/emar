@@ -35,9 +35,9 @@ namespace Emar.Data.Entities
         public bool IsActive { get; set; }
 
 
-        // For Foreign Key: fk__medication_details__medications
-        [ForeignKey(nameof(MedicationId))]
-        [InverseProperty(nameof(Entities.Medication.MedicationDetails))]
-        public virtual Medication Medication { get; set; }
+       // For Foreign Key: fk__medication_details__medications
+       [ForeignKey(nameof(MedicationId))]
+       [InverseProperty(nameof(Entities.Medication.MedicationDetails))]
+       public virtual Medication Medication { get; set; }
     }
 }
