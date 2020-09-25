@@ -412,10 +412,10 @@ namespace Emar.Data.Helpers
                         return (string.IsNullOrEmpty(commentLine)
                                    ? ""
                                    : $"// {commentLine}" + Environment.NewLine) +
-                               $"// For Foreign Key: {SqlConstraintName}" + Environment.NewLine +
-                               $"[InverseProperty(\"{SqlDeclaringEntityNavigationProperty}\")]" +
+                               $"// For Foreign Key: {SqlConstraintName ?? ConstraintName}" + Environment.NewLine +
+                               $"[InverseProperty(\"{SqlDeclaringEntityNavigationProperty ?? DeclaringEntityNavigationProperty}\")]" +
                                Environment.NewLine +
-                               $"public virtual ICollection<{ParentTable.EntityName}> {SqlPrincipalEntityNavigationProperty} {{ get; set; }}";
+                               $"public virtual ICollection<{ParentTable.EntityName}> {SqlPrincipalEntityNavigationProperty ?? PrincipalEntityNavigationProperty} {{ get; set; }}";
 
                     case FileSegment.EntityForeignKeysConstructor:
                         return (string.IsNullOrEmpty(commentLine)
@@ -423,8 +423,8 @@ namespace Emar.Data.Helpers
                                    : $"// {commentLine}" + Environment.NewLine) +
                                $"public {PrincipalTable.EntityName}()" + Environment.NewLine +
                                "{" + Environment.NewLine +
-                               $"    // For Foreign Key: {SqlConstraintName}" + Environment.NewLine +
-                               $"    {SqlPrincipalEntityNavigationProperty} = new HashSet<{ParentTable.EntityName}>();" +
+                               $"    // For Foreign Key: {SqlConstraintName ?? ConstraintName}" + Environment.NewLine +
+                               $"    {SqlPrincipalEntityNavigationProperty ?? PrincipalEntityNavigationProperty} = new HashSet<{ParentTable.EntityName}>();" +
                                Environment.NewLine +
                                "}";
 
@@ -549,7 +549,7 @@ namespace Emar.Data.Helpers
                 else
                     clrDataType = ClrDataTypeToString(ClrDataType);
 
-                var keyRequiredText = KeyColumn ? ", Key" : (includeRequired ? ", Required" : "");
+                var keyRequiredText = (_dbPrimaryKey ?? KeyColumn) ? ", Key" : (includeRequired ? ", Required" : "");
 
                 return $"[Column(\"{SqlName}\", TypeName = \"{sqlDataType}\"){keyRequiredText}]"
                        + Environment.NewLine +
@@ -787,7 +787,10 @@ namespace Emar.Data.Helpers
                         }
                         else
                         {
-                            comm.CommandText = string.Format(COLUMN_QUERY, tbl.SqlTableName);
+                            var manKey = parms.ManufacturedKeys.Find(p => p.Table == tbl.SqlTableName);
+                            comm.CommandText = manKey == null
+                                ? string.Format(COLUMN_QUERY, tbl.SqlTableName)
+                                : ManufactureSelectStatement(manKey);
                             using (var reader = comm.ExecuteReader())
                             {
                                 while (reader.Read())
@@ -865,7 +868,7 @@ namespace Emar.Data.Helpers
                             foreach (var sqlKey in sqlOnlyKeys.Where(k => !k.AccountedFor))
                                 report.RegisterProblem(sqlKey, ReportProblem.ForeignKeySqlOnly);
 
-                            foreach (var entityKey in entityOnlyKeys)
+                            foreach (var entityKey in entityOnlyKeys.Where(entityKey => !parms.ForeignKeysToIgnore.Contains(entityKey.ConstraintName)))
                                 report.RegisterProblem(entityKey, ReportProblem.ForeignKeyEntityOnly);
                         }
                     }
@@ -880,6 +883,45 @@ namespace Emar.Data.Helpers
                 report.RegisterProblem(column, FileSegment.EntityProperties,
                     ReportProblem.ColumnNotInDatabase, null);
             }
+        }
+
+        private string ManufactureSelectStatement(ManufacturedKey manKey)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("WITH keyColumns AS(");
+            sb.AppendLine("    SELECT * FROM(VALUES");
+            bool firstLine = true;
+            foreach (var col in manKey.KeyColumns.Split(",", StringSplitOptions.RemoveEmptyEntries))
+            {
+                sb.AppendLine($"        {(firstLine ? "" : ",")}('{col}')");
+                firstLine = false;
+            }
+
+            sb.AppendLine("    ) t (column_name)");
+            sb.AppendLine(")");
+            sb.AppendLine("SELECT  c.name, ");
+            sb.AppendLine("        TYPE_NAME(system_type_id) +");
+            sb.AppendLine("        CASE");
+            sb.AppendLine("            WHEN TYPE_NAME(system_type_id) LIKE '%char' and max_length = -1");
+            sb.AppendLine("                THEN '(max)'");
+            sb.AppendLine("            WHEN TYPE_NAME(system_type_id) LIKE 'n%char'");
+            sb.AppendLine("                THEN CONCAT('(', max_length / 2, ')')");
+            sb.AppendLine("            WHEN TYPE_NAME(system_type_id) LIKE '%char'");
+            sb.AppendLine("            OR TYPE_NAME(system_type_id) = 'binary'");
+            sb.AppendLine("                THEN CONCAT('(', max_length, ')')");
+            sb.AppendLine("            WHEN TYPE_NAME(system_type_id) = 'numeric'");
+            sb.AppendLine("            OR TYPE_NAME(system_type_id) = 'decimal'");
+            sb.AppendLine("                THEN CONCAT('(', precision, ',', scale, ')')");
+            sb.AppendLine("            ELSE ''");
+            sb.AppendLine("        END AS datatype");
+            sb.AppendLine("        , is_nullable");
+            sb.AppendLine("        , CASE WHEN kc.column_name IS NULL THEN 0 ELSE 1 END AS KeyColumn");
+            sb.AppendLine("FROM    sys.columns c");
+            sb.AppendLine("LEFT JOIN   keyColumns kc");
+            sb.AppendLine("        ON c.name = kc.column_name");
+            sb.AppendLine($"WHERE c.object_id = OBJECT_ID('{manKey.Table}')");
+
+            return sb.ToString();
         }
 
 

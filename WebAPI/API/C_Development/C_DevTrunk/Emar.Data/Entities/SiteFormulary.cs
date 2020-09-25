@@ -31,12 +31,15 @@ namespace Emar.Data.Entities
         [Column("medication_id")]
         public int MedicationId { get; set; }
 
-        //[ForeignKey(nameof(MedicationId))]
-        //[InverseProperty(nameof(Entities.Medication.SiteFormularys))]
-        //public virtual Medication Medication { get; set; }
+        
+        // For Foreign Key: fk__site_formulary__medications
+        [ForeignKey(nameof(MedicationId))]
+        [InverseProperty(nameof(Entities.Medication.SiteFormularys))]
+        public virtual Medication Medication { get; set; }
 
-        //[ForeignKey(nameof(SiteId))]
-        //[InverseProperty(nameof(Entities.Site.SiteFormularys))]
-        //public virtual Site Site { get; set; }
+        // For Foreign Key: fk__site_formulary__sites
+        [ForeignKey(nameof(SiteId))]
+        [InverseProperty(nameof(Entities.Site.SiteFormularys))]
+        public virtual Site Site { get; set; }
     }
 }

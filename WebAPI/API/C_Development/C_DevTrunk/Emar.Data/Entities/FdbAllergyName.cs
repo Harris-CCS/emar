@@ -6,7 +6,7 @@ namespace Emar.Data.Entities
     [Table("fdb_allergy_name")]
     public partial class FdbAllergyName
     {
-        //[Key]
+        [Key]
         [Column("MEDID", TypeName = "numeric(8, 0)")]
         public decimal Medid { get; set; }
         [Column("med_name")]
