@@ -21,7 +21,14 @@ export class PatientMedOrderStoreService {
 
   private patientId = this.patientStoreService.patientId
   private readonly _patientMedOrder = new BehaviorSubject<any>([])
-  readonly patientMedOrder$ = this._patientMedOrder.asObservable()
+  readonly patientMedOrder$ = this._patientMedOrder.asObservable().pipe(
+    map(orders => orders ? orders.map((ord) => ({
+      ...ord,
+      allergyReactionsText: ord.allergyReactions?.map((alg) => alg.orderBrandName).join('\n'),
+      // orderName1 ought to be existing; orderName2 ought to be new
+      drugInteractionsText: ord.orderInteractions?.map((drug) => drug.drugInteraction.orderName2).join('\n')
+    })) : [])
+  )
 
   get patientMedOrder(): [] {
     return this._patientMedOrder.getValue() || []

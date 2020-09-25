@@ -17,12 +17,20 @@
             >Confirmed</button>
         </div>
     </div>
-    <div *ngIf="isDone">
+    <div *ngIf="isSuccess">
         <div class="dialog-result-title">
             SUCCESS
         </div>
         <div class="dialog-result-message">
             All cart orders are deleted for patient {{patientId}}
+        </div>
+    </div>
+    <div *ngIf="hasError">
+        <div class="dialog-result-title">
+            Oops!
+        </div>
+        <div class="dialog-result-message">
+            {{errorMessage}}
         </div>
     </div>
 </app-modal>

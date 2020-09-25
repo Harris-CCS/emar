@@ -6,14 +6,14 @@ import { User } from 'src/app/interfaces/user';
 import { UserService } from './user.service';
 
 interface Site {
-  id: number,
-  name: string,
-  active: boolean,
-  timeZoneName: string
+  id: number;
+  name: string;
+  active: boolean;
+  timeZoneName: string;
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserStoreService {
 
@@ -29,18 +29,16 @@ export class UserStoreService {
     }
   }
 
-  private readonly _user = new BehaviorSubject<User>(<User>{site:{}})
-  readonly user$ = this._user.asObservable()
-  readonly userSite$ = this.user$.pipe(
-    map(user => user?.site) 
-  )
+  private readonly _user = new BehaviorSubject<User>(<User>{ site: {} });
+  readonly user$ = this._user.asObservable();
+  readonly userSite$ = this.user$.pipe(map((user) => user?.site));
 
   get user(): User {
-    return this._user.getValue() || <User>{}
+    return this._user.getValue() || <User>{};
   }
 
   set user(val: User) {
-    this._user.next(val)
+    this._user.next(val);
   }
 
   get userId(): number {
@@ -55,9 +53,9 @@ export class UserStoreService {
   }
 
   get userSite(): Site {
-    const value = this._user.getValue() || {site: <Site>{}}
-    console.log('UserStore: userSite: ', value.site)
-    return value.site
+    const value = this._user.getValue() || { site: <Site>{} };
+    console.log('UserStore: userSite: ', value.site);
+    return value.site;
   }
 
   get userSiteId(): number {
@@ -79,4 +77,3 @@ export class UserStoreService {
     console.log('UserStore - fetchUserByExtId: ', this.user)
   }
 }
-

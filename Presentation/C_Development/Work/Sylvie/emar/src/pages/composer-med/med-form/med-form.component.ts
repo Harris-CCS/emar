@@ -80,7 +80,7 @@ export class MedFormComponent implements OnInit {
       this.userSiteId
     );
     // this.doseUnits = UNITS;
-    console.log('UnitsFromAPI', this.doseUnits);
+    // console.log('UnitsFromAPI', this.doseUnits);
   }
 
   ngOnInit() {
@@ -133,7 +133,7 @@ export class MedFormComponent implements OnInit {
       if (
         this.composerSchedulerService.resetComponentMedFormId &&
         this.composerSchedulerService.resetComponentMedFormId.value ===
-          this.medComponentId
+        this.medComponentId
       ) {
         this.resetMedForm();
       }
@@ -186,7 +186,7 @@ export class MedFormComponent implements OnInit {
     if (
       this.selectedFormStrengthName &&
       this.medOptions.availableFormStrength[strengthIndex].formStrengthName ===
-        this.selectedFormStrengthName
+      this.selectedFormStrengthName
     ) {
       ('');
     } else {
@@ -218,11 +218,11 @@ export class MedFormComponent implements OnInit {
   // ********** Dose/Unit ***************************
 
   changeSelectedDose(dose: any, source?: string) {
-    console.log('doseValue', dose, source);
+    // console.log('doseValue', dose, source);
 
     if (source === 'happyButton' && typeof dose === 'object') {
       this.selectedDose = dose.dose;
-      this.changeSelectedDoseUnit(dose.doseMockUnit);
+      this.changeSelectedDoseUnit(dose.doseUnit);
       this.medForm.controls['dose'].setValue(dose.dose);
     } else {
       this.selectedDose = dose;
@@ -235,7 +235,7 @@ export class MedFormComponent implements OnInit {
   }
 
   changeSelectedDoseUnit(unit: Unit) {
-    console.log('changebyUnitObject', unit);
+    // console.log('changebyUnitObject', unit);
     if (unit) {
       this.selectedDoseUnitData = unit;
       this.selectedDoseUnitName = unit.unitName;
@@ -262,7 +262,7 @@ export class MedFormComponent implements OnInit {
     const matchingUnit = !unitName
       ? null
       : // : UNITS.find((fndUnit) => fndUnit.unitName === unitName);
-        this.doseUnits.find((fndUnit) => fndUnit.unitName === unitName);
+      this.doseUnits.find((fndUnit) => fndUnit.unitName === unitName);
     this.changeSelectedDoseUnit(matchingUnit);
     // console.log('changeDoseUnitByLookupThis', this);
   }
@@ -332,8 +332,8 @@ export class MedFormComponent implements OnInit {
     const matchingRoute = !routeName
       ? null
       : this.selectedFormStrengthOptions.availableRoutes.find(
-          (fndRoute) => fndRoute.routeName === routeName
-        );
+        (fndRoute) => fndRoute.routeName === routeName
+      );
     this.changeSelectedRoute(matchingRoute);
   }
 

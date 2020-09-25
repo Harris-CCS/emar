@@ -9,7 +9,7 @@ import { HomeMedication } from 'src/app/interfaces/home-medication';
 import { PatientService } from 'src/services/patient.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PatientStoreService {
 
@@ -24,17 +24,15 @@ export class PatientStoreService {
     }
   }
 
-  private readonly _patient = new BehaviorSubject<Patient>(<Patient>{})
-  readonly patient$ = this._patient.asObservable()
-  
+  private readonly _patient = new BehaviorSubject<Patient>(<Patient>{});
+  readonly patient$ = this._patient.asObservable();
 
-   
   get patient(): Patient {
-    return this._patient.getValue() || <Patient>{}
+    return this._patient.getValue() || <Patient>{};
   }
 
   set patient(val: Patient) {
-    this._patient.next(val)
+    this._patient.next(val);
   }
 
   get patientId(): number {
@@ -42,12 +40,16 @@ export class PatientStoreService {
     // return this._patient.getValue().id || 657
   }
 
+  get patientDeptCode(): string{
+    return this._patient.getValue().departmentCode
+  }
+
   get patientAllergies(): Allergy[] {
-    return this._patient.getValue().patientAllergies || []
+    return this._patient.getValue().patientAllergies || [];
   }
 
   get homeMedications(): HomeMedication[] {
-    return this._patient.getValue().homeMedications || []
+    return this._patient.getValue().homeMedications || [];
   }
 
   async fetchPatient(emarPatientId) {

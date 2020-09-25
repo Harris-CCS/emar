@@ -11,7 +11,7 @@
           user cannot scroll behind the modal container.
      -->
     <div *ngIf="performModalActions('medComposer', 'orders-container')" id="orders-container"
-        [ngStyle]="{'position': 'relative'}"
+        [ngStyle]="{'position': 'relative', 'width': '100%', 'height':'100%'}"
         [ngClass]="{'overflow-vertical-off': isModalVisible('medComposer'), 'overflow-vertical-on': true}">
         <div class="page-content-wrapper">
             <composer-med-modal></composer-med-modal>
@@ -44,11 +44,15 @@
                             <li class="list-group-item"
                                 *ngFor="let ord of patientMedOrderStoreService.patientMedOrder$ | async">
                                 <span
-                                    [ngClass]="{'allergy-dot': ord.allergies?.length, 'placeholder-dot': ord.allergies?.length === 0 || !ord.allergies}"
-                                    placement="right" ngbTooltip="Allergy Reaction placeholder"></span>
+                                    [ngClass]="{'allergy-dot': ord.allergyReactions?.length, 'placeholder-dot': ord.allergyReactions?.length === 0 || !ord.allergyReactions}"
+                                    placement="right" 
+                                    ngbTooltip={{ord.allergyReactionsText}}>
+                                </span>
                                 <span
-                                    [ngClass]="{'drug-dot' : ord.drugs?.length, 'placeholder-dot': ord.drugs?.length === 0 || !ord.drugs}"
-                                    placement="right" ngbTooltip="Medication Interaction placeholder"></span>
+                                    [ngClass]="{'drug-dot' : ord.orderInteractions?.length, 'placeholder-dot': ord.orderInteractions?.length === 0 || !ord.orderInteractions}"
+                                    placement="right" 
+                                    ngbTooltip={{ord.drugInteractionsText}}>
+                                </span>
                                 <span class="status">{{ord.orderStatus}}</span>
                                 <span>
                                     {{ord.brandName}} {{ord.medicationRoute?.routeName | uppercase}} {{ord.dose}}
