@@ -25,21 +25,21 @@
                                 <img *ngIf="checkForData('vitals')" [src]="getVitalSignIconPath()"
                                     class={{vsOverallIndicatorClass}} alt="Vital Signs"
                                     [ngbPopover]="lastVitalSignsTaken" placement="bottom-left" triggers="click"
-                                    [autoClose]="'outside'" container="body" [ngClass]="{'action-icons': true}">
+                                    [autoClose]="'outside'" container="body" [ngClass]="{'action-icons': true}" popoverClass="my-popover">
                             </span>
                         </li>
                         <li>
                             <span placement="bottom" ngbTooltip="Click to view Allergies">
                                 <button type="button" *ngIf="checkForData('allergies')" class="action-button"
-                                    placement="bottom-left" triggers="click" [autoClose]="'outside'"
-                                    [ngbPopover]="allergies" container="body">A</button>
+                                    placement="bottom-left" triggers="click " [autoClose]="'outside'"
+                                    [ngbPopover]="allergies" container="body" popoverClass="my-popover">A</button>
                             </span>
                         </li>
                         <li>
                             <span placement="bottom" ngbTooltip="Click to view Home Medications">
                                 <button type="button" *ngIf="checkForData('homeMeds')" class="action-button"
                                     placement="bottom-left" triggers="click" [autoClose]="'outside'"
-                                    [ngbPopover]="homeMeds" container="body">M</button>
+                                    [ngbPopover]="homeMeds" container="body"  popoverClass="my-popover">M</button>
                             </span>
                         </li>
                     </ul>
