@@ -44,11 +44,12 @@ export class CartStoreService {
       ...ord,
       displayName: ord.brandName,
       displayRoute: ord.medicationRoute ? ord.medicationRoute.routeName : '',
-      displayFrequency: ord.frequencyId,
+      displayFrequency: ord.frequencySchedule ? ord.frequencySchedule.scheduleName : '',
       displayDose: ord.dose,
       displayDoseUnit: ord.doseUnit ? ord.doseUnit.printName : '',
-      allergies: [],
-      drugs: []
+      allergyReactionsText: ord.allergyReactions?.map((alg) => alg.orderBrandName).join('\n'),
+      // orderName1 ought to be existing; orderName2 ought to be new
+      drugInteractionsText: ord.orderInteractions?.map((drug) => drug.drugInteraction.orderName2).join('\n') 
     })) : [])
   )
 
@@ -106,40 +107,34 @@ export class CartStoreService {
     let ord: CartOrder = {
       patientId: patientId,
       userId: userId,
-      addDatetime: "2020-08-14T22:01:53.589Z",
+      addDatetime: "2020-09-23T00:30:00+00:00",
       //addDate: "2020-08-14",
       //addTime: "22:01:53",
-      priority: 2,
-      prn: true,
-      beginDatetime: "2020-08-14T22:01:53.589Z",
+      priority: 1,
+      prn: false,
+      beginDatetime: "2020-09-23T01:00:00+00:00",
       //beginDate: "2020-08-14",
       //beginTime: "22:01:53",
-      endDatetime: "2020-08-14T22:01:53.589Z",
-      userQuickListItemId: 0,
+      endDatetime: null,
+      userQuickListItemId: null,
       cartOrderAdministrations: [
         {
-          id: 0,
-          patientCartOrderId: 0,
-          administrationScheduledDatetime: "2020-08-14T22:01:53.589Z",
-          administrationScheduledDate: "2020-08-14",
-          administrationScheduledTime: "22:01:53",
-          stopScheduledDatetime: "2020-08-14T22:01:53.589Z",
-          stopScheduledDate: "2020-08-14",
-          stopScheduledTime: "22:01:53",
+          administrationScheduledDatetime: "2020-09-23T01:00:00+00:00",
+          stopScheduledDatetime: null,
           pointInTime: true
         }
       ],
       id: 0,
-      ndc: "string",
-      drugId: "string",
+      ndc: null,
+      drugId: "drug888",
       brandName: order.brandName,
       dose: 2,
-      //doseUnit: "ea",
-      medicationUnitId: 0,
-      frequencyId: 0,
-      pointInTime: true,
-      orderNotes: "string",
-      medicationRouteId: 0
+      // doseUnit: "ea",
+      medicationUnitId: null,
+      frequencyId: null,
+      pointInTime: false,
+      orderNotes: "Hello, I am a test",
+      medicationRouteId: null
     };
     
     //optimistic update
@@ -152,12 +147,12 @@ export class CartStoreService {
     tempCartOrder.id = tempId
     
     const orders = [
-      ...this.cartOrders
+      ...this.cartOrders || []
     ]
 
     this.cartOrders = [
       tempCartOrder,
-      ...this.cartOrders
+      ...this.cartOrders || []
     ]
 
     this.totalCount = this.totalCount + 1
@@ -177,8 +172,11 @@ export class CartStoreService {
       }
       this.cartOrders = [...this.cartOrders]
       console.log('CartStore: POSTED & UPDATED')
-    } catch (e) {
-      console.log('CartStore: POST ERROR: ', e)
+
+    } catch (err) {
+      console.log('CartStore: POST ERROR: ', err)
+
+      alert(`POST ${err.status} ${err.statusText}\n${err.error}`)
       this.cartOrders = orders
       this.totalCount = this.totalCount - 1
     }
@@ -239,12 +237,12 @@ export class CartStoreService {
     tempCartOrder.id = tempId
     
     const orders = [
-      ...this.cartOrders
+      ...this.cartOrders || []
     ]
 
     this.cartOrders = [
       tempCartOrder,
-      ...this.cartOrders
+      ...this.cartOrders || []
     ]
 
     this.totalCount = this.totalCount + 1
@@ -265,8 +263,11 @@ export class CartStoreService {
       }
       this.cartOrders = [...this.cartOrders]
       console.log('CartStore: POSTED & UPDATED')
-    } catch (e) {
-      console.log('CartStore: POST ERROR: ', e)
+
+    } catch (err) {
+      console.log('CartStore: POST ERROR >= 400: ', err)
+
+      alert(`POST ${err.status} ${err.statusText}\n${err.error}`)
       this.cartOrders = orders
       this.totalCount = this.totalCount - 1
     }
@@ -289,8 +290,11 @@ export class CartStoreService {
       //update patient current order
       await this.patientMedOrderStoreService.fetchPatientMedOrder(patientId)
       console.log('CartStore: patientMedOrderStoreService: fetchPatientMedOrder')
-    } catch (e) {
-      console.log('CartStore: POST ALL ERROR: ', e)
+    } catch (err) {
+      console.log('CartStore: POST ALL ERROR (CHECKOUT) >= 400: ', err)
+      
+      alert(`POST ${err.status} ${err.statusText}\n${err.error}`)
+
       this.cartOrders = orders
       this.totalCount = count
     }
@@ -298,7 +302,7 @@ export class CartStoreService {
 
   /* DELETE */
   async deleteCartOrder(cartOrderId: number, userId: number) {
-    console.log('CartStore: DELETE')
+    console.log('CartStore: DELETE start...')
 
     //optimistic update
     const orders = [...this.cartOrders]
@@ -308,9 +312,12 @@ export class CartStoreService {
     
     try {
       await this.cartService.deleteCartOrder(cartOrderId,userId).toPromise()
-      console.log('CartStore: DELETED')
-    } catch (e) {
-      console.log('CartStore: DELETE ERROR: ', e)
+
+    } catch (err) {
+      console.log('CartStore: DELETE ERROR >= 400: ', err)
+
+      alert(`DELETE ${err.status} ${err.statusText}\n${err.error}`)
+      
       this.cartOrders = orders
       this.totalCount = count
     }
@@ -327,12 +334,15 @@ export class CartStoreService {
     this.totalCount = 0
 
     try {
-      await this.cartService.deleteAllCartOrders(patientId, userId).toPromise()
-      console.log('CartOrder: DELETED ALL')
-    } catch (e) {
-      console.log('CartStore: DELETE ALL ERROR: ', e)
+      return await this.cartService.deleteAllCartOrders(patientId, userId).toPromise()
+
+    } catch (err) {
+      console.log('CartStore: DELETE ALL catch ERROR >= 400: ', err)
+
       this.cartOrders = orders
       this.totalCount = count
+
+      throw err
     }
   }
 
@@ -394,16 +404,29 @@ export class CartStoreService {
     try {
       await this.cartService.updateCartOrder(ord, patientId, userId).toPromise()
       console.log('CartStore: UPDATED')
-    } catch (e) {
-      console.log('CartStore: UPDATE ERROR: ', e)
+
+    } catch (err) {
+      console.log('CartStore: UPDATE ERROR >=400: ', err)
+
+      alert(`PUT ${err.status} ${err.statusText}\n${err.error}`)
       this.cartOrders = orders
     }
   }
 
   async fetchPatientCartOrders(patientId, userId) {
     console.log('CartStore - fetchPatientCartOrder: userId: ', this.userStoreService.userId)
-    this.cart = await this.cartService.getCartOrders(patientId, userId).toPromise();
-    console.log('CartStore - fetchPatientCartOrder: cart: ', this.cart)
+    try {
+      this.cart = await this.cartService.getCartOrders(patientId, userId).toPromise();
+      console.log('CartStore - fetchPatientCartOrder: cart: ', this.cart)
+
+    } catch (err) {
+      console.log('CartStore: fetchPatientCartOrder ERROR >=400: ', err)
+
+      if (err.status != 404) {  // Not found
+        alert(`FETCH ${err.status} ${err.statusText}\n${err.error}`) 
+      }
+    }
+    
   }
 
   // async fetchAll() {

@@ -22,6 +22,7 @@ export class MedOrderService {
 
   private siteId = this.userStoreService.userSiteId
   private patientId = this.patientStoreService.patientId
+  private patDept = this.patientStoreService.patientDeptCode
 
   /* URL to WebAPI */
   private userQuickListsUrl = '/api/userquicklists'
@@ -181,7 +182,7 @@ export class MedOrderService {
     console.log('MedOrderService: getMedListBySelectedTab: selectedTab', tab)
 
     const headers = new HttpHeaders({ Accept: 'application/json', 'X-User': this.userStoreService.userId?.toString() })
-    const userQuickListsByTabUrl = `${this.userQuickListsUrl}/tabs/${tab}`
+    const userQuickListsByTabUrl = `${this.userQuickListsUrl}/tabs/${tab}?siteId=${this.siteId}&patientId=${this.patientId}`
     console.log('MedOrderService: getMedListBySelectedTab: userQuickListsByTabUrl: ', userQuickListsByTabUrl)
 
     return this.http
@@ -203,7 +204,7 @@ export class MedOrderService {
   /* POST - post a cart order by UserQuickList item id*/
   postCartOrderByListOrderId(listOrderId: number, patientId: number, userId: number): Observable<any> {
 
-    const headers = new HttpHeaders({ Accept: 'application/json', 'X-User': `${userId}`, 'X-Site': `${this.siteId}`, 'X-Patient': `${patientId}`})
+    const headers = new HttpHeaders({ Accept: 'application/json', 'X-User': `${userId}`, 'X-Site': `${this.siteId}`, 'X-Patient': `${this.patientId}`})
     const url = `${this.userQuickListsUrl}/${listOrderId}/cartOrders/${patientId}`
     console.log('MedOrderService: postCartOrderByListOrderId: url: ', url)
 
@@ -224,8 +225,9 @@ export class MedOrderService {
   
   /* Department Orders */
   getDeptPreferredOrdersList(): Observable<any> {
-    const headers = new HttpHeaders({ Accept: 'application/json' })
+    const headers = new HttpHeaders({ Accept: 'application/json', 'X-Site': `${this.siteId}` })
     
+    // TODO: do we need to filter by patient department code?
     return this.http
       .get<any>(this.deptPreferredListUrl, { headers })
       .pipe(
