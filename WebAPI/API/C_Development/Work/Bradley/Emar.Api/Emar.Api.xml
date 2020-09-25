@@ -160,30 +160,6 @@
             <param name="patientId">the patient that the cart is intended for</param>
             <returns></returns>
         </member>
-        <member name="T:Emar.Api.Controllers.DoseRangeCheckingInfoController">
-            <summary>
-            Dose Range Checking Info Controller
-            </summary>
-        </member>
-        <member name="M:Emar.Api.Controllers.DoseRangeCheckingInfoController.#ctor(Emar.Core.Medications.Service.IDoseRangeCheckingInfoService)">
-            <summary>
-            Constructor
-            </summary>
-        </member>
-        <member name="M:Emar.Api.Controllers.DoseRangeCheckingInfoController.GetDoseRangeCheckingInfo(System.String,System.String)">
-            <summary>
-            Get the dose range checking info for a medication.
-            </summary>
-            <param name="mediaType">
-            Media type from Accept header.
-            </param>
-            <param name="ndc">
-            Unique order identifier.
-            </param>
-            <returns>The dose range info for the medication that has the passed in NDC</returns>
-            <remarks>
-            </remarks>
-        </member>
         <member name="T:Emar.Api.Controllers.GroupsRememberedOrdersController">
             <summary>
             Controller to retrieve the Groups Remembered Orders Lists for the Landing Page
@@ -213,6 +189,67 @@
             <param name="groupsRememberedItemId">The Groups Remembered List Item to move into the patient's cart</param>
             <param name="patientId">the patient that the cart is intended for</param>
             <returns></returns>
+        </member>
+        <member name="T:Emar.Api.Controllers.MedicationsController">
+            <summary>
+            Dose Range Checking Info Controller
+            </summary>
+        </member>
+        <member name="M:Emar.Api.Controllers.MedicationsController.#ctor(Emar.Core.Medications.Service.IDoseRangeCheckingInfoService,Emar.Core.Medications.Service.IMedicationService,Emar.Core.Options.Service.IOptionService)">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:Emar.Api.Controllers.MedicationsController.GetDoseRangeCheckingInfo(System.String,System.String)">
+            <summary>
+            Get the dose range checking info for a medication.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="medid">
+            The medication/drug ID.
+            </param>
+            <returns>The dose range info for the medication that has the passed in NDC</returns>
+            <remarks>
+            </remarks>
+        </member>
+        <member name="M:Emar.Api.Controllers.MedicationsController.GetMedByBrandName(System.String,System.String,System.Int32,System.String,System.Int32,System.String)">
+            <summary>
+            Medication search by brand name
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="brandName">
+            The medication brand name we are searching for.
+            </param>
+            <param name="siteId">
+            The id of the site that we are searching in.
+            Is pulled from the request header.
+            </param>
+            <param name="searchType">
+            The type of list to search in.
+            all = all
+            deptpreferredlist = department preferred list
+            formulary = formulary
+            groups = groups
+            quicklist = user's quick list
+            </param>
+            <param name="userId">
+            The id of the current user.
+            Is pulled from the request header.
+            Used when searching in the user-specific quick list.
+            </param>
+            /// <param name="deptCode">
+            The department of the patient.
+            Is pulled from the request header.
+            Used when searching in the department preferred list.
+            </param>
+            
+            <returns>A alphabetically sorted list of medication names that match the search criteria.</returns>
+            <remarks>
+            </remarks>
         </member>
         <member name="T:Emar.Api.Controllers.OrdersController">
             <summary>
