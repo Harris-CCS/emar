@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using static Emar.Core.Helpers.AppConstants;
 
 namespace Emar.Core.Medications.Model
 {
@@ -33,24 +32,21 @@ namespace Emar.Core.Medications.Model
         public int? AddUserId { get; set; }
         public string AlternateName { get; set; }
         public DateTimeOffset? BeginDatetime { get; set; }
-        public string BrandName { get; set; }
-        public string ActiveName { get; set; }
-        public string ActiveId { get; set; }
         public string Category { get; set; }
         public DateTimeOffset? ChangeDatetime { get; set; }
         public int? ChangeUserId { get; set; }
         public string Class { get; set; }
         public string Comment { get; set; }
         public decimal? Dose { get; set; }
-        public string DrugId { get; set; }
         public DateTimeOffset? EndDatetime { get; set; }
         public int? FrequencyScheduleId { get; set; }
         public string InternalDrugId { get; set; }
         public bool? IsActive { get; set; }
         public string MedicationDrugId { get; set; }
+        internal int MedicationId { get; set; }
+        public MedicationDto Medication { get; set; }
         public int? MedicationRouteId { get; set; }
         public int? MedicationUnitId { get; set; }
-        public string Ndc { get; set; }
         public int? OrderPhysicianUserId { get; set; }
         public string OrderStatus { get; set; }
         public string ParentDrugId { get; set; }
@@ -72,17 +68,5 @@ namespace Emar.Core.Medications.Model
 
         public List<Dictionary<string, string>> Interactions { get; set; } = new List<Dictionary<string, string>>();
         public List<Dictionary<string, string>> Reactions { get; set; } = new List<Dictionary<string, string>>();
-
-        public string GetName()
-        {
-            if (BrandName.Equals(ActiveName) || String.IsNullOrWhiteSpace(ActiveName))
-            {
-                return BrandName;
-            }
-            else
-            {
-                return BrandName + " (" + ActiveName + ")";
-            }
-        }
     }
 }

@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using Emar.Core.Carts.Model;
 using Emar.Core.Helpers;
-using Emar.Core.Orders.Model;
 using Emar.Core.Orders.Model.Mappings;
 using Emar.Core.ResourceParameters;
 using Emar.Data;
 using Emar.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Emar.Core.Carts.Repository
@@ -61,7 +58,7 @@ namespace Emar.Core.Carts.Repository
             var orders = _context.PatientCartOrders
                 .Include(order => order.CartOrderAdministrations)
                 .Include(order => order.Medication)
-                .ThenInclude(med => med.MedicationDetails)
+                    .ThenInclude(med => med.MedicationDetails)
                 .Include(order => order.MedicationRoute)
                 .Include(order => order.FrequencySchedule)
                 .Include(order => order.MedicationUnit)
@@ -77,31 +74,62 @@ namespace Emar.Core.Carts.Repository
 
         public IEnumerable<PatientCartOrder> GetPatientCartOrders(Expression<Func<PatientCartOrder, bool>> wherePredicate = null)
         {
-            if(wherePredicate == null)
-                return _context.PatientCartOrders
-                    .ToList()
-                    .Select(order =>
-                    {
-                        order.FdbBrandName =
-                            (from s in (from s in _context.FdbBrandName select s).Where(u => u.Medid.ToString(CultureInfo.InvariantCulture) == order.Medication.DrugId)
-                                select s)
-                            .FirstOrDefault();
-                        return order;
-                    })
-                    .AsEnumerable();
+            IEnumerable<PatientCartOrder> orders;
 
-            return _context.PatientCartOrders
-                .Where(wherePredicate)
-                .ToList()
-                .Select(order =>
-                {
-                    order.FdbBrandName =
-                    (from s in (from s in _context.FdbBrandName select s).Where(u => u.Medid.ToString() == order.Medication.DrugId)
+            if (wherePredicate == null)
+            {
+                orders = _context.PatientCartOrders
+                        .Include(i => i.Medication)
+                            .ThenInclude(m => m.MedicationDetails)
+                        .ToList()
+                        .Select(order =>
+                        {
+                            if (order?.Medication?.MedicationDetails != null)
+                            {
+                                order.Medication.MedicationDetails = order.Medication.MedicationDetails
+                                    .Select(AddFdbBrandName)
+                                    .ToList();
+                            }
+
+                            return order;
+                        });
+            }
+            else
+            {
+                orders = _context.PatientCartOrders
+                        .Include(i => i.Medication)
+                            .ThenInclude(m => m.MedicationDetails)
+                        .Where(wherePredicate)
+                        .ToList()
+                        .Select(order =>
+                        {
+                            if (order?.Medication?.MedicationDetails != null)
+                            {
+                                order.Medication.MedicationDetails = order.Medication.MedicationDetails
+                                    .Select(AddFdbBrandName)
+                                    .ToList();
+                            }
+
+                            return order;
+                        });
+            }
+
+            return orders.AsEnumerable();
+        }
+
+        private MedicationDetail AddFdbBrandName(MedicationDetail detail)
+        {
+            if (detail != null && detail.FdbBrandName == null)
+            {
+                detail.FdbBrandName =
+                    (from s in (from s in _context.FdbBrandName
+                                select s)
+                            .Where(u => u.Medid.ToString() == detail.DrugId)
                      select s)
-                     .FirstOrDefault();
-                    return order;
-                })
-                .AsEnumerable();
+                    .FirstOrDefault();
+            }
+
+            return detail;
         }
 
         public PatientCartOrder GetOrder(long orderId, OrdersResourceParameters resourceParameters)

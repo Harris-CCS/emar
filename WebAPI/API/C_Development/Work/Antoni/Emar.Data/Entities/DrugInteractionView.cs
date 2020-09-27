@@ -46,11 +46,19 @@ namespace Emar.Data.Entities
         [ForeignKey(nameof(OverrideReasonId))]
         [InverseProperty(nameof(Entities.OverrideReason.DrugInteractionsView))]
         public virtual OverrideReason OverrideReason { get; set; }
+
         [ForeignKey(nameof(OverrideReasonUserId))]
         [InverseProperty(nameof(User.DrugInteractionsView))]
         public virtual User OverrideReasonUser { get; set; }
 
         [InverseProperty("DrugInteractionView")]
         public virtual ICollection<OrderInteraction> OrderInteractions { get; set; }
+
+        [NotMapped]
+        public PatientCartOrder PatientCartOrder { get; set; }
+        [NotMapped]
+        public PatientOrder PatientOrder { get; set; }
+        [NotMapped]
+        public PatientHomeMedication PatientHomeMedication { get; set; }
     }
 }

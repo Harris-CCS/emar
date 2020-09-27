@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Emar.Data.Entities
@@ -39,5 +38,9 @@ namespace Emar.Data.Entities
         [ForeignKey(nameof(MedicationId))]
         [InverseProperty(nameof(Entities.Medication.MedicationDetails))]
         public virtual Medication Medication { get; set; }
+
+
+        [NotMapped]
+        public FdbBrandName FdbBrandName { get; set; }
     }
 }
