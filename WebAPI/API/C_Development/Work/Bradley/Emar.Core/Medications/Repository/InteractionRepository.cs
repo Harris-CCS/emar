@@ -16,128 +16,266 @@ namespace Emar.Core.Medications.Repository
             _context = emarContext ?? throw new ArgumentNullException(nameof(emarContext));
         }
 
+        public void GetInteractionsReactions(IEnumerable<MedicationInteractionReaction> medicationInteractionsReactions, long orderId, EmarOrderType orderType, ref List<List<MedicationInteraction>> medicationInteractionsList, ref List<List<OrderReaction>> orderReactionsList)
+        {
+            foreach (var interactionReaction in medicationInteractionsReactions)
+            {
+                // Drug Interactions
+                List<MedicationInteraction> medicationInteractions = new List<MedicationInteraction>();
+
+                foreach (var interaction in interactionReaction.Interactions)
+                {
+                    var medicationInteraction = new MedicationInteraction
+                    {
+                        InteractionDrug1 = interaction.GetValueOrDefault("drug_id_1"),
+                        InteractionDrug2 = interaction.GetValueOrDefault("drug_id_2"),
+                        Severity = byte.TryParse(interaction.GetValueOrDefault("severity_id"), out byte byteValue) ? byteValue : (byte)0
+                    };
+
+                    switch (orderType)
+                    {
+                        case EmarOrderType.PatientOrder:
+                            medicationInteraction.OrderInteractions.Add(
+                                new OrderInteraction
+                                {
+                                    MedicationInteractionId = medicationInteraction.Id,
+                                    DrugNum = 1,
+                                    PatientOrderId = orderId
+                                });
+                            break;
+                        case EmarOrderType.PatientCartOrder:
+                            medicationInteraction.OrderInteractions.Add(
+                                new OrderInteraction
+                                {
+                                    MedicationInteractionId = medicationInteraction.Id,
+                                    DrugNum = 1,
+                                    PatientCartOrderId = orderId
+                                });
+                            break;
+                        case EmarOrderType.HomeMedication:
+                            medicationInteraction.OrderInteractions.Add(
+                                new OrderInteraction
+                                {
+                                    MedicationInteractionId = medicationInteraction.Id,
+                                    DrugNum = 1,
+                                    PatientHomeMedicationId = orderId
+                                });
+                            break;
+                    }
+
+                    long? id = long.TryParse(interaction.GetValueOrDefault("SourceTableId2"), out long number) ? number : (long?)null;
+
+                    switch (interaction.GetValueOrDefault("SourceTable2"))
+                    {
+                        case SourceTables.PatientOrders:
+                            medicationInteraction.OrderInteractions.Add(
+                                new OrderInteraction
+                                {
+                                    MedicationInteractionId = medicationInteraction.Id,
+                                    DrugNum = 2,
+                                    PatientOrderId = id
+                                });
+                            break;
+                        case SourceTables.PatientCartOrders:
+                            medicationInteraction.OrderInteractions.Add(
+                                new OrderInteraction
+                                {
+                                    MedicationInteractionId = medicationInteraction.Id,
+                                    DrugNum = 2,
+                                    PatientCartOrderId = id
+                                });
+                            break;
+                        case SourceTables.PatientHomeMedications:
+                            medicationInteraction.OrderInteractions.Add(
+                                new OrderInteraction
+                                {
+                                    MedicationInteractionId = medicationInteraction.Id,
+                                    DrugNum = 2,
+                                    PatientHomeMedicationId = id
+                                });
+                            break;
+                    }
+
+                    medicationInteractions.Add(medicationInteraction);
+                }
+
+                // Allergy Reactions
+                List<OrderReaction> orderReactions = new List<OrderReaction>();
+
+                foreach (var reaction in interactionReaction.Reactions)
+                {
+                    long? patientOrderId = null;
+                    long? patientCartOrderId = null;
+
+                    switch (orderType)
+                    {
+                        case EmarOrderType.PatientOrder:
+                            patientOrderId = orderId;
+                            break;
+                        case EmarOrderType.PatientCartOrder:
+                            patientCartOrderId = orderId;
+                            break;
+                    }
+
+                    var orderReaction = new OrderReaction
+                    {
+                        PatientAllergyId = long.TryParse(reaction.GetValueOrDefault("SourceTableId"), out long number) ? number : 0,
+                        PatientOrderId = patientOrderId,
+                        PatientCartOrderId = patientCartOrderId
+                    };
+
+                    orderReactions.Add(orderReaction);
+                }
+
+                medicationInteractionsList.Add(medicationInteractions);
+                orderReactionsList.Add(orderReactions);
+            }
+        }
+
         public bool RecordNewInteractionsReactions(IEnumerable<MedicationInteractionReaction> medicationInteractionsReactions, long orderId, EmarOrderType orderType)
         {
             int i = 0;
+            List<List<MedicationInteraction>> medicationInteractionsList = new List<List<MedicationInteraction>>();
+            List<List<OrderReaction>> orderReactionsList = new List<List<OrderReaction>>();
 
-            using (IDbContextTransaction transaction = _context.Database.BeginTransaction())
+            using IDbContextTransaction transaction = _context.Database.BeginTransaction();
+
+            try
             {
-                try
+                GetInteractionsReactions(medicationInteractionsReactions, orderId, orderType, ref medicationInteractionsList, ref orderReactionsList);
+
+                #region
+                //////foreach (var interactionReaction in medicationInteractionsReactions)
+                //////{
+                //////    // Drug Interactions
+                //////    List<MedicationInteraction> medicationInteractions = new List<MedicationInteraction>();
+
+                //////    foreach (var interaction in interactionReaction.Interactions)
+                //////    {
+                //////        var medicationInteraction = new MedicationInteraction
+                //////        {
+                //////            InteractionDrug1 = interaction.GetValueOrDefault("drug_id_1"),
+                //////            InteractionDrug2 = interaction.GetValueOrDefault("drug_id_2"),
+                //////            Severity = byte.TryParse(interaction.GetValueOrDefault("severity_id"), out byte byteValue) ? byteValue : (byte)0
+                //////        };
+
+                //////        switch (orderType)
+                //////        {
+                //////            case EmarOrderType.PatientOrder:
+                //////                medicationInteraction.OrderInteractions.Add(
+                //////                    new OrderInteraction
+                //////                    {
+                //////                        MedicationInteractionId = medicationInteraction.Id,
+                //////                        DrugNum = 1,
+                //////                        PatientOrderId = orderId
+                //////                    });
+                //////                break;
+                //////            case EmarOrderType.PatientCartOrder:
+                //////                medicationInteraction.OrderInteractions.Add(
+                //////                    new OrderInteraction
+                //////                    {
+                //////                        MedicationInteractionId = medicationInteraction.Id,
+                //////                        DrugNum = 1,
+                //////                        PatientCartOrderId = orderId
+                //////                    });
+                //////                break;
+                //////            case EmarOrderType.HomeMedication:
+                //////                medicationInteraction.OrderInteractions.Add(
+                //////                    new OrderInteraction
+                //////                    {
+                //////                        MedicationInteractionId = medicationInteraction.Id,
+                //////                        DrugNum = 1,
+                //////                        PatientHomeMedicationId = orderId
+                //////                    });
+                //////                break;
+                //////        }
+
+                //////        long? id = long.TryParse(interaction.GetValueOrDefault("SourceTableId2"), out long number) ? number : (long?)null;
+
+                //////        switch (interaction.GetValueOrDefault("SourceTable2"))
+                //////        {
+                //////            case SourceTables.PatientOrders:
+                //////                medicationInteraction.OrderInteractions.Add(
+                //////                    new OrderInteraction
+                //////                    {
+                //////                        MedicationInteractionId = medicationInteraction.Id,
+                //////                        DrugNum = 2,
+                //////                        PatientOrderId = id
+                //////                    });
+                //////                break;
+                //////            case SourceTables.PatientCartOrders:
+                //////                medicationInteraction.OrderInteractions.Add(
+                //////                    new OrderInteraction
+                //////                    {
+                //////                        MedicationInteractionId = medicationInteraction.Id,
+                //////                        DrugNum = 2,
+                //////                        PatientCartOrderId = id
+                //////                    });
+                //////                break;
+                //////            case SourceTables.PatientHomeMedications:
+                //////                medicationInteraction.OrderInteractions.Add(
+                //////                    new OrderInteraction
+                //////                    {
+                //////                        MedicationInteractionId = medicationInteraction.Id,
+                //////                        DrugNum = 2,
+                //////                        PatientHomeMedicationId = id
+                //////                    });
+                //////                break;
+                //////        }
+
+                //////        medicationInteractions.Add(medicationInteraction);
+                //////    }
+
+                //////    // Allergy Reactions
+                //////    List<OrderReaction> orderReactions = new List<OrderReaction>();
+
+                //////    foreach (var reaction in interactionReaction.Reactions)
+                //////    {
+                //////        long? patientOrderId = null;
+                //////        long? patientCartOrderId = null;
+
+                //////        switch (orderType)
+                //////        {
+                //////            case EmarOrderType.PatientOrder:
+                //////                patientOrderId = orderId;
+                //////                break;
+                //////            case EmarOrderType.PatientCartOrder:
+                //////                patientCartOrderId = orderId;
+                //////                break;
+                //////        }
+
+                //////        var orderReaction = new OrderReaction
+                //////        {
+                //////            PatientAllergyId = long.TryParse(reaction.GetValueOrDefault("SourceTableId"), out long number) ? number : 0,
+                //////            PatientOrderId = patientOrderId,
+                //////            PatientCartOrderId = patientCartOrderId
+                //////        };
+
+                //////        orderReactions.Add(orderReaction);
+                //////    }
+
+                //////    medicationInteractionsList.Add(medicationInteractions);
+                //////    orderReactionsList.Add(orderReactions);
+                //////}
+                #endregion
+
+                foreach (var list in medicationInteractionsList)
                 {
-                    // Drug Interactions
-                    foreach (var interactionReaction in medicationInteractionsReactions)
-                    {
-                        foreach (var interaction in interactionReaction.Interactions)
-                        {
-                            var medicationInteraction = new MedicationInteraction
-                            {
-                                InteractionDrug1 = interaction.GetValueOrDefault("drug_id_1"),
-                                InteractionDrug2 = interaction.GetValueOrDefault("drug_id_2"),
-                                Severity = byte.TryParse(interaction.GetValueOrDefault("severity_id"), out byte byteValue) ? byteValue : (byte)0
-                            };
-
-                            switch (orderType)
-                            {
-                                case EmarOrderType.PatientOrder:
-                                    medicationInteraction.OrderInteractions.Add(
-                                      new OrderInteraction
-                                      {
-                                          MedicationInteractionId = medicationInteraction.Id,
-                                          DrugNum = 1,
-                                          PatientOrderId = orderId
-                                      });
-                                    break;
-                                case EmarOrderType.PatientCartOrder:
-                                    medicationInteraction.OrderInteractions.Add(
-                                      new OrderInteraction
-                                      {
-                                          MedicationInteractionId = medicationInteraction.Id,
-                                          DrugNum = 1,
-                                          PatientCartOrderId = orderId
-                                      });
-                                    break;
-                                case EmarOrderType.HomeMedication:
-                                    medicationInteraction.OrderInteractions.Add(
-                                      new OrderInteraction
-                                      {
-                                          MedicationInteractionId = medicationInteraction.Id,
-                                          DrugNum = 1,
-                                          PatientHomeMedicationId = orderId
-                                      });
-                                    break;
-                            }
-
-                            long? id = long.TryParse(interaction.GetValueOrDefault("SourceTableId2"), out long number) ? number : (long?)null;
-
-                            switch (interaction.GetValueOrDefault("SourceTable2"))
-                            {
-                                case SourceTables.PatientOrders:
-                                    medicationInteraction.OrderInteractions.Add(
-                                      new OrderInteraction
-                                      {
-                                          MedicationInteractionId = medicationInteraction.Id,
-                                          DrugNum = 2,
-                                          PatientOrderId = id
-                                      });
-                                    break;
-                                case SourceTables.PatientCartOrders:
-                                    medicationInteraction.OrderInteractions.Add(
-                                      new OrderInteraction
-                                      {
-                                          MedicationInteractionId = medicationInteraction.Id,
-                                          DrugNum = 2,
-                                          PatientCartOrderId = id
-                                      });
-                                    break;
-                                case SourceTables.PatientHomeMedications:
-                                    medicationInteraction.OrderInteractions.Add(
-                                      new OrderInteraction
-                                      {
-                                          MedicationInteractionId = medicationInteraction.Id,
-                                          DrugNum = 2,
-                                          PatientHomeMedicationId = id
-                                      });
-                                    break;
-                            }
-
-                            _context.MedicationInteractions.Add(medicationInteraction);
-                        }
-
-                        // Allergy Reactions
-                        foreach (var reaction in interactionReaction.Reactions)
-                        {
-                            long? PatientOrderId = null;
-                            long? PatientCartOrderId = null;
-
-                            switch (orderType)
-                            {
-                                case EmarOrderType.PatientOrder:
-                                    PatientOrderId = orderId;
-                                    break;
-                                case EmarOrderType.PatientCartOrder:
-                                    PatientCartOrderId = orderId;
-                                    break;
-                            }
-
-                            var orderReaction = new OrderReaction
-                            {
-                                PatientAllergyId = long.TryParse(reaction.GetValueOrDefault("SourceTableId"), out long number) ? number : 0,
-                                PatientOrderId = PatientOrderId,
-                                PatientCartOrderId = PatientCartOrderId
-                            };
-
-                            _context.OrderReactions.Add(orderReaction);
-                        }
-                    }
-
-                    i = _context.SaveChanges(true);
-                    transaction.Commit();
+                    _context.MedicationInteractions.AddRange(list);
                 }
-                catch (Exception ex)
+
+                foreach (var list in orderReactionsList)
                 {
-                    i = 0;
-                    transaction.Rollback();
+                    _context.OrderReactions.AddRange(list);
                 }
+
+                i = _context.SaveChanges(true);
+                transaction.Commit();
+            }
+            catch (Exception ex)
+            {
+                i = 0;
+                transaction.Rollback();
             }
 
             return i > 0;

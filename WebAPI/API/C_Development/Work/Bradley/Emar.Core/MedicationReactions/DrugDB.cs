@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Globalization;
 using System.Linq;
 using Emar.Core.Helpers;
@@ -15,7 +14,7 @@ namespace Emar.Core.MedicationReactions
     /// <summary>
     /// Library to handle interaction with drug databases
     /// </summary>
-    public class DrugDB
+    public class DrugDb
     {
         private readonly IPatientRepository _patientRepository;
         private readonly IHomeMedicationRepository _homeMedicationRepository;
@@ -25,83 +24,83 @@ namespace Emar.Core.MedicationReactions
         /// <summary>
         /// Checklist drugs
         /// </summary>
-        private Dictionary<string, Dictionary<string, string>> CheckListDrugs = new Dictionary<string, Dictionary<string, string>>();
+        private Dictionary<string, Dictionary<string, string>> _checkListDrugs = new Dictionary<string, Dictionary<string, string>>();
 
         /// <summary>
         /// List of drug IDs for checking
         /// </summary>
-        private List<string> DrugChecklist = new List<string>();
+        private List<string> _drugChecklist = new List<string>();
 
         /// <summary>
         /// Flag for whether the checklist needs to be built/processed
         /// </summary>
-        private bool doChecklist = true;
+        private bool _doChecklist = true;
 
         /// <summary>
         /// Stores information about drug classifications
         /// </summary>
-        private Dictionary<string, List<Dictionary<string, string>>> classInfo = new Dictionary<string, List<Dictionary<string, string>>>();
+        private Dictionary<string, List<Dictionary<string, string>>> _classInfo = new Dictionary<string, List<Dictionary<string, string>>>();
 
         /// <summary>
         /// Stores classifications per drug
         /// </summary>
-        private Dictionary<string, List<string>> DrugClass = new Dictionary<string, List<string>>();
+        private Dictionary<string, List<string>> _drugClass = new Dictionary<string, List<string>>();
 
         /// <summary>
         /// Stores classifications per category
         /// </summary>
-        private Dictionary<string, List<string>> CatClass = new Dictionary<string, List<string>>();
+        private Dictionary<string, List<string>> _catClass = new Dictionary<string, List<string>>();
 
         /// <summary>
         /// Stores... Multum info?
         /// </summary>
-        private Dictionary<string, List<Dictionary<string, string>>> MultInfo = new Dictionary<string, List<Dictionary<string, string>>>();
+        private Dictionary<string, List<Dictionary<string, string>>> _multInfo = new Dictionary<string, List<Dictionary<string, string>>>();
 
         /// <summary>
         /// Stores component info
         /// </summary>
-        private Dictionary<string, List<Dictionary<string, string>>> ComponentInfo = new Dictionary<string, List<Dictionary<string, string>>>();
+        private Dictionary<string, List<Dictionary<string, string>>> _componentInfo = new Dictionary<string, List<Dictionary<string, string>>>();
 
         /// <summary>
         /// Stores info about Medication Services
         /// </summary>
-        private List<Dictionary<string, string>> MedSvcInfo = new List<Dictionary<string, string>>();
+        private List<Dictionary<string, string>> _medSvcInfo = new List<Dictionary<string, string>>();
 
         /// <summary>
         /// Stores drug ID -> name links
         /// </summary>
-        private Dictionary<string, string> Dnum2Name = new Dictionary<string, string>();
+        private Dictionary<string, string> _dnum2Name = new Dictionary<string, string>();
 
         /// <summary>
         /// Stores drug name -> ID links
         /// </summary>
-        private Dictionary<string, string> Dname2Num = new Dictionary<string, string>();
+        private Dictionary<string, string> _dname2Num = new Dictionary<string, string>();
 
         /// <summary>
         /// Stores drug ID -> SourceTable links
         /// </summary>
-        private Dictionary<string, string> Dnum2SourceTable = new Dictionary<string, string>();
+        private Dictionary<string, string> _dnum2SourceTable = new Dictionary<string, string>();
 
         /// <summary>
         /// Stores drug ID -> SourceTableId links
         /// </summary>
-        private Dictionary<string, string> Dnum2SourceTableId = new Dictionary<string, string>();
+        private Dictionary<string, string> _dnum2SourceTableId = new Dictionary<string, string>();
 
         /// <summary>
         /// Stores allergy drug ID -> SourceTable links
         /// </summary>
-        private Dictionary<string, string> AlgDnum2SourceTable = new Dictionary<string, string>();
+        private Dictionary<string, string> _algDnum2SourceTable = new Dictionary<string, string>();
 
         /// <summary>
         /// Stores allergy drug ID -> SourceTableId links
         /// </summary>
-        private Dictionary<string, string> AlgDnum2SourceTableId = new Dictionary<string, string>();
+        private Dictionary<string, string> _algDnum2SourceTableId = new Dictionary<string, string>();
 
         /// <summary>
         /// DrugDB constructor
         /// </summary>
         /// <param name="drugDBVendor">Drug DB vendor</param>
-        public DrugDB(
+        public DrugDb(
             IPatientRepository patientRepository,
             IHomeMedicationRepository homeMedicationRepository,
             IOptionRepository optionRepository,
@@ -109,7 +108,7 @@ namespace Emar.Core.MedicationReactions
         {
             if (drugDBVendor.Equals("F"))
             {
-                instance = new DrugDBFDB();
+                instance = new DrugDbFdb();
             }
             else
             {
@@ -125,7 +124,7 @@ namespace Emar.Core.MedicationReactions
         /// Get the underlying DrugDB instance
         /// </summary>
         /// <returns>IDrugDBUtility</returns>
-        public IDrugDBUtility GetInstance()
+        private IDrugDBUtility GetInstance()
         {
             return instance;
         }
@@ -137,10 +136,10 @@ namespace Emar.Core.MedicationReactions
         /// <param name="name">Drug name</param>
         public void AddDnumNameSourceTableSourceTableId(string dnum, string name, string sourceTable, string sourceTableId)
         {
-            Dnum2Name[dnum] = name;
-            Dname2Num[name] = dnum;
-            Dnum2SourceTable[dnum] = sourceTable;
-            Dnum2SourceTableId[dnum] = sourceTableId;
+            _dnum2Name[dnum] = name;
+            _dname2Num[name] = dnum;
+            _dnum2SourceTable[dnum] = sourceTable;
+            _dnum2SourceTableId[dnum] = sourceTableId;
         }
 
         /// <summary>
@@ -150,17 +149,16 @@ namespace Emar.Core.MedicationReactions
         /// <param name="patientId">Patient identifier</param>
         /// <param name="checklist">Drugs to check</param>
         /// <returns>ReactionsCheckResult object</returns>
-        public ReactionsCheckResult CheckReactions(int siteId, long patientId, Dictionary<string, string> checklist, string drugDBVendor)
+        public ReactionsCheckResult CheckReactions(int siteId, long patientId, Dictionary<string, string> checklist, string drugDbVendor)
         {
             var result = new ReactionsCheckResult();
-            var algMedData = LoadAlgMedTable(patientId, drugDBVendor);
-            List<Dictionary<string, string>> FTAllergyInfo = new List<Dictionary<string, string>>();
-            List<Dictionary<string, string>> AllergyInfo = new List<Dictionary<string, string>>();
-            List<Dictionary<string, string>> CurrentMedsInfo = new List<Dictionary<string, string>>();
-            List<Dictionary<string, string>> FTCurrentMedsInfo = new List<Dictionary<string, string>>();
-            Dictionary<string, string> Warning = new Dictionary<string, string>();
-            Dictionary<string, List<Dictionary<string, string>>> RTrigger = new Dictionary<string, List<Dictionary<string, string>>>();
-            Dictionary<string, List<Dictionary<string, string>>> OTrigger = new Dictionary<string, List<Dictionary<string, string>>>();
+            var algMedData = LoadAlgMedTable(patientId, drugDbVendor);
+            List<Dictionary<string, string>> ftAllergyInfo = new List<Dictionary<string, string>>();
+            List<Dictionary<string, string>> allergyInfo = new List<Dictionary<string, string>>();
+            List<Dictionary<string, string>> homeMedsInfo = new List<Dictionary<string, string>>();
+            List<Dictionary<string, string>> ftHomeMedsInfo = new List<Dictionary<string, string>>();
+            Dictionary<string, List<Dictionary<string, string>>> rTrigger = new Dictionary<string, List<Dictionary<string, string>>>();
+            Dictionary<string, List<Dictionary<string, string>>> oTrigger = new Dictionary<string, List<Dictionary<string, string>>>();
 
             foreach (var alg in algMedData)
             {
@@ -171,42 +169,42 @@ namespace Emar.Core.MedicationReactions
                 {
                     if (drug.Equals("ft"))
                     {
-                        FTAllergyInfo.Add(alg);
+                        ftAllergyInfo.Add(alg);
                     }
                     else
                     {
-                        AllergyInfo.Add(alg);
+                        allergyInfo.Add(alg);
                     }
                 }
                 else if (type.Equals("M"))
                 {
-                    if (!patientId.ToString().Equals(alg["PatientId"]) || alg.ContainsKey("ActionStatus") ? !alg["ActionStatus"].Equals("C") : false)
+                    if ((!patientId.ToString().Equals(alg["PatientId"]) || alg.ContainsKey("ActionStatus")) && !alg["ActionStatus"].Equals("C"))
                     {
                         continue;
                     }
 
                     if (drug.Equals("ft"))
                     {
-                        FTCurrentMedsInfo.Add(alg);
+                        ftHomeMedsInfo.Add(alg);
                     }
                     else
                     {
-                        CurrentMedsInfo.Add(alg);
+                        homeMedsInfo.Add(alg);
                     }
 
                     var name = alg.ContainsKey("Name") && !string.IsNullOrWhiteSpace(alg["Name"]) ? alg["Name"] : alg["BrandName"];
 
-                    Dnum2SourceTable[drug] = alg.ContainsKey("SourceTable") ? alg["SourceTable"] : "";
-                    Dnum2SourceTableId[drug] = alg.ContainsKey("SourceTableId") ? alg["SourceTableId"] : "";
-                    Dnum2Name[drug] = name + (alg.ContainsKey("AlternateName") && !string.IsNullOrWhiteSpace(alg["AlternateName"]) ? " (" + alg["AlternateName"] + ")" : "");
-                    Dname2Num[name] = drug;
+                    _dnum2SourceTable[drug] = alg.ContainsKey("SourceTable") ? alg["SourceTable"] : "";
+                    _dnum2SourceTableId[drug] = alg.ContainsKey("SourceTableId") ? alg["SourceTableId"] : "";
+                    _dnum2Name[drug] = name + (alg.ContainsKey("AlternateName") && !string.IsNullOrWhiteSpace(alg["AlternateName"]) ? " (" + alg["AlternateName"] + ")" : "");
+                    _dname2Num[name] = drug;
                 }
             }
 
             List<Dictionary<string, string>> checkInfo = new List<Dictionary<string, string>>();
             Dictionary<string, List<Dictionary<string, string>>> lookups = new Dictionary<string, List<Dictionary<string, string>>>();
 
-            foreach (var alg in AllergyInfo)
+            foreach (var alg in allergyInfo)
             {
                 var drugVal = alg.ContainsKey("AllergyDrugId") && !string.IsNullOrWhiteSpace(alg["AllergyDrugId"])
                                 ? alg["AllergyDrugId"]
@@ -295,11 +293,11 @@ namespace Emar.Core.MedicationReactions
                 }
             }
 
-            Dictionary<string, Dictionary<string, Dictionary<string, string>>> AlgReact = new Dictionary<string, Dictionary<string, Dictionary<string, string>>>();
+            Dictionary<string, Dictionary<string, Dictionary<string, string>>> algReact = new Dictionary<string, Dictionary<string, Dictionary<string, string>>>();
 
             if (checklist != null && checklist.Count > 0)
             {
-                CheckListDrugs.Clear();
+                _checkListDrugs.Clear();
                 Dictionary<string, Dictionary<string, Dictionary<string, Dictionary<string, Dictionary<string, string>>>>> allergyGroup = new Dictionary<string, Dictionary<string, Dictionary<string, Dictionary<string, Dictionary<string, string>>>>>();
 
                 foreach (var fld in checkInfo)
@@ -393,13 +391,13 @@ namespace Emar.Core.MedicationReactions
                                 algName += " [" + String.Join("/", components) + "]";
                             }
 
-                            if (!AlgReact.ContainsKey(sel))
+                            if (!algReact.ContainsKey(sel))
                             {
-                                AlgReact.Add(sel, new Dictionary<string, Dictionary<string, string>>());
+                                algReact.Add(sel, new Dictionary<string, Dictionary<string, string>>());
                             }
 
-                            AlgReact[sel].Remove(algName);
-                            AlgReact[sel].Add(algName, allergyGroup[sel][name][altName][components[0]]);
+                            algReact[sel].Remove(algName);
+                            algReact[sel].Add(algName, allergyGroup[sel][name][altName][components[0]]);
                         }
                     }
                 }
@@ -409,13 +407,8 @@ namespace Emar.Core.MedicationReactions
             // The remainder of the code is for Drug Interaction checking.
 
             var keyList = new List<string>(checklist.Keys);
-            keyList.AddRange(Dnum2Name.Keys);
+            keyList.AddRange(_dnum2Name.Keys);
             keyList = keyList.Distinct().Where(x => !x.Equals("ft") && !string.IsNullOrWhiteSpace(x)).ToList();
-
-            if (keyList.Count > 0)
-            {
-                Warning = GetInstance().HasWarningsAndEffects(keyList);
-            }
 
             // This code identifies which medications interact with other medications
             // Get the data for components of multi-component medications.
@@ -458,7 +451,7 @@ namespace Emar.Core.MedicationReactions
             }
 
             // Gather the interactions
-            var inter_xref = new Dictionary<string, Dictionary<string, Dictionary<int, Dictionary<string, string>>>>();
+            var interXref = new Dictionary<string, Dictionary<string, Dictionary<int, Dictionary<string, string>>>>();
             keyList = keyList.Distinct().Where(x => !x.Equals("ft")).ToList();
 
             if (keyList.Count > 0)
@@ -481,31 +474,31 @@ namespace Emar.Core.MedicationReactions
                     var d1 = rtrigger["drug_id_1"];
                     var d2 = rtrigger["drug_id_2"];
 
-                    if (!inter_xref.ContainsKey(d1))
+                    if (!interXref.ContainsKey(d1))
                     {
-                        inter_xref.Add(d1, new Dictionary<string, Dictionary<int, Dictionary<string, string>>>());
+                        interXref.Add(d1, new Dictionary<string, Dictionary<int, Dictionary<string, string>>>());
                     }
 
-                    if (!inter_xref[d1].ContainsKey(d2))
+                    if (!interXref[d1].ContainsKey(d2))
                     {
-                        inter_xref[d1].Add(d2, new Dictionary<int, Dictionary<string, string>>());
+                        interXref[d1].Add(d2, new Dictionary<int, Dictionary<string, string>>());
                     }
 
-                    inter_xref[d1][d2][severity] = rtrigger;
+                    interXref[d1][d2][severity] = rtrigger;
                 }
             }
 
             // Find parent drugs that are current/ordered where the child component interaction is flagged, but 
             // the parent is not. Create a parent entry that contains the needed info.
-            var dnum1List = inter_xref.Keys.ToArray();
+            var dnum1List = interXref.Keys.ToArray();
 
             foreach (var dnum1 in dnum1List)
             {
-                var dnum2List = inter_xref[dnum1].Keys.ToArray();
+                var dnum2List = interXref[dnum1].Keys.ToArray();
 
                 foreach (var dnum2 in dnum2List)
                 {
-                    var sevList = inter_xref[dnum1][dnum2].Keys.ToArray();
+                    var sevList = interXref[dnum1][dnum2].Keys.ToArray();
 
                     foreach (var sev in sevList)
                     {
@@ -514,60 +507,60 @@ namespace Emar.Core.MedicationReactions
 
                         foreach (var p in parent1List)
                         {
-                            var info = new Dictionary<string, string>(inter_xref[dnum1][dnum2][sev]);
+                            var info = new Dictionary<string, string>(interXref[dnum1][dnum2][sev]);
                             info["drug_id_1"] = p;
 
-                            if (!inter_xref.ContainsKey(p))
+                            if (!interXref.ContainsKey(p))
                             {
-                                inter_xref.Add(p, new Dictionary<string, Dictionary<int, Dictionary<string, string>>>());
+                                interXref.Add(p, new Dictionary<string, Dictionary<int, Dictionary<string, string>>>());
                             }
 
-                            if (!inter_xref[p].ContainsKey(dnum2))
+                            if (!interXref[p].ContainsKey(dnum2))
                             {
-                                inter_xref[p].Add(dnum2, new Dictionary<int, Dictionary<string, string>>());
+                                interXref[p].Add(dnum2, new Dictionary<int, Dictionary<string, string>>());
                             }
 
-                            if (!inter_xref[p][dnum2].ContainsKey(sev))
+                            if (!interXref[p][dnum2].ContainsKey(sev))
                             {
-                                inter_xref[p][dnum2].Add(sev, new Dictionary<string, string>());
+                                interXref[p][dnum2].Add(sev, new Dictionary<string, string>());
                             }
 
-                            inter_xref[p][dnum2][sev] = info;
+                            interXref[p][dnum2][sev] = info;
                         }
 
                         var parent2List = parent.ContainsKey(dnum2) ? parent[dnum2] : new List<string>();
 
                         foreach (var p in parent2List)
                         {
-                            var info = new Dictionary<string, string>(inter_xref[dnum1][dnum2][sev]);
+                            var info = new Dictionary<string, string>(interXref[dnum1][dnum2][sev]);
                             info["drug_id_2"] = p;
 
-                            if (!inter_xref.ContainsKey(dnum1))
+                            if (!interXref.ContainsKey(dnum1))
                             {
-                                inter_xref.Add(dnum1, new Dictionary<string, Dictionary<int, Dictionary<string, string>>>());
+                                interXref.Add(dnum1, new Dictionary<string, Dictionary<int, Dictionary<string, string>>>());
                             }
 
-                            if (!inter_xref[dnum1].ContainsKey(p))
+                            if (!interXref[dnum1].ContainsKey(p))
                             {
-                                inter_xref[dnum1].Add(p, new Dictionary<int, Dictionary<string, string>>());
+                                interXref[dnum1].Add(p, new Dictionary<int, Dictionary<string, string>>());
                             }
 
-                            if (!inter_xref[dnum1][p].ContainsKey(sev))
+                            if (!interXref[dnum1][p].ContainsKey(sev))
                             {
-                                inter_xref[dnum1][p].Add(sev, new Dictionary<string, string>());
+                                interXref[dnum1][p].Add(sev, new Dictionary<string, string>());
                             }
 
-                            inter_xref[dnum1][p][sev] = info;
+                            interXref[dnum1][p][sev] = info;
                         }
                     }
                 }
             }
 
-            dnum1List = inter_xref.Keys.ToArray();
+            dnum1List = interXref.Keys.ToArray();
 
             foreach (var dnum1 in dnum1List)
             {
-                var dnum2List = inter_xref[dnum1].Keys.ToArray();
+                var dnum2List = interXref[dnum1].Keys.ToArray();
 
                 foreach (var dnum2 in dnum2List)
                 {
@@ -575,26 +568,26 @@ namespace Emar.Core.MedicationReactions
                     {
                         continue;
                     }
-                    var sevList = inter_xref[dnum1][dnum2].Keys.ToArray();
+                    var sevList = interXref[dnum1][dnum2].Keys.ToArray();
 
                     foreach (var sev in sevList)
                     {
-                        var rtrigger = inter_xref[dnum1][dnum2][sev];
-                        //rtrigger["dname1"] = (Dnum2Name.ContainsKey(dnum1) && !String.IsNullOrWhiteSpace(Dnum2Name[dnum1])) ? Dnum2Name[dnum1] : (checklist.ContainsKey(dnum1) && !String.IsNullOrWhiteSpace(checklist[dnum1])) ? checklist[dnum1] : null;
+                        var rtrigger = interXref[dnum1][dnum2][sev];
+                        rtrigger["dname1"] = (_dnum2Name.ContainsKey(dnum1) && !String.IsNullOrWhiteSpace(_dnum2Name[dnum1])) ? _dnum2Name[dnum1] : (checklist.ContainsKey(dnum1) && !String.IsNullOrWhiteSpace(checklist[dnum1])) ? checklist[dnum1] : null;
                         rtrigger["dnum2"] = dnum2;
-                        rtrigger["dname2"] = (Dnum2Name.ContainsKey(dnum2) && !String.IsNullOrWhiteSpace(Dnum2Name[dnum2])) ? Dnum2Name[dnum2] : (checklist.ContainsKey(dnum2) && !String.IsNullOrWhiteSpace(checklist[dnum2])) ? checklist[dnum2] : null;
-                        rtrigger["SourceTable2"] = (Dnum2SourceTable.ContainsKey(dnum2) && !String.IsNullOrWhiteSpace(Dnum2SourceTable[dnum2])) ? Dnum2SourceTable[dnum2] : null;
-                        rtrigger["SourceTableId2"] = (Dnum2SourceTableId.ContainsKey(dnum2) && !String.IsNullOrWhiteSpace(Dnum2SourceTableId[dnum2])) ? Dnum2SourceTableId[dnum2] : null;
+                        rtrigger["dname2"] = (_dnum2Name.ContainsKey(dnum2) && !String.IsNullOrWhiteSpace(_dnum2Name[dnum2])) ? _dnum2Name[dnum2] : (checklist.ContainsKey(dnum2) && !String.IsNullOrWhiteSpace(checklist[dnum2])) ? checklist[dnum2] : null;
+                        rtrigger["SourceTable2"] = (_dnum2SourceTable.ContainsKey(dnum2) && !String.IsNullOrWhiteSpace(_dnum2SourceTable[dnum2])) ? _dnum2SourceTable[dnum2] : null;
+                        rtrigger["SourceTableId2"] = (_dnum2SourceTableId.ContainsKey(dnum2) && !String.IsNullOrWhiteSpace(_dnum2SourceTableId[dnum2])) ? _dnum2SourceTableId[dnum2] : null;
                         rtrigger["sevtxt"] = Constants.SEVERITY_TEXT[sev];
 
                         // Store the information for interactions with current/ordered drugs
-                        if (Dnum2Name.ContainsKey(dnum2))
+                        if (_dnum2Name.ContainsKey(dnum2))
                         {
                             // The parent drug is already flagged. The drug is flagged, but multi-component
                             // drugs need to show which component(s) interact.
-                            var n = Dnum2Name.ContainsKey(dnum2) ? Dnum2Name[dnum2] : null;
+                            var n = _dnum2Name.ContainsKey(dnum2) ? _dnum2Name[dnum2] : null;
 
-                            if (n == null || inter_xref[dnum1].ContainsKey(n) && inter_xref[dnum1][n].ContainsKey(sev))
+                            if (n == null || interXref[dnum1].ContainsKey(n) && interXref[dnum1][n].ContainsKey(sev))
                             {
                                 continue;
                             }
@@ -607,7 +600,7 @@ namespace Emar.Core.MedicationReactions
 
                                 foreach (var comp in componentKeyList)
                                 {
-                                    if (inter_xref[dnum1].ContainsKey(comp) && inter_xref[dnum1][comp].ContainsKey(sev))
+                                    if (interXref[dnum1].ContainsKey(comp) && interXref[dnum1][comp].ContainsKey(sev))
                                     {
                                         componentList.Add(component[dnum2][comp]);
                                     }
@@ -615,47 +608,47 @@ namespace Emar.Core.MedicationReactions
 
                                 if (componentList.Count > 0)
                                 {
-                                    rtrigger["dname2"] = Dnum2Name[dnum2] + " " + String.Join("", componentList.Select(x => "[" + x + "]").ToList());
+                                    rtrigger["dname2"] = _dnum2Name[dnum2] + " " + String.Join("", componentList.Select(x => "[" + x + "]").ToList());
                                 }
                             }
 
-                            if (!RTrigger.ContainsKey(dnum1))
+                            if (!rTrigger.ContainsKey(dnum1))
                             {
-                                RTrigger.Add(dnum1, new List<Dictionary<string, string>>());
+                                rTrigger.Add(dnum1, new List<Dictionary<string, string>>());
                             }
 
-                            RTrigger[dnum1].Add(rtrigger);
+                            rTrigger[dnum1].Add(rtrigger);
                         }
 
                         // Store the information for Combo medications (custom IV bags, etc.)
                         if (checklist.ContainsKey(dnum2))
                         {
-                            if (!OTrigger.ContainsKey(dnum1))
+                            if (!oTrigger.ContainsKey(dnum1))
                             {
-                                OTrigger.Add(dnum1, new List<Dictionary<string, string>>());
+                                oTrigger.Add(dnum1, new List<Dictionary<string, string>>());
                             }
 
-                            OTrigger[dnum1].Add(rtrigger);
+                            oTrigger[dnum1].Add(rtrigger);
                         }
                     }
                 }
             }
 
-            result.AllergyInfo = AllergyInfo;
-            result.FTAllergyInfo = FTAllergyInfo;
-            result.CurrentMedsInfo = CurrentMedsInfo;
-            result.MedSvcInfo = MedSvcInfo;
+            result.AllergyInfo = allergyInfo;
+            result.FtAllergyInfo = ftAllergyInfo;
+            result.HomeMedsInfo = homeMedsInfo;
+            result.MedSvcInfo = _medSvcInfo;
 
-            result.Dnum2Name = Dnum2Name;
-            result.Dname2Num = Dname2Num;
-            result.Dnum2SourceTable = Dnum2SourceTable;
-            result.Dnum2SourceTableId = Dnum2SourceTableId;
-            result.AlgDnum2SourceTable = AlgDnum2SourceTable;
-            result.AlgDnum2SourceTableId = AlgDnum2SourceTableId;
+            result.Dnum2Name = _dnum2Name;
+            result.Dname2Num = _dname2Num;
+            result.Dnum2SourceTable = _dnum2SourceTable;
+            result.Dnum2SourceTableId = _dnum2SourceTableId;
+            result.AlgDnum2SourceTable = _algDnum2SourceTable;
+            result.AlgDnum2SourceTableId = _algDnum2SourceTableId;
 
-            result.Allergies = AlgReact;
-            result.Interactions = RTrigger;
-            result.ComboInteractions = OTrigger;
+            result.Allergies = algReact;
+            result.Interactions = rTrigger;
+            result.ComboInteractions = oTrigger;
 
             return result;
         }
@@ -671,15 +664,15 @@ namespace Emar.Core.MedicationReactions
         /// <returns>Dictionary of reaction checking results</returns>
         private void DrugDChecklist(ref Dictionary<string, string> rAlgReact, string cls, string cat, string drugId, ref Dictionary<string, string> checklist)
         {
-            if (doChecklist)
+            if (_doChecklist)
             {
-                doChecklist = false;
+                _doChecklist = false;
                 if (checklist != null && checklist.Keys.Count > 0)
                 {
                     // Filter out free text entries that do not contain drug IDs.
-                    DrugChecklist = new List<string>(checklist.Keys).FindAll(o => !String.IsNullOrWhiteSpace(o) && !o.Equals("0"));
+                    _drugChecklist = new List<string>(checklist.Keys).FindAll(o => !String.IsNullOrWhiteSpace(o) && !o.Equals("0"));
 
-                    if (DrugChecklist.Count == 0)
+                    if (_drugChecklist.Count == 0)
                     {
                         return;
                     }
@@ -687,14 +680,14 @@ namespace Emar.Core.MedicationReactions
 
                 // Get the components of multi-component medications and add them to the list.
                 // This is needed to assure getting the components for checking against class/cat selections.
-                foreach (var info in GetInstance().GetComponentInfo(DrugChecklist))
+                foreach (var info in GetInstance().GetComponentInfo(_drugChecklist))
                 {
-                    if (!CheckListDrugs.ContainsKey(info["cdrug"]))
+                    if (!_checkListDrugs.ContainsKey(info["cdrug"]))
                     {
-                        CheckListDrugs.Add(info["cdrug"], new Dictionary<string, string>());
+                        _checkListDrugs.Add(info["cdrug"], new Dictionary<string, string>());
                     }
 
-                    CheckListDrugs[info["cdrug"]][info["drug"]] = info["name"];
+                    _checkListDrugs[info["cdrug"]][info["drug"]] = info["name"];
                 }
             }
 
@@ -705,21 +698,21 @@ namespace Emar.Core.MedicationReactions
 
             if (!String.IsNullOrWhiteSpace(drugId))
             {
-                if (!DrugClass.ContainsKey(drugId))
+                if (!_drugClass.ContainsKey(drugId))
                 {
-                    DrugClass.Add(drugId, GetInstance().GetAllergyClassByDrug(drugId));
+                    _drugClass.Add(drugId, GetInstance().GetAllergyClassByDrug(drugId));
                 }
 
-                classList.AddRange(DrugClass[drugId]);
+                classList.AddRange(_drugClass[drugId]);
             }
             else if (!String.IsNullOrWhiteSpace(cat) && Convert.ToInt32(cat) > 0)
             {
-                if (!CatClass.ContainsKey(cat))
+                if (!_catClass.ContainsKey(cat))
                 {
-                    CatClass.Add(cat, GetInstance().GetAllergyClassByCategory(cat));
+                    _catClass.Add(cat, GetInstance().GetAllergyClassByCategory(cat));
                 }
 
-                classList.AddRange(CatClass[cat]);
+                classList.AddRange(_catClass[cat]);
             }
             else
             {
@@ -734,7 +727,7 @@ namespace Emar.Core.MedicationReactions
 
                 foreach (var c in classList)
                 {
-                    if (!classInfo.ContainsKey(c))
+                    if (!_classInfo.ContainsKey(c))
                     {
                         getClasses.Add(c);
                     }
@@ -742,21 +735,21 @@ namespace Emar.Core.MedicationReactions
 
                 if (getClasses.Count > 0)
                 {
-                    foreach (var info in GetInstance().GetAllergies(classList, CheckListDrugs))
+                    foreach (var info in GetInstance().GetAllergies(classList, _checkListDrugs))
                     {
-                        if (!classInfo.ContainsKey(info["class"]))
+                        if (!_classInfo.ContainsKey(info["class"]))
                         {
-                            classInfo.Add(info["class"], new List<Dictionary<string, string>>());
+                            _classInfo.Add(info["class"], new List<Dictionary<string, string>>());
                         }
 
-                        classInfo[info["class"]].Add(info);
+                        _classInfo[info["class"]].Add(info);
                     }
 
                     foreach (var c in classList)
                     {
-                        if (classInfo.ContainsKey(c))
+                        if (_classInfo.ContainsKey(c))
                         {
-                            foreach (var info in classInfo[c])
+                            foreach (var info in _classInfo[c])
                             {
                                 rAlgReact[info["drug"]] = info["name"];
                             }
@@ -772,20 +765,20 @@ namespace Emar.Core.MedicationReactions
 
                 if (!String.IsNullOrWhiteSpace(drugId))
                 {
-                    if (!MultInfo.ContainsKey(drugId))
+                    if (!_multInfo.ContainsKey(drugId))
                     {
                         foreach (var info in GetInstance().GetComponentInfo(new List<string> { drugId }))
                         {
-                            if (!MultInfo.ContainsKey(info["cdrug"]))
+                            if (!_multInfo.ContainsKey(info["cdrug"]))
                             {
-                                MultInfo.Add(info["cdrug"], new List<Dictionary<string, string>>());
+                                _multInfo.Add(info["cdrug"], new List<Dictionary<string, string>>());
                             }
 
-                            MultInfo[info["cdrug"]].Add(info);
+                            _multInfo[info["cdrug"]].Add(info);
                         }
                     }
 
-                    foreach (var d in MultInfo[drugId])
+                    foreach (var d in _multInfo[drugId])
                     {
                         if (components.ContainsKey(d["cdrug"]))
                         {
@@ -803,7 +796,7 @@ namespace Emar.Core.MedicationReactions
 
                     foreach (var c in components.Keys)
                     {
-                        if (!ComponentInfo.ContainsKey(c))
+                        if (!_componentInfo.ContainsKey(c))
                         {
                             compList.Add(c);
                         }
@@ -811,22 +804,22 @@ namespace Emar.Core.MedicationReactions
 
                     if (compList.Count > 0)
                     {
-                        foreach (var info in GetInstance().GetAllergyIntolerances(compList, DrugChecklist))
+                        foreach (var info in GetInstance().GetAllergyIntolerances(compList, _drugChecklist))
                         {
-                            if (!ComponentInfo.ContainsKey(info["cdrug"]))
+                            if (!_componentInfo.ContainsKey(info["cdrug"]))
                             {
-                                ComponentInfo.Add(info["cdrug"], new List<Dictionary<string, string>>());
+                                _componentInfo.Add(info["cdrug"], new List<Dictionary<string, string>>());
                             }
 
-                            ComponentInfo[info["cdrug"]].Add(info);
+                            _componentInfo[info["cdrug"]].Add(info);
                         }
                     }
 
                     foreach (var k in components.Keys)
                     {
-                        if (ComponentInfo.ContainsKey(k))
+                        if (_componentInfo.ContainsKey(k))
                         {
-                            foreach (var i in ComponentInfo[k])
+                            foreach (var i in _componentInfo[k])
                             {
                                 rAlgReact.Remove(i["drug"]);
                                 rAlgReact.Add(i["drug"], i["brand"]);
@@ -838,13 +831,13 @@ namespace Emar.Core.MedicationReactions
         }
 
         /// <summary>
-        /// Load alg/med entries from the database
+        /// Load patient allergies and home medications from the database
         /// </summary>
-        /// <param name="siteId">Site identifier</param>
+        /// <param name="drugDbVendor">Drug database vendor identifier</param>
         /// <param name="patientId">Patient identifier</param>
         /// <param name="confirmedOnly">Flag for whether the results should only include confirmed entries</param>
         /// <returns>List of Dictionary objects representing alg/med entries</returns>
-        public List<Dictionary<string, string>> LoadAlgMedTable(long patientId, string drugDBVendor, bool confirmedOnly = false)
+        private List<Dictionary<string, string>> LoadAlgMedTable(long patientId, string drugDbVendor, bool confirmedOnly = false)
         {
             var algMedData = new List<Dictionary<string, string>>();
 
@@ -855,8 +848,8 @@ namespace Emar.Core.MedicationReactions
 
             foreach (var alg in algResult)
             {
-                if (drugDBVendor != null &&
-                    drugDBVendor == DrugDBVendors.FDB &&
+                if (drugDbVendor != null &&
+                    drugDbVendor == DrugDBVendors.FDB &&
                     !_patientRepository.GetAllergyFdbAllergyNamesByPcHiclSeqno(alg["AllergyDrugId"]).Any())
                 {
                     continue;
@@ -879,15 +872,16 @@ namespace Emar.Core.MedicationReactions
                 }
             }
 
-            var homeMedsResult = DB.ConvertDataSetToListOfDictionaries(
-                                _homeMedicationRepository.GetPatientHomeMedications(a => a.PatientId == patientId && a.IsActive == true)
-                                .ToList()
-                                .ToDataSet());
+            var homeMedsResult = 
+                DB.ConvertDataSetToListOfDictionaries(
+                    _homeMedicationRepository.GetPatientHomeMedications(a => a.PatientId == patientId && a.IsActive == true)
+                        .ToList()
+                        .ToDataSet());
 
             foreach (var alg in homeMedsResult)
             {
-                if (drugDBVendor != null &&
-                    drugDBVendor == DrugDBVendors.FDB &&
+                if (drugDbVendor != null &&
+                    drugDbVendor == DrugDBVendors.FDB &&
                     _homeMedicationRepository.GetPatientHomeMedicationFdbBrandNameByPcRoutedGenId(alg["InternalDrugId"]) == null)
                 {
                     continue;
@@ -961,17 +955,17 @@ namespace Emar.Core.MedicationReactions
             /// <summary>
             /// Freetext Allergy information
             /// </summary>
-            public List<Dictionary<string, string>> FTAllergyInfo { get; set; }
+            public List<Dictionary<string, string>> FtAllergyInfo { get; set; }
 
             /// <summary>
             /// Current Medications information
             /// </summary>
-            public List<Dictionary<string, string>> CurrentMedsInfo { get; set; }
+            public List<Dictionary<string, string>> HomeMedsInfo { get; set; }
 
             /// <summary>
             /// Freetext Current Medications information
             /// </summary>
-            public List<Dictionary<string, string>> FTCurrentMedsInfo { get; set; }
+            public List<Dictionary<string, string>> FtHomeMedsInfo { get; set; }
 
             /// <summary>
             /// Medication Services information
@@ -1024,19 +1018,14 @@ namespace Emar.Core.MedicationReactions
             public Dictionary<string, List<Dictionary<string, string>>> ComboInteractions { get; set; }
 
             /// <summary>
-            /// Warning information
-            /// </summary>
-            public Dictionary<string, string> Warning { get; set; }
-
-            /// <summary>
             /// Default constructor
             /// </summary>
             public ReactionsCheckResult()
             {
                 AllergyInfo = new List<Dictionary<string, string>>();
-                FTAllergyInfo = new List<Dictionary<string, string>>();
-                CurrentMedsInfo = new List<Dictionary<string, string>>();
-                FTCurrentMedsInfo = new List<Dictionary<string, string>>();
+                FtAllergyInfo = new List<Dictionary<string, string>>();
+                HomeMedsInfo = new List<Dictionary<string, string>>();
+                FtHomeMedsInfo = new List<Dictionary<string, string>>();
                 MedSvcInfo = new List<Dictionary<string, string>>();
                 Dnum2Name = new Dictionary<string, string>();
                 Dname2Num = new Dictionary<string, string>();
@@ -1045,7 +1034,6 @@ namespace Emar.Core.MedicationReactions
                 Allergies = new Dictionary<string, Dictionary<string, Dictionary<string, string>>>();
                 Interactions = new Dictionary<string, List<Dictionary<string, string>>>();
                 ComboInteractions = new Dictionary<string, List<Dictionary<string, string>>>();
-                Warning = new Dictionary<string, string>();
             }
         }
 

@@ -30,19 +30,9 @@ namespace Emar.Core.HomeMedications.Model
             set => _internalDrugId = value?.Trim();
         }
 
-        string _ndc;
-        public string Ndc
-        {
-            get => _ndc?.Trim();
-            set => _ndc = value?.Trim();
-        }
+        internal int? MedicationId { get; set; }
 
-        string _drugId;
-        public string DrugId
-        {
-            get => _drugId?.Trim();
-            set => _drugId = value?.Trim();
-        }
+        public MedicationDto Medication { get; set; }
 
         string _name;
         public string Name

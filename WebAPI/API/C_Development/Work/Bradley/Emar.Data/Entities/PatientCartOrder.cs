@@ -108,8 +108,5 @@ namespace Emar.Data.Entities
         [ForeignKey("OrderId")]
         [InverseProperty("PatientCartOrder")]
         public virtual ICollection<AllergyReactionView> AllergyReactionsView { get; set; }
-
-        [NotMapped]
-        public FdbBrandName FdbBrandName { get; set; }
     }
 }

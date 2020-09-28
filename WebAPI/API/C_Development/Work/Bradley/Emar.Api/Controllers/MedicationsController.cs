@@ -59,6 +59,11 @@ namespace Emar.Api.Controllers
                 return BadRequest("medid is missing.");
             }
 
+            if (medid.Length > 9)
+            {
+                return BadRequest("medid cannot be greater than 9 characters.");
+            }
+
             var doseRangeCheckInfos = _doseRangeCheckingInfoService.DoseRangeCheckInfos(medid);
 
             if (doseRangeCheckInfos == null || !doseRangeCheckInfos.Any())

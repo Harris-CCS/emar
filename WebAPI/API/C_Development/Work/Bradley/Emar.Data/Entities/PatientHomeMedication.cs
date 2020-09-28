@@ -35,9 +35,6 @@ namespace Emar.Data.Entities
         [Column("medication_id", TypeName = "int")]
         public int? MedicationId { get; set; }
 
-        [Column("last_taken_note", TypeName = "nvarchar(100)")]
-        public string LastTakenNote { get; set; }
-        
         [Column("name")]
         [StringLength(255)]
         public string Name { get; set; }
@@ -99,6 +96,9 @@ namespace Emar.Data.Entities
 
         [Column("action_status", TypeName = "char(1)")]
         public string ActionStatus { get; set; }
+
+        [Column("last_taken_note", TypeName = "nvarchar(100)")]
+        public string LastTakenNote { get; set; }
 
 
         [ForeignKey(nameof(AddUserId))]

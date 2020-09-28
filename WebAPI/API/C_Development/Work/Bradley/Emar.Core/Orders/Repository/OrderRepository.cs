@@ -17,7 +17,9 @@ namespace Emar.Core.Orders.Repository
         private readonly IPropertyMappingService _propertyMappingService;
 
         public OrderRepository()
-        { }
+        {
+
+        }
 
         public OrderRepository(EmarContext emarContext, IPropertyMappingService propertyMappingService)
         {
@@ -57,7 +59,7 @@ namespace Emar.Core.Orders.Repository
             return _context.PatientOrders
                     .Include(order => order.OrderAdministrations)
                     .Include(i => i.Medication)
-                    .ThenInclude(m => m.MedicationDetails)
+                        .ThenInclude(m => m.MedicationDetails)
                     .Include(order => order.MedicationRoute)
                     .Include(order => order.MedicationUnit)
                     .Include(order => order.AddUser)
@@ -66,28 +68,41 @@ namespace Emar.Core.Orders.Repository
                     .Include(order => order.OrderInteractions)
                         .ThenInclude(interaction => interaction.DrugInteractionView)
                     .Include(order => order.AllergyReactionsView)
-                    //.Include(order => order.Patient)
-                    //    .ThenInclude(patient => patient.Site)
-                    //        .ThenInclude(site => site.SiteOptions)
-                    //            .ThenInclude(siteOptions => siteOptions.Option)
                     .Where(wherePredicate)
                     .AsEnumerable();
         }
 
         public IEnumerable<PatientOrder> GetPatientOrders(Expression<Func<PatientOrder, bool>> wherePredicate)
         {
-            return _context.PatientOrders
-                .Where(wherePredicate)
-                .ToList()
-                .Select(order =>
+            IEnumerable<PatientOrder> orders;
+
+            if (wherePredicate == null)
+            {
+                orders = _context.PatientOrders
+                    .Include(i => i.Medication)
+                        .ThenInclude(m => m.MedicationDetails)
+                    .ToList();
+            }
+            else
+            {
+                orders = _context.PatientOrders
+                    .Include(i => i.Medication)
+                        .ThenInclude(m => m.MedicationDetails)
+                    .Where(wherePredicate)
+                    .ToList();
+            }
+
+            foreach (var order in orders)
+            {
+                if (order?.Medication?.MedicationDetails != null)
                 {
-                    order.FdbBrandName =
-                    (from s in (from s in _context.FdbBrandName select s).Where(u => u.Medid.ToString() == order.Medication.DrugId)
-                     select s)
-                     .FirstOrDefault();
-                    return order;
-                })
-                .AsEnumerable();
+                    order.Medication.MedicationDetails = order.Medication.MedicationDetails
+                        .Select(AddFdbBrandName)
+                        .ToList();
+                }
+            }
+
+            return orders.AsEnumerable();
         }
 
         public IEnumerable<OrderAdministration> GetAdministrations(long orderId)
@@ -122,8 +137,22 @@ namespace Emar.Core.Orders.Repository
                     .AsEnumerable();
         }
 
-        #region UserQuickList Section
+        private MedicationDetail AddFdbBrandName(MedicationDetail detail)
+        {
+            if (detail != null && detail.FdbBrandName == null)
+            {
+                detail.FdbBrandName =
+                    (from s in (from s in _context.FdbBrandName
+                                select s)
+                            .Where(u => u.Medid.ToString() == detail.DrugId)
+                        select s)
+                    .FirstOrDefault();
+            }
 
+            return detail;
+        }
+
+        #region UserQuickList Section
         /// <summary>
         /// 
         /// </summary>
@@ -141,7 +170,7 @@ namespace Emar.Core.Orders.Repository
             return _context.UserQuickListItems
                     .Where(whereExpression)
                     .Include(i => i.Medication)
-                    .ThenInclude( m => m.MedicationDetails)
+                        .ThenInclude(m => m.MedicationDetails)
                     .Include(i => i.MedicationRoute)
                     .Include(i => i.MedicationUnit)
                     .Include(i => i.FrequencySchedule)
@@ -158,11 +187,11 @@ namespace Emar.Core.Orders.Repository
             else
                 whereExpression = i => i.UserId == userId && i.SiteId == siteId;
 
-            var stuff =  _context.UserQuickListItems
+            var stuff = _context.UserQuickListItems
                 .Include(i => i.Medication)
                 .Where(whereExpression)
                 .GroupBy(i => i.Medication.DisplayName.Substring(0, 1).ToUpper())
-                .Select(i => new {name = i.Key, count = i.Count()}).ToList();
+                .Select(i => new { name = i.Key, count = i.Count() }).ToList();
 
             return stuff.ToDictionary(s => s.name, s => s.count);
         }
@@ -193,7 +222,7 @@ namespace Emar.Core.Orders.Repository
             return _context.UserQuickListItems
                     .Where(whereExpression)
                     .Include(i => i.Medication)
-                    .ThenInclude(m => m.MedicationDetails)
+                        .ThenInclude(m => m.MedicationDetails)
                     .Include(i => i.MedicationRoute)
                     .Include(i => i.MedicationUnit)
                     .Include(i => i.FrequencySchedule)
@@ -202,13 +231,22 @@ namespace Emar.Core.Orders.Repository
 
         public UserQuickListItem GetUserQuickListItem(int quickListItemId)
         {
-            return _context.UserQuickListItems
+            var item = _context.UserQuickListItems
                 .Include(i => i.Medication)
-                .ThenInclude(m => m.MedicationDetails)
+                    .ThenInclude(m => m.MedicationDetails)
                 .Include(i => i.MedicationRoute)
                 .Include(i => i.MedicationUnit)
                 .Include(i => i.FrequencySchedule)
                 .FirstOrDefault(i => i.Id == quickListItemId);
+
+            if (item?.Medication?.MedicationDetails != null)
+            {
+                item.Medication.MedicationDetails = item.Medication.MedicationDetails
+                    .Select(AddFdbBrandName)
+                    .ToList();
+            }
+
+            return item;
         }
 
         public UserQuickListItem GetUserQuickListTabItem(long itemId, int? userId)
@@ -247,10 +285,11 @@ namespace Emar.Core.Orders.Repository
 
             return _context.DepartmentPreferredListItems.Where(whereLambda)
                 .Include(i => i.Medication)
-                .ThenInclude(m => m.MedicationDetails)
+                    .ThenInclude(m => m.MedicationDetails)
                 .Include(g => g.MedicationUnit)
                 .Include(g => g.MedicationRoute)
-                .Include(g => g.FrequencySchedule).ToList();
+                .Include(g => g.FrequencySchedule)
+                .ToList();
         }
 
         public DepartmentPreferredListItem GetDepartmentPreferredItem(long itemId)
@@ -274,7 +313,6 @@ namespace Emar.Core.Orders.Repository
         #endregion
 
         #region Groups Remembered Orders Section
-
         public List<GroupListItem> GetGroupRememberedOrderItems(int siteId, string departmentCode, string linkBase)
         {
             Expression<Func<GroupListItem, bool>> whereLambda;
@@ -285,8 +323,8 @@ namespace Emar.Core.Orders.Repository
 
             return _context.GroupListItems.Where(whereLambda)
                 .Include(i => i.Medication)
-                .ThenInclude(m => m.MedicationDetails)
-                .Include( g => g.MedicationUnit)
+                    .ThenInclude(m => m.MedicationDetails)
+                .Include(g => g.MedicationUnit)
                 .Include(g => g.MedicationRoute)
                 .Include(g => g.FrequencySchedule).ToList();
         }
@@ -321,7 +359,6 @@ namespace Emar.Core.Orders.Repository
         #endregion
 
         #region Utility Methods
-
         public int GetSiteForOrder(long orderId)
         {
             var x = _context.PatientOrders.Where(o => o.Id == orderId)
@@ -365,7 +402,6 @@ namespace Emar.Core.Orders.Repository
 
             return administrations;
         }
-
         #endregion
     }
 }
