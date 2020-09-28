@@ -10,14 +10,22 @@ namespace Emar.Data.Entities
         public Site()
         {
             DepartmentPreferredListItems = new HashSet<DepartmentPreferredListItem>();
+            // For Foreign Key: fk__frequency_schedules__sites
+            FrequencySchedules = new HashSet<FrequencySchedule>();
             GroupListItems = new HashSet<GroupListItem>();
             MedicationRoutes = new HashSet<MedicationRoute>();
+            //For Foreign Key: fk__medications__sites
+            Medications = new HashSet<Medication>();
             MedicationUnits = new HashSet<MedicationUnit>();
             OverrideReasons = new HashSet<OverrideReason>();
             Patients = new HashSet<Patient>();
+            // For Foreign Key: fk__site_formulary__sites
+            SiteFormularys = new HashSet<SiteFormulary>();
+            // For Foreign Key: fk__site_formulary_match__sites
+            SiteFormularyMatchs = new HashSet<SiteFormularyMatch>();
+            SiteOptions = new HashSet<SiteOption>();
             UserQuickListItems = new HashSet<UserQuickListItem>();
             Users = new HashSet<User>();
-            SiteOptions = new HashSet<SiteOption>();
         }
 
         [Key]
@@ -61,10 +69,20 @@ namespace Emar.Data.Entities
         [InverseProperty("Site")]
         public virtual ICollection<SiteOption> SiteOptions { get; set; }
 
-        //  This foreign key is not in the database, and can't be enforceable if it were:
-        //    - The datatypes don't line up, and 
-        //    - values exist in ExternalIds that don't point to the patients table
-        //[InverseProperty("Site")]
-        //public virtual ExternalIdEntity ExternalIds { get; set; }
+        // For Foreign Key: fk__frequency_schedules__sites
+        [InverseProperty("Site")]
+        public virtual ICollection<FrequencySchedule> FrequencySchedules { get; set; }
+
+        // For Foreign Key: fk__medications__sites
+        [InverseProperty("Site")]
+        public virtual ICollection<Medication> Medications { get; set; }
+
+        // For Foreign Key: fk__site_formulary__sites
+        [InverseProperty("Site")]
+        public virtual ICollection<SiteFormulary> SiteFormularys { get; set; }
+
+        // For Foreign Key: fk__site_formulary_match__sites
+        [InverseProperty("Site")]
+        public virtual ICollection<SiteFormularyMatch> SiteFormularyMatchs { get; set; }
     }
 }

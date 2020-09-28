@@ -9,7 +9,7 @@ namespace Emar.Core.Carts.Model.Mappings
 {
     public static class CartOrderMapper
     {
-        public static CartOrderDto MapCartOrder(PatientCartOrder order, string dateFormat, string drugDBVendor)
+        public static CartOrderDto MapCartOrder(PatientCartOrder order, string dateFormat, string drugDbVendor)
         {
             if (order == null)
                 return null;
@@ -24,9 +24,11 @@ namespace Emar.Core.Carts.Model.Mappings
                 AddDatetime = order.AddDatetime,
                 //AddDate = DateTimeHelper.GetDate(order.AddDatetime, dateFormat),
                 //AddTime = DateTimeHelper.GetTime(order.AddDatetime),
-                Ndc = order.Ndc,
-                DrugId = order.DrugId,
-                BrandName = order.BrandName,
+                //Ndc = order.Ndc,
+                //DrugId = order.DrugId,
+                //BrandName = order.BrandName,
+                MedicationId = order.MedicationId,
+                Medication = MedicationMapper.MapMedication(order.Medication),
                 Dose = order.Dose,
                 DoseUnit = MedicationMapper.MapMedicationUnit(order.MedicationUnit),
                 MedicationRoute = MedicationMapper.MapMedicationRoute(order.MedicationRoute),
@@ -44,8 +46,8 @@ namespace Emar.Core.Carts.Model.Mappings
                 UserQuickListItemId = order.UserQuickListItemId,
                 OrderNotes = order.OrderNotes,
                 CartOrderAdministrations = order.CartOrderAdministrations.Select(a => MapCartOrderAdministration(a, dateFormat)).ToList(),
-                OrderInteractions = order.OrderInteractions?.Select(interaction => MedicationMapper.MapOrderInteraction(interaction, drugDBVendor)).ToList(),
-                AllergyReactions = order.AllergyReactionsView?.Select(reaction => MedicationMapper.MapAllergyReactionView(reaction, drugDBVendor)).ToList()
+                OrderInteractions = order.OrderInteractions?.Select(interaction => MedicationMapper.MapOrderInteraction(interaction, drugDbVendor)).ToList(),
+                AllergyReactions = order.AllergyReactionsView?.Select(reaction => MedicationMapper.MapAllergyReactionView(reaction)).ToList()
             };
 
             return orderDto;
@@ -62,9 +64,10 @@ namespace Emar.Core.Carts.Model.Mappings
                 PatientId = orderDto.PatientId,
                 UserId = orderDto.UserId,
                 AddDatetime = orderDto.AddDatetime,
-                Ndc = orderDto.Ndc,
-                DrugId = orderDto.DrugId,
-                BrandName = orderDto.BrandName,
+                //Ndc = orderDto.Ndc,
+                //DrugId = orderDto.DrugId,
+                //BrandName = orderDto.BrandName,
+                MedicationId = orderDto.MedicationId,
                 Dose = orderDto.Dose,
                 MedicationUnitId = orderDto.MedicationUnitId,
                 MedicationRouteId = orderDto.MedicationRouteId,
@@ -83,7 +86,8 @@ namespace Emar.Core.Carts.Model.Mappings
             return order;
         }
 
-        public static CartOrderAdministrationDto MapCartOrderAdministration(CartOrderAdministration administration, string dateFormat)
+        private static CartOrderAdministrationDto MapCartOrderAdministration(CartOrderAdministration administration,
+            string dateFormat)
         {
             if (administration == null)
                 return null;
@@ -157,24 +161,21 @@ namespace Emar.Core.Carts.Model.Mappings
                 AddUserId = order.UserId,
                 AlternateName = null,
                 BeginDatetime = null,
-                BrandName = order.BrandName,
-                ActiveName = order.FdbBrandName?.Active,
-                ActiveId = order.FdbBrandName?.PcRoutedGenId?.ToString(),
                 Category = null,
                 ChangeDatetime = null,
                 ChangeUserId = null,
                 Class = null,
                 Comment = order.OrderNotes,
                 Dose = order.Dose,
-                DrugId = order.DrugId,
                 EndDatetime = null,
                 FrequencyScheduleId = order.FrequencyScheduleId,
                 InternalDrugId = null,
                 IsActive = null,
+                MedicationId = order.MedicationId,
+                Medication = MedicationMapper.MapMedication(order.Medication),
                 MedicationDrugId = null,
                 MedicationRouteId = order.MedicationRouteId,
                 MedicationUnitId = order.MedicationUnitId,
-                Ndc = order.Ndc,
                 OrderPhysicianUserId = null,
                 OrderStatus = null,
                 ParentDrugId = null,

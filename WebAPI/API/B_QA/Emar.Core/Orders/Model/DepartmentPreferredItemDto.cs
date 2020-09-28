@@ -11,6 +11,8 @@ namespace Emar.Core.Orders.Model
         public int SiteId { get; set; }
 
         public string DepartmentCode { get; set; }
+        
+        public int? DurationInMinutes { get; set; }
 
         public IEnumerable<HateOasLinkDto> Links;
     }

@@ -13,9 +13,9 @@ namespace Emar.Core.Medications.Repository
         {
             _context = context;
         } 
-        public IEnumerable<DoseRangeCheckingInfo> RetrieveDoseRangeCheckingInfo(string ndc)
+        public IEnumerable<DoseRangeCheckingInfo> RetrieveDoseRangeCheckingInfo(string medid)
         {
-            return _context.DoseRangeCheckingInfos.FromSqlInterpolated($"exec pc_fdb_get_drc_info {ndc}").ToList();
+            return _context.DoseRangeCheckingInfos.FromSqlInterpolated($"exec pc_fdb_get_drc_info {medid}").ToList();
         }
     }
 }

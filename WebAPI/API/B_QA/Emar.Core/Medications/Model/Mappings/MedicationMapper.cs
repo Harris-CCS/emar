@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using Emar.Core.FdbObjects.Model.Mappings;
 using Emar.Core.Users.Model.Mappings;
+using Emar.Core.Sites.Model.Mappings;
 using Emar.Data.Entities;
 
 namespace Emar.Core.Medications.Model.Mappings
@@ -58,18 +60,12 @@ namespace Emar.Core.Medications.Model.Mappings
                 SiteId = dbObj.SiteId,
                 PointInTime = dbObj.PointInTime,
                 Notes = dbObj.Notes
-                //int FrequencyTypeId { get; set; }
-                //int FrequencyTypeRecurring { get; set; }
-                //int FrequencyInterval { get; set; }
-                //int FrequencyIntervalUnitId { get; set; }
-                //TimeSpan IntervalStartTime { get; set; }
-                //short IntervalEndMinutes { get; set; }
             };
 
             return ret;
         }
 
-        public static DrugInteractionViewDto MapDrugInteractionsView(DrugInteractionView drugInteractionsView, string drugDBVendor)
+        private static DrugInteractionViewDto MapDrugInteractionsView(DrugInteractionView drugInteractionsView, string drugDbVendor)
         {
             if (drugInteractionsView == null)
             {
@@ -81,8 +77,8 @@ namespace Emar.Core.Medications.Model.Mappings
                 Id = drugInteractionsView.Id,
                 InteractionDrug1 = drugInteractionsView.InteractionDrug1,
                 InteractionDrug2 = drugInteractionsView.InteractionDrug2,
-                Severity = drugDBVendor == DrugDBVendors.FDB ? ((FDBInteractionSeverity)drugInteractionsView.Severity).ToString() :
-                           drugDBVendor == DrugDBVendors.Multum ? ((MULTUMInteractionSeverity)drugInteractionsView.Severity).ToString() :
+                Severity = drugDbVendor == DrugDBVendors.FDB ? ((FDBInteractionSeverity)drugInteractionsView.Severity).ToString() :
+                           drugDbVendor == DrugDBVendors.Multum ? ((MULTUMInteractionSeverity)drugInteractionsView.Severity).ToString() :
                            "",
                 OverrideReasonDatetime = drugInteractionsView.OverrideReasonDatetime,
                 OverrideReasonUser = UserMapper.MapUser(drugInteractionsView.OverrideReasonUser),
@@ -109,19 +105,19 @@ namespace Emar.Core.Medications.Model.Mappings
             {
                 Id = allergyReactionViewDto.Id,
                 PatientAllergyId = allergyReactionViewDto.PatientAllergyId,
+                PatientAllergyName = allergyReactionViewDto.PatientAllergyName,
+                OrderTable = allergyReactionViewDto.OrderTable,
+                OrderId = allergyReactionViewDto.OrderId,
+                OrderBrandName = allergyReactionViewDto.OrderBrandName,
                 OverrideReasonId = allergyReactionViewDto.OverrideReasonId,
                 OverrideReasonUserId = allergyReactionViewDto.OverrideReasonUserId,
-                OverrideReasonDatetime = allergyReactionViewDto.OverrideReasonDatetime,
-                OrderId = allergyReactionViewDto.OrderId,
-                OrderTable = allergyReactionViewDto.OrderTable,
-                BrandName = allergyReactionViewDto.BrandName,
-                AllergyName = allergyReactionViewDto.AllergyName
+                OverrideReasonDatetime = allergyReactionViewDto.OverrideReasonDatetime
             };
 
             return allergyReactionView;
         }
 
-        public static AllergyReactionViewDto MapAllergyReactionView(AllergyReactionView allergyReactionView, string drugDBVendor)
+        public static AllergyReactionViewDto MapAllergyReactionView(AllergyReactionView allergyReactionView)
         {
             if (allergyReactionView == null)
             {
@@ -132,19 +128,19 @@ namespace Emar.Core.Medications.Model.Mappings
             {
                 Id = allergyReactionView.Id,
                 PatientAllergyId = allergyReactionView.PatientAllergyId,
-                OverrideReasonDatetime = allergyReactionView.OverrideReasonDatetime,
-                OverrideReasonUser = UserMapper.MapUser(allergyReactionView.OverrideReasonUser),
-                OverrideReason = MapOverrideReason(allergyReactionView.OverrideReason),
-                OrderId = allergyReactionView.OrderId,
+                PatientAllergyName = allergyReactionView.PatientAllergyName,
                 OrderTable = allergyReactionView.OrderTable,
-                BrandName = allergyReactionView.BrandName,
-                AllergyName = allergyReactionView.AllergyName
+                OrderId = allergyReactionView.OrderId,
+                OrderBrandName = allergyReactionView.OrderBrandName,
+                OverrideReason = MapOverrideReason(allergyReactionView.OverrideReason),
+                OverrideReasonUser = UserMapper.MapUser(allergyReactionView.OverrideReasonUser),
+                OverrideReasonDatetime = allergyReactionView.OverrideReasonDatetime
             };
 
             return allergyReactionViewDto;
         }
 
-        public static DrugInteractionView MapDrugInteractionsViewDto(DrugInteractionViewDto drugInteractionsViewDto)
+        private static DrugInteractionView MapDrugInteractionsViewDto(DrugInteractionViewDto drugInteractionsViewDto)
         {
             if (drugInteractionsViewDto == null)
             {
@@ -171,7 +167,7 @@ namespace Emar.Core.Medications.Model.Mappings
             return drugInteractionView;
         }
 
-        public static OrderReactionDto MapOrderReaction(OrderReaction orderReaction, string drugDBVendor)
+        public static OrderReactionDto MapOrderReaction(OrderReaction orderReaction)
         {
             if (orderReaction == null)
             {
@@ -213,7 +209,7 @@ namespace Emar.Core.Medications.Model.Mappings
             return orderReaction;
         }
 
-        public static MedicationInteractionDto MapMedicationInteraction(MedicationInteraction medicationInteraction, string drugDBVendor)
+        public static MedicationInteractionDto MapMedicationInteraction(MedicationInteraction medicationInteraction, string drugDbVendor)
         {
             if (medicationInteraction == null)
             {
@@ -226,13 +222,13 @@ namespace Emar.Core.Medications.Model.Mappings
                 InteractionDrug1 = medicationInteraction.InteractionDrug1,
                 InteractionDrug2 = medicationInteraction.InteractionDrug2,
                 InteractionDrugName2 = medicationInteraction.InteractionDrugName2,
-                Severity = drugDBVendor == DrugDBVendors.FDB ? ((FDBInteractionSeverity)medicationInteraction.Severity).ToString() :
-                           drugDBVendor == DrugDBVendors.Multum ? ((MULTUMInteractionSeverity)medicationInteraction.Severity).ToString() :
+                Severity = drugDbVendor == DrugDBVendors.FDB ? ((FDBInteractionSeverity)medicationInteraction.Severity).ToString() :
+                           drugDbVendor == DrugDBVendors.Multum ? ((MULTUMInteractionSeverity)medicationInteraction.Severity).ToString() :
                            "",
                 OverrideReasonDatetime = medicationInteraction.OverrideReasonDatetime,
                 OverrideReasonUser = UserMapper.MapUser(medicationInteraction.OverrideReasonUser),
                 OverrideReason = MapOverrideReason(medicationInteraction.OverrideReason),
-                OrderInteractions = medicationInteraction.OrderInteractions?.Select(interaction => MapOrderInteraction(interaction, drugDBVendor)).ToList(),
+                OrderInteractions = medicationInteraction.OrderInteractions?.Select(interaction => MapOrderInteraction(interaction, drugDbVendor)).ToList()
             };
 
             return medicationInteractionDto;
@@ -255,13 +251,40 @@ namespace Emar.Core.Medications.Model.Mappings
                 OverrideReasonDatetime = medicationInteractionDto.OverrideReasonDatetime,
                 OverrideReasonUserId = medicationInteractionDto.OverrideReasonUserId,
                 OverrideReasonId = medicationInteractionDto.OverrideReasonId,
-                OrderInteractions = medicationInteractionDto.OrderInteractions?.Select(interactionDto => MapOrderInteractionDto(interactionDto)).ToList(),
+                OrderInteractions = medicationInteractionDto.OrderInteractions?.Select(MapOrderInteractionDto).ToList(),
             };
 
             return medicationInteraction;
         }
 
-        public static OrderInteractionDto MapOrderInteraction(OrderInteraction orderInteraction, string drugDBVendor)
+        public static OrderInteractionDto MapOrderInteraction(MedicationInteraction medicationInteraction, string drugDbVendor)
+        {
+            if (medicationInteraction == null)
+            {
+                return null;
+            }
+
+            OrderInteractionDto orderInteractionDto = new OrderInteractionDto
+            {
+                DrugInteraction =
+                    new DrugInteractionViewDto
+                    {
+                        Id = 0,
+                        InteractionDrug1 = medicationInteraction.InteractionDrug1,
+                        InteractionDrug2 = medicationInteraction.InteractionDrug2,
+                        Severity = drugDbVendor == DrugDBVendors.FDB ? ((FDBInteractionSeverity)medicationInteraction.Severity).ToString() :
+                                   drugDbVendor == DrugDBVendors.Multum ? ((MULTUMInteractionSeverity)medicationInteraction.Severity).ToString() :
+                                   "",
+                        OrderId2 = long.TryParse(medicationInteraction.OrderId2, out long number) ? number : (long?)null,
+                        OrderTable2 = medicationInteraction.OrderTable2,
+                        OrderName2 = medicationInteraction.OrderName2
+                    }
+            };
+
+            return orderInteractionDto;
+        }
+
+        public static OrderInteractionDto MapOrderInteraction(OrderInteraction orderInteraction, string drugDbVendor)
         {
             if (orderInteraction == null)
             {
@@ -276,7 +299,7 @@ namespace Emar.Core.Medications.Model.Mappings
                 PatientOrderId = orderInteraction.PatientOrderId,
                 PatientCartOrderId = orderInteraction.PatientCartOrderId,
                 PatientHomeMedicationId = orderInteraction.PatientHomeMedicationId,
-                DrugInteraction = MapDrugInteractionsView(orderInteraction.DrugInteractionView, drugDBVendor),
+                DrugInteraction = MapDrugInteractionsView(orderInteraction.DrugInteractionView, drugDbVendor),
             };
 
             return orderInteractionDto;
@@ -338,6 +361,50 @@ namespace Emar.Core.Medications.Model.Mappings
             };
 
             return overrideReason;
+        }
+
+        public static MedicationDto MapMedication(Medication dbObj)
+        {
+            if (dbObj == null)
+            {
+                return null;
+            }
+
+            var ret = new MedicationDto
+            {
+                Id = dbObj.Id,
+                SiteId = dbObj.SiteId,
+                Site = SiteMapper.MapSite(dbObj.Site),
+                DrugId = dbObj.DrugId,
+                DisplayName = dbObj.DisplayName,
+                DrugVendor = dbObj.DrugVendor,
+                MedicationDetails = dbObj.MedicationDetails?.Select(MapMedicationDetail).ToList()
+            };
+
+            return ret;
+        }
+
+        private static MedicationDetailDto MapMedicationDetail(MedicationDetail dbObj)
+        {
+            if (dbObj == null)
+            {
+                return null;
+            }
+
+            var ret = new MedicationDetailDto
+            {
+                Id = dbObj.Id,
+                MedicationId = dbObj.MedicationId,
+                DrugId = dbObj.DrugId,
+                BrandName = dbObj.BrandName,
+                ActiveList = dbObj.ActiveList,
+                Dose = dbObj.Dose,
+                MedicationUnitId = dbObj.MedicationUnitId,
+                IsActive = dbObj.IsActive,
+                FdbBrandName = FdbObjectsMapper.MapFdbBrandName(dbObj.FdbBrandName)
+            };
+
+            return ret;
         }
     }
 }

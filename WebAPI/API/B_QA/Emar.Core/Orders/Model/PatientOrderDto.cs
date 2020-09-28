@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Emar.Core.FdbObjects.Model;
 using Emar.Core.Users.Model;
 
 namespace Emar.Core.Orders.Model
@@ -16,23 +15,23 @@ namespace Emar.Core.Orders.Model
         /// Date and time the order was created.  Includes the local time timezone offset from UTC.
         /// </summary>
         public DateTimeOffset AddDatetime { get; set; }
-        public string AddDate { get; set; }
-        public string AddTime { get; set; }
+        public string AddDate => AddDatetime.ToString(DateFormat);
+        public string AddTime => AddDatetime.ToString(TimeFormat);
 
         /// <summary>
         /// Date/time that the point-in-time administration was give, or
         /// Date/time that the non-point-in-time administration started
         /// </summary>
         public DateTimeOffset BeginDatetime { get; set; }
-        public string BeginDate { get; set; }
-        public string BeginTime { get; set; }
+        public string BeginDate => BeginDatetime.ToString(DateFormat);
+        public string BeginTime => BeginDatetime.ToString(TimeFormat);
 
         /// <summary>
         /// Date and time the order ended.  Includes the local time timezone offset from UTC.
         /// </summary>
         public DateTimeOffset? EndDatetime { get; set; }
-        public string EndDate { get; set; }
-        public string EndTime { get; set; }
+        public string EndDate => EndDatetime?.ToString(DateFormat);
+        public string EndTime => EndDatetime?.ToString(TimeFormat);
 
         /// <summary>
         /// Indicates the order priority (STAT, Routine).
@@ -45,12 +44,12 @@ namespace Emar.Core.Orders.Model
         public bool Prn { get; set; }
 
         /// <summary>
-        /// PatientOrder status code (Pending = 1, Cancelled = 2, OnGoing = 3, OnHold = 4, PendingDiscontinue = 5, Discontinued = 6, Completed = 7)
+        /// PatientOrder status code (Pending = 1, Cancelled = 2, OnGoing = 3, OnHold = 4, PendingDiscontinue = 5, Discontinued = 6, Completed = 7, Deleted = 8)
         /// </summary>
         public OrderStatuses OrderStatusCode { get; set; }
 
         /// <summary>
-        /// PatientOrder status (Pending, Cancelled, OnGoing, OnHold, PendingDiscontinue, Discontinued, Completed)
+        /// PatientOrder status (Pending, Cancelled, OnGoing, OnHold, PendingDiscontinue, Discontinued, Completed, Deleted)
         /// </summary>
         public string OrderStatus
         {
@@ -126,6 +125,6 @@ namespace Emar.Core.Orders.Model
 
         public DateTimeOffset? NextActionTime { get; set; }
 
-        public FdbBrandNameDto FdbBrandName { get; set; }
+        public IEnumerable<AvailableActionDto> AvailableActions { get; set; }
     }
 }

@@ -9,7 +9,7 @@ namespace Emar.Core.MedicationReactions
     /// <summary>
     /// Library to handle interaction with the FDB drug database
     /// </summary>
-    public class DrugDBFDB : IDrugDBUtility
+    public class DrugDbFdb : IDrugDBUtility
     {
         /// <summary>
         /// Identify which drugs in the checklist are associated with the Known Allergy being checked
@@ -65,7 +65,7 @@ namespace Emar.Core.MedicationReactions
             );
 
             var info = new List<Dictionary<string, string>>();
-            var DrugDone = new HashSet<string>();
+            var drugDone = new HashSet<string>();
             var ds = new DB.Select
             {
                 Sql = sql,
@@ -73,7 +73,7 @@ namespace Emar.Core.MedicationReactions
             }.RunForListOfDictionaries();
             foreach (var res in ds)
             {
-                if (!DrugDone.Contains(res["drug"]))
+                if (!drugDone.Contains(res["drug"]))
                 {
                     info.Add(new Dictionary<string, string>
                     {
@@ -81,10 +81,10 @@ namespace Emar.Core.MedicationReactions
                         { "name", res["name"] },
                         { "drug", res["drug"] }
                     });
-                    DrugDone.Add(res["drug"]);
+                    drugDone.Add(res["drug"]);
                 }
 
-                if (!String.IsNullOrWhiteSpace(res["PC_ROUTED_GEN_ID"]) && !DrugDone.Contains(res["PC_ROUTED_GEN_ID"]))
+                if (!String.IsNullOrWhiteSpace(res["PC_ROUTED_GEN_ID"]) && !drugDone.Contains(res["PC_ROUTED_GEN_ID"]))
                 {
                     info.Add(new Dictionary<string, string>
                     {
@@ -92,7 +92,7 @@ namespace Emar.Core.MedicationReactions
                         { "name", res["name"] },
                         { "drug", res["PC_ROUTED_GEN_ID"] }
                     });
-                    DrugDone.Add(res["PC_ROUTED_GEN_ID"]);
+                    drugDone.Add(res["PC_ROUTED_GEN_ID"]);
                 }
             }
 
@@ -118,6 +118,7 @@ namespace Emar.Core.MedicationReactions
             }.RunForListOfStrings("DAM_ALRGN_XSENSE");
         }
 
+        /// <summary>
         /// Get the Allergy Class based on a dnum
         /// </summary>
         /// <param name="drugId">Drug identifier</param>
@@ -162,7 +163,7 @@ namespace Emar.Core.MedicationReactions
             };
 
             var prefix = type == "M" ? "med" : "rx";
-            var exactMatch = org[prefix + "exactmatch"].ToString().Equals("Y");
+            var exactMatch = org[prefix + "exactmatch"]?.ToString()?.Equals("Y") ?? false;
 
             var filters = new[] { "inpat", "outpat", "pyxis" }
                 .Where(x => org[prefix + x].ToString().Equals("Y"))
@@ -314,7 +315,6 @@ namespace Emar.Core.MedicationReactions
             var codeJoins = new Dictionary<string, List<string>>
             {
                 { "G", new List<string> {
-                        //"ibex..fdb_allergy_name ON fdb_allergy_name.HICL_SEQNO = RHICL1_HIC_HICLSEQNO_LINK.HICL_SEQNO"
                         "emar..fdb_allergy_name ON fdb_allergy_name.HICL_SEQNO = RHICL1_HIC_HICLSEQNO_LINK.HICL_SEQNO"
                     }
                 },
@@ -446,7 +446,7 @@ namespace Emar.Core.MedicationReactions
         /// <summary>
         /// Gather component drug ids (HIC) for the entered drug ids
         /// </summary>
-        /// <param name="code">A list of drug ids</param>
+        /// <param name="codes">A list of drug ids</param>
         /// <returns>A list of the components associated with the drugs</returns>
         public List<string> GetComponents(List<string> codes)
         {
@@ -473,7 +473,6 @@ namespace Emar.Core.MedicationReactions
 
             var info = new Dictionary<string, int>();
 
-            int codeParse;
             foreach (var code in codes)
             {
                 var key = code.Substring(0, 1);
@@ -481,7 +480,7 @@ namespace Emar.Core.MedicationReactions
                 {
                     codeValues[key].Add(code.Substring(1));
                 }
-                else if (Int32.TryParse(code, out codeParse))
+                else if (Int32.TryParse(code, out _))
                 {
                     info[code] = 1;
                 }
@@ -561,7 +560,7 @@ namespace Emar.Core.MedicationReactions
                     {
                         ret.Add(Enumerable.Range(0, res.FieldCount).ToDictionary(
                             i => res.GetName(i),
-                            i => res.GetValue(i)?.ToString().Trim()
+                            i => res.GetValue(i)?.ToString()?.Trim()
                         ));
                     }
 
@@ -671,7 +670,7 @@ namespace Emar.Core.MedicationReactions
                 {
                     var dr = Enumerable.Range(0, res.FieldCount).ToDictionary(
                          i => res.GetName(i),
-                         i => res.GetValue(i)?.ToString().Trim()
+                         i => res.GetValue(i)?.ToString()?.Trim()
                     );
 
                     // If we don't have the hic_desc, it's an obsolete drug and shouldn't display
@@ -747,7 +746,7 @@ namespace Emar.Core.MedicationReactions
                 }.RunForDataReader();
                 while (res.Read())
                 {
-                    var id = "R" + res["ROUTED_GEN_ID"].ToString().Trim();
+                    var id = "R" + res["ROUTED_GEN_ID"].ToString()?.Trim();
                     if (we.ContainsKey(id))
                         continue;
 
@@ -764,7 +763,7 @@ namespace Emar.Core.MedicationReactions
                 }.RunForDataReader();
                 while (res.Read())
                 {
-                    var id = "R" + res["ROUTED_GEN_ID"].ToString().Trim();
+                    var id = "R" + res["ROUTED_GEN_ID"].ToString()?.Trim();
                     if (we.ContainsKey(id))
                         continue;
 

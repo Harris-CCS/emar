@@ -10,6 +10,7 @@ namespace Emar.Data.Entities
     {
         public PatientCartOrder()
         {
+            // For Foreign Key: fk__cart_order_administrations__patient_cart_orders
             CartOrderAdministrations = new HashSet<CartOrderAdministration>();
             OrderInteractions = new HashSet<OrderInteraction>();
             OrderReactions = new HashSet<OrderReaction>();
@@ -28,15 +29,8 @@ namespace Emar.Data.Entities
         [Column("add_datetime", TypeName = "datetimeoffset"), Required]
         public DateTimeOffset AddDatetime { get; set; }
 
-        [Column("ndc")]
-        [StringLength(32)]
-        public string Ndc { get; set; }
-
-        [Column("drug_id", TypeName = "varchar(32)"), Required]
-        public string DrugId { get; set; }
-
-        [Column("brand_name", TypeName = "nvarchar(255)"), Required]
-        public string BrandName { get; set; }
+        [Column("medication_id", TypeName = "int")]
+        public int MedicationId { get; set; }
 
         [Column("dose", TypeName = "decimal(11,2)")]
         public decimal? Dose { get; set; }
@@ -75,6 +69,11 @@ namespace Emar.Data.Entities
         [InverseProperty(nameof(Entities.FrequencySchedule.PatientCartOrders))]
         public virtual FrequencySchedule FrequencySchedule { get; set; }
 
+        // For Foreign Key: fk__patient_cart_orders__medications
+        [ForeignKey(nameof(MedicationId))]
+        [InverseProperty(nameof(Entities.Medication.PatientCartOrders))]
+        public virtual Medication Medication { get; set; }
+
         [ForeignKey(nameof(MedicationRouteId))]
         [InverseProperty(nameof(Entities.MedicationRoute.PatientCartOrders))]
         public virtual MedicationRoute MedicationRoute { get; set; }
@@ -95,6 +94,7 @@ namespace Emar.Data.Entities
         [InverseProperty(nameof(Entities.UserQuickListItem.PatientCartOrders))]
         public virtual UserQuickListItem UserQuickListItem { get; set; }
 
+        // For Foreign Key: fk__cart_order_administrations__patient_cart_orders
         [InverseProperty("PatientCartOrder")]
         public virtual ICollection<CartOrderAdministration> CartOrderAdministrations { get; set; }
 
@@ -108,8 +108,5 @@ namespace Emar.Data.Entities
         [ForeignKey("OrderId")]
         [InverseProperty("PatientCartOrder")]
         public virtual ICollection<AllergyReactionView> AllergyReactionsView { get; set; }
-
-        [NotMapped]
-        public FdbBrandName FdbBrandName { get; set; }
     }
 }

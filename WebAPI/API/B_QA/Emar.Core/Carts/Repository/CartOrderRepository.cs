@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using Emar.Core.Carts.Model;
 using Emar.Core.Helpers;
-using Emar.Core.Orders.Model;
+using Emar.Core.Orders.Model.Mappings;
 using Emar.Core.ResourceParameters;
 using Emar.Data;
 using Emar.Data.Entities;
@@ -56,6 +57,8 @@ namespace Emar.Core.Carts.Repository
         {
             var orders = _context.PatientCartOrders
                 .Include(order => order.CartOrderAdministrations)
+                .Include(order => order.Medication)
+                    .ThenInclude(med => med.MedicationDetails)
                 .Include(order => order.MedicationRoute)
                 .Include(order => order.FrequencySchedule)
                 .Include(order => order.MedicationUnit)
@@ -63,10 +66,6 @@ namespace Emar.Core.Carts.Repository
                 .Include(order => order.OrderInteractions)
                     .ThenInclude(interaction => interaction.DrugInteractionView)
                 .Include(order => order.AllergyReactionsView)
-                //.Include(order => order.Patient)
-                //    .ThenInclude(patient => patient.Site)
-                //        .ThenInclude(site => site.SiteOptions)
-                //            .ThenInclude(siteOptions => siteOptions.Option)
                 .Where(wherePredicate)
                 .AsEnumerable();
 
@@ -75,18 +74,62 @@ namespace Emar.Core.Carts.Repository
 
         public IEnumerable<PatientCartOrder> GetPatientCartOrders(Expression<Func<PatientCartOrder, bool>> wherePredicate = null)
         {
-            return _context.PatientCartOrders
-                .Where(wherePredicate)
-                .ToList()
-                .Select(order =>
-                {
-                    order.FdbBrandName =
-                    (from s in (from s in _context.FdbBrandName select s).Where(u => u.Medid.ToString() == order.DrugId)
+            IEnumerable<PatientCartOrder> orders;
+
+            if (wherePredicate == null)
+            {
+                orders = _context.PatientCartOrders
+                        .Include(i => i.Medication)
+                            .ThenInclude(m => m.MedicationDetails)
+                        .ToList()
+                        .Select(order =>
+                        {
+                            if (order?.Medication?.MedicationDetails != null)
+                            {
+                                order.Medication.MedicationDetails = order.Medication.MedicationDetails
+                                    .Select(AddFdbBrandName)
+                                    .ToList();
+                            }
+
+                            return order;
+                        });
+            }
+            else
+            {
+                orders = _context.PatientCartOrders
+                        .Include(i => i.Medication)
+                            .ThenInclude(m => m.MedicationDetails)
+                        .Where(wherePredicate)
+                        .ToList()
+                        .Select(order =>
+                        {
+                            if (order?.Medication?.MedicationDetails != null)
+                            {
+                                order.Medication.MedicationDetails = order.Medication.MedicationDetails
+                                    .Select(AddFdbBrandName)
+                                    .ToList();
+                            }
+
+                            return order;
+                        });
+            }
+
+            return orders.AsEnumerable();
+        }
+
+        private MedicationDetail AddFdbBrandName(MedicationDetail detail)
+        {
+            if (detail != null && detail.FdbBrandName == null)
+            {
+                detail.FdbBrandName =
+                    (from s in (from s in _context.FdbBrandName
+                                select s)
+                            .Where(u => u.Medid.ToString() == detail.DrugId)
                      select s)
-                     .FirstOrDefault();
-                    return order;
-                })
-                .AsEnumerable();
+                    .FirstOrDefault();
+            }
+
+            return detail;
         }
 
         public PatientCartOrder GetOrder(long orderId, OrdersResourceParameters resourceParameters)
@@ -148,134 +191,174 @@ namespace Emar.Core.Carts.Repository
 
         public bool DeleteCartOrder(long? cartOrderId)
         {
-            int i = 0;
+            var cartOrder = _context.PatientCartOrders
+                .Include(order => order.CartOrderAdministrations)
+                .Include(order => order.OrderInteractions)
+                    .ThenInclude(interaction => interaction.MedicationInteraction)
+                .Include(order => order.OrderReactions)
+                .FirstOrDefault(order => order.Id == cartOrderId);
 
-            using (IDbContextTransaction transaction = _context.Database.BeginTransaction())
-            {
-                try
-                {
-                    var cartOrder = _context.PatientCartOrders
-                                        .Include(order => order.CartOrderAdministrations)
-                                        .FirstOrDefault(order => order.Id == cartOrderId);
-
-                    if (cartOrder.CartOrderAdministrations != null)
-                    {
-                        _context.CartOrderAdministrations.RemoveRange(cartOrder.CartOrderAdministrations);
-                    }
-
-                    _context.PatientCartOrders.Remove(cartOrder);
-                    i = _context.SaveChanges(true);
-                    transaction.Commit();
-                }
-                catch (Exception ex)
-                {
-                    i = 0;
-                    transaction.Rollback();
-                }
-            }
-
-            return i > 0;
+            return DeleteCartOrder(cartOrder);
         }
 
         public bool DeleteCartOrders(int? userId, long? patientId)
         {
+            var cartOrders = _context.PatientCartOrders
+                .Where(order => order.UserId == userId)
+                .Where(order => order.PatientId == patientId)
+                .Include(order => order.CartOrderAdministrations)
+                .Include(order => order.OrderInteractions)
+                    .ThenInclude(interaction => interaction.MedicationInteraction)
+                .Include(order => order.OrderReactions)
+                .ToList();
+
+            bool success = true;
+
+            foreach (var cartOrder in cartOrders)
+            {
+                if (!DeleteCartOrder(cartOrder))
+                {
+                    success = false;
+                }
+            }
+
+            return success;
+        }
+
+        private bool DeleteCartOrder(PatientCartOrder cartOrder)
+        {
+            bool success = true;
             int i = 0;
 
-            using (IDbContextTransaction transaction = _context.Database.BeginTransaction())
+            if (cartOrder != null)
             {
-                try
+                if (cartOrder.OrderInteractions != null)
                 {
-                    var cartOrders = _context.PatientCartOrders
-                                        .Where(order => order.UserId == userId)
-                                        .Where(order => order.PatientId == patientId)
-                                        .Include(order => order.CartOrderAdministrations)
-                                        .AsEnumerable();
+                    var medicationInteractions = new Collection<MedicationInteraction>();
 
-                    foreach (var cartOrder in cartOrders)
+                    foreach (var orderInteraction in cartOrder.OrderInteractions)
+                    {
+                        if (orderInteraction.MedicationInteraction != null)
+                        {
+                            medicationInteractions.Add(orderInteraction.MedicationInteraction);
+                        }
+                    }
+
+                    if (cartOrder.OrderInteractions != null)
+                    {
+                        using (IDbContextTransaction transaction = _context.Database.BeginTransaction())
+                        {
+                            try
+                            {
+                                foreach (var interaction in cartOrder.OrderInteractions)
+                                {
+                                    var orderInteractions = _context.OrderInteractions
+                                        .Where(x => x.MedicationInteractionId == interaction.MedicationInteractionId);
+
+                                    _context.OrderInteractions.RemoveRange(orderInteractions);
+                                }
+
+                                i = _context.SaveChanges(true);
+
+                                transaction.Commit();
+                            }
+                            catch (Exception ex)
+                            {
+                                success = false;
+                                transaction.Rollback();
+                            }
+                        }
+                    }
+
+                    if (success && medicationInteractions.Count > 0)
+                    {
+                        using (IDbContextTransaction transaction = _context.Database.BeginTransaction())
+                        {
+                            try
+                            {
+                                foreach (var interaction in medicationInteractions)
+                                {
+                                    if (interaction != null)
+                                    {
+                                        _context.MedicationInteractions.Remove(interaction);
+                                    }
+                                }
+
+                                i = _context.SaveChanges(true);
+
+                                transaction.Commit();
+                            }
+                            catch (Exception ex)
+                            {
+                                success = false;
+                                transaction.Rollback();
+                            }
+                        }
+                    }
+                }
+
+                using (IDbContextTransaction transaction = _context.Database.BeginTransaction())
+                {
+                    try
                     {
                         if (cartOrder.CartOrderAdministrations != null)
                         {
                             _context.CartOrderAdministrations.RemoveRange(cartOrder.CartOrderAdministrations);
                         }
-                    }
 
-                    _context.PatientCartOrders.RemoveRange(cartOrders);
-                    i = _context.SaveChanges(true);
-                    transaction.Commit();
-                }
-                catch (Exception ex)
-                {
-                    i = 0;
-                    transaction.Rollback();
+                        if (cartOrder.OrderReactions != null)
+                        {
+                            _context.OrderReactions.RemoveRange(cartOrder.OrderReactions);
+                        }
+
+                        _context.PatientCartOrders.Remove(cartOrder);
+                        i = _context.SaveChanges(true);
+
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        i = 0;
+                        transaction.Rollback();
+                    }
                 }
             }
 
-            return i > 0;
+            return success && i > 0;
         }
 
         public bool CheckoutOrders(int? userId, long? patientId)
         {
             int i = 0;
 
-            using (IDbContextTransaction transaction = _context.Database.BeginTransaction())
+            var cartOrders = _context.PatientCartOrders
+                .Where(order => order.UserId == userId)
+                .Where(order => order.PatientId == patientId)
+                .Include(order => order.CartOrderAdministrations)
+                .Include(order => order.OrderInteractions)
+                    .ThenInclude(interaction => interaction.MedicationInteraction)
+                .Include(order => order.OrderReactions)
+                .ToList();
+
+            foreach (var cartOrder in cartOrders)
             {
-                try
+                using (IDbContextTransaction transaction = _context.Database.BeginTransaction())
                 {
-                    var cartOrders = _context.PatientCartOrders
-                                        .Where(order => order.UserId == userId)
-                                        .Where(order => order.PatientId == patientId)
-                                        .Include(order => order.CartOrderAdministrations)
-                                        .AsEnumerable();
-
-                    foreach (var cartOrder in cartOrders)
+                    try
                     {
-                        var order = new PatientOrder
-                        {
-                            PatientId = cartOrder.PatientId,
-                            AddUserId = cartOrder.UserId,
-                            AddDatetime = cartOrder.AddDatetime,
-                            Ndc = cartOrder.Ndc,
-                            DrugId = cartOrder.DrugId,
-                            BrandName = cartOrder.BrandName,
-                            Dose = cartOrder.Dose,
-                            MedicationUnitId = cartOrder.MedicationUnitId,
-                            MedicationRouteId = cartOrder.MedicationRouteId,
-                            Priority = cartOrder.Priority,
-                            FrequencyScheduleId = cartOrder.FrequencyScheduleId,
-                            Prn = cartOrder.Prn,
-                            PointInTime = cartOrder.PointInTime,
-                            OrderStatus = OrderStatuses.Pending.ToString(),
-                            BeginDatetime = cartOrder.BeginDatetime,
-                            EndDateTime = cartOrder.EndDatetime,
-                            OrderNotes = cartOrder.OrderNotes
-                        };
+                        _context.PatientOrders.Add(OrderMapper.MapCartOrderToOrder(cartOrder));
 
-                        if (cartOrder.CartOrderAdministrations != null)
-                        {
-                            foreach (var cartAdministration in cartOrder.CartOrderAdministrations)
-                            {
-                                order.OrderAdministrations.Add(
-                                new OrderAdministration
-                                {
-                                    PointInTime = cartAdministration.PointInTime,
-                                    AdministrationScheduledDatetime = cartAdministration.AdministrationScheduledDatetime,
-                                    StopScheduledDatetime = cartAdministration.StopScheduledDatetime
-                                });
-                            }
-                        }
-
-                        _context.PatientOrders.Add(order);
                         _context.CartOrderAdministrations.RemoveRange(cartOrder.CartOrderAdministrations);
-                    }
+                        _context.PatientCartOrders.Remove(cartOrder);
 
-                    _context.PatientCartOrders.RemoveRange(cartOrders);
-                    i = _context.SaveChanges(true);
-                    transaction.Commit();
-                }
-                catch (Exception ex)
-                {
-                    i = 0;
-                    transaction.Rollback();
+                        i = _context.SaveChanges(true);
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        i = 0;
+                        transaction.Rollback();
+                    }
                 }
             }
 
@@ -294,17 +377,5 @@ namespace Emar.Core.Carts.Repository
             return _context.CartOrderAdministrations
                     .FirstOrDefault(administration => administration.Id == administrationId);
         }
-
-        ////////////  probably not needed, leave for now, will clean later
-        ////////////public FdbBrandName GetPatientCartOrderFdbBrandName(long orderId)
-        ////////////{
-        ////////////    var query =
-        ////////////        from p in (from p in _context.PatientCartOrders select p).Where(u => u.Id == orderId)
-        ////////////        join n in _context.FdbNdcInfo on p.DrugId equals n.GcnSeqno.ToString()
-        ////////////        join s in _context.FdbBrandName on n.RoutedGenId equals s.RoutedGenId
-        ////////////        select s;
-
-        ////////////    return query.FirstOrDefault();
-        ////////////}
     }
 }

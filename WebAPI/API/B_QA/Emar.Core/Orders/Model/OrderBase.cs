@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text.RegularExpressions;
 using Emar.Core.Medications.Model;
-using Emar.Data.Entities;
-using Microsoft.VisualBasic;
 
 namespace Emar.Core.Orders.Model
 {
@@ -15,37 +12,41 @@ namespace Emar.Core.Orders.Model
         public long Id { get; set; }
 
         internal string DateFormat { get; set; } = "MM/dd/yyyy";
-        internal string TimeFormat { get; set; } = "HH:mm:ss";
+        internal string TimeFormat { get; set; } = "HH:mm";
 
-        string _ndc;
-        /// <summary>
-        /// National Drug Code value
-        /// </summary>
-        public string Ndc
-        {
-            get => _ndc?.Trim();
-            set => _ndc = value?.Trim() != null ? Regex.Replace(value, "( : ){2,}", " : ") : null;
-        }
+        //string _ndc;
+        ///// <summary>
+        ///// National Drug Code value
+        ///// </summary>
+        //public string Ndc
+        //{
+        //    get => _ndc?.Trim();
+        //    set => _ndc = value?.Trim() != null ? Regex.Replace(value, "( : ){2,}", " : ") : null;
+        //}
 
-        string _drugId;
-        /// <summary>
-        /// Link to the Medication Provider Database
-        /// </summary>
-        public string DrugId
-        {
-            get => _drugId?.Trim();
-            set => _drugId = value?.Trim() != null ? Regex.Replace(value, "( : ){2,}", " : ") : null;
-        }
+        //string _drugId;
+        ///// <summary>
+        ///// Link to the Medication Provider Database
+        ///// </summary>
+        //public string DrugId
+        //{
+        //    get => _drugId?.Trim();
+        //    set => _drugId = value?.Trim() != null ? Regex.Replace(value, "( : ){2,}", " : ") : null;
+        //}
 
-        string _brandName;
-        /// <summary>
-        /// Brand name of the medication
-        /// </summary>
-        public string BrandName
-        {
-            get => _brandName?.Trim();
-            set => _brandName = value?.Trim() != null ? Regex.Replace(value, "( : ){2,}", " : ") : null;
-        }
+        //string _brandName;
+        ///// <summary>
+        ///// Brand name of the medication
+        ///// </summary>
+        //public string BrandName
+        //{
+        //    get => _brandName?.Trim();
+        //    set => _brandName = value?.Trim() != null ? Regex.Replace(value, "( : ){2,}", " : ") : null;
+        //}
+
+        internal int MedicationId { get; set; }
+
+        public MedicationDto Medication { get; set; }
 
         public decimal? Dose { get; set; }
 
@@ -57,8 +58,7 @@ namespace Emar.Core.Orders.Model
         /// DTO of the Medication Route
         /// </summary>
         public MedicationRouteDto MedicationRoute { get; set; }
-
-
+        
         internal int? FrequencyId { get; set; }
         /// <summary>
         /// DTO of the Frequency Schedule
@@ -86,16 +86,16 @@ namespace Emar.Core.Orders.Model
         public virtual ICollection<AllergyReactionViewDto> AllergyReactions { get; set; }
 
 
-        internal virtual ICollection<MedicationInteractionDto> MedicationInteractions { get; set; }
-
-        internal void AddMedicationInteraction(MedicationInteractionDto medicationInteractionDto)
+        internal void AddOrderInteraction(OrderInteractionDto orderInteractionDto)
         {
-            if (MedicationInteractions == null)
-            {
-                MedicationInteractions = new Collection<MedicationInteractionDto>();
-            }
+            OrderInteractions ??= new Collection<OrderInteractionDto>();
+            OrderInteractions.Add(orderInteractionDto);
+        }
 
-            MedicationInteractions.Add(medicationInteractionDto);
+        internal void AddAllergyReaction(AllergyReactionViewDto allergyReactionViewDto)
+        {
+            AllergyReactions ??= new Collection<AllergyReactionViewDto>();
+            AllergyReactions.Add(allergyReactionViewDto);
         }
     }
 }

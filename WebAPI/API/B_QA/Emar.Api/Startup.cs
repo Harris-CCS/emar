@@ -159,6 +159,9 @@ namespace Emar.Api
 
             services.AddScoped<IInteractionRepository, InteractionRepository>();
 
+            services.AddScoped<IMedicationService, MedicationService>();
+            services.AddScoped<IMedicationRepository, MedicationRepository>();
+
             services.AddScoped<IOptionService, OptionService>();
             services.AddScoped<IOptionRepository, OptionRepository>();
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using Emar.Core.Carts.Model.Mappings;
 using Emar.Core.Carts.Repository;
@@ -52,7 +51,7 @@ namespace Emar.Core.MedicationReactions
                 .ToList()
                 .Select(order => CartOrderMapper.MapPatientCartOrderToModel(order, userId, siteId)));
 
-            DrugDB.ReactionsCheckResult reactionsCheckResult = GetReactionsCheckResult(
+            DrugDb.ReactionsCheckResult reactionsCheckResult = GetReactionsCheckResult(
                 patientRepository,
                 homeMedicationRepository,
                 optionRepository,
@@ -79,13 +78,15 @@ namespace Emar.Core.MedicationReactions
         /// <summary>
         /// Given a list of meds, retrieve the reactions check result for those meds
         /// </summary>
+        /// <param name="patientRepository"></param>
+        /// <param name="homeMedicationRepository"></param>
+        /// <param name="optionRepository"></param>
         /// <param name="siteId">Site Id</param>
-        /// <param name="drugDBVendor">Drug DB vendor</param>
         /// <param name="checkMedications">List of Medication objects to check</param>
         /// <param name="checklist">Checklist dictionary</param>
         /// <param name="patientId">Patient identifier</param>
-        /// <returns>ReactionsCheckResult object</returns>
-        private static DrugDB.ReactionsCheckResult GetReactionsCheckResult(
+        /// <returns></returns>
+        private static DrugDb.ReactionsCheckResult GetReactionsCheckResult(
             IPatientRepository patientRepository,
             IHomeMedicationRepository homeMedicationRepository,
             IOptionRepository optionRepository,
@@ -94,13 +95,13 @@ namespace Emar.Core.MedicationReactions
             Dictionary<string, string> checklist = null,
             long? patientId = null)
         {
-            var drugDBVendor = optionRepository.GetOption(siteId, OptionNames.DRUG_DB_VENDOR);
-            var drugDB = new DrugDB(
+            var drugDbVendor = optionRepository.GetOption(siteId, OptionNames.DRUG_DB_VENDOR);
+            var drugDb = new DrugDb(
                 patientRepository,
                 homeMedicationRepository,
                 optionRepository,
-                drugDBVendor);
-            var reactionsCheckResult = new DrugDB.ReactionsCheckResult();
+                drugDbVendor);
+            var reactionsCheckResult = new DrugDb.ReactionsCheckResult();
 
             if (patientId != null)
             {
@@ -113,21 +114,32 @@ namespace Emar.Core.MedicationReactions
                         continue;
                     }
 
-                    var name = medication.GetName();
-                    var dnum = medication.ActiveId;
-
-                    if (!string.IsNullOrWhiteSpace(name) && !string.IsNullOrWhiteSpace(dnum))
+                    if (medication.Medication?.MedicationDetails == null)
                     {
-                        drugDB.AddDnumNameSourceTableSourceTableId(dnum, name, medication.SourceTable, medication.SourceTableId?.ToString());
+                        continue;
+                    }
+
+                    foreach (MedicationDetailDto medicationDetail in medication.Medication.MedicationDetails)
+                    {
+                        var dnum = medicationDetail.FdbBrandName?.PcRoutedGenId;
+
+                        if (string.IsNullOrWhiteSpace(dnum))
+                        {
+                            continue;
+                        }
+
+                        var name = medicationDetail.GetName();
+
+                        if (!string.IsNullOrWhiteSpace(name))
+                        {
+                            drugDb.AddDnumNameSourceTableSourceTableId(dnum, name, medication.SourceTable, medication.SourceTableId?.ToString());
+                        }
                     }
                 }
 
-                if (checklist == null)
-                {
-                    checklist = GetChecklist(checkMedications);
-                }
+                checklist ??= GetChecklist(checkMedications);
 
-                reactionsCheckResult = drugDB.CheckReactions(siteId, (long)patientId, checklist, drugDBVendor);
+                reactionsCheckResult = drugDb.CheckReactions(siteId, (long)patientId, checklist, drugDbVendor);
             }
 
             return reactionsCheckResult;
@@ -136,137 +148,194 @@ namespace Emar.Core.MedicationReactions
         /// <summary>
         /// Add interactions and reactions to a Medication
         /// </summary>
-        /// <param name="med">Medication object to check</param>
+        /// <param name="medicationItem">Medication object to check</param>
         /// <param name="reactionsCheckResult">DrugDB ReactionsCheckResult</param>
-        private static MedicationModel AddInteractionsAndReactions(MedicationModel medicationItem, DrugDB.ReactionsCheckResult reactionsCheckResult)
+        private static MedicationModel AddInteractionsAndReactions(MedicationModel medicationItem, DrugDb.ReactionsCheckResult reactionsCheckResult)
         {
             var rTrigger = new List<string>();
             var drugTrigger = new Dictionary<string, List<Dictionary<string, string>>>();
+            var comboComponentIds = new Dictionary<string, int>();
 
-            var dnum = medicationItem.ActiveId;
-
-            if (string.IsNullOrWhiteSpace(dnum))
+            if (medicationItem.Medication?.MedicationDetails == null)
             {
-                return null;
+                return medicationItem;
             }
 
-            // Generate the information for displaying drug interactions to ordered medications
-            var inter_done = new Dictionary<string, Dictionary<string, int>>();
-
-            if (reactionsCheckResult.Interactions.ContainsKey(dnum))
+            if (medicationItem.Medication.MedicationDetails.Count > 1)
             {
-                foreach (var react in reactionsCheckResult.Interactions[dnum])
+                foreach (var medicationDetail in medicationItem.Medication.MedicationDetails)
                 {
-                    var drug = react["dname2"];
-                    var sev = react["sevtxt"];
-
-                    if (inter_done.ContainsKey(drug) && inter_done[drug].ContainsKey(sev))
-                    {
-                        continue;
-                    }
-
-                    if (!inter_done.ContainsKey(drug))
-                    {
-                        inter_done.Add(drug, new Dictionary<string, int>());
-                    }
-
-                    if (!inter_done[drug].ContainsKey(sev))
-                    {
-                        inter_done[drug].Add(sev, 1);
-                    }
-
-                    var key = react["int_id"] + "|" + medicationItem.GetName() + "|" + react["dname2"];
-                    rTrigger.Add(key);
+                    comboComponentIds[medicationDetail.FdbBrandName.PcRoutedGenId] = 1;
                 }
             }
 
-            if (reactionsCheckResult.Allergies.ContainsKey(dnum))
+            foreach (var medicationDetail in medicationItem.Medication.MedicationDetails)
             {
-                var keySet = reactionsCheckResult.Allergies[dnum].Keys;
-                var alg_list = String.Join(", ", keySet.Select(x => "'" + x + "'"));
+                var dnum = medicationDetail.FdbBrandName?.PcRoutedGenId;
 
-                if (!drugTrigger.ContainsKey(dnum))
+                if (string.IsNullOrWhiteSpace(dnum))
                 {
-                    drugTrigger.Add(dnum, new List<Dictionary<string, string>>());
+                    continue;
                 }
 
-                drugTrigger[dnum].Add(new Dictionary<string, string>
+                // Generate the information for displaying drug interactions to ordered medications
+                var interDone = new Dictionary<string, Dictionary<string, int>>();
+
+                if (reactionsCheckResult.Interactions.ContainsKey(dnum))
                 {
-                    { "dname2", alg_list },
-                    { "severity_id", "0" },
-                    { "sevtxt", "ALLERGY" }
-                });
-            }
-
-            // Generate the information for displaying the allergy reactions
-            inter_done.Clear();
-            var acc_inters = new List<Dictionary<string, string>>();
-            var acc_reacts = new List<Dictionary<string, string>>();
-
-            if (reactionsCheckResult.Interactions.ContainsKey(dnum))
-            {
-                if (!drugTrigger.ContainsKey(dnum))
-                {
-                    drugTrigger.Add(dnum, new List<Dictionary<string, string>>());
-                }
-
-                drugTrigger[dnum].AddRange(reactionsCheckResult.Interactions[dnum]);
-            }
-
-            if (drugTrigger.ContainsKey(dnum))
-            {
-                var s = new List<Dictionary<string, string>>(drugTrigger[dnum]);
-                s.OrderBy(o => o["dname2"]).ThenBy(o => Convert.ToInt32(o["severity_id"]));
-
-                foreach (var sel in s)
-                {
-                    var rsel = new Dictionary<string, string>(sel);
-                    var drug = rsel["dname2"];
-                    var sev = rsel["sevtxt"];
-
-                    if (inter_done.ContainsKey(drug) && inter_done[drug].ContainsKey(sev))
+                    foreach (var react in reactionsCheckResult.Interactions[dnum])
                     {
-                        continue;
-                    }
-
-                    if (!inter_done.ContainsKey(drug))
-                    {
-                        inter_done.Add(drug, new Dictionary<string, int>());
-                    }
-
-                    if (!inter_done[drug].ContainsKey(sev))
-                    {
-                        inter_done[drug].Add(sev, 1);
-                    }
-
-                    var key = rsel.ContainsKey("sevtxt") && rsel["sevtxt"].Equals("ALLERGY") ? "A" : "M";
-                    var d = key.Equals("A") ? dnum : rsel.ContainsKey("drug_id_2") ? rsel["drug_id_2"] : null;
-                    rsel["dnum"] = d;
-                    rsel["drug"] = drug;
-
-                    if (key.Equals("A"))
-                    {
-                        if (reactionsCheckResult.Allergies[dnum].ContainsKey(drug.Trim('\'')))
+                        // Only require confirmations if the reaction is for a component of the combo med
+                        if (!comboComponentIds.ContainsKey(react["dnum2"]))
                         {
-                            rsel["SourceTable"] = reactionsCheckResult.Allergies[dnum][drug.Trim('\'')]["SourceTable"];
-                            rsel["SourceTableId"] = reactionsCheckResult.Allergies[dnum][drug.Trim('\'')]["SourceTableId"];
+                            continue;
                         }
 
-                        rsel["type"] = "alg";
-                        rsel["interaction"] = sev + " REACTION";
-                        acc_reacts.Add(rsel);
-                    }
-                    else
-                    {
-                        rsel["type"] = "drug";
-                        rsel["interaction"] = sev + " INTERACTION";
-                        acc_inters.Add(rsel);
+                        var drug = react["dname2"];
+                        var sev = react["sevtxt"];
+
+                        if (interDone.ContainsKey(drug) && interDone[drug].ContainsKey(sev))
+                        {
+                            continue;
+                        }
+
+                        if (!interDone.ContainsKey(drug))
+                        {
+                            interDone.Add(drug, new Dictionary<string, int>());
+                        }
+
+                        if (!interDone[drug].ContainsKey(sev))
+                        {
+                            interDone[drug].Add(sev, 1);
+                        }
+
+                        var key = react["int_id"] + "|" + medicationDetail.GetName() + "|" + react["dname2"];
+                        rTrigger.Add(key);
                     }
                 }
-            }
 
-            medicationItem.Interactions = acc_inters;
-            medicationItem.Reactions = acc_reacts;
+                // Generate the information for displaying interactions between components of a combo medication
+                if (reactionsCheckResult.ComboInteractions.ContainsKey(dnum))
+                {
+                    foreach (var react in reactionsCheckResult.ComboInteractions[dnum])
+                    {
+                        var drug = react["dname2"];
+                        var sev = react["sevtxt"];
+
+                        if (interDone.ContainsKey(drug) && interDone[drug].ContainsKey(sev))
+                        {
+                            continue;
+                        }
+
+                        if (!interDone.ContainsKey(drug))
+                        {
+                            interDone.Add(drug, new Dictionary<string, int>());
+                        }
+
+                        if (!interDone[drug].ContainsKey(sev))
+                        {
+                            interDone[drug].Add(sev, 1);
+                        }
+
+                        if (!drugTrigger.ContainsKey(dnum))
+                        {
+                            drugTrigger.Add(dnum, new List<Dictionary<string, string>>());
+                        }
+
+                        drugTrigger[dnum].Add(react);
+                    }
+                }
+
+                if (reactionsCheckResult.Allergies.ContainsKey(dnum))
+                {
+                    var keySet = reactionsCheckResult.Allergies[dnum].Keys;
+                    var algList = String.Join(", ", keySet.Select(x => "'" + x + "'"));
+
+                    if (!drugTrigger.ContainsKey(dnum))
+                    {
+                        drugTrigger.Add(dnum, new List<Dictionary<string, string>>());
+                    }
+
+                    drugTrigger[dnum].Add(new Dictionary<string, string>
+                    {
+                        {"dname2", algList},
+                        {"severity_id", "0"},
+                        {"sevtxt", "ALLERGY"}
+                    });
+                }
+
+                // Generate the information for displaying the allergy reactions
+                interDone.Clear();
+                var accInters = new List<Dictionary<string, string>>();
+                var accReacts = new List<Dictionary<string, string>>();
+
+                if (reactionsCheckResult.Interactions.ContainsKey(dnum))
+                {
+                    if (!drugTrigger.ContainsKey(dnum))
+                    {
+                        drugTrigger.Add(dnum, new List<Dictionary<string, string>>());
+                    }
+
+                    drugTrigger[dnum].AddRange(reactionsCheckResult.Interactions[dnum]);
+                }
+
+                if (drugTrigger.ContainsKey(dnum))
+                {
+                    var s = new List<Dictionary<string, string>>(drugTrigger[dnum]);
+                    s.OrderBy(o => o["dname2"]).ThenBy(o => Convert.ToInt32(o["severity_id"]));
+
+                    foreach (var sel in s)
+                    {
+                        var rsel = new Dictionary<string, string>(sel);
+                        var drug = rsel["dname2"];
+                        var sev = rsel["sevtxt"];
+
+                        if (interDone.ContainsKey(drug) && interDone[drug].ContainsKey(sev))
+                        {
+                            continue;
+                        }
+
+                        if (!interDone.ContainsKey(drug))
+                        {
+                            interDone.Add(drug, new Dictionary<string, int>());
+                        }
+
+                        if (!interDone[drug].ContainsKey(sev))
+                        {
+                            interDone[drug].Add(sev, 1);
+                        }
+
+                        var key = rsel.ContainsKey("sevtxt") && rsel["sevtxt"].Equals("ALLERGY") ? "A" : "M";
+                        var d = key.Equals("A") ? dnum : rsel.ContainsKey("drug_id_2") ? rsel["drug_id_2"] : null;
+                        rsel["dnum"] = d;
+                        rsel["drug"] = drug;
+
+                        if (key.Equals("A"))
+                        {
+                            if (reactionsCheckResult.Allergies[dnum].ContainsKey(drug.Trim('\'')))
+                            {
+                                rsel["SourceTable"] =
+                                    reactionsCheckResult.Allergies[dnum][drug.Trim('\'')]["SourceTable"];
+                                rsel["SourceTableId"] =
+                                    reactionsCheckResult.Allergies[dnum][drug.Trim('\'')]["SourceTableId"];
+                            }
+
+                            rsel["type"] = "alg";
+                            rsel["interaction"] = sev + " REACTION";
+                            accReacts.Add(rsel);
+                        }
+                        else
+                        {
+                            rsel["type"] = "drug";
+                            rsel["interaction"] = sev + " INTERACTION";
+                            accInters.Add(rsel);
+                        }
+                    }
+                }
+
+                medicationItem.Interactions.AddRange(accInters);
+                medicationItem.Reactions.AddRange(accReacts);
+            }
 
             return medicationItem;
         }
@@ -280,20 +349,28 @@ namespace Emar.Core.MedicationReactions
         {
             var checklist = new Dictionary<string, string>();
 
-            foreach (MedicationModel medication in checkMedications)
+            foreach (var medication in checkMedications)
             {
-                var activeId = medication.ActiveId;
-
-                if (string.IsNullOrWhiteSpace(activeId))
+                if (medication.Medication?.MedicationDetails == null)
                 {
                     continue;
                 }
 
-                var name = medication.GetName();
-
-                if (!checklist.ContainsKey(activeId))
+                foreach (var medicationDetail in medication.Medication.MedicationDetails)
                 {
-                    checklist.Add(activeId, name);
+                    var activeId = medicationDetail.FdbBrandName?.PcRoutedGenId;
+
+                    if (string.IsNullOrWhiteSpace(activeId))
+                    {
+                        continue;
+                    }
+
+                    var name = medicationDetail.GetName();
+
+                    if (!checklist.ContainsKey(activeId))
+                    {
+                        checklist.Add(activeId, name);
+                    }
                 }
             }
 

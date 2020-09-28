@@ -44,5 +44,11 @@ namespace Emar.Data.Entities
 
         [NotMapped]
         public string InteractionDrugName2 { get; set; }
+        [NotMapped]
+        public string OrderId2 { get; set; }
+        [NotMapped]
+        public string OrderTable2 { get; set; }
+        [NotMapped]
+        public string OrderName2 { get; set; }
     }
 }

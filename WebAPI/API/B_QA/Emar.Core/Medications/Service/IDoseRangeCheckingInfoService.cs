@@ -5,6 +5,6 @@ namespace Emar.Core.Medications.Service
 {
     public interface IDoseRangeCheckingInfoService
     {
-        IEnumerable<DoseRangeCheckingInfoDto> DoseRangeCheckInfos(string ndc);
+        IEnumerable<DoseRangeCheckingInfoDto> DoseRangeCheckInfos(string medid);
     }
 }

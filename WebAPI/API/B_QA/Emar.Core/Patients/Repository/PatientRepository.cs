@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
-using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 using Emar.Core.Helpers;
 using Emar.Core.Patients.Model;
@@ -61,7 +59,7 @@ namespace Emar.Core.Patients.Repository
                 whereLambda = whereLambda.And(pt => pt.RoomBedCode == resourceParameters.RoomBedCode);
             }
 
-            IEnumerable<Patient> patients = GetPatients(whereLambda, ((resourceParameters != null) && resourceParameters.IncludeOrders) || includeOrders);
+            IEnumerable<Patient> patients = GetPatients(whereLambda, resourceParameters != null && resourceParameters.IncludeOrders || includeOrders);
 
             if (resourceParameters.OrderBy != null)
             {
@@ -77,7 +75,7 @@ namespace Emar.Core.Patients.Repository
 
         public Patient GetPatient(long? patientId, PatientsResourceParameters resourceParameters, bool includeOrders)
         {
-            return GetPatients(patient => patient.Id == patientId, ((resourceParameters != null) && resourceParameters.IncludeOrders) || includeOrders)
+            return GetPatients(patient => patient.Id == patientId, resourceParameters != null && resourceParameters.IncludeOrders || includeOrders)
                     .FirstOrDefault();
         }
 
@@ -89,6 +87,9 @@ namespace Emar.Core.Patients.Repository
                 return _context.Patients
                     .Include(patient => patient.PatientOrders)
                         .ThenInclude(order => order.OrderAdministrations)
+                    .Include(patient => patient.PatientOrders)
+                        .ThenInclude(order => order.Medication)
+                            .ThenInclude(m => m.MedicationDetails)
                     .Include(patient => patient.PatientOrders)
                         .ThenInclude(order => order.MedicationRoute)
                     .Include(patient => patient.PatientOrders)
@@ -161,15 +162,15 @@ namespace Emar.Core.Patients.Repository
 
         public long? GetPatientId(long? patientId, PatientsResourceParameters resourceParameters)
         {
-            if ((resourceParameters != null) &&
-                (resourceParameters.ExtId1 != null) &&
-                (resourceParameters.ExtId2 != null))
+            if (resourceParameters != null &&
+                resourceParameters.ExtId1 != null &&
+                resourceParameters.ExtId2 != null)
             {
                 patientId = _context.ExternalIds
                     .FirstOrDefault(xId => xId.ExternalId.Equals(resourceParameters.ExtId1 + "|" + resourceParameters.ExtId2) &&
                                              xId.Entity.ToLower().Equals(@"patients") &&
                                              xId.Vendor.ToLower().Equals(@"pulsecheck"))
-                    .InternalId;
+                    ?.InternalId;
             }
 
             return patientId;
@@ -186,7 +187,7 @@ namespace Emar.Core.Patients.Repository
             return ptId.FirstOrDefault();
         }
 
-        public Dictionary<string, string> GetExternalRootSitePatientId(string number, GetPatientBy getPatientBy, string RootType)
+        public Dictionary<string, string> GetExternalRootSitePatientId(string number, GetPatientBy getPatientBy, string rootType)
         {
             Expression<Func<Patient, bool>> predicate = GetWherePredicate(number, getPatientBy);
 
@@ -195,7 +196,7 @@ namespace Emar.Core.Patients.Repository
                 join s in _context.Sites on p.SiteId equals s.Id
                 join so in _context.SiteOptions on s.Id equals so.SiteId
                 join o in _context.Options on so.OptionId equals o.Id
-                where o.Name == RootType
+                where o.Name == rootType
                 select so.OptionValue;
 
             var extQuery =
@@ -208,13 +209,13 @@ namespace Emar.Core.Patients.Repository
             var path = pathQuery.FirstOrDefault();
             var extId = extQuery.FirstOrDefault();
 
-            var extIdParts = extId.Split('|');
+            var extIdParts = extId?.Split('|');
 
             return new Dictionary<string, string>
             {
                 {"root", path},
-                {"siteId", extIdParts[0]},
-                {"patientId", extIdParts[1]}
+                {"siteId", extIdParts?[0]},
+                {"patientId", extIdParts?[1]}
             };
 
             #region Version 346 code
@@ -389,6 +390,21 @@ namespace Emar.Core.Patients.Repository
             }
         }
 
+        private MedicationDetail AddFdbBrandName(MedicationDetail detail)
+        {
+            if (detail != null && detail.FdbBrandName == null)
+            {
+                detail.FdbBrandName =
+                    (from s in (from s in _context.FdbBrandName
+                                select s)
+                            .Where(u => u.Medid.ToString() == detail.DrugId)
+                        select s)
+                    .FirstOrDefault();
+            }
+
+            return detail;
+        }
+
         public IEnumerable<PatientAllergy> GetAllergiesByPatientId(long patientId, Expression<Func<PatientAllergy, bool>> wherePredicate = null)
         {
             Expression<Func<PatientAllergy, bool>> whereLambda = a => a.PatientId == patientId;
@@ -398,8 +414,21 @@ namespace Emar.Core.Patients.Repository
                 whereLambda = whereLambda.And(wherePredicate);
             }
 
-            return _context.PatientAllergies
-                .Where(whereLambda);
+            var allergies= _context.PatientAllergies
+                .Where(whereLambda)
+                .ToList();
+
+            foreach (var allergy in allergies)
+            {
+                if (allergy?.Medication?.MedicationDetails != null)
+                {
+                    allergy.Medication.MedicationDetails = allergy.Medication.MedicationDetails
+                        .Select(AddFdbBrandName)
+                        .ToList();
+                }
+            }
+
+            return allergies.AsEnumerable();
         }
 
         public IEnumerable<FdbAllergyName> GetAllergyFdbAllergyNames(string name, Expression<Func<FdbAllergyName, bool>> wherePredicate = null)

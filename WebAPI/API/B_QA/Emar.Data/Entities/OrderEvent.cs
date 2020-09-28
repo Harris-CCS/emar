@@ -29,6 +29,8 @@ namespace Emar.Data.Entities
         [Column("action_id", TypeName = "int"), Required]
         public int ActionId { get; set; }
 
+        
+        // For Foreign Key: fk__order_events__actions
         [ForeignKey(nameof(ActionId))]
         [InverseProperty(nameof(Entities.Action.OrderEvents))]
         public virtual Action Action { get; set; }

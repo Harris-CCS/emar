@@ -12,7 +12,7 @@ namespace Emar.Core.Patients.Model.Mappings
 {
     public static class PatientMapper
     {
-        public static PatientDto MapPatient(Patient pt, string dateFormat, string drugDBVendor)
+        public static PatientDto MapPatient(Patient pt, string dateFormat, string drugDbVendor)
         {
             if (pt == null)
                 return null;
@@ -69,7 +69,7 @@ namespace Emar.Core.Patients.Model.Mappings
                 VisitStartDatetime = pt.VisitStartDatetime,
                 DeactivationDatetime = pt.DeactivationDatetime,
                 PatientImageSrc = EmarHttpContext.AppBaseUrl + "/" + AppConstants.ImagesRoute + "/patients/" + pt.Id.ToString(),
-                Orders = pt.PatientOrders?.Select(o => OrderMapper.MapOrder(o, dateFormat, drugDBVendor)).ToList(),
+                Orders = pt.PatientOrders?.Select(o => OrderMapper.MapOrder(o, dateFormat, drugDbVendor, null, null)).ToList(),
                 Site = SiteMapper.MapSite(pt.Site),
                 PatientIndicators = pt.PatientIndicators?.Select(MapPatientIndicator).ToList(),
                 PatientAllergies = pt.PatientAllergies?.Select(MapPatientAllergy).ToList(),
@@ -133,15 +133,15 @@ namespace Emar.Core.Patients.Model.Mappings
             if (allergy == null)
                 return null;
 
-            PatientAllergyDto allergyDto = new PatientAllergyDto
+            var retDto = new PatientAllergyDto
             {
                 Id = allergy.Id,
                 PatientId = allergy.PatientId,
                 Class = allergy.Class,
                 Category = allergy.Category,
                 InternalDrugId = allergy.InternalDrugId,
-                Ndc = allergy.Ndc,
-                DrugId = allergy.DrugId,
+                MedicationId = allergy.MedicationId,
+                Medication = MedicationMapper.MapMedication(allergy.Medication),
                 Name = allergy.Name,
                 AlternateName = allergy.AlternateName,
                 AllergyDrugId = allergy.AllergyDrugId,
@@ -164,7 +164,7 @@ namespace Emar.Core.Patients.Model.Mappings
                 AccountNumber = allergy.AccountNumber
             };
 
-            return allergyDto;
+            return retDto;
         }
 
         private static HomeMedicationDto MapHomeMedication(PatientHomeMedication dbObj)
@@ -179,8 +179,8 @@ namespace Emar.Core.Patients.Model.Mappings
                 Class = dbObj.Class,
                 Category = dbObj.Category,
                 InternalDrugId = dbObj.InternalDrugId,
-                Ndc = dbObj.Ndc,
-                DrugId = dbObj.DrugId,
+                MedicationId = dbObj.MedicationId,
+                Medication = MedicationMapper.MapMedication(dbObj.Medication),
                 Name = dbObj.Name,
                 AlternateName = dbObj.AlternateName,
                 MedicationDrugId = dbObj.MedicationDrugId,
