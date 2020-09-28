@@ -19,9 +19,13 @@ namespace Emar.Data.Entities
             MedicationUnits = new HashSet<MedicationUnit>();
             OverrideReasons = new HashSet<OverrideReason>();
             Patients = new HashSet<Patient>();
+            // For Foreign Key: fk__site_formulary__sites
+            SiteFormularys = new HashSet<SiteFormulary>();
+            // For Foreign Key: fk__site_formulary_match__sites
+            SiteFormularyMatchs = new HashSet<SiteFormularyMatch>();
+            SiteOptions = new HashSet<SiteOption>();
             UserQuickListItems = new HashSet<UserQuickListItem>();
             Users = new HashSet<User>();
-            SiteOptions = new HashSet<SiteOption>();
         }
 
         [Key]
@@ -72,5 +76,13 @@ namespace Emar.Data.Entities
         // For Foreign Key: fk__medications__sites
         [InverseProperty("Site")]
         public virtual ICollection<Medication> Medications { get; set; }
+
+        // For Foreign Key: fk__site_formulary__sites
+        [InverseProperty("Site")]
+        public virtual ICollection<SiteFormulary> SiteFormularys { get; set; }
+
+        // For Foreign Key: fk__site_formulary_match__sites
+        [InverseProperty("Site")]
+        public virtual ICollection<SiteFormularyMatch> SiteFormularyMatchs { get; set; }
     }
 }

@@ -5,6 +5,6 @@ namespace Emar.Core.Medications.Repository
 {
     public interface IDoseRangeCheckingInfoRepository
     {
-        IEnumerable<DoseRangeCheckingInfo> RetrieveDoseRangeCheckingInfo(string ndc);
+        IEnumerable<DoseRangeCheckingInfo> RetrieveDoseRangeCheckingInfo(string medid);
     }
 }

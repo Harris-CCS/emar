@@ -377,17 +377,5 @@ namespace Emar.Core.Carts.Repository
             return _context.CartOrderAdministrations
                     .FirstOrDefault(administration => administration.Id == administrationId);
         }
-
-        ////////////  probably not needed, leave for now, will clean later
-        ////////////public FdbBrandName GetPatientCartOrderFdbBrandName(long orderId)
-        ////////////{
-        ////////////    var query =
-        ////////////        from p in (from p in _context.PatientCartOrders select p).Where(u => u.Id == orderId)
-        ////////////        join n in _context.FdbNdcInfo on p.DrugId equals n.GcnSeqno.ToString()
-        ////////////        join s in _context.FdbBrandName on n.RoutedGenId equals s.RoutedGenId
-        ////////////        select s;
-
-        ////////////    return query.FirstOrDefault();
-        ////////////}
     }
 }

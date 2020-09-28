@@ -778,9 +778,9 @@ namespace Emar.Core.Orders.Model.Mappings
                 SourceTable = medication.SourceTable,
                 SourceTableId = medication.SourceTableId,
                 Type = medication.Type,
-                BrandName = medication.Medication.MedicationDetails.FirstOrDefault()?.FdbBrandName?.BrandName,
-                ActiveName = medication.Medication.MedicationDetails.FirstOrDefault()?.FdbBrandName?.Active,
-                ActiveId = medication.Medication.MedicationDetails.FirstOrDefault()?.FdbBrandName?.PcRoutedGenId,
+                BrandName = medication.Medication?.MedicationDetails?.FirstOrDefault()?.FdbBrandName?.BrandName,
+                ActiveName = medication.Medication?.MedicationDetails?.FirstOrDefault()?.FdbBrandName?.Active,
+                ActiveId = medication.Medication?.MedicationDetails?.FirstOrDefault()?.FdbBrandName?.PcRoutedGenId,
                 Interactions = medication.Interactions,
                 Reactions = medication.Reactions
             };

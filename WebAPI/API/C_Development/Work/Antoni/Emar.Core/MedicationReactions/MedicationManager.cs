@@ -114,6 +114,11 @@ namespace Emar.Core.MedicationReactions
                         continue;
                     }
 
+                    if (medication.Medication?.MedicationDetails == null)
+                    {
+                        continue;
+                    }
+
                     foreach (MedicationDetailDto medicationDetail in medication.Medication.MedicationDetails)
                     {
                         var dnum = medicationDetail.FdbBrandName?.PcRoutedGenId;
@@ -150,6 +155,11 @@ namespace Emar.Core.MedicationReactions
             var rTrigger = new List<string>();
             var drugTrigger = new Dictionary<string, List<Dictionary<string, string>>>();
             var comboComponentIds = new Dictionary<string, int>();
+
+            if (medicationItem.Medication?.MedicationDetails == null)
+            {
+                return medicationItem;
+            }
 
             if (medicationItem.Medication.MedicationDetails.Count > 1)
             {
@@ -216,22 +226,22 @@ namespace Emar.Core.MedicationReactions
                         {
                             continue;
                         }
-                        
+
                         if (!interDone.ContainsKey(drug))
                         {
                             interDone.Add(drug, new Dictionary<string, int>());
                         }
-                        
+
                         if (!interDone[drug].ContainsKey(sev))
                         {
                             interDone[drug].Add(sev, 1);
                         }
-                        
+
                         if (!drugTrigger.ContainsKey(dnum))
                         {
                             drugTrigger.Add(dnum, new List<Dictionary<string, string>>());
                         }
-                        
+
                         drugTrigger[dnum].Add(react);
                     }
                 }
@@ -341,6 +351,11 @@ namespace Emar.Core.MedicationReactions
 
             foreach (var medication in checkMedications)
             {
+                if (medication.Medication?.MedicationDetails == null)
+                {
+                    continue;
+                }
+
                 foreach (var medicationDetail in medication.Medication.MedicationDetails)
                 {
                     var activeId = medicationDetail.FdbBrandName?.PcRoutedGenId;
