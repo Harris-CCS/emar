@@ -18,7 +18,7 @@ namespace Emar.Core.Orders.Service
         IEnumerable<OrderEventDto> GetAdministrationEvents(long administrationId);
 
         // User Quick List services
-        UserQuickListFrameworkDto GetInitialUserQuickList(in int userId, int? siteId, string tabLinkBase, string orderLinkBase);
+        UserQuickListFrameworkDto GetInitialUserQuickList(in int userId, int? siteId, long? patientId, string tabLinkBase, string orderLinkBase);
         IEnumerable<UserQuickListItemDto> GetQuickListTab(in int userId, int? siteId, long patientId, string orderLinkBase, string tab);
         CartOrderDto CopyQuickListItemToCart(in int userId, in int quickListItemId, long patientId);
 

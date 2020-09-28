@@ -36,11 +36,48 @@ namespace Emar.Core.HomeMedications.Repository
                     .AsEnumerable();
         }
 
+        private MedicationDetail AddFdbBrandName(MedicationDetail detail)
+        {
+            if (detail != null && detail.FdbBrandName == null)
+            {
+                detail.FdbBrandName =
+                    (from s in (from s in _context.FdbBrandName
+                                select s)
+                            .Where(u => u.Medid.ToString() == detail.DrugId)
+                        select s)
+                    .FirstOrDefault();
+            }
+
+            return detail;
+        }
+
         public IEnumerable<PatientHomeMedication> GetPatientHomeMedications(Expression<Func<PatientHomeMedication, bool>> wherePredicate)
         {
-            return _context.PatientHomeMedications
+            IEnumerable<PatientHomeMedication> homeMeds;
+
+            if (wherePredicate == null)
+            {
+                homeMeds= _context.PatientHomeMedications
+                    .ToList();
+            }
+            else
+            {
+                homeMeds= _context.PatientHomeMedications
                     .Where(wherePredicate)
-                    .AsEnumerable();
+                    .ToList();
+            }
+
+            foreach (var homeMed in homeMeds)
+            {
+                if (homeMed?.Medication?.MedicationDetails != null)
+                {
+                    homeMed.Medication.MedicationDetails = homeMed.Medication.MedicationDetails
+                        .Select(AddFdbBrandName)
+                        .ToList();
+                }
+            }
+
+            return homeMeds.AsEnumerable();
         }
 
         public FdbBrandName GetPatientHomeMedicationFdbBrandName(long medicationId)

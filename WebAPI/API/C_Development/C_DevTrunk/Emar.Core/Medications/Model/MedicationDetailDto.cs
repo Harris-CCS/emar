@@ -1,4 +1,7 @@
-﻿namespace Emar.Core.Medications.Model
+﻿using System;
+using Emar.Core.FdbObjects.Model;
+
+namespace Emar.Core.Medications.Model
 {
     public class MedicationDetailDto
     {
@@ -11,5 +14,19 @@
         public int? MedicationUnitId { get; set; }
         public int? MedicationRouteId { get; set; }
         public bool IsActive { get; set; }
+
+        internal FdbBrandNameDto FdbBrandName { get; set; }
+
+        public string GetName()
+        {
+            if (BrandName.Equals(ActiveList) || String.IsNullOrWhiteSpace(ActiveList))
+            {
+                return BrandName;
+            }
+            else
+            {
+                return BrandName + " (" + ActiveList + ")";
+            }
+        }
     }
 }
