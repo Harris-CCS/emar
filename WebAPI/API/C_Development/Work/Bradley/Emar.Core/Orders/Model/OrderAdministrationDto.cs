@@ -91,12 +91,12 @@ namespace Emar.Core.Orders.Model
         /// <summary>
         /// Indicates whether the order administration is on hold.
         /// </summary>
-        public bool OnHold { get; set; }
+        internal bool OnHold { get; set; }
 
         /// <summary>
         /// Indicates whether the order administration was missed/skipped.
         /// </summary>
-        public bool MissedDose { get; set; }
+        internal bool MissedDose { get; set; }
 
         /**** CHECK CONSTRAINTs on the OrderAdministration in the DB ***
          * •	IF [point_in_time] = 1

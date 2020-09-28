@@ -69,7 +69,7 @@ namespace Emar.Core.Orders.Model
         /// PatientOrder type (STAT, PRN, Continuous/Non-Point-In-Time, Scheduled/Point-In-Time)
         /// </summary>
         // leaving this at the Patient Level since it relies on priority, which isn't part of the remembered orders
-        public string OrderType
+        internal string OrderType
         {
             get
             {
