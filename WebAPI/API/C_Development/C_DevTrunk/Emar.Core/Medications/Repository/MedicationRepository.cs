@@ -19,14 +19,14 @@ namespace Emar.Core.Medications.Repository
             _optionRepository = optionRepository;
         }
 
-        public IEnumerable<string> GetMedsByBrandName(int siteId, string search, int userId, Model.MedicationLookupDto.SearchType searchType)
+        public IEnumerable<string> GetMedsByBrandName(int siteId, string search, int userId, Model.MedicationLookupDto.SearchType searchType, string deptCode)
         {
             //Figure out which vendor we're using.
             GetVendorRepository(siteId);
             IEnumerable<string> medsToReturn;
 
             //Go to the vendor-specific repository to actually do the search and apply the formulary filtering.
-            medsToReturn = _vendorRepository.GetMedsByBrandName(siteId, search, userId, searchType);
+            medsToReturn = _vendorRepository.GetMedsByBrandName(siteId, search, userId, searchType, deptCode);
             
             //Return the list of strings.
             return medsToReturn;

@@ -139,7 +139,7 @@ namespace Emar.Api.Controllers
 
             MedicationLookupDto.SearchType searchTypeEnum = (MedicationLookupDto.SearchType)oSearchType;
 
-            var medications = _medicationService.GetMedsByBrandName(siteId, brandName, userId, searchTypeEnum);
+            var medications = _medicationService.GetMedsByBrandName(siteId, brandName, userId, searchTypeEnum, deptCode);
 
             if (medications == null || !medications.Any())
             {

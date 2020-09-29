@@ -6,6 +6,6 @@ namespace Emar.Core.Medications.Repository
 {
     public interface IDrugDbRepository
     {
-        IEnumerable<string> GetMedsByBrandName(int siteId, string search, int UserId, Model.MedicationLookupDto.SearchType searchType);
+        IEnumerable<string> GetMedsByBrandName(int siteId, string search, int UserId, Model.MedicationLookupDto.SearchType searchType, string deptCode);
     }
 }

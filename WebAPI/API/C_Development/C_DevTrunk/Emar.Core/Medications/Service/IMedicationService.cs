@@ -6,6 +6,6 @@ namespace Emar.Core.Medications.Service
     public interface IMedicationService
     {
 
-        IEnumerable<string> GetMedsByBrandName(int siteId, string search, int userId, MedicationLookupDto.SearchType searchType);
+        IEnumerable<string> GetMedsByBrandName(int siteId, string search, int userId, MedicationLookupDto.SearchType searchType, string deptCode);
     }
 }
