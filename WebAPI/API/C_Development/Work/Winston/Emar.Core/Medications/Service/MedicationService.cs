@@ -13,10 +13,10 @@ namespace Emar.Core.Medications.Service
             _medicationRepository = MedicationRepository;
         }
 
-        public IEnumerable<string> GetMedsByBrandName(int siteId, string search, int userId, MedicationLookupDto.SearchType searchType)
+        public IEnumerable<string> GetMedsByBrandName(int siteId, string search, int userId, MedicationLookupDto.SearchType searchType, string deptCode)
         {
             //throw new System.NotImplementedException();
-            var records = _medicationRepository.GetMedsByBrandName(siteId, search, userId, searchType);
+            var records = _medicationRepository.GetMedsByBrandName(siteId, search, userId, searchType, deptCode);
 
             //Return the list of strings.
             return records;

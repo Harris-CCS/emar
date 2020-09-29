@@ -25,12 +25,12 @@ namespace Emar.Core.Medications.Repository
             _optionRepository = optionRepository;
         }
 
-        public IEnumerable<string> GetMedsByBrandName(int siteId, string search, int userId, Model.MedicationLookupDto.SearchType searchType)
+        public IEnumerable<string> GetMedsByBrandName(int siteId, string search, int userId, Model.MedicationLookupDto.SearchType searchType, string deptCode)
         {
             //*****************************************
             //Name:         GetMedsByBrandName
             //Author:       Winston Murdock
-            //Date:         09/23/2020
+            //Date:         09/23/2020 - 09/29/2020
             //Purpose:      Peform the medication search.
             //
             //Params:
@@ -39,12 +39,12 @@ namespace Emar.Core.Medications.Repository
             //userId - The ID of the logged in user (users.id)
             //searchType - The type of search being performed (all, formulary,
             //              group, department preferred list, or user quick list
-            //
-            //Note:         As of 09/23/2020, only the "all" and "formulary"
-            //                  searches have been written.  Groups,
-            //                  department preferred list, and user quick
-            //                  list will come later.
-            //Winston Murdock, 09/23/2020.
+            //deptCode - the department that we're pulling the preferred list for
+            //              Main ED, Fast Track, etc...
+            //Notes:
+            //          The formulary filtering logic has been blessed by Romel
+            //              and is documented in Confluence.
+            //https://edpulsecheck.atlassian.net/wiki/spaces/EDPC/pages/1365475342/PulseCheck+ED+Formulary+Calculation+Explanation
             //*****************************************
 
             //Return variable (list of medication names)
@@ -73,15 +73,11 @@ namespace Emar.Core.Medications.Repository
             string sLike2 = search + "%"; //at the start of active list
             string sLike3 = "%/ {" + search + "%"; //after a / and space in active list
 
-
             //Get the Y/N for I/O/P and exact match.
             _inpat = _optionRepository.GetOption(siteId, OptionNames.MEDINPAT).ToUpper();
             _outpat = _optionRepository.GetOption(siteId, OptionNames.MEDOUTPAT).ToUpper();
             _pyxis = _optionRepository.GetOption(siteId, OptionNames.MEDPYXIS).ToUpper();
             _exactMatch = _optionRepository.GetOption(siteId, OptionNames.MEDEXACTMATCH).ToUpper();
-
-            string temp = Options.Model.OptionNames.MEDINPAT.ToString();
-
 
             //If this is an "all" search, then return all medications regardless of their formulary status.
             if (searchType == Model.MedicationLookupDto.SearchType.all)
@@ -91,28 +87,28 @@ namespace Emar.Core.Medications.Repository
                 //anything from the site_formulary_match or fdb_ndc_info tables.
                 //We just use medications and medication_details to return values.
                 var allQuery = from m in _context.Medications
-                                   //Join to the Medication Details table
-                               join md in _context.MedicationDetails on m.Id equals md.MedicationId
-                               //Where the drug vendor matches
-                               where m.DrugVendor == "F"
-                               //and the length of the brand name is greater than zero.
-                                && md.BrandName.Length > 0
-                               //and where the SiteId = -1 (i.e. this is not a combo med)
-                               && m.SiteId == -1
-                               //and where the medication is active
-                               && md.IsActive
-                               //and one, or more, of these is true.
-                               &&
-                               (
-                                   EF.Functions.Like(md.BrandName, $"%{search}%") || //anywhere in brand name
-                                   EF.Functions.Like(md.ActiveList, $"{search}%") || //at the start of active list
-                                   EF.Functions.Like(md.ActiveList, $"%/ {search}%") //after a / and space in active list
-                               )
-                               //Order by the brand name.
-                               orderby md.BrandName
-                               //Select the MedicationDetails table.
-                               //We'll use a mapper to grab only the columns we need and store into a DTO later on.
-                               select md;
+                    //Join to the Medication Details table
+                    join md in _context.MedicationDetails on m.Id equals md.MedicationId
+                    //Where the drug vendor matches
+                    where m.DrugVendor == "F"
+                    //and the length of the brand name is greater than zero.
+                    && md.BrandName.Length > 0
+                    //and where the SiteId = -1 (i.e. this is not a combo med)
+                    && m.SiteId == -1
+                    //and where the medication is active
+                    && md.IsActive
+                    //and one, or more, of these is true.
+                    &&
+                    (
+                        EF.Functions.Like(md.BrandName, $"%{search}%") || //anywhere in brand name
+                        EF.Functions.Like(md.ActiveList, $"{search}%") || //at the start of active list
+                        EF.Functions.Like(md.ActiveList, $"%/ {search}%") //after a / and space in active list
+                    )
+                    //Order by the brand name.
+                    orderby md.BrandName
+                    //Select the MedicationDetails table.
+                    //We'll use a mapper to grab only the columns we need and store into a DTO later on.
+                    select md;
 
                 //Run the query and return the results as a list.
                 //This grouping prevents duplicate medication names from showing here.
@@ -139,42 +135,76 @@ namespace Emar.Core.Medications.Repository
                 if (searchType == Model.MedicationLookupDto.SearchType.deptpreferredlist)
                 {
                     //Perform the "prefered list" search.
-                    //medsToReturn = Query/execute here.
-                    //I'll need the department code for this (which means the UI will need to pass it along in the page header)
-                    //This is outside the scope of EMAR-57, so I'll revisit this whenever I get to its ticket.
-                    //See Department Preferred List Query With No Filtering.sql.
+                    //EMAR-320.  Winston Murdock, 09/29/2020
+                    var preferredListQuery = from m in _context.Medications
+                        //Join to the Medication Details table
+                        join md in _context.MedicationDetails on m.Id equals md.MedicationId
+                        //Join to the group_list_items table.
+                        join dpli in _context.DepartmentPreferredListItems on m.Id equals dpli.MedicationId
+                        //Where the drug vendor matches
+                        where m.DrugVendor == "F"
+                        //and the length of the brand name is greater than zero.
+                        && md.BrandName.Length > 0
+                        //and where the department code matches.
+                        && dpli.DepartmentCode == deptCode
+                        //and where the SiteId = -1 (i.e. this is not a combo med)
+                        && m.SiteId == -1
+                        //and where the medication is active
+                        && md.IsActive
+                        //and one, or more, of these is true.
+                        &&
+                        (
+                            EF.Functions.Like(md.BrandName, $"%{search}%") || //anywhere in brand name
+                            EF.Functions.Like(md.ActiveList, $"{search}%") || //at the start of active list
+                            EF.Functions.Like(md.ActiveList, $"%/ {search}%") //after a / and space in active list
+                        )
+                        //Order by the brand name.
+                        orderby md.BrandName
+                        //Select the MedicationDetails table.
+                        //We'll use a mapper to grab only the columns we need and store into a DTO later on.
+                        select md;
 
-                    throw new NotImplementedException();
+                    //Run the query and return the results as a list.
+                    //This grouping prevents duplicate medication names from showing here.
+                    medsToReturn = preferredListQuery
+                        .GroupBy(i => i.BrandName)
+                        .Select(i => i.Key)
+                        .ToList();
+
+                    //Regardless of which of these four searches we did,
+                    //return the list from the base search.
+                    //No formulary filtering needed.
+                    return medsToReturn;
                 }
                 else if (searchType == Model.MedicationLookupDto.SearchType.groups)
                 {
                     //Perform the "groups" search.
                     //EMAR-321.  Winston Murdock, 09/24/2020
                     var groupQuery = from m in _context.Medications
-                                   //Join to the Medication Details table
-                                   join md in _context.MedicationDetails on m.Id equals md.MedicationId
-                                   //Join to the group_list_items table.
-                                   join gli in _context.GroupListItems on m.Id equals gli.MedicationId
-                                   //Where the drug vendor matches
-                                   where m.DrugVendor == "F"
-                                   //and the length of the brand name is greater than zero.
-                                   && md.BrandName.Length > 0
-                                   //and where the SiteId = -1 (i.e. this is not a combo med)
-                                   && m.SiteId == -1
-                                   //and where the medication is active
-                                   && md.IsActive
-                                   //and one, or more, of these is true.
-                                   &&
-                                   (
-                                       EF.Functions.Like(md.BrandName, $"%{search}%") || //anywhere in brand name
-                                       EF.Functions.Like(md.ActiveList, $"{search}%") || //at the start of active list
-                                       EF.Functions.Like(md.ActiveList, $"%/ {search}%") //after a / and space in active list
-                                   )
-                                   //Order by the brand name.
-                                   orderby md.BrandName
-                                   //Select the MedicationDetails table.
-                                   //We'll use a mapper to grab only the columns we need and store into a DTO later on.
-                                   select md;
+                        //Join to the Medication Details table
+                        join md in _context.MedicationDetails on m.Id equals md.MedicationId
+                        //Join to the group_list_items table.
+                        join gli in _context.GroupListItems on m.Id equals gli.MedicationId
+                        //Where the drug vendor matches
+                        where m.DrugVendor == "F"
+                        //and the length of the brand name is greater than zero.
+                        && md.BrandName.Length > 0
+                        //and where the SiteId = -1 (i.e. this is not a combo med)
+                        && m.SiteId == -1
+                        //and where the medication is active
+                        && md.IsActive
+                        //and one, or more, of these is true.
+                        &&
+                        (
+                            EF.Functions.Like(md.BrandName, $"%{search}%") || //anywhere in brand name
+                            EF.Functions.Like(md.ActiveList, $"{search}%") || //at the start of active list
+                            EF.Functions.Like(md.ActiveList, $"%/ {search}%") //after a / and space in active list
+                        )
+                        //Order by the brand name.
+                        orderby md.BrandName
+                        //Select the MedicationDetails table.
+                        //We'll use a mapper to grab only the columns we need and store into a DTO later on.
+                        select md;
 
                     //Run the query and return the results as a list.
                     //This grouping prevents duplicate medication names from showing here.
@@ -193,32 +223,32 @@ namespace Emar.Core.Medications.Repository
                     //Perform the "user quicklist" search.
                     //EMAR-321.  Winston Murdock, 09/24/2020
                     var userQuickListQuery = from m in _context.Medications
-                                         //Join to the Medication Details table
-                                     join md in _context.MedicationDetails on m.Id equals md.MedicationId
-                                     //Join to the group_list_items table.
-                                     join uqli in _context.UserQuickListItems on m.Id equals uqli.MedicationId
-                                     //Where the drug vendor matches
-                                     where m.DrugVendor == "F"
-                                     //and the user id matches.
-                                     && uqli.UserId == userId
-                                     //and the length of the brand name is greater than zero.
-                                     && md.BrandName.Length > 0
-                                     //and where the SiteId = -1 (i.e. this is not a combo med)
-                                     && m.SiteId == -1
-                                     //and where the medication is active
-                                     && md.IsActive
-                                     //and one, or more, of these is true.
-                                     &&
-                                     (
-                                         EF.Functions.Like(md.BrandName, $"%{search}%") || //anywhere in brand name
-                                         EF.Functions.Like(md.ActiveList, $"{search}%") || //at the start of active list
-                                         EF.Functions.Like(md.ActiveList, $"%/ {search}%") //after a / and space in active list
-                                     )
-                                     //Order by the brand name.
-                                     orderby md.BrandName
-                                     //Select the MedicationDetails table.
-                                     //We'll use a mapper to grab only the columns we need and store into a DTO later on.
-                                     select md;
+                        //Join to the Medication Details table
+                        join md in _context.MedicationDetails on m.Id equals md.MedicationId
+                        //Join to the group_list_items table.
+                        join uqli in _context.UserQuickListItems on m.Id equals uqli.MedicationId
+                        //Where the drug vendor matches
+                        where m.DrugVendor == "F"
+                        //and the user id matches.
+                        && uqli.UserId == userId
+                        //and the length of the brand name is greater than zero.
+                        && md.BrandName.Length > 0
+                        //and where the SiteId = -1 (i.e. this is not a combo med)
+                        && m.SiteId == -1
+                        //and where the medication is active
+                        && md.IsActive
+                        //and one, or more, of these is true.
+                        &&
+                        (
+                            EF.Functions.Like(md.BrandName, $"%{search}%") || //anywhere in brand name
+                            EF.Functions.Like(md.ActiveList, $"{search}%") || //at the start of active list
+                            EF.Functions.Like(md.ActiveList, $"%/ {search}%") //after a / and space in active list
+                        )
+                        //Order by the brand name.
+                        orderby md.BrandName
+                        //Select the MedicationDetails table.
+                        //We'll use a mapper to grab only the columns we need and store into a DTO later on.
+                        select md;
 
                     //Run the query and return the results as a list.
                     //This grouping prevents duplicate medication names from showing here.
@@ -231,7 +261,6 @@ namespace Emar.Core.Medications.Repository
                     //return the list from the base search.
                     //No formulary filtering needed.
                     return medsToReturn;
-                    throw new NotImplementedException();
                 }
                 else
                 {
@@ -286,28 +315,40 @@ namespace Emar.Core.Medications.Repository
                 if (searchType == Model.MedicationLookupDto.SearchType.deptpreferredlist)
                 {
                     //Perform the "prefered list" search.
-                    //medsListMatch = _context.MedicationLookups.FromSqlInterpolated($"").ToList();
-                    //medsListNoMatch = _context.MedicationLookups.FromSqlInterpolated($"").ToList();
-                    //I'll need the department code for this (which means the UI will need to pass it along in the page header)
-                    //This is outside the scope of EMAR-57, so I'll revisit it whenever I get to its ticket.
-                    //See Department Preferred List Query With No Filtering.sql.
+                    //join to site_formulary_match (to only include medications that
+                    //are already in the match table for this site) and to get the "match" values from it.
+                    //Also join to fdb_ndc_info to get the ids from it.
+                    //EMAR-320.  Winston Murdock, 09/29/2020
+                    medsListMatch = _context.MedicationLookups.FromSqlInterpolated($"SELECT DISTINCT md.brand_name, md.drug_id, md.medication_id, sfm.inpatient_match, sfm.outpatient_match, sfm.pyxis_match, fni.medid, fni.GCN_SEQNO, fni.HICL_SEQNO FROM medication_details md INNER JOIN medications med ON md.medication_id = med.id INNER JOIN site_formulary_match sfm ON med.id = sfm.medication_id INNER JOIN fdb_ndc_info fni on med.drug_id = CONVERT(varchar(50), fni.medid) INNER JOIN department_preferred_list_items dpli on med.id = dpli.medication_id WHERE LEN(md.brand_name) > 0 AND md.is_active = 1 AND dpli.department_code = {deptCode} AND (md.brand_name LIKE {sLike1} OR md.active_list LIKE {sLike2} OR md.active_list LIKE {sLike3}) AND sfm.site_id = {siteId} ORDER BY md.brand_name").ToList();
 
-                    throw new NotImplementedException();
+                    //Also perform the search to get all medications that match the search criteria
+                    //and that are not in site_formulary_match.
+                    medsListNoMatch = _context.MedicationLookups.FromSqlInterpolated($"SELECT DISTINCT md.brand_name, md.drug_id, md.medication_id, CONVERT(tinyint, 0) as inpatient_match, CONVERT(tinyint, 0) as outpatient_match, CONVERT(tinyint, 0) as pyxis_match, fni.medid, fni.GCN_SEQNO, fni.HICL_SEQNO FROM medication_details md INNER JOIN medications med ON md.medication_id = med.id LEFT JOIN site_formulary_match sfm  ON med.id = sfm.medication_id and sfm.site_id = {siteId} INNER JOIN fdb_ndc_info fni on med.drug_id = CONVERT(varchar(50), fni.medid) INNER JOIN department_preferred_list_items dpli on med.id = dpli.medication_id WHERE LEN(md.brand_name) > 0 AND md.is_active = 1 AND dpli.department_code = {deptCode} AND sfm.inpatient_match IS NULL AND (md.brand_name LIKE {sLike1} OR md.active_list LIKE {sLike2} OR md.active_list LIKE {sLike3}) ORDER BY md.brand_name").ToList();
                 }
                 else if (searchType == Model.MedicationLookupDto.SearchType.groups)
                 {
                     //Perform the "groups" search.
+                    //join to site_formulary_match (to only include medications that
+                    //are already in the match table for this site) and to get the "match" values from it.
+                    //Also join to fdb_ndc_info to get the ids from it.
                     //EMAR-321.  Winston Murdock, 09/24/2020
                     medsListMatch = _context.MedicationLookups.FromSqlInterpolated($"SELECT DISTINCT md.brand_name, md.drug_id, md.medication_id, sfm.inpatient_match, sfm.outpatient_match, sfm.pyxis_match, fni.medid, fni.GCN_SEQNO, fni.HICL_SEQNO FROM medication_details md INNER JOIN medications med ON md.medication_id = med.id INNER JOIN site_formulary_match sfm ON med.id = sfm.medication_id INNER JOIN fdb_ndc_info fni on med.drug_id = CONVERT(varchar(50), fni.medid) INNER JOIN group_list_items gli on med.id = gli.medication_id WHERE LEN(md.brand_name) > 0 AND md.is_active = 1 AND (md.brand_name LIKE {sLike1} OR md.active_list LIKE {sLike2} OR md.active_list LIKE {sLike3}) AND sfm.site_id = {siteId} ORDER BY md.brand_name").ToList();
 
+                    //Also perform the search to get all medications that match the search criteria
+                    //and that are not in site_formulary_match.
                     medsListNoMatch = _context.MedicationLookups.FromSqlInterpolated($"SELECT DISTINCT md.brand_name, md.drug_id, md.medication_id, CONVERT(tinyint, 0) as inpatient_match, CONVERT(tinyint, 0) as outpatient_match, CONVERT(tinyint, 0) as pyxis_match, fni.medid, fni.GCN_SEQNO, fni.HICL_SEQNO FROM medication_details md INNER JOIN medications med ON md.medication_id = med.id LEFT JOIN site_formulary_match sfm  ON med.id = sfm.medication_id and sfm.site_id = {siteId} INNER JOIN fdb_ndc_info fni on med.drug_id = CONVERT(varchar(50), fni.medid) INNER JOIN group_list_items gli on med.id = gli.medication_id WHERE LEN(md.brand_name) > 0 AND md.is_active = 1 AND sfm.inpatient_match IS NULL AND (md.brand_name LIKE {sLike1} OR md.active_list LIKE {sLike2} OR md.active_list LIKE {sLike3}) ORDER BY md.brand_name").ToList();
                 }
                 else if (searchType == Model.MedicationLookupDto.SearchType.quicklist)
                 {
                     //Perform the "user quicklist" search.
+                    //join to site_formulary_match (to only include medications that
+                    //are already in the match table for this site) and to get the "match" values from it.
+                    //Also join to fdb_ndc_info to get the ids from it.
                     //EMAR-319.  Winston Murdock, 09/24/2020
                     medsListMatch = _context.MedicationLookups.FromSqlInterpolated($"SELECT DISTINCT md.brand_name, md.drug_id, md.medication_id, sfm.inpatient_match, sfm.outpatient_match, sfm.pyxis_match, fni.medid, fni.GCN_SEQNO, fni.HICL_SEQNO FROM medication_details md INNER JOIN medications med ON md.medication_id = med.id INNER JOIN site_formulary_match sfm ON med.id = sfm.medication_id INNER JOIN fdb_ndc_info fni on med.drug_id = CONVERT(varchar(50), fni.medid) INNER JOIN user_quick_list_items uqli on med.id = uqli.medication_id WHERE LEN(md.brand_name) > 0 AND md.is_active = 1 AND uqli.[user_id] = {userId} AND (md.brand_name LIKE {sLike1} OR md.active_list LIKE {sLike2} OR md.active_list LIKE {sLike3}) AND sfm.site_id = {siteId} ORDER BY md.brand_name").ToList();
 
+                    //Also perform the search to get all medications that match the search criteria
+                    //and that are not in site_formulary_match.
                     medsListNoMatch = _context.MedicationLookups.FromSqlInterpolated($"SELECT DISTINCT md.brand_name, md.drug_id, md.medication_id, CONVERT(tinyint, 0) as inpatient_match, CONVERT(tinyint, 0) as outpatient_match, CONVERT(tinyint, 0) as pyxis_match, fni.medid, fni.GCN_SEQNO, fni.HICL_SEQNO FROM medication_details md INNER JOIN medications med ON md.medication_id = med.id LEFT JOIN site_formulary_match sfm  ON med.id = sfm.medication_id and sfm.site_id = {siteId} INNER JOIN fdb_ndc_info fni on med.drug_id = CONVERT(varchar(50), fni.medid) INNER JOIN user_quick_list_items uqli on med.id = uqli.medication_id WHERE LEN(md.brand_name) > 0 AND md.is_active = 1 AND uqli.[user_id] = {userId} AND sfm.inpatient_match IS NULL AND (md.brand_name LIKE {sLike1} OR md.active_list LIKE {sLike2} OR md.active_list LIKE {sLike3}) ORDER BY md.brand_name").ToList();
                 }
                 else
@@ -352,7 +393,7 @@ namespace Emar.Core.Medications.Repository
                 //I only care about Medid, GCB)SEQNO, and HICL_SEQNO (which will be the same for all Tylenol entries).
                 //For the rest of the columns, I specify default/empty values and then do as 'column_name'
                 //This way C# is happy because we include all of the SQL coumns that the entity is expecting.
-                //Winston Murdock, 09/19/2020.
+                //Winston Murdock, 09/24/2020.
                 List<FdbNdcInfo> fdbInfoForFormularyMeds = _context.FdbNdcInfo.FromSqlInterpolated($"SELECT distinct '' as ndc, '' as base_ndc, 0 as repackaged, fni.medid, fni.packaging, fni.strength, 0 as days_obsolete, fni.GCN_SEQNO, fni.HICL_SEQNO, fni.ROUTED_GEN_ID FROM site_formulary sf INNER JOIN medication_details md ON sf.medication_id = md.medication_id INNER JOIN fdb_ndc_info fni on md.drug_id = fni.medid WHERE sf.site_id = {siteId}").ToList();
                 
                 //Loop through all the rows in medsListNoMatch.
@@ -367,7 +408,7 @@ namespace Emar.Core.Medications.Repository
                     medPyxisMatch = 0;
                     storedTempMatch = 0;
 
-                    //Loop through all of the meds that are on this site's formulary..
+                    //Loop through all of the meds that are on this site's formulary.
                     foreach (FdbNdcInfo fni in fdbInfoForFormularyMeds)
                     {
                         //Loop through all of the fni rows for each drug in the site_formulary table
