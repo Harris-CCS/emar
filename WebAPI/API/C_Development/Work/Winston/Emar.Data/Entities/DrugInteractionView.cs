@@ -53,5 +53,12 @@ namespace Emar.Data.Entities
 
         [InverseProperty("DrugInteractionView")]
         public virtual ICollection<OrderInteraction> OrderInteractions { get; set; }
+
+        [NotMapped]
+        public PatientCartOrder PatientCartOrder { get; set; }
+        [NotMapped]
+        public PatientOrder PatientOrder { get; set; }
+        [NotMapped]
+        public PatientHomeMedication PatientHomeMedication { get; set; }
     }
 }

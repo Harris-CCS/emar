@@ -942,7 +942,7 @@ namespace Emar.Data
 
             modelBuilder.Entity<SiteOption>(entity =>
             {
-                entity.HasIndex(e => new {e.OptionValue, e.OptionId, e.SiteId})
+                entity.HasIndex(e => new { e.OptionValue, e.OptionId, e.SiteId })
                     .HasName("site_options__option_id_site_id");
 
                 entity.Property(e => e.OptionValue)

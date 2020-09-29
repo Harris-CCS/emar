@@ -56,7 +56,7 @@ namespace Emar.Api.Controllers
                     new { quickListItemId = -99, patientId = patientId });
 
             //            var link = CreateOrdersResourceUri(resourceParameters: resourceParameters, ResourceUriType.TabPage);
-            UserQuickListFrameworkDto ret = _orderService.GetInitialUserQuickList(userId, siteId, tabLinkBase, orderLinkBase);
+            UserQuickListFrameworkDto ret = _orderService.GetInitialUserQuickList(userId, siteId, patientId, tabLinkBase, orderLinkBase);
 
             if (ret == null)
                 return NotFound($"User with id {userId} does not exist");
@@ -94,7 +94,7 @@ namespace Emar.Api.Controllers
 
             var orderLinkBase = Url.Link(nameof(CopyQuickListItemToCart), new { quickListItemId = -99, patientId = patientId });
 
-            IEnumerable<UserQuickListItemDto> ret = _orderService.GetQuickListTab(userId, siteId, patientId.HasValue ? patientId.Value : -1, orderLinkBase, tabTitle);
+            IEnumerable<UserQuickListItemDto> ret = _orderService.GetQuickListTab(userId, siteId, patientId ?? -1, orderLinkBase, tabTitle);
 
             if (ret != null) return Ok(ret);
             if (siteId == null)

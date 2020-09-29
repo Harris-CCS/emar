@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text.RegularExpressions;
 using Emar.Core.Medications.Model;
-using Emar.Data.Entities;
-using Microsoft.VisualBasic;
 
 namespace Emar.Core.Orders.Model
 {
@@ -89,16 +86,16 @@ namespace Emar.Core.Orders.Model
         public virtual ICollection<AllergyReactionViewDto> AllergyReactions { get; set; }
 
 
-        internal virtual ICollection<MedicationInteractionDto> MedicationInteractions { get; set; }
-
-        internal void AddMedicationInteraction(MedicationInteractionDto medicationInteractionDto)
+        internal void AddOrderInteraction(OrderInteractionDto orderInteractionDto)
         {
-            if (MedicationInteractions == null)
-            {
-                MedicationInteractions = new Collection<MedicationInteractionDto>();
-            }
+            OrderInteractions ??= new Collection<OrderInteractionDto>();
+            OrderInteractions.Add(orderInteractionDto);
+        }
 
-            MedicationInteractions.Add(medicationInteractionDto);
+        internal void AddAllergyReaction(AllergyReactionViewDto allergyReactionViewDto)
+        {
+            AllergyReactions ??= new Collection<AllergyReactionViewDto>();
+            AllergyReactions.Add(allergyReactionViewDto);
         }
     }
 }
