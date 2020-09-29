@@ -55,8 +55,8 @@
                                 </span>
                                 <span class="status">{{ord.orderStatus}}</span>
                                 <span>
-                                    {{ord.brandName}} {{ord.medicationRoute?.routeName | uppercase}} {{ord.dose}}
-                                    {{ord.doseUnit?.unitName}} {{ord.frequencySchedule?.scheduleName}}
+                                    {{ord.displayName}} {{ord.displayRoute | uppercase}} {{ord.displayDose}}
+                                    {{ord.displayDoseUnit}} {{ord.displayFrequency}}
                                     <!-- {{ord.displayName}} {{ord.displayRoute | uppercase}} {{ord.displayDose}} {{ord.displayDoseUnit}} {{ord.displayFrequency}} -->
                                 </span>
                                 <span class="details">{{ord.addTime}} <span class="minor">on</span>

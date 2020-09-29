@@ -51,9 +51,9 @@ export class DeptPreferredComponent implements OnInit {
         this.isTabValid.emit(true);
         this.listContents = resp.map((o) => ({
           ...o,
-          displayName: o.brandName,
+          displayName: o.medication?.displayName,
           displayRoute: o.medicationRoute ? o.medicationRoute.routeName : '',
-          displayFrequency: o.frequencyId,
+          displayFrequency: o.frequencySchedule ? o.frequencySchedule.scheduleName : '',
           displayDose: o.dose,
           displayDoseUnit: o.doseUnit ? o.doseUnit.printName : '',
         }));
