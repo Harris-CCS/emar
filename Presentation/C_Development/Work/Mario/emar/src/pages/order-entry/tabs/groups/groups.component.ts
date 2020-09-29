@@ -49,9 +49,9 @@ export class GroupsComponent implements OnInit {
         displayGroupName: o.groupName,
         orders: o.orders.map((i) => ({
           ...i,
-          displayName: i.brandName,
+          displayName: i.medication?.displayName,
           displayRoute: i.medicationRoute ? i.medicationRoute.routeName : '',
-          displayFrequency: i.frequencyId,
+          displayFrequency: i.frequencySchedule ? i.frequencySchedule.scheduleName : '',
           displayDose: i.dose,
           displayDoseUnit: i.doseUnit ? i.doseUnit.printName : '',
         })),

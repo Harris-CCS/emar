@@ -24,9 +24,15 @@ export class PatientMedOrderStoreService {
   readonly patientMedOrder$ = this._patientMedOrder.asObservable().pipe(
     map(orders => orders ? orders.map((ord) => ({
       ...ord,
-      allergyReactionsText: ord.allergyReactions?.map((alg) => alg.orderBrandName).join('\n'),
+      displayName: ord.medication?.displayName,
+      displayRoute: ord.medicationRoute ? ord.medicationRoute.routeName : '',
+      displayFrequency: ord.frequencySchedule ? ord.frequencySchedule.scheduleName : '',
+      displayDose: ord.dose,
+      displayDoseUnit: ord.doseUnit ? ord.doseUnit.printName : '',
+      // allergyReactionsText: ord.allergyReactions?.map((alg) => alg.orderBrandName).join(', '),
+      allergyReactionsText: ord.allergyReactions?.map((alg) => alg.patientAllergyName).join(', '),
       // orderName1 ought to be existing; orderName2 ought to be new
-      drugInteractionsText: ord.orderInteractions?.map((drug) => drug.drugInteraction.orderName2).join('\n')
+      drugInteractionsText: ord.orderInteractions?.map((drug) => drug.drugInteraction.orderName2).join(', ')
     })) : [])
   )
 
