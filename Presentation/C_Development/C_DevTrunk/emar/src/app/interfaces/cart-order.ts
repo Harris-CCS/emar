@@ -1,6 +1,7 @@
 import { Hateoas } from './hateoas'
 import { User } from './user'
 import { CartOrderAdministration } from './cart-order-administration'
+import { Medication } from './medication'
 
 export interface CartOrder {
     patientId: number,
@@ -17,17 +18,18 @@ export interface CartOrder {
     endDate?: string,
     endTime?: string,
     userQuickListItemId: number,
-    cartOrderAdministrations: Array<CartOrderAdministration>,
+    cartOrderAdministrations?: Array<CartOrderAdministration>,
     user?: User,
     id: any, //number | string
     ndc: string,
     drugId: string,
-    brandName: string,
+    brandName?: string,
     dose: number,
     doseUnit?: string,
     medicationRoute?: string,
     medicationRouteId: number,
     medicationUnitId: number,
+    medication?: Medication,
     frequencyId: number,
     pointInTime: boolean,
     orderNotes: string,

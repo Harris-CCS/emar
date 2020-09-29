@@ -42,14 +42,16 @@ export class CartStoreService {
   readonly cartOrders$ = this.cart$.pipe(
     map(carts => (carts && carts.orders) ? carts.orders.map((ord) => ({
       ...ord,
-      displayName: ord.brandName,
+      // displayName: ord.brandName,
+      displayName: ord.medication?.displayName,
       displayRoute: ord.medicationRoute ? ord.medicationRoute.routeName : '',
       displayFrequency: ord.frequencySchedule ? ord.frequencySchedule.scheduleName : '',
       displayDose: ord.dose,
       displayDoseUnit: ord.doseUnit ? ord.doseUnit.printName : '',
-      allergyReactionsText: ord.allergyReactions?.map((alg) => alg.orderBrandName).join('\n'),
+      // allergyReactionsText: ord.allergyReactions?.map((alg) => alg.orderBrandName).join(', '),
+      allergyReactionsText: ord.allergyReactions?.map((alg) => alg.patientAllergyName).join(', '),
       // orderName1 ought to be existing; orderName2 ought to be new
-      drugInteractionsText: ord.orderInteractions?.map((drug) => drug.drugInteraction.orderName2).join('\n') 
+      drugInteractionsText: ord.orderInteractions?.map((drug) => drug.drugInteraction.orderName2).join(', ') 
     })) : [])
   )
 
@@ -127,7 +129,27 @@ export class CartStoreService {
       id: 0,
       ndc: null,
       drugId: "drug888",
-      brandName: order.brandName,
+      // brandName: order.brandName,
+      medication: {
+        id: order.medication.id,
+        site: order.medication.site,
+        drugId: order.medication.drugId,
+        displayName: order.medication.displayName,
+        drugVendor: order.medication.drugVendor,
+        medicationDetails: [
+            {
+                id: order.medication.medicationDetails[0].id,
+                medicationId: order.medication.medicationDetails[0].medicationId,
+                drugId: order.medication.medicationDetails[0].drugId,
+                brandName: order.medication.medicationDetails[0].brandName,
+                activeList: order.medication.medicationDetails[0].activeList,
+                dose: order.medication.medicationDetails[0].dose,
+                medicationUnitId: order.medication.medicationDetails[0].medicationUnitId,
+                medicationRouteId: order.medication.medicationDetails[0].medicationRouteId,
+                isActive: order.medication.medicationDetails[0].isActive
+            }
+        ]
+      },
       dose: 2,
       // doseUnit: "ea",
       medicationUnitId: null,
@@ -173,6 +195,10 @@ export class CartStoreService {
       this.cartOrders = [...this.cartOrders]
       console.log('CartStore: POSTED & UPDATED')
 
+      // We need to reload the entired cart order to get latest reaction/interaction checking results
+      this.fetchPatientCartOrders(this.patientId, this.userId)
+      console.log('CartStore: POSTED & UPDATED & RELOAD CART ORDERS completed..')
+
     } catch (err) {
       console.log('CartStore: POST ERROR: ', err)
 
@@ -217,7 +243,27 @@ export class CartStoreService {
       id: 0,
       ndc: "string",
       drugId: "string",
-      brandName: order.brandName,
+      // brandName: order.brandName,
+      medication: {
+        id: order.medication.id,
+        site: order.medication.site,
+        drugId: order.medication.drugId,
+        displayName: order.medication.displayName,
+        drugVendor: order.medication.drugVendor,
+        medicationDetails: [
+            {
+                id: order.medication.medicationDetails[0].id,
+                medicationId: order.medication.medicationDetails[0].medicationId,
+                drugId: order.medication.medicationDetails[0].drugId,
+                brandName: order.medication.medicationDetails[0].brandName,
+                activeList: order.medication.medicationDetails[0].activeList,
+                dose: order.medication.medicationDetails[0].dose,
+                medicationUnitId: order.medication.medicationDetails[0].medicationUnitId,
+                medicationRouteId: order.medication.medicationDetails[0].medicationRouteId,
+                isActive: order.medication.medicationDetails[0].isActive
+            }
+        ]
+      },
       dose: 2,
       //doseUnit: "ea",
       medicationUnitId: 0,
@@ -263,6 +309,10 @@ export class CartStoreService {
       }
       this.cartOrders = [...this.cartOrders]
       console.log('CartStore: POSTED & UPDATED')
+
+      // We need to reload the entired cart order to get latest reaction/interaction checking results
+      this.fetchPatientCartOrders(this.patientId, this.userId)
+      console.log('CartStore: POSTED & UPDATED & RELOAD CART ORDERS completed')
 
     } catch (err) {
       console.log('CartStore: POST ERROR >= 400: ', err)
@@ -312,6 +362,10 @@ export class CartStoreService {
     
     try {
       await this.cartService.deleteCartOrder(cartOrderId,userId).toPromise()
+
+      // We need to reload the entired cart order to get latest reaction/interaction checking results
+      this.fetchPatientCartOrders(this.patientId, this.userId)
+      console.log('CartStore: DELETED & UPDATED & RELOAD CART ORDERS completed')
 
     } catch (err) {
       console.log('CartStore: DELETE ERROR >= 400: ', err)
@@ -380,7 +434,27 @@ export class CartStoreService {
       id: order.id,
       ndc: "string",
       drugId: "string",
-      brandName: order.brandName,
+      // brandName: order.brandName,
+      medication: {
+        id: order.medication.id,
+        site: order.medication.site,
+        drugId: order.medication.drugId,
+        displayName: order.medication.displayName,
+        drugVendor: order.medication.drugVendor,
+        medicationDetails: [
+            {
+                id: order.medication.medicationDetails[0].id,
+                medicationId: order.medication.medicationDetails[0].medicationId,
+                drugId: order.medication.medicationDetails[0].drugId,
+                brandName: order.medication.medicationDetails[0].brandName,
+                activeList: order.medication.medicationDetails[0].activeList,
+                dose: order.medication.medicationDetails[0].dose,
+                medicationUnitId: order.medication.medicationDetails[0].medicationUnitId,
+                medicationRouteId: order.medication.medicationDetails[0].medicationRouteId,
+                isActive: order.medication.medicationDetails[0].isActive
+            }
+        ]
+      },
       dose: 120,
       //doseUnit: "ea",
       medicationUnitId: 0,

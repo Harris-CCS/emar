@@ -68,12 +68,12 @@ export class ComposerMedModalComponent implements OnInit, AfterViewInit, AfterCo
       // console.log('dataBrandName', data);
 
       this.composerSchedulerService
-        .getBrandNameOptionsFromAPI(this.initialData.med.brandName)
+        .getBrandNameOptionsFromAPI(this.initialData.med.medication.displayName)
         .subscribe((response) => {
           if (
             this.initialData &&
             this.initialData.med &&
-            this.initialData.med.brandName
+            this.initialData.med.medication.displayName
           ) {
             this.composerSchedulerService.setBrandNameOptions(response);
             const getBrandNameOptions = this.composerSchedulerService.getBrandNameOptions();
@@ -99,7 +99,9 @@ export class ComposerMedModalComponent implements OnInit, AfterViewInit, AfterCo
         });
 
       this.composerSchedulerService
-        .getDosingOptionsFromAPI('00173044202')
+        // .getDosingOptionsFromAPI('00173044202')
+        // .getDosingOptionsFromAPI(this.initialData.med.medication.drugId)
+        .getDosingOptionsFromAPI('2340')
         .subscribe((response) => {
           this.composerSchedulerService.setDosingOptions(response);
           this.doseOptions = this.composerSchedulerService.getDosingOptions();
