@@ -152,12 +152,6 @@ execute [sys].[sp_addextendedproperty]
   , @level2name = N'order_physician_user_id';
 go
 
-go
-
-go
-
-go
-
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
   , @value = N'Medication Dose: numeric portion of dose/medication_unit_id pair'

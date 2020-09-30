@@ -34,9 +34,9 @@ as
              , rtrim(ltrim([detail].[route])) as   [medication_route_id]
              , 0 as                                [frequency_schedule_id]
              , rtrim(ltrim([detail].[notes])) as   [notes]
-        from     ibex.dbo.[cde] as [parent]
-                 inner join ibex.dbo.[cde] as [combo] on [combo].[grptype] = [parent].[num]
-                 inner join ibex.dbo.[grp] as [detail] on [detail].[num] = [combo].[num]
+        from     [<@export_database_name>].[dbo].[cde] as [parent]
+                 inner join [<@export_database_name>].[dbo].[cde] as [combo] on [combo].[grptype] = [parent].[num]
+                 inner join [<@export_database_name>].[dbo].[grp] as [detail] on [detail].[num] = [combo].[num]
         where   [parent].[type] = ''T''
                 and [parent].[altcode] = ''X''--X=Combo
                 and [detail].[type] = ''M''--Medication
@@ -57,9 +57,9 @@ as
              , rtrim(ltrim([detail].[route])) as   [medication_route_id]
              , 0 as                                [frequency_schedule_id]
              , rtrim(ltrim([detail].[notes])) as   [notes]
-        from   ibex.dbo.[cde] as [parent]
-               inner join ibex.dbo.[cde] as [combo] on [combo].[grptype] = [parent].[num]
-               inner join ibex.dbo.[grp] as [detail] on [detail].[num] = [combo].[num]
+        from   [<@export_database_name>].[dbo].[cde] as [parent]
+               inner join [<@export_database_name>].[dbo].[cde] as [combo] on [combo].[grptype] = [parent].[num]
+               inner join [<@export_database_name>].[dbo].[grp] as [detail] on [detail].[num] = [combo].[num]
         where  [parent].[type] = ''T''
                and [parent].[altcode] <> ''X''--X=Combo
                and [detail].[type] in(''M'', ''X'');--Medication

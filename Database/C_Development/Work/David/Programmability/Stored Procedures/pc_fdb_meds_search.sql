@@ -24,7 +24,7 @@ as
            and @drug_ids is null
             begin
                 select @med_name_escaped = [escaped]
-                from   ibex.dbo.[escape_sql]
+                from   [dbo].[escape_sql]
                     (@med_name);
 
                 insert into [#meds]
@@ -52,7 +52,7 @@ as
                         insert into [#meds]
                         select distinct top (@limit) [brand_name] as [name]
                                                    , null as         [ct]
-                        from                         [ibex]..[fdb_brand_name] as [fbn]
+                        from                         [dbo].[fdb_brand_name] as [fbn]
                                                      left join [fdb]..[RMIID1_MED] on [RMIID1_MED].[MEDID] = [fbn].[MEDID]
                                                      left join [fdb]..[RGCNSEQ4_GCNSEQNO_MSTR] on [RGCNSEQ4_GCNSEQNO_MSTR].[GCN_SEQNO] = [RMIID1_MED].[GCN_SEQNO]
                                                      left join [fdb]..[RHICL1_HIC_HICLSEQNO_LINK] on [RHICL1_HIC_HICLSEQNO_LINK].[HICL_SEQNO] = [RGCNSEQ4_GCNSEQNO_MSTR].[HICL_SEQNO]

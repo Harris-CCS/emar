@@ -122,8 +122,6 @@ if
                cross apply [dbo].[get_internal_id]
             ('pulsecheck', 'users', [source].[extender]) as [internal_user]
         where  [internal_user].[id] > 0;
-        print @@rowcount;
-        print '^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^'
         drop table if exists [#user_patients];
 
 /***************************************

@@ -1,8 +1,8 @@
 select
-    @sql_agent_job_name                     = 'EMAR_Calculate_Most_Used'
-  , @sql_agent_category_name                = 'EMAR_Maintenance'
-  , @sql_agent_schedule_name                = 'EMAR_Weekly'
-  , @sql_agent_template_job_category        = N'
+    @sql_agent_job_name                  = 'EMAR_Generate_Order_Administrations'
+  , @sql_agent_category_name             = 'EMAR_Maintenance'
+  , @sql_agent_schedule_name             = 'EMAR_Daily_Orders'
+  , @sql_agent_template_job_category     = N'
 use msdb;
 if not exists
 (
@@ -17,7 +17,7 @@ begin
     , @name = @sql_agent_category_name;
 end
 '
-  , @sql_agent_template_job                 = N'
+  , @sql_agent_template_job              = N'
 use msdb;
 
 set @sql_agent_job_id = null;
@@ -33,21 +33,24 @@ if @sql_agent_job_id is null
           , @enabled = 0
           , @owner_login_name = ''sa''
           , @category_name = @sql_agent_category_name
-          , @description = ''Weekly Job to calculate the most used items for the user quick list''
+          , @description = ''Daily Job to gernerate future order administrations''
           , @start_step_id = 1
           , @job_id = @sql_agent_job_id output;
 
         execute [dbo].[sp_add_jobstep] 
             @job_id = @sql_agent_job_id
           , @step_id = 1
-          , @step_name = N''calculate''
+          , @step_name = N''Generate Administrations''
           , @subsystem = N''TSQL''
-          , @command = N''execute [dbo].[update_weekly_usage_rolling_average]''
+          , @command = N''execute [dbo].[generate_order_administrations] 
+      @override_offset           = null
+    , @override_patient_order_id = null
+    , @is_debug                  = null''
           , @database_name = N''emar'';
   
     end
 '
-  , @sql_agent_template_jobschedule         = N'
+  , @sql_agent_template_jobschedule      = N'
 use msdb;
 if not exists
 (
@@ -61,20 +64,20 @@ begin
         @job_id = @sql_agent_job_id
       , @name = @sql_agent_schedule_name
       , @enabled = 1
-      , @freq_type = 8
+      , @freq_type = 4
       , @freq_interval = 1
       , @freq_subday_type = 1
-      , @freq_subday_interval = 0
-      , @freq_relative_interval = 0
-      , @freq_recurrence_factor = 1
+      , @freq_subday_interval = 3
+      , @freq_relative_interval = 1
+      , @freq_recurrence_factor = 0
       , @active_start_date = 20200101
       , @active_end_date = 99991231
-      , @active_start_time = 60000
+      , @active_start_time = 20000
       , @active_end_time = 235959;
 
 end
 '
-  , @sql_agent_template_jobserver           = N'
+  , @sql_agent_template_jobserver        = N'
 use msdb;
 if not exists
 (

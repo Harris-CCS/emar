@@ -199,7 +199,7 @@ go
 
 execute [sys].[sp_addextendedproperty] 
     @name = N'MS_Description'
-  , @value = N'Order duration in minutes'
+  , @value = N'Administration duration in minutes, used to calculate the administration stop time'
   , @level0type = N'SCHEMA'
   , @level0name = N'dbo'
   , @level1type = N'TABLE'

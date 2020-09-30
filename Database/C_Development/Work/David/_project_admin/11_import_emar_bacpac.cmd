@@ -28,12 +28,6 @@ for /f "delims=" %%x in (emar_dacpac.ini) do (set "%%x")
 @echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 @echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 @echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-@echo %pgm_sqlcmd% -i reset_database.sql -S %server_name%
-"%pgm_sqlcmd%" -i reset_database.sql -S %server_name%
-@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 @echo Publish dacpac SAMPLE data Load, no ibex fdb databases
 @echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 @echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -41,6 +35,23 @@ for /f "delims=" %%x in (emar_dacpac.ini) do (set "%%x")
 @echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 @echo "%pgm_sqlpackage%" /Action:Publish /Quiet:False /SourceFile:"%current_path%\..\deploy_bacpac\emar.dacpac" /TargetServerName:"%server_name%" /TargetDatabaseName:"emar_dacpac_sample" /Variables:load_data=live /Variables:is_bacpac_build=false /Variables:current_path=%current_path%\..\bin\Debug\
 "%pgm_sqlpackage%" /Action:Publish /Quiet:False /SourceFile:"%current_path%\..\deploy_bacpac\emar.dacpac" /TargetServerName:"%server_name%" /TargetDatabaseName:"emar_dacpac_sample"  /Variables:load_data=sample /Variables:is_bacpac_build=false /Variables:current_path=%current_path%\..\bin\Debug\
+@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@echo Publish dacpac LIVE data Load, no ibex fdb databases
+@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@echo "%pgm_sqlpackage%" /Action:Publish /Quiet:False /SourceFile:"%current_path%\..\deploy_bacpac\emar.dacpac" /TargetServerName:"%server_name%" /TargetDatabaseName:"emar_dacpac_live" /Variables:load_data=live /Variables:is_bacpac_build=false /Variables:current_path=%current_path%\..\bin\Debug\
+"%pgm_sqlpackage%" /Action:Publish /Quiet:False /SourceFile:"%current_path%\..\deploy_bacpac\emar.dacpac" /TargetServerName:"%server_name%" /TargetDatabaseName:"emar_dacpac_live" /Variables:load_data=live /Variables:is_bacpac_build=false /Variables:current_path=%current_path%\..\bin\Debug\
+@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@echo %pgm_sqlcmd% -i reset_database.sql -S %server_name%
+"%pgm_sqlcmd%" -i reset_database.sql -S %server_name%
 @echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 @echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 @echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -53,17 +64,6 @@ for /f "delims=" %%x in (emar_dacpac.ini) do (set "%%x")
 @echo "%pgm_sqlpackage%" /Action:Import /Quiet:False /SourceFile:"emar.bacpac" /TargetServerName:"%server_name%" /TargetDatabaseName:"%target_database_name%"
 "%pgm_sqlpackage%" /Action:Import /Quiet:False /SourceFile:"%current_path%\..\deploy_bacpac\emar.bacpac" /TargetServerName:"%server_name%" /TargetDatabaseName:"%target_database_name%2"
 "%pgm_sqlpackage%" /Action:Publish /Quiet:False /SourceFile:"%current_path%\..\deploy_bacpac\emar.dacpac" /TargetServerName:"%server_name%" /TargetDatabaseName:"%target_database_name%2" /Variables:load_data=none /Variables:is_bacpac_build=false /Variables:current_path=%current_path%\..\bin\Debug\
-@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-@echo Publish dacpac LIVE data Load
-@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-@echo "%pgm_sqlpackage%" /Action:Publish /Quiet:False /SourceFile:"%current_path%\..\deploy_bacpac\emar.dacpac" /TargetServerName:"%server_name%" /TargetDatabaseName:"emar_dacpac_live" /Variables:load_data=live /Variables:is_bacpac_build=false /Variables:current_path=%current_path%\..\bin\Debug\
-"%pgm_sqlpackage%" /Action:Publish /Quiet:False /SourceFile:"%current_path%\..\deploy_bacpac\emar.dacpac" /TargetServerName:"%server_name%" /TargetDatabaseName:"emar_dacpac_live" /Variables:load_data=live /Variables:is_bacpac_build=false /Variables:current_path=%current_path%\..\bin\Debug\
 @echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 @echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 @echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

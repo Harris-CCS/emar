@@ -10,8 +10,10 @@ create table [dbo].[fdb_brand_name]
     , [brand_name]       [varchar](70) null
     , [dea_schedule]     [varchar](1) not null
     , [rx_otc]           [varchar](1) null
-    , [erx_search]       [int] not null);
+    , [erx_search]       [int] not null
+    , [MEDID_string] as convert([varchar](32), [MEDID]) persisted);
 go
+
 /********
  Defaults
 ********/
@@ -21,6 +23,10 @@ go
 
 create clustered index [ClusteredIndex-20140611-085119] on [dbo].[fdb_brand_name]
     ([MEDID] asc);
+go
+
+create index [ix__fdb_brand_name__MEDID_string] on [dbo].[fdb_brand_name]
+    ([MEDID_string] asc);
 go
 
 create nonclustered index [NonClusteredIndex-20140611-101716] on [dbo].[fdb_brand_name]
@@ -74,6 +80,17 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'fdb_brand_name'
   , @level2type = N'Index'
   , @level2name = N'NonClusteredIndex-20140611-101732';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'Index added for join performance on computed column MEDID_string'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'fdb_brand_name'
+  , @level2type = N'Index'
+  , @level2name = N'ix__fdb_brand_name__MEDID_string';
 go
 
 /***************
@@ -215,4 +232,15 @@ execute [sys].[sp_addextendedproperty]
   , @level1name = N'fdb_brand_name'
   , @level2type = N'COLUMN'
   , @level2name = N'erx_search';
+go
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'String representation of the MEDID column.'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'fdb_brand_name'
+  , @level2type = N'COLUMN'
+  , @level2name = N'MEDID_string';
 go

@@ -10,7 +10,7 @@ as
              , [source].[site] as                    [site_id]
              , rtrim(ltrim([source].[type])) as      [type]
              , case
-                   when [source].status = ''Y''
+                   when [source].status = ''A''
                        then 1
                    else 0
                end as                                [is_active]

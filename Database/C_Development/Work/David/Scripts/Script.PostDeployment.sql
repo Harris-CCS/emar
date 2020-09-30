@@ -252,4 +252,19 @@ declare @outputs table([Id] int not null);
 ---:r ..\Scripts\Post-Deployment\diagram_security.sql
 ---
 --- Create SQL Agent job for calculating user_quick_list most used
+declare 
+    @sql_agent_cmd                          nvarchar(max)
+  , @sql_agent_job_id                       uniqueidentifier
+  , @sql_agent_job_name                     nvarchar(128)
+  , @sql_agent_category_name                nvarchar(128)
+  , @sql_agent_schedule_name                nvarchar(128)
+  , @sql_agent_template_job_category        nvarchar(max)
+  , @sql_agent_template_job                 nvarchar(max)
+  , @sql_agent_template_jobschedule         nvarchar(max)
+  , @sql_agent_template_jobserver           nvarchar(max)
+  , @sql_agent_template_job_category_delete nvarchar(max)
+  , @sql_agent_template_job_delete          nvarchar(max)
+  , @sql_agent_template_jobschedule_delete  nvarchar(max)
+
 :r ..\Scripts\Post-Deployment\sql_agent_job.sql
+:r ..\Scripts\Post-Deployment\sql_agent_job_order_administrations.sql
