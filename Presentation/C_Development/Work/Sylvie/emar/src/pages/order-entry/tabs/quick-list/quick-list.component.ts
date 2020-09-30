@@ -64,9 +64,9 @@ export class QuickListComponent implements OnInit {
       console.log('CHNAGETAB.....', o.length);
       this.currentTabContents = o.map((x) => ({
         ...x,
-        displayName: x.brandName,
+        displayName: x.medication?.displayName,
         displayRoute: x.medicationRoute ? x.medicationRoute.routeName : '',
-        displayFrequency: x.frequencyId,
+        displayFrequency: x.frequencySchedule ? x.frequencySchedule.scheduleName : '',
         displayDose: x.dose,
         displayDoseUnit: x.doseUnit ? x.doseUnit.printName : '',
       }));
@@ -113,9 +113,9 @@ export class QuickListComponent implements OnInit {
       this.currentTab = o.currentTab.tabName;
       this.currentTabContents = o.currentTabContents.map((x) => ({
         ...x,
-        displayName: x.brandName,
+        displayName: x.medication?.displayName,
         displayRoute: x.medicationRoute ? x.medicationRoute.routeName : '',
-        displayFrequency: x.frequencyId,
+        displayFrequency: x.frequencySchedule ? x.frequencySchedule.scheduleName : '',
         displayDose: x.dose,
         displayDoseUnit: x.doseUnit ? x.doseUnit.printName : '',
       }));
