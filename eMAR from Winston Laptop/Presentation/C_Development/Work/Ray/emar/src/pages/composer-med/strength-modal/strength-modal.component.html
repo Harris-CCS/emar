@@ -1,0 +1,9 @@
+<app-modal modalId="strengthModal" blocking="true" closebtn="true">
+    <div class="container">
+      <ul class="list-group top-border">
+        <li *ngFor="let strength of strengths; let i = index" (click)="changeStrength(i)" class="list-group-item curse">
+          {{ strength.formStrengthName }}
+        </li>
+      </ul>
+    </div>
+</app-modal>

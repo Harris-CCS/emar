@@ -1,0 +1,50 @@
+    <app-modal modalId="patientAdministrationInfo" blocking="true"  >
+      <span class="close-btn" (click)="leave()" >&times;</span>
+        <div class="modal-content print-border" >
+          <div class="dialog-title text-center"
+          >Administrations   
+           </div>
+           <div id='modal-container-header'> 
+            <div class="general-info text-left" id="medicine-info">
+              <br><b id="medicine-info-link">{{modalMedicine}}</b>
+              <br><b>{{modalMedicineSelectedScheduled}}</b>
+
+
+            </div>
+            <div class="general-info text-left" id="patient-info">
+              <br><b>{{modalPatientLastName + ", " + modalPatientFirstName}}</b>
+                <!-- <br>Patient ID: <b>{{modalPatientId}}</b> -->
+
+            </div>
+           </div>
+            <div class="modal-footer">
+              <div id="doc-info"  >
+                <table class="tabled-data">
+                  <thead>
+                      <tr>
+                          <th>Time</th>
+                          <th>Date</th>
+                          <th>Satus</th>
+                          <th>Given</th>
+                          <th>Follow Up</th>
+                          <th>Pharmacy Verified</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr *ngFor="let medicine of  modalAdministeredMedicines">
+                          <td id="medicineAdminTime" 
+                          (click)="dateTimeSelectedLeave((medicine.ItemLinkDateTime))">{{medicine.ItemTime}}</td>
+                          <td>{{medicine.ItemDate}}</td>
+                          <td>{{medicine.ItemStatus}}</td>
+                          <td>{{medicine.Given}}</td>
+                          <td>{{medicine.FollowUp}}</td>
+                          <td>{{medicine.PharmacyVerified}}</td>
+                          <td id="medicineAdminDateTime">{{medicine.ItemLinkDateTime}}</td>
+                      </tr>
+                  </tbody>
+              </table>
+              </div>
+              <!-- <button type="button" class="btn btn-danger button-raised"  (click)="leave()"    >Close</button> -->
+            </div>
+          </div>
+    </app-modal>

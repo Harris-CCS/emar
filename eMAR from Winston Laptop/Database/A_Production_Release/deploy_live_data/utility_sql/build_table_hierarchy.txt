@@ -1,0 +1,251 @@
+Changed database context to 'emar_dev_base'.
+comments for Script.PostDeployment.sql
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+LVL: 000 SEQ: 001 TBL: dbo.actions
+LVL: 000 SEQ: 002 TBL: dbo.duration_units
+LVL: 000 SEQ: 003 TBL: dbo.fdb_allergy_name
+LVL: 000 SEQ: 004 TBL: dbo.fdb_brand_name
+LVL: 000 SEQ: 005 TBL: dbo.fdb_ndc_info
+LVL: 000 SEQ: 006 TBL: dbo.frequency_calendar
+LVL: 000 SEQ: 007 TBL: dbo.frequency_days
+LVL: 000 SEQ: 008 TBL: dbo.frequency_interval_units
+LVL: 000 SEQ: 009 TBL: dbo.frequency_minutes
+LVL: 000 SEQ: 010 TBL: dbo.frequency_types
+LVL: 000 SEQ: 011 TBL: dbo.global_options
+LVL: 000 SEQ: 012 TBL: dbo.notification_categories
+LVL: 000 SEQ: 013 TBL: dbo.options
+LVL: 000 SEQ: 014 TBL: dbo.prompt_groups
+LVL: 000 SEQ: 015 TBL: dbo.settings
+LVL: 000 SEQ: 016 TBL: dbo.sites
+LVL: 001 SEQ: 001 TBL: dbo.antimicrobial_indication_items
+LVL: 001 SEQ: 002 TBL: dbo.antimicrobial_indications
+LVL: 001 SEQ: 003 TBL: dbo.devices
+LVL: 001 SEQ: 004 TBL: dbo.frequency_schedules
+LVL: 001 SEQ: 005 TBL: dbo.medication_routes
+LVL: 001 SEQ: 006 TBL: dbo.medication_units
+LVL: 001 SEQ: 007 TBL: dbo.medications
+LVL: 001 SEQ: 008 TBL: dbo.order_administration_available_actions
+LVL: 001 SEQ: 009 TBL: dbo.order_available_actions
+LVL: 001 SEQ: 010 TBL: dbo.order_instructions
+LVL: 001 SEQ: 011 TBL: dbo.override_reasons
+LVL: 001 SEQ: 012 TBL: dbo.patients
+LVL: 001 SEQ: 013 TBL: dbo.prompts
+LVL: 001 SEQ: 014 TBL: dbo.site_code_shares
+LVL: 001 SEQ: 015 TBL: dbo.site_options
+LVL: 001 SEQ: 016 TBL: dbo.template_response_rules
+LVL: 001 SEQ: 017 TBL: dbo.users
+LVL: 002 SEQ: 001 TBL: dbo.department_preferred_list_items
+LVL: 002 SEQ: 002 TBL: dbo.frequency_interval_day_times
+LVL: 002 SEQ: 003 TBL: dbo.group_list_items
+LVL: 002 SEQ: 004 TBL: dbo.medication_details
+LVL: 002 SEQ: 005 TBL: dbo.medication_interactions
+LVL: 002 SEQ: 006 TBL: dbo.patient_allergies
+LVL: 002 SEQ: 007 TBL: dbo.patient_home_medications
+LVL: 002 SEQ: 008 TBL: dbo.patient_indicators
+LVL: 002 SEQ: 009 TBL: dbo.patient_problems
+LVL: 002 SEQ: 010 TBL: dbo.preferred_frequency_schedules
+LVL: 002 SEQ: 011 TBL: dbo.preferred_medication_doses
+LVL: 002 SEQ: 012 TBL: dbo.preferred_medication_routes
+LVL: 002 SEQ: 013 TBL: dbo.print_history
+LVL: 002 SEQ: 014 TBL: dbo.prompt_choices
+LVL: 002 SEQ: 015 TBL: dbo.site_formulary
+LVL: 002 SEQ: 016 TBL: dbo.site_formulary_match
+LVL: 002 SEQ: 017 TBL: dbo.templates
+LVL: 002 SEQ: 018 TBL: dbo.user_patients
+LVL: 002 SEQ: 019 TBL: dbo.user_quick_list_items
+LVL: 002 SEQ: 020 TBL: dbo.user_settings
+LVL: 003 SEQ: 001 TBL: dbo.action_route_templates
+LVL: 003 SEQ: 002 TBL: dbo.patient_cart_orders
+LVL: 003 SEQ: 003 TBL: dbo.patient_orders
+LVL: 003 SEQ: 004 TBL: dbo.template_prompt_groups
+LVL: 004 SEQ: 001 TBL: dbo.cart_order_administrations
+LVL: 004 SEQ: 002 TBL: dbo.order_administrations
+LVL: 004 SEQ: 003 TBL: dbo.order_interactions
+LVL: 004 SEQ: 004 TBL: dbo.order_reactions
+LVL: 005 SEQ: 001 TBL: dbo.external_update_queue
+LVL: 005 SEQ: 002 TBL: dbo.notifications
+LVL: 005 SEQ: 003 TBL: dbo.order_administration_notes
+LVL: 005 SEQ: 004 TBL: dbo.order_events
+LVL: 006 SEQ: 001 TBL: dbo.order_event_details
+commands for Script.PostDeployment.sql
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_antimicrobial_indication_items.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_antimicrobial_indications.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_devices.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_fdb_allergy_name.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_fdb_brand_name.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_fdb_ndc_info.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_group_list_items.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_medication_routes.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_medication_units.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_order_instructions.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_override_reasons.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_patient_allergies.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_patient_home_medications.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_patient_indicators.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_patient_orders.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_patient_problems.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_patients.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_site_code_shares.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_site_formulary.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_site_formulary_match.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_site_options.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_sites.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_user_patients.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_user_quick_list_items.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_user_settings.sql
+        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_users.sql
+commands for Script.PostDeployment.sql
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        :r ..\Scripts\Data-Loader\global_data\actions.sql
+        :r ..\Scripts\Data-Loader\global_data\duration_units.sql
+        :r ..\Scripts\Data-Loader\global_data\fdb_allergy_name.sql
+        :r ..\Scripts\Data-Loader\global_data\fdb_brand_name.sql
+        :r ..\Scripts\Data-Loader\global_data\fdb_ndc_info.sql
+        :r ..\Scripts\Data-Loader\global_data\frequency_calendar.sql
+        :r ..\Scripts\Data-Loader\global_data\frequency_days.sql
+        :r ..\Scripts\Data-Loader\global_data\frequency_interval_units.sql
+        :r ..\Scripts\Data-Loader\global_data\frequency_minutes.sql
+        :r ..\Scripts\Data-Loader\global_data\frequency_types.sql
+        :r ..\Scripts\Data-Loader\global_data\global_options.sql
+        :r ..\Scripts\Data-Loader\global_data\notification_categories.sql
+        :r ..\Scripts\Data-Loader\global_data\options.sql
+        :r ..\Scripts\Data-Loader\global_data\prompt_groups.sql
+        :r ..\Scripts\Data-Loader\global_data\settings.sql
+        :r ..\Scripts\Data-Loader\global_data\sites.sql
+        :r ..\Scripts\Data-Loader\site_data\sites.sql
+        :r ..\Scripts\Data-Loader\site_data\antimicrobial_indication_items.sql
+        :r ..\Scripts\Data-Loader\site_data\antimicrobial_indications.sql
+        :r ..\Scripts\Data-Loader\site_data\devices.sql
+        :r ..\Scripts\Data-Loader\site_data\frequency_schedules.sql
+        :r ..\Scripts\Data-Loader\site_data\medication_routes.sql
+        :r ..\Scripts\Data-Loader\site_data\medication_units.sql
+        :r ..\Scripts\Data-Loader\global_data\order_administration_available_actions.sql
+        :r ..\Scripts\Data-Loader\site_data\order_administration_available_actions.sql
+        :r ..\Scripts\Data-Loader\global_data\order_available_actions.sql
+        :r ..\Scripts\Data-Loader\site_data\order_available_actions.sql
+        :r ..\Scripts\Data-Loader\site_data\order_instructions.sql
+        :r ..\Scripts\Data-Loader\site_data\override_reasons.sql
+        :r ..\Scripts\Data-Loader\phi_data\patients.sql
+        :r ..\Scripts\Data-Loader\global_data\prompts.sql
+        :r ..\Scripts\Data-Loader\site_data\site_code_shares.sql
+        :r ..\Scripts\Data-Loader\global_data\site_options.sql
+        :r ..\Scripts\Data-Loader\site_data\site_options.sql
+        :r ..\Scripts\Data-Loader\user_data\users.sql
+        :r ..\Scripts\Data-Loader\site_data\department_preferred_list_items.sql
+        :r ..\Scripts\Data-Loader\site_data\group_list_items.sql
+        :r ..\Scripts\Data-Loader\phi_data\patient_allergies.sql
+        :r ..\Scripts\Data-Loader\phi_data\patient_home_medications.sql
+        :r ..\Scripts\Data-Loader\phi_data\patient_indicators.sql
+        :r ..\Scripts\Data-Loader\phi_data\patient_problems.sql
+        :r ..\Scripts\Data-Loader\site_data\preferred_frequency_schedules.sql
+        :r ..\Scripts\Data-Loader\site_data\preferred_medication_doses.sql
+        :r ..\Scripts\Data-Loader\site_data\preferred_medication_routes.sql
+        :r ..\Scripts\Data-Loader\global_data\prompt_choices.sql
+        :r ..\Scripts\Data-Loader\site_data\site_formulary.sql
+        :r ..\Scripts\Data-Loader\site_data\site_formulary_match.sql
+        :r ..\Scripts\Data-Loader\global_data\templates.sql
+        :r ..\Scripts\Data-Loader\phi_data\user_patients.sql
+        :r ..\Scripts\Data-Loader\user_data\user_quick_list_items.sql
+        :r ..\Scripts\Data-Loader\global_data\user_settings.sql
+        :r ..\Scripts\Data-Loader\user_data\user_settings.sql
+        :r ..\Scripts\Data-Loader\global_data\action_route_templates.sql
+        :r ..\Scripts\Data-Loader\phi_data\patient_orders.sql
+        :r ..\Scripts\Data-Loader\global_data\template_prompt_groups.sql
+commands for Script.PostDeployment.sql
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    drop procedure if exists [dbo].[export_ibex_antimicrobial_indication_items];
+    drop procedure if exists [dbo].[export_ibex_antimicrobial_indications];
+    drop procedure if exists [dbo].[export_ibex_devices];
+    drop procedure if exists [dbo].[export_ibex_fdb_allergy_name];
+    drop procedure if exists [dbo].[export_ibex_fdb_brand_name];
+    drop procedure if exists [dbo].[export_ibex_fdb_ndc_info];
+    drop procedure if exists [dbo].[export_ibex_group_list_items];
+    drop procedure if exists [dbo].[export_ibex_medication_routes];
+    drop procedure if exists [dbo].[export_ibex_medication_units];
+    drop procedure if exists [dbo].[export_ibex_order_instructions];
+    drop procedure if exists [dbo].[export_ibex_override_reasons];
+    drop procedure if exists [dbo].[export_ibex_patient_allergies];
+    drop procedure if exists [dbo].[export_ibex_patient_home_medications];
+    drop procedure if exists [dbo].[export_ibex_patient_indicators];
+    drop procedure if exists [dbo].[export_ibex_patient_orders];
+    drop procedure if exists [dbo].[export_ibex_patient_problems];
+    drop procedure if exists [dbo].[export_ibex_patients];
+    drop procedure if exists [dbo].[export_ibex_site_code_shares];
+    drop procedure if exists [dbo].[export_ibex_site_formulary];
+    drop procedure if exists [dbo].[export_ibex_site_formulary_match];
+    drop procedure if exists [dbo].[export_ibex_site_options];
+    drop procedure if exists [dbo].[export_ibex_sites];
+    drop procedure if exists [dbo].[export_ibex_user_patients];
+    drop procedure if exists [dbo].[export_ibex_user_quick_list_items];
+    drop procedure if exists [dbo].[export_ibex_user_settings];
+    drop procedure if exists [dbo].[export_ibex_users];
+commands for delete_emar_data.sql
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+insert into [#table_order] values(0,1,'dbo','actions',0);
+insert into [#table_order] values(0,2,'dbo','duration_units',0);
+insert into [#table_order] values(0,3,'dbo','fdb_allergy_name',0);
+insert into [#table_order] values(0,4,'dbo','fdb_brand_name',0);
+insert into [#table_order] values(0,5,'dbo','fdb_ndc_info',0);
+insert into [#table_order] values(0,6,'dbo','frequency_calendar',0);
+insert into [#table_order] values(0,7,'dbo','frequency_days',0);
+insert into [#table_order] values(0,8,'dbo','frequency_interval_units',0);
+insert into [#table_order] values(0,9,'dbo','frequency_minutes',0);
+insert into [#table_order] values(0,10,'dbo','frequency_types',0);
+insert into [#table_order] values(0,11,'dbo','global_options',0);
+insert into [#table_order] values(0,12,'dbo','notification_categories',0);
+insert into [#table_order] values(0,13,'dbo','options',0);
+insert into [#table_order] values(0,14,'dbo','prompt_groups',0);
+insert into [#table_order] values(0,15,'dbo','settings',0);
+insert into [#table_order] values(0,16,'dbo','sites',0);
+insert into [#table_order] values(1,1,'dbo','antimicrobial_indication_items',0);
+insert into [#table_order] values(1,2,'dbo','antimicrobial_indications',0);
+insert into [#table_order] values(1,3,'dbo','devices',0);
+insert into [#table_order] values(1,4,'dbo','frequency_schedules',0);
+insert into [#table_order] values(1,5,'dbo','medication_routes',0);
+insert into [#table_order] values(1,6,'dbo','medication_units',0);
+insert into [#table_order] values(1,7,'dbo','medications',0);
+insert into [#table_order] values(1,8,'dbo','order_administration_available_actions',0);
+insert into [#table_order] values(1,9,'dbo','order_available_actions',0);
+insert into [#table_order] values(1,10,'dbo','order_instructions',0);
+insert into [#table_order] values(1,11,'dbo','override_reasons',0);
+insert into [#table_order] values(1,12,'dbo','patients',0);
+insert into [#table_order] values(1,13,'dbo','prompts',0);
+insert into [#table_order] values(1,14,'dbo','site_code_shares',0);
+insert into [#table_order] values(1,15,'dbo','site_options',0);
+insert into [#table_order] values(1,16,'dbo','template_response_rules',0);
+insert into [#table_order] values(1,17,'dbo','users',0);
+insert into [#table_order] values(2,1,'dbo','department_preferred_list_items',0);
+insert into [#table_order] values(2,2,'dbo','frequency_interval_day_times',0);
+insert into [#table_order] values(2,3,'dbo','group_list_items',0);
+insert into [#table_order] values(2,4,'dbo','medication_details',0);
+insert into [#table_order] values(2,5,'dbo','medication_interactions',0);
+insert into [#table_order] values(2,6,'dbo','patient_allergies',0);
+insert into [#table_order] values(2,7,'dbo','patient_home_medications',0);
+insert into [#table_order] values(2,8,'dbo','patient_indicators',0);
+insert into [#table_order] values(2,9,'dbo','patient_problems',0);
+insert into [#table_order] values(2,10,'dbo','preferred_frequency_schedules',0);
+insert into [#table_order] values(2,11,'dbo','preferred_medication_doses',0);
+insert into [#table_order] values(2,12,'dbo','preferred_medication_routes',0);
+insert into [#table_order] values(2,13,'dbo','print_history',0);
+insert into [#table_order] values(2,14,'dbo','prompt_choices',0);
+insert into [#table_order] values(2,15,'dbo','site_formulary',0);
+insert into [#table_order] values(2,16,'dbo','site_formulary_match',0);
+insert into [#table_order] values(2,17,'dbo','templates',0);
+insert into [#table_order] values(2,18,'dbo','user_patients',0);
+insert into [#table_order] values(2,19,'dbo','user_quick_list_items',0);
+insert into [#table_order] values(2,20,'dbo','user_settings',0);
+insert into [#table_order] values(3,1,'dbo','action_route_templates',0);
+insert into [#table_order] values(3,2,'dbo','patient_cart_orders',0);
+insert into [#table_order] values(3,3,'dbo','patient_orders',0);
+insert into [#table_order] values(3,4,'dbo','template_prompt_groups',0);
+insert into [#table_order] values(4,1,'dbo','cart_order_administrations',0);
+insert into [#table_order] values(4,2,'dbo','order_administrations',0);
+insert into [#table_order] values(4,3,'dbo','order_interactions',0);
+insert into [#table_order] values(4,4,'dbo','order_reactions',0);
+insert into [#table_order] values(5,1,'dbo','external_update_queue',0);
+insert into [#table_order] values(5,2,'dbo','notifications',0);
+insert into [#table_order] values(5,3,'dbo','order_administration_notes',0);
+insert into [#table_order] values(5,4,'dbo','order_events',0);
+insert into [#table_order] values(6,1,'dbo','order_event_details',0);
+insert into [#table_order] values(99,1,'dbo','external_ids',0);

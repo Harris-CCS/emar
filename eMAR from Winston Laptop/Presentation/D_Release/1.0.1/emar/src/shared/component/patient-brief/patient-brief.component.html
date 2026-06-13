@@ -1,0 +1,117 @@
+<div class="page-content-wrapper" *ngIf="patient">
+  <div class="patient-container">
+    <div class="patient-data-container">
+      <div class="location">
+        <div class="patient-data-location" [ngStyle]="{
+        'borderColor': patientComponent.getPatientUrgencyColor()}">
+          <div class="patient-location" [innerText]="getPatientLocation()">
+          </div>
+        </div>
+      </div>
+      <div class="patient-data-basic">
+        <div>
+          <!-- <span class="patient-name" [innerText]="patientComponent.getPatientFullName()"></span> -->
+          <span class="patient-name">
+            <a routerLink="/patients/{{patient.id}}/medservice">{{patientComponent.getPatientFullName()}}</a>
+          </span>
+        </div>
+
+        <div>
+          <span *ngIf="patient.complaint"><em>Complaint: </em>{{patient.complaint}}</span>
+        </div>
+        <div>
+          <ul class="horizontal-icon-list">
+            <li *ngIf="patientComponent.checkForData('vitals')">
+              <span placement="bottom-left" ngbTooltip="Click to view Current Vital Signs" container="body">
+                <img *ngIf="patientComponent.checkForData('vitals')" [src]="patientComponent.getVitalSignIconPath()"
+                  class={{patientComponent.vsOverallIndicatorClass}} alt="Vital Signs"
+                  [ngbPopover]="lastVitalSignsTaken" placement="bottom-left" triggers="click" [autoClose]="'outside'"
+                  container="body" [ngClass]="{'action-icons': true}" popoverClass="my-popover">
+              </span>
+            </li>
+            <li *ngIf="patientComponent.checkForData('allergies')">
+              <span placement="bottom-left" ngbTooltip="Click to view Allergies" container="body">
+                <button type="button" class="action-button" placement="bottom-left" triggers="click "
+                  [autoClose]="'outside'" [ngbPopover]="allergies" container="body" popoverClass="my-popover">A</button>
+              </span>
+            </li>
+            <li *ngIf="patientComponent.checkForData('homeMeds')">
+              <span placement="bottom-left" ngbTooltip="Click to view Home Medications" container="body">
+                <button type="button" class="action-button" placement="bottom-left" triggers="click"
+                  [autoClose]="'outside'" [ngbPopover]="homeMeds" container="body" popoverClass="my-popover">M</button>
+              </span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <!-- <div class="patient-indicators">
+        <div class="standard-indicators" *ngIf="patient.nameAlert || patient.withdrawConsent">
+          <ul class="horizontal-icon-list">
+            <li>
+              <img src="../../../assets/img/alert2[1].gif" *ngIf="patient.nameAlert" alt="Name Alert" placement="bottom"
+                ngbTooltip="Name Conflict Alert">
+            </li>
+            <li>
+              <img src="../../../assets/img/privacy[1].gif" *ngIf="patient.withdrawConsent" alt="Consent Withdrawn"
+                placement="bottom" ngbTooltip="Withdrawn Consent">
+            </li>
+          </ul>
+        </div>
+        <div class="custom-indicators" *ngIf="patient.patientIndicators">
+          <ul class="horizontal-icon-list">
+            <li *ngFor="let indicator of patient.patientIndicators">
+              <img *ngIf="indicator.imageSrc" [src]="indicator.imageSrc" onerror="this.style.display='none'"
+                alt="{{indicator.description}}" placement="bottom" ngbTooltip="{{indicator.description}}">
+            </li>
+          </ul>
+        </div>
+      </div> -->
+      <!-- <div *ngIf="patient.patientImageSrc" class='patient-image'>
+        <img [src]="patient.patientImageSrc" onerror="this.style.display='none'" alt="Patient Image">
+      </div> -->
+      <!-- <div class="patient-demo-ids">
+        <div class="patient-data-demographics"> -->
+      <div class="demographics-header">
+        <span *ngIf="patient.age && patient.ageUnits">{{patient.age}} {{patient.ageUnits}}</span>
+        <!-- {{patient.age | Age: patient.age:patient.ageUnits}} -->
+
+        <!-- <span
+              *ngIf="patient.birthDate || patient.dateOfBirth">({{patient.birthDate || patient.dateOfBirth | date: 'MM/dd/yyyy' }})</span> -->
+
+        <span *ngIf="patient.gender"
+          [class]="patientComponent.getPatientGenderIconStyle()"
+          ngbTooltip="{{patientComponent.patientGenderText}}"
+          placement="bottom-left"
+          container="body">{{patientComponent.patientGenderLetter}}</span>
+        <!-- </div> -->
+        <!-- <div [ngStyle]="{'padding-right': '5px'}">
+            <span *ngIf="patient.heightInCm">{{patient.heightInCm}} cm </span>
+            <span *ngIf="patient.weightInKg" [innerText]="patientComponent.appendDisplayValue('weight')"></span>
+          </div> -->
+        <!-- </div> -->
+        <!-- <div class="patient-ids">
+          <span *ngIf=" patient.medicalRecordNumber" placement="bottom"
+            ngbTooltip="Medical Record Number">{{patient.medicalRecordNumber}}</span>
+          <span *ngIf="patient.accountNumber" [innerText]="patientComponent.appendDisplayValue('accountNumber')"
+            placement="bottom" ngbTooltip="Account Number"></span>
+          <span *ngIf="patient.personNumber" [innerText]="patientComponent.appendDisplayValue('personNumber')"
+            placement="bottom" ngbTooltip="Person Number"></span>
+          <span *ngIf="patient.customNumber" [innerText]="patientComponent.appendDisplayValue('customNumber')"
+            placement="bottom" ngbTooltip="Custom Number"></span>
+        </div> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #lastVitalSignsTaken>
+  <simple-table [tableStructure]="patientComponent.vitalsTableStructure"></simple-table>
+</ng-template>
+
+<ng-template #allergies>
+  <simple-table [tableStructure]="patientComponent.allergiesTableStructure"></simple-table>
+</ng-template>
+
+<ng-template #homeMeds>
+  <simple-table [tableStructure]="patientComponent.homeMedsTableStructure"></simple-table>
+</ng-template>

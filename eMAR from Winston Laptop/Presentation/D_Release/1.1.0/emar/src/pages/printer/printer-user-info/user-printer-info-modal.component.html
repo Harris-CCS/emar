@@ -1,0 +1,136 @@
+<app-modal modalId="userPrinterInfo" blocking="true" closebtn="true" [modalTitle]="modalTitle">
+    <div *ngIf="!isDone" class="print-border" >
+       
+
+        <div class="dialog-title text-left"
+        >Print Options    
+        <span class="help float-end" [ngbPopover]="popContent" triggers="mouseenter:mouseleave" popoverTitle="User/Printer info">
+        </span>    
+        </div>
+        <div class="dialog-footer" >
+            
+                <ng-template #popContent >
+                    <div class="helpUserPrinter"> 
+                    Current: 
+                    <br>&nbsp; User Name: <b>{{userDisplayName}}</b>  
+                    <br>&nbsp; User Id: &nbsp; &nbsp; &nbsp; <b> {{userId}} </b> 
+                    <br>&nbsp; Site Name: <b> {{siteName}} </b>  
+                    <br>&nbsp; Site Id: &nbsp; &nbsp; &nbsp; <b> {{siteId}} </b>                                        
+                    <br>
+                    Default: 
+                    <br>&nbsp; Site printer:  <b>{{defaultSitePrinter}}</b>
+                    <br>&nbsp; Printer used:  <b>{{lastPrinterUsedDescription}}</b>
+                    <br>&nbsp; Doc type:  &nbsp; &nbsp;  <b>{{documentType}}</b>
+                    <br>
+                </div>
+                </ng-template>
+
+                <ng-template #printTypeInform >
+                    <div class="helpUserPrinter "> 
+                    Document type
+                </div>
+                </ng-template>
+                <ng-template #printerLocation >
+                    <div class="helpUserPrinter "> 
+                    Location of printer
+                </div>
+                </ng-template>                
+                <div id="printer-doc-info" >
+                    
+                    <span class="print-col-heading1" 
+                    [ngbPopover]="printTypeInform" triggers="mouseenter:mouseleave"> 
+                    Print</span>
+                    <div id="doc-info"  >
+                    <li> {{documentType}}                    
+                        <span>
+                            <svg width="1em" height="1em" viewBox="0 0 16 16"
+                            class="navigation-chevron-down" fill="currentColor"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                            d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
+                            </svg>
+                        </span>
+                    <ul id="doctypeList"(click)="selectChangeDocumentTyperHandler($event)"> 
+                        <li *ngFor="let printRte of printRoute"> 
+                            {{printRte}}
+                           </li> 
+                   <!--      <li>pdf</li>
+                        <li>jpeg</li>
+                        <li>tiff</li>  
+                        <li>png</li>  -->
+                    </ul>
+                    </li>
+                    </div>
+
+                   <span class="print-col-heading1"
+                   [ngbPopover]="printerLocation" triggers="mouseenter:mouseleave"> 
+                   Print to</span>   
+                    <div id="printer-info"   > 
+                    <li >{{lastPrinterUsedDescription}} 
+                        <span>
+                            <svg width="1em" height="1em" viewBox="0 0 16 16"
+                            class="navigation-chevron-down" fill="currentColor"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                            d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
+                            </svg>
+                        </span>
+                    <ul id="printerList" (click)="selectChangePrinterHandler($event)">  
+                        <li *ngFor="let printer of printerSelectList"> 
+                         {{printer}}
+                        </li>
+                        <!-- <li>prn001 admin</li>
+                        <li>prn002 administration</li>
+                        <li>Room 100 prt01</li>
+                        <li>Room 100 prt02</li>
+                        <li>Room 101 prt01</li> 
+                        <li>N Station 0001</li>
+                        <li>N Station 0009</li>
+                        <li>N Station 0003</li>
+                        <li>N Station 0004</li>
+                        <li>N Station 0005</li>
+                        <li>Pharm prt00001</li>
+                        <li>Pharm prt00002</li>         -->
+                    </ul>
+                </li>
+                </div> 
+                </div> 
+            <button 
+            [ngClass]="{'button-processing': isProcessing}"
+            class="btn btn-danger button-raised" 
+            (click)="printReport('page-content-id')"
+        >   Print</button>
+        <span [ngStyle]="{'display': 'flex', 'width': '4px', 'justify-content':'space-between'}">
+        </span>
+            <button 
+                class="btn btn-secondary button-raised"
+                (click)="leave()"            
+            >Cancel</button>
+            <!-- <button 
+                class="button-secondary button-raised"
+                (click)="changeProperties()"            
+            >Modify</button> -->
+            <!-- <button class="btn btn-outline-secondary" [ngbPopover]="popContent" triggers="mouseenter:mouseleave" popoverTitle="User/Printer info">
+                Help
+              </button> -->
+        </div>
+   
+
+</div>
+    <div *ngIf="isSuccess">
+        <div class="dialog-result-title">
+            SUCCESS
+        </div>
+        <div class="dialog-result-message">
+            All printers have been listed for user {{patientId}}
+        </div>
+    </div>
+    <div *ngIf="hasError">
+        <div class="dialog-result-title"> 
+            Oops!
+        </div>
+        <div class="dialog-result-message">
+            {{errorMessage}}
+        </div>
+    </div>
+</app-modal>

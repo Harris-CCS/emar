@@ -1,0 +1,36 @@
+<app-modal modalId="five-rights" blocking="true" closebtn="true">
+    <div class="pd-container">
+        <div class="pd-table pd-top-border">
+            <div class="pd-row">
+                <div class="pd-cell pd-five-label">Patient:</div>
+                <div class="pd-cell pd-five-data">{{ patient?.lastName }}, {{ patient?.firstName }}</div>
+            </div>
+            <div class="pd-row">
+                <div class="pd-cell pd-five-label">Medication:</div>
+                <div class="pd-cell pd-five-data">{{ order?.medication.displayName }}</div>
+            </div>
+            <div class="pd-row">
+                <div class="pd-cell pd-five-label">Dose:</div>
+                <div class="pd-cell pd-five-data">{{ order?.dose }} {{ order?.doseUnit?.printName }}</div>
+            </div>
+            <div class="pd-row">
+                <div class="pd-cell pd-five-label">Route:</div>
+                <div class="pd-cell pd-five-data">{{ order?.medicationRoute?.routeName }}</div>
+            </div>
+            <div class="pd-row">
+                <div class="pd-cell pd-five-label">Schedule:</div>
+                <div class="pd-cell pd-five-data">{{ order?.frequencySchedule?.scheduleName }}</div>
+            </div>
+        </div>
+
+        <div class="pd-top-border" [ngStyle]="{'textAlign':'right', 'padding-top': '5px'}">
+            <button class="btn btn-secondary" type="submit" (click)="onCancel()" ngbTooltip="Cancel">
+                Cancel
+            </button>
+            &nbsp;
+            <button class="btn btn-danger" type="submit" (click)="onSubmit()" ngbTooltip="Confirm and continue">
+                Confirm
+            </button>
+        </div> 
+    </div> 
+</app-modal>

@@ -1,0 +1,72 @@
+<div [formGroup]="detailForm" *ngIf="medComponentId === 0">
+    <!-- <span class="subheader">
+        <span>Other Details</span>
+    </span> -->
+    <span class="item" [ngStyle]="{'display':'flex','padding-top':'0'}">
+        <span>
+            <div *ngIf="diagnoses && diagnoses.length > 0" class="form-group">
+                <label for="diagnosis">Diagnosis</label><br>
+                <div ngbDropdown class="d-inline-block dropdown-select" container="body">
+                    <button class=" btn btn-outline-dark" id="diagnosis" ngbDropdownToggle>
+                        {{ selectedDiagnosis? selectedDiagnosis: "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;" }}
+                    </button>
+                    <div ngbDropdownMenu aria-labelledby="diagnosis">
+                        <button ngbDropdownItem (click)="changeSelectedDiagnosis(null)">
+                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                        </button>
+                        <button ngbDropdownItem *ngFor="let diagnosis of diagnoses"
+                            (click)="changeSelectedDiagnosis(diagnosis)">
+                            {{ diagnosis.problemName }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </span>
+
+        <!-- <span *ngIf="mandatoryIndication"> -->
+        <span>
+            <div *ngIf="mandatoryIndication && indications && indications.length > 0" class="form-group">
+                <label for="diagnosis">Antimicrobial Indication</label><br>
+                <span class="requirement" *ngIf="detailForm.get('antimicrobialIndication').invalid">*&nbsp;
+                </span>
+                <div ngbDropdown class="d-inline-block dropdown-select" #indicationDrop="ngbDropdown"
+                    [ngbPopover]="reqIndication" [openDelay]="1000" container="body" triggers="mouseenter:mouseleave"
+                    [disablePopover]="detailForm.get('antimicrobialIndication').valid">
+                    <button class="btn" [ngClass]="{'border-danger': detailForm.get('antimicrobialIndication').invalid,
+                    'btn-outline-dark':selectedIndication !== ''}" id="indication" ngbDropdownToggle>
+                        {{ selectedIndication? selectedIndication.description || selectedIndication : "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;" }}
+                    </button>
+                    <div ngbDropdownMenu aria-labelledby="indication">
+                        <button ngbDropdownItem (click)="changeSelectedIndication('')">
+                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                        </button>
+                        <button ngbDropdownItem *ngFor="let indication of indications"
+                            (click)="changeSelectedIndication(indication)">
+                            {{ indication.description }}
+                        </button>
+                        <div class="input-group flex-nowrap">
+                            <input type="text" id="otherIndication" placeholder="Other, please describe"
+                                formControlName="antimicrobialIndicationFreeText"
+                                (keyup.enter)="changeSelectedIndication(detailForm.get('antimicrobialIndicationFreeText').value);indicationDrop.close()"
+                                (keydown.tab)="changeSelectedIndication(detailForm.get('antimicrobialIndicationFreeText').value);indicationDrop.close()">
+                            <div class="input-group-append">
+                                <button class="btn btn-secondary" type="button" [ngStyle]="{'backgroundColor': '#e9ecef'}"
+                                    (click)="changeSelectedIndication(detailForm.get('antimicrobialIndicationFreeText').value);indicationDrop.close()">
+                                    <svg width="1.3em" height="1.3em" viewBox="0 0 16 16"
+                                        class="bi bi-plus-lg text-secondary" fill="currentColor"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </span>
+    </span>
+</div>
+
+<ng-template #reqIndication><span class="requirement req-popover">
+        {{detailForm.getError('error','antimicrobialIndication')}} </span>
+</ng-template>

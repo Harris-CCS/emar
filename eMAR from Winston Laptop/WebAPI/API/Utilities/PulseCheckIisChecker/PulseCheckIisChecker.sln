@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31624.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PulseCheckIisChecker", "PulseCheckIisChecker.csproj", "{BDAA3B28-FE90-469B-A914-C35C82CCD169}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BDAA3B28-FE90-469B-A914-C35C82CCD169}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDAA3B28-FE90-469B-A914-C35C82CCD169}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDAA3B28-FE90-469B-A914-C35C82CCD169}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDAA3B28-FE90-469B-A914-C35C82CCD169}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8CF1CF69-DDDD-4B62-BCEF-A15B328B5C56}
+	EndGlobalSection
+EndGlobal

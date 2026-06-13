@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30128.74
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "emar", "emar.sqlproj", "{682C50CE-CC91-4CF4-8147-1BE00CE883FA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{682C50CE-CC91-4CF4-8147-1BE00CE883FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{682C50CE-CC91-4CF4-8147-1BE00CE883FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{682C50CE-CC91-4CF4-8147-1BE00CE883FA}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{682C50CE-CC91-4CF4-8147-1BE00CE883FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{682C50CE-CC91-4CF4-8147-1BE00CE883FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{682C50CE-CC91-4CF4-8147-1BE00CE883FA}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {ACB4BA42-9779-4869-BB21-256244C4E3F5}
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 2
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://ros-tfs-px01.picis.com:8080/tfs/emar
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = emar.sqlproj
+		SccLocalPath1 = .
+	EndGlobalSection
+EndGlobal

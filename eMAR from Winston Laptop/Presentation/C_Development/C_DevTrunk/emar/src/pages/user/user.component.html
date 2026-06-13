@@ -1,0 +1,3 @@
+<header-user *ngIf="this.authService.isLoggedIn" [user]="userStoreService.user$ | async" [title]="pageTitle$|async"></header-user>
+
+<router-outlet *ngIf="hasLoaded"></router-outlet>

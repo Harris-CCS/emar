@@ -1,0 +1,54 @@
+<div class="dialog-createOrder">
+    <div class="form">
+        <!-- <form id="createOrderForm" [formGroup]="composerMedForm"> -->
+        <form id="createOrderForm">
+            <div class="form-group">
+                <div class="partialDiv">
+                    <div class="form-part">
+                        <div class="form-column">
+                            <med-form [medOptions]="options" [medComponentId]="composerMedFormIndex">
+                            </med-form>
+                            <!-- <detail-form [medComponentId]="composerMedFormIndex"
+                                [antimicrobialIndicationRequired]="options.antimicrobialIndicationRequired">
+                            </detail-form> -->
+                        </div>
+                        <div class="form-column">
+                            <frequency-form [medComponentId]="composerMedFormIndex"
+                                [preferredFrequencies]="options.availableFormStrength[selectedFormStrengthId].preferredFrequencies"
+                                [modalId]="modalId">
+                            </frequency-form>
+                            <calendar-form [composerMedForm]="composerMedForm" [medComponentId]="composerMedFormIndex"
+                                [modalId]="modalId">
+                            </calendar-form>
+                            <!-- <date-time-modal></date-time-modal> -->
+                            <date-time-modal [modalId]="modalId"></date-time-modal>
+                            <div *ngIf="singleOrderOnly()" [ngStyle]="{'text-align':'right'}">
+                                <span ngbTooltip="Add Order To Quick List" [openDelay]="500" container="body">
+                                    <button class="button-secondary button-raised action-button"
+                                        (click)="addOrderToQuickList()" [disabled]="invalidOrder()"
+                                        [ngbPopover]="addOrderToQuickListResult"
+                                        container="body"
+                                        placement="top" 
+                                        popoverClass="my-popover" 
+                                        [closeDelay]="2000" 
+                                        triggers="click:mouseleave"
+                                        >
+                                        &#10025;
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="dialog-footer">
+        </div>
+        <!-- <div><small><i>{{ composerMedForm.value | json }}</i></small></div> -->
+    </div>
+</div>
+
+<ng-template #addOrderToQuickListResult>
+    <span [ngStyle]="{'font-weight': 'bold', 'font-size': '1.1rem'}"
+        [ngClass]="addOrderToQuickListResultText.includes('Success') ? 'success' : 'fail'">{{addOrderToQuickListResultText}}</span>
+</ng-template>

@@ -1,0 +1,78 @@
+<div style="padding:7px; background-color:#C7C7C7">
+    <div class="btn-close pd-top-corner" (click)="onCancel()" [ngStyle]="{'cursor': 'pointer'}" title="Close">
+        &#9747;
+    </div>
+    <div class="font-weight-bold">
+        {{ order.medication.displayName }}
+    </div>
+    <div class="font-weight-bold" style="font-size:1.15em">
+        <i>Dose:</i>
+        {{ ( order.dose + ' ' + order.doseUnit?.printName + ', ' +
+                                order.medicationRoute?.routeName + ', ' + 
+                                order.frequencySchedule?.scheduleName ) }}
+    </div>
+</div>
+
+<div style="border:1px solid #7C7C7C">
+    <div class="administrations-table">
+        <table class="table table-striped">
+            <thead>
+                <tr class="thead-dark">
+                    <th colspan="6" class="text-center">
+                        <div *ngIf="order.orderAdministrations.length">Administrations</div>
+                        <div *ngIf="!order.orderAdministrations.length">No Administration</div>
+                    </th>
+                </tr>
+                <tr *ngIf="order.orderAdministrations.length">
+                    <th scope="col" class="text-center">Time</th>
+                    <th scope="col" class="text-center">Status</th>
+                    <th scope="col" class="text-center">Given</th>
+                    <th scope="col" class="text-center">Follow Up</th>
+                    <th scope="col" class="text-center">Pharmacy Verified</th>
+                    <th scope="col" class="text-center">Co-signed</th>                    
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let administration of order.orderAdministrations">
+                    <td class="nextLink text-center"
+                        (click)="dateTimeSelectedLeave(administration)">
+                        <span *ngIf="administration.administrationDatetime!==''">
+                            {{administration.administrationDatetime | dateTimePipe: "timeDateDisplay": siteUTCOffset | replace: " " : " &nbsp;&nbsp; "}}
+                        </span>
+                        <span *ngIf="administration.administrationDatetime==null">
+                            {{administration.administrationScheduledDatetime | dateTimePipe: "timeDateDisplay": siteUTCOffset | replace: " " : " &nbsp;&nbsp;  "}}
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        {{getOrderAdministrationStatus(administration, 'tooltipText')}}
+                    </td>
+                    <td class="text-center">
+                        <span *ngIf="administration.administrationStatus.toUpperCase() == 'GIVEN'" class="pd-prn">
+                            &#x2713;
+                        </span>
+                        <span *ngIf="administration.administrationStatus.toUpperCase() == 'ONGOING' && administration.administrationDatetime != ''" class="pd-prn">
+                            &#x2713;
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <span *ngIf="hasFollowUp(administration)"  class="pd-prn">
+                            &#x2713;
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <!-- 0 not needed , 1 needed, 2 done and on the order -->
+                        <span *ngIf="order.pharmacyVerificationStatus == 2" class="pd-prn">
+                            &#x2713;
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <span *ngIf="hasCoSigned(administration)"  class="pd-prn">
+                            &#x2713;
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+

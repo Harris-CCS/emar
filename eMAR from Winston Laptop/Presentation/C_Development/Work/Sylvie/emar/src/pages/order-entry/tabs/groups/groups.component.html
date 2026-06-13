@@ -1,0 +1,9 @@
+<simple-order-list
+    [listName]="groups()"
+    [items]="groupsOrders()"
+    [orderOnClick1] = "addToCart"
+    [orderOnClick2] = "editOrder"
+    [auth] = auth
+    [isLoading] = "isLoading"
+    [selectedGroup] = "selectedGroup"
+></simple-order-list>

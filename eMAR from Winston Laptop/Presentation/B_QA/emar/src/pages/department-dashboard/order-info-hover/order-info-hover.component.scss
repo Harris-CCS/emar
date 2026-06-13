@@ -1,0 +1,30 @@
+@import "../../../variables.scss";
+
+.pd-order-summary-column {
+    width: 100%;
+    min-height: 10rem;
+    // border-right: solid 1px $gray-L-20;
+    // padding-bottom: 5rem; // same height pd-summary-bottom
+    margin: 1.2rem; // same height pd-summary-bottom
+    position: relative;
+}
+
+// pd-summary-bottom {
+//     height: 5rem;
+//     overflow: hidden;
+// }
+
+.btn-close {
+    font-weight: bold;
+    margin: 0.6rem;
+}
+.pd-medication {
+    color: $e-blue-yonder;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.schedule-time {
+    padding: 0 4px;
+    color: gray;
+}

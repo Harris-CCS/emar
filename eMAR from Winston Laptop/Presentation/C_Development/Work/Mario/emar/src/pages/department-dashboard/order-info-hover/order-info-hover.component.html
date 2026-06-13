@@ -1,0 +1,47 @@
+<div class="d-flex flex-nowrap">
+    <div class="p-2 pd-order-summary-column">
+        <div *ngFor="let item of ordersDisplay | keyvalue">
+            <span 
+                class="pd-medication" 
+                (click)="launchPatientAdministrations(patientId)">
+                {{ item.value.medication.displayName }} {{ item.value.dose }} {{ item.value.doseUnit?.unitName }}
+            </span>
+
+            <div [ngStyle]="{'margin-bottom': '2.7rem'}">
+                <div>
+                    {{ item.value.medicationRoute?.routeName }} - {{item.value.frequencySchedule?.scheduleName }}
+                    {{ item.value.duration ? ' for ' +  item.value.duration + ' ' + item.value.durationUnit?.name : '' }}
+                </div>
+
+                <div>
+                    <span>Scheduled at:</span>
+                    <span *ngFor="let admin of adminsDisplay[item.key]" class="schedule-time">
+                        {{admin.administrationScheduledDatetime | date: "HH:mm": siteUTCOffset}} [{{admin.administrationStatus}}]
+                    </span>
+                </div>
+
+                <div>
+                    {{ item.value.orderNotes }}
+                </div>
+                <span class="{{ getOrderStatus(item.value, 'textClass') }}">
+                    <b>{{ getOrderStatus(item.value, 'text') }}</b>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="p-2 pd-actions-column">
+        <!-- <div *ngFor="let order of orders" id="administrations{{order.id}}">
+            <div *ngFor="let admin of order.orderAdministrations">
+                {{admin.administrationScheduledDatetime | date: "MM/dd/yy": siteUTCOffset}} 
+                {{admin.administrationScheduledDatetime | date: "HH:mm": siteUTCOffset}}
+                {{admin.administrationStatus}}
+            </div>
+        </div> -->
+    </div>
+
+    <div class="p-2 -p-relative">
+        <span class="btn-close" (click)="close()" [ngStyle]="{'cursor': 'pointer'}" title="Close">
+            &#9747;
+        </span>
+    </div>
+</div>

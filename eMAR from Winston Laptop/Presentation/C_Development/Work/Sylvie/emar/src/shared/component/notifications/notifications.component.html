@@ -1,0 +1,33 @@
+<span class="subheader"><span>Possible OverDue</span></span>
+<div *ngFor="let notification of notifications">
+    <a class="notif-link" href="{{ notification.actionUrl}}" *ngIf="notification.category.toLowerCase() == 'possible overdue'">
+        <span class="notif-patient">{{ notification.patient.firstName }} {{ notification.patient.lastName }}</span>
+         - 
+         <span class="notif-medication">{{ notification.body| truncate:50 }}</span>
+        [{{ notification.eventTime | dateTimePipe: "friendly" }}]
+    </a>
+</div>
+
+<span class="subheader"><span>Pending</span></span>
+<div *ngFor="let notification of notifications">
+    <a class="notif-link" href="{{ notification.actionUrl}}" *ngIf="notification.category.toLowerCase() == 'pending'">
+        <span class="notif-patient">
+            {{ notification.patient.firstName }} {{ notification.patient.lastName }}
+        </span>
+         - 
+         <span class="notif-medication">
+            {{ notification.body | truncate:50 }}
+        </span>
+        [{{ notification.eventTime | dateTimePipe: "friendly" }}]
+    </a>
+</div>
+
+<span class="subheader"><span>Follow-up</span></span>
+<div *ngFor="let notification of notifications">
+    <a class="notif-link" href="{{ notification.actionUrl}}" *ngIf="notification.category.toLowerCase() == 'follow-up'">
+        <span class="notif-patient">{{ notification.patient.firstName }} {{ notification.patient.lastName }}</span>
+         - 
+         <span class="notif-medication">{{ notification.body| truncate:50 }}</span>
+        [{{ notification.eventTime | dateTimePipe: "friendly" }}]
+    </a>
+</div>

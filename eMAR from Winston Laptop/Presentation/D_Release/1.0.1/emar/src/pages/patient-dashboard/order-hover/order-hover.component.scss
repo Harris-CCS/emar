@@ -1,0 +1,46 @@
+@import "../../../variables.scss";
+
+.pd-actions-column {
+    width: 1%;
+    display: table; 
+    margin-left: 0.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    min-width: 9.5rem;
+}
+.pd-btn-admin {
+    width: 11rem;
+    margin: 0.1rem;
+    white-space: nowrap;
+}
+::ng-deep .pd-admin-box {
+    min-width: 50rem;
+    font-size: 1rem;
+}
+.pd-actions-line {
+    display: table-row;
+    white-space: nowrap;
+}
+.pd-summary-column {
+    width: 100%;
+    min-height: 10rem;
+    border-right: solid 1px $gray-L-20;
+    padding-bottom: 5rem; // same height pd-summary-bottom
+    position: relative;
+}
+pd-summary-bottom {
+    height: 5rem;
+    overflow: hidden;
+}
+
+.btn-close {
+    font-weight: bold;  
+}
+.pd-medication {
+    color: $e-blue-yonder;
+    font-weight: bold;
+}
+
+.noauth {
+    cursor: not-allowed;
+}

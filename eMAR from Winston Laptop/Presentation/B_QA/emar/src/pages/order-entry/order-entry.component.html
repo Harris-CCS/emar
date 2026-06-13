@@ -1,0 +1,168 @@
+<!-- <app-bootstrap></app-bootstrap> -->
+<div class="page-content patient-details" [ngStyle]="{'overflow':'hidden', 'overflow-y':'hidden'}">
+    <div>
+        <!-- <header-patient [patient]="selectedPatient()"></header-patient> -->
+        <header-patient [patient]="patientStoreService.patient$ | async"></header-patient>
+    </div>
+    <!--
+        * Need the 'position': relative so that the modal container will only encompass
+          the 'orders' part of the screen.  It goes to the nearest positioned ancestor.
+        * Need the 'overflow-vertical-off/on' because the page needs to allow scrollbars
+          if the modal is not open.  If it is open, then they need to be disabled so that the
+          user cannot scroll behind the modal container.
+     -->
+    <div *ngIf="performModalActions('medComposer', 'orders-container')" id="orders-container"
+        [ngStyle]="{'position': 'relative', 'width': '100%', 'height':'100%'}"
+        [ngClass]="{'overflow-vertical-off': isModalVisible('medComposer'), 'overflow-vertical-on': true}">
+        <div class="page-content-wrapper">
+            <!-- <composer-med-modal></composer-med-modal> -->
+            <!-- <composer-main></composer-main> -->
+            <div class="orders">
+                <div class="orders-new" [ngClass]="{'noauth': this.hasMedicationServicePermissionReadOnly}">
+                    <!-- <h3>NEW ORDERS <span class="count">{{cartStoreService.totalCount$ | async}}</span></h3> -->
+                    <h3>NEW ORDERS
+                        <span [ngClass]="{'count': (cartStoreService.totalCount$ | async)}">
+                            {{(cartStoreService.totalCount$ | async) ? (cartStoreService.totalCount$ | async) : ''}}
+                        </span>
+                    </h3>
+                    <span class="no-data" style="display:none">No New Orders</span>
+                    <div>
+                        <med-search></med-search>
+                    </div>
+                    <div id="orders-cart">
+                        <order-cart-list [patientId]="patientId"></order-cart-list>
+                        <!--[items]="cartListOrders()" -->
+                    </div>
+                </div>
+                <div class="orders-current">
+                    <div style="display:flex; justify-content: space-between;">
+                        <h3>CURRENT ORDERS
+                            <!-- <span [ngClass]="{'count': (cartStoreService.totalCount$ | async)}">
+                                {{(cartStoreService.totalCount$ | async) ? (cartStoreService.totalCount$ | async) : ''}}
+                            </span> -->
+                        </h3>
+                        <h3 style="padding-right: 2.6rem;" 
+                            [ngbPopover]="popContent" 
+                            [popoverTitle]="popTitle"
+                            popoverClass="tip"
+                            triggers="mouseenter:mouseleave"
+                        >ACTIONS</h3>
+                        <ng-template #popTitle>💡 Tip</ng-template>
+                        <ng-template #popContent popoverClass="tip">Click the status icon to perform an action</ng-template>
+
+                    </div>
+
+                    <div class="orders-current-wrapper" [ngClass]="{'extended': this.hasMedicationServicePermissionReadOnly}">
+                        <ul class="list-group">
+                            <!-- <li class="list-group-item" *ngFor="let ord of currentOrders"> -->
+                            <li class="list-group-item"
+                                *ngFor="let ord of patientMedOrderStoreService.patientMedOrder$ | async"
+                                [ngClass]="{'inactive': !IsActiveOrder(ord)}">
+                                <div class="order-row" [attr.data-status]="ord.orderStatus">
+                                    <div>
+                                        <interactions [order]="ord" placement="right bottom-left"></interactions>
+                                        <!--<span
+                                            [ngClass]="{'allergy-dot': ord.allergyReactions?.length, 'placeholder-dot': ord.allergyReactions?.length === 0 || !ord.allergyReactions}"
+                                            placement="right" ngbTooltip={{ord.allergyReactionsText}}>
+                                        </span>
+                                        <span
+                                            [ngClass]="{'drug-dot' : ord.orderInteractions?.length, 'placeholder-dot': ord.orderInteractions?.length === 0 || !ord.orderInteractions}"
+                                            placement="right" ngbTooltip={{ord.drugInteractionsText}}>
+                                        </span>
+                                        -->
+                                        <span>
+                                            {{ord.displayName}} {{ord.displayRoute | uppercase}} {{ord.displayDose}}
+                                            {{ord.displayDoseUnit}} {{ord.displayFrequency}}
+                                            <span *ngIf="ord.duration">{{ ' for ' + ord.duration + ' ' + ord.durationUnit.name}}</span>
+                                            <!-- {{ord.displayName}} {{ord.displayRoute | uppercase}} {{ord.displayDose}} {{ord.displayDoseUnit}} {{ord.displayFrequency}} -->
+                                            <span *ngIf="ord.orderNotes?.length > 0"
+                                                style="margin-left:5px;"
+                                                container="body"
+                                                [ngbTooltip]="instruction">
+                                                <img src="../../../assets/icon/instruction.svg">
+                                            </span>
+                                            <ng-template #instruction>
+                                                <div style="text-align: left; white-space: pre-line;">
+                                                    {{ ord.orderNotes }}
+                                                </div>
+                                            </ng-template>
+                                        </span>
+                                        <span class="details">{{ord.addDatetime | date: 'HH:mm': timeZoneOffset}} <span class="minor">on</span>
+                                            {{ord.addDatetime | date: "MM/dd/yy": timeZoneOffset}}, <span class="minor">Ordering physician:</span>
+                                            {{ord.orderingPhysicianUser?.lastName}}, {{ord.orderingPhysicianUser?.firstName}}
+                                        </span>
+                                    </div>
+
+                                    <div class="pd-relative pd-line pd-center status" [ngStyle]="{'min-width':'3.5rem'}">
+                                        <img [src]="getOrderStatus(ord, 'icon')"
+                                            [ngbTooltip]="getOrderStatus(ord, 'text')"
+                                            [ngbPopover]="orderButtonPopover"
+                                            popoverClass="pd-admin-box"
+                                            placement="bottom bottom-right bottom-left right-bottom left-bottom"
+                                            [ngStyle]="{'cursor': 'pointer'}"
+                                            container="body">
+                                        <ng-template #orderButtonPopover>
+                                            <order-hover-common [order]="ord" [admin]="null" [actions]="ord?.availableActions"></order-hover-common>
+                                        </ng-template>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="lists">
+                <div class="toggle">
+                    <span 
+                        [ngClass]="{'active': qlSelected}" 
+                        (click)="onSelectTab('list-quick-orders');quickListComponent.loadTab();">Quick List</span>
+                    <!-- <span 
+                        [ngClass]="{'active': dpSelected, 'inValid': !hasDeptPreferredDefined}"
+                        (click)="onSelectTab('list-dept-preferred-orders')">Dept Preferred List</span> -->
+                    <span 
+                        [ngClass]="{'active': dptSelected, 'inValid': !hasDeptPreferredDefined}"
+                        (click)="onSelectTab('list-dept-preferred-orders-with-tab')">Dept Preferred List</span>
+                    <span 
+                        [ngClass]="{'active': gSelected}" 
+                        (click)="onSelectTab('list-groups-orders');groupsComponent.loadTab();">Groups</span>
+                </div>
+
+                <div class="lists-wrapper">
+                    <div id="list-quick-orders" [ngClass]="{'hidden': !qlSelected}">
+                        <quick-list #quickListComponent [auth] = !hasMedicationServicePermissionReadOnly [select]=qlSelected></quick-list>
+                    </div>
+                    <!-- <div id="list-dept-preferred-orders" [ngClass]="{'hidden': !dpSelected}">
+                        <dept-preferred 
+                            (isTabValid)="isTabValidHandler($event)"
+                            [auth] = !hasMedicationServicePermissionReadOnly>
+                        </dept-preferred>
+                    </div> -->
+                    <div id="list-dept-preferred-orders-with-tab" [ngClass]="{'hidden': !dptSelected}">
+                        <dept-preferred-with-tab
+                            (isTabValid)="isTabValidHandler($event)"
+                            [auth] = !hasMedicationServicePermissionReadOnly>
+                        </dept-preferred-with-tab>
+                    </div>
+                    <div id="list-groups-orders" [ngClass]="{'hidden': !gSelected}">
+                        <groups #groupsComponent [auth] = !hasMedicationServicePermissionReadOnly
+                            [select]=gSelected
+                            [selectedGroup]=gSelectedGroup>
+                        </groups>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--
+<app-modal [title]="modalTitle">
+    <order-form></order-form>
+</app-modal>
+-->
+
+<!-- <composer-med-modal></composer-med-modal> -->
+<interaction-modal></interaction-modal>
+<delete-all-cart-orders-modal></delete-all-cart-orders-modal>
+<sign-cart-order-modal></sign-cart-order-modal>
+<given-template-modal></given-template-modal>

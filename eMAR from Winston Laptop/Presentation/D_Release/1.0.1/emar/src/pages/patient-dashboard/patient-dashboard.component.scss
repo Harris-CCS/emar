@@ -1,0 +1,178 @@
+@import "../../variables.scss";
+
+.page-content-wrapper {
+    flex-direction: column;
+}
+.pd-interval, .pd-unit {
+    float: left;
+    height: 100%;
+}
+.pd-btn {
+    padding: 0.2rem 0.2rem;
+}
+.pd-relative {
+    position: relative;
+}
+.pd-prn {
+    font-size: 1.5rem;
+}
+.ngb-dp-navigation-chevron {
+    border-style: solid;
+    border-width: .2em .2em 0 0;
+    display: inline-block;
+    width: .75em;
+    height: .75em;
+    margin-left: .25em;
+    margin-right: .15em;
+    -webkit-transform: rotate(-135deg);
+    transform: rotate(-135deg);
+}
+.right .ngb-dp-navigation-chevron {
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+    margin-left: .15em;
+    margin-right: .25em;
+}
+.pd-stat-col {
+    display: block;
+}
+.pd-center { // works only for td
+    text-align: center;
+    vertical-align: middle;
+}
+.pd-null-column {
+    position: absolute;
+    background-color:rgba(0, 0, 0, 0.05);
+    left: -25px;
+    width: 25px;
+    top: 0;
+    bottom:0;
+}
+.pd-line {
+    border: 1px solid #C7C7C7;
+    // background-color: lighten($e-orange, 35%);
+    // opacity: 50%; opacity will be set for content too - so for now rgb
+    background-color: rgb(255, 244, 233, 0.4)
+}
+
+.pd-time { /* 5 characters */
+    width: 50px;
+    text-align: center;
+    font-size: 10px;
+}
+.pd-full {
+    padding-left: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    height: 100%;
+}
+.pd-content {
+    padding-top: 0.75rem;
+    text-align: center;
+}
+.pd-sm {
+    padding: 0 0.2rem;
+}
+.table-my-striped tr:nth-of-type(even), .table2 thead {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+.table-my-striped {
+    border-bottom: 1px solid #C7C7C7;
+}
+.table2 th {
+    padding: 0.5rem;
+    text-align: center;
+    border-top: 1px solid #C7C7C7;
+}
+.pd-header {
+    padding: 0.75rem;
+}
+.pd-sort {
+    padding-left: 3rem;
+    padding-right: 0.5rem;;
+}
+.table-hover tbody tr:hover {
+    background-color: #deeff5;
+}
+.debug th, .debug td {
+    border: 1px solid red;
+}
+table.debug {
+    border-collapse: collapse;
+}
+
+.pd-btn-admin {
+    width: 9rem;
+    margin: 0.1rem;
+}
+::ng-deep .pd-admin-box {
+    min-width: 30rem;
+    font-size: 1rem;
+}
+::ng-deep .pd-admin-box .popover-body{
+    padding: 0;
+}
+
+.pd-grid2 {
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    display: flex;
+}
+.page-content-wrapper {
+    position: relative;
+    min-height: 10px;
+}
+
+.pd-grid thead {
+    position: sticky;
+    position: -webkit-sticky;
+    top: 0;
+}
+.pd-cancelled {
+    text-decoration: line-through;
+}
+/* try to simulate the 2 lines of the med name as heigh:100% does not work */
+_:-ms-fullscreen, .ie-special { 
+    min-height: 2rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+}
+.nextLink {
+    cursor: pointer;
+    color: $e-blue-yonder;
+}
+.dueLink {
+    cursor: pointer;
+    color: red;
+}
+
+.rx-verification {
+    padding-right: 0.2rem;
+}
+
+.action-processing {
+    color: transparent !important;
+    position: relative;
+}
+
+.action-processing::after {
+    border: 2px solid #999;
+    background: white;
+    position: absolute;
+    top: 0;
+    left: -0.7em;
+    right: 0;
+    bottom: 0;
+    width: 16px;
+    height: 16px;
+    margin: auto;
+    border-left-color: #000;
+    border-radius: 100%;
+    animation: spin 0.65s infinite linear;
+    content: '';
+}
+
+.action-processing img {
+    display: none;
+}

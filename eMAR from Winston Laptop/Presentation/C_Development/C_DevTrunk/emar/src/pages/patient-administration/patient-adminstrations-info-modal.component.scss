@@ -1,0 +1,121 @@
+.modal-content {
+  display:inline-block;
+  position: relative;
+  width: 900px;
+  height: 600px;
+  padding: 2px;
+  margin: 4px;
+  border: 2px;
+  border-color: rgb(15, 15, 99);
+  border-style: solid;
+  background-color: lightgray;
+  color: black;
+}
+#modal-container-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+ 
+#patient-info {
+ 
+    width: 200px;
+    padding: 2px;
+    margin: 4px;
+    border: 2px;
+    border-color: white;
+    border-style: solid;
+    background-color: white;
+    color: black;
+  }
+  #medicine-info-link {
+ 
+    color:rgb(0, 140, 255);
+    font-weight: bold;
+  }
+  #medicine-info {
+ 
+    width: 400px;
+    padding: 2px;
+    margin: 4px;
+    border: 2px;
+    border-color: white;
+    border-style: solid;
+    background-color: white;
+    color: black;
+  }
+  .tabled-data {
+    overflow: scroll;
+    display:inline-block;
+    position: relative;
+    height: 400px;
+    width: 750px;
+    padding: 0px;
+    margin: 4px;
+    border: 2px;
+    border-color: rgb(15, 15, 99);
+    border-style: solid;
+    background-color: white;
+    color: black;
+    text-align: center; 
+    margin-right: 60px;
+  }
+  .dialog-title {
+    font-size: 20px;
+    //border-bottom: solid 1px rgba(53, 53, 53, 0.26);
+    padding: 20px;
+    padding-bottom: 20px;
+}
+.print-border {
+  border: 2px solid #999;
+  border-left-color: white;
+  border-right-color:  white;
+}
+table  {
+  border: 1px solid white;
+}
+ td {
+  border: 1px solid black;
+  width: 150px;
+}
+thead, th {
+  padding: 5px;
+  width: 150px;
+  color:white;
+  position:sticky;
+  top: 0;
+
+  background: #0077ab;
+}
+
+tr:hover {
+  background-color: #e9f2f5;
+}
+ tr:nth-of-type(even), thead {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+tr:nth-of-type(even):hover {
+  background-color: #e9f2f5;
+}
+#medicineAdminTime:hover {
+  cursor: pointer;
+  pointer-events: auto;
+  background-color: #cfedf8;
+}
+#medicineAdminDateTime  {
+  display:none;
+}
+#medicineAdminTime  {
+  color:rgb(0, 140, 255);
+  font-weight: bold;
+}
+.close-btn {
+  display:block;
+  // float: right; 
+  margin-left: 890px;
+  color: black; 
+  font-size: 20px;  
+  font-weight: 500;
+  margin-right: 4px;
+  cursor:pointer;
+}

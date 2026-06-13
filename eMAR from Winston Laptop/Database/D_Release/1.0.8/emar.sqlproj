@@ -1,0 +1,365 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>emar</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{682c50ce-cc91-4cf4-8147-1be00ce883fa}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql130DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath>
+    </RootPath>
+    <RootNamespace>emar</RootNamespace>
+    <AssemblyName>emar</AssemblyName>
+    <ModelCollation>1033, CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>False</SqlServerVerification>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+    <IncludeSchemaNameInFileName>False</IncludeSchemaNameInFileName>
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <SqlTargetName>emar</SqlTargetName>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="Tables" />
+    <Folder Include="Scripts" />
+    <Folder Include="Scripts\Pre-Deployment" />
+    <Folder Include="Scripts\Post-Deployment" />
+    <Folder Include="Programmability" />
+    <Folder Include="Programmability\Stored Procedures" />
+    <Folder Include="Programmability\Functions" />
+    <Folder Include="Programmability\Functions\Table-values Functions" />
+    <Folder Include="Programmability\Functions\Scalar-values Functions" />
+    <Folder Include="Views" />
+    <Folder Include="Views\Triggers" />
+    <Folder Include="Scripts\Data-Loader" />
+    <Folder Include="Security" />
+    <Folder Include="Security\Logins" />
+    <Folder Include="Scripts\Data-Loader\global_data" />
+    <Folder Include="Scripts\Data-Loader\export_procedures" />
+    <Folder Include="ibex_custom_updates" />
+    <Folder Include="ibex_custom_updates\Tables" />
+    <Folder Include="ibex_custom_updates\Triggers" />
+    <Folder Include="ibex_custom_updates\Views" />
+    <Folder Include="ibex_custom_updates\Database_Configuration" />
+    <Folder Include="ibex_custom_updates\Stored_Procedures" />
+    <Folder Include="Tables\Triggers" />
+    <Folder Include="Programmability\Types\" />
+    <Folder Include="Programmability\Types\User-Defined Table Types\" />
+    <Folder Include="ibex_custom_updates\Functions" />
+    <Folder Include="ibex_custom_updates\Functions\Scalar-values Functions" />
+    <Folder Include="ibex_custom_updates\Functions\Table-values Functions" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Tables\users.sql" />
+    <Build Include="Tables\patients.sql" />
+    <Build Include="Tables\external_ids.sql" />
+    <Build Include="Programmability\Functions\Table-values Functions\get_external_id.sql" />
+    <Build Include="Programmability\Functions\Table-values Functions\get_internal_id.sql" />
+    <Build Include="Tables\patient_indicators.sql" />
+    <Build Include="Views\SchemaDictionary.sql" />
+    <Build Include="Tables\site_code_shares.sql" />
+    <Build Include="Tables\sites.sql" />
+    <Build Include="Tables\user_settings.sql" />
+    <Build Include="Tables\settings.sql" />
+    <None Include="Scripts\Post-Deployment\diagram_patients.sql" />
+    <None Include="Scripts\Post-Deployment\diagram_security.sql" />
+    <None Include="Scripts\Data-Loader\global_data\options.sql" />
+    <None Include="Scripts\Data-Loader\global_data\frequency_calendar.sql" />
+    <None Include="Scripts\Data-Loader\global_data\frequency_days.sql" />
+    <None Include="Scripts\Data-Loader\global_data\frequency_interval_units.sql" />
+    <None Include="Scripts\Data-Loader\global_data\frequency_minutes.sql" />
+    <None Include="Scripts\Data-Loader\global_data\frequency_types.sql" />
+    <Build Include="Tables\department_preferred_list_items.sql" />
+    <Build Include="Tables\options.sql" />
+    <Build Include="Tables\site_options.sql" />
+    <Build Include="Tables\patient_allergies.sql" />
+    <Build Include="Tables\patient_home_medications.sql" />
+    <Build Include="Tables\site_formulary.sql" />
+    <Build Include="Tables\site_formulary_match.sql" />
+    <Build Include="Tables\user_quick_list_items.sql" />
+    <Build Include="Tables\medication_routes.sql" />
+    <Build Include="Tables\patient_cart_orders.sql" />
+    <Build Include="Tables\override_reasons.sql" />
+    <Build Include="Tables\patient_orders.sql" />
+    <Build Include="Tables\order_administrations.sql" />
+    <Build Include="Tables\order_administration_notes.sql" />
+    <Build Include="Tables\actions.sql" />
+    <Build Include="Tables\order_events.sql" />
+    <Build Include="Tables\order_event_details.sql" />
+    <Build Include="Tables\action_route_templates.sql" />
+    <Build Include="Tables\templates.sql" />
+    <Build Include="Tables\prompt_choices.sql" />
+    <Build Include="Tables\prompt_groups.sql" />
+    <Build Include="Tables\prompts.sql" />
+    <Build Include="Tables\template_prompt_groups.sql" />
+    <Build Include="Tables\cart_order_administrations.sql" />
+    <Build Include="Programmability\Stored Procedures\delimited_split_8k.sql" />
+    <Build Include="Security\Logins\emarapiuser.sql" />
+    <Build Include="Tables\group_list_items.sql" />
+    <Build Include="Programmability\Functions\Scalar-values Functions\ibex_date_to_offset_date.sql" />
+    <Build Include="Tables\fdb_ndc_info.sql" />
+    <Build Include="Tables\fdb_brand_name.sql" />
+    <Build Include="Tables\fdb_allergy_name.sql" />
+    <Build Include="Tables\medication_units.sql" />
+    <Build Include="Programmability\Functions\Table-values Functions\get_code_share_site.sql" />
+    <Build Include="Programmability\Stored Procedures\pc_fdb_get_drc_info.sql" />
+    <Build Include="Programmability\Stored Procedures\create_FDB_search.sql" />
+    <Build Include="Tables\antimicrobial_indication_items.sql" />
+    <Build Include="Tables\antimicrobial_indications.sql" />
+    <Build Include="Tables\frequency_calendar.sql" />
+    <Build Include="Tables\frequency_days.sql" />
+    <Build Include="Tables\frequency_interval_day_times.sql" />
+    <Build Include="Tables\frequency_interval_units.sql" />
+    <Build Include="Tables\frequency_minutes.sql" />
+    <Build Include="Tables\frequency_schedules.sql" />
+    <Build Include="Tables\frequency_types.sql" />
+    <Build Include="Views\frequency_schedules_view.sql" />
+    <Build Include="Programmability\Stored Procedures\frequency_calendar_build.sql" />
+    <Build Include="Programmability\Stored Procedures\frequency_minutes_build.sql" />
+    <Build Include="Programmability\Stored Procedures\get_frequency_schedule_items.sql" />
+    <Build Include="Tables\medication_interactions.sql" />
+    <Build Include="Tables\order_interactions.sql" />
+    <Build Include="Tables\preferred_frequency_schedules.sql" />
+    <Build Include="Tables\preferred_medication_doses.sql" />
+    <Build Include="Tables\preferred_medication_routes.sql" />
+    <Build Include="Programmability\Functions\Table-values Functions\escape_sql.sql" />
+    <Build Include="Programmability\Stored Procedures\pc_fdb_meds_search.sql" />
+    <Build Include="Tables\patient_problems.sql" />
+    <Build Include="Tables\order_instructions.sql" />
+    <None Include="Scripts\Post-Deployment\sql_agent_job.sql" />
+    <Build Include="Programmability\Stored Procedures\update_weekly_usage_rolling_average.sql" />
+    <Build Include="Tables\medication_details.sql" />
+    <Build Include="Tables\medications.sql" />
+    <Build Include="Programmability\Types\User-Defined Table Types\MedicationItemsType.sql" />
+    <Build Include="Programmability\Stored Procedures\update_medication_id_list.sql" />
+    <Build Include="Programmability\Stored Procedures\update_medication_id_list_wrapper.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_antimicrobial_indication_items.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_antimicrobial_indications.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_patient_home_medications.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_patient_allergies.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_sites.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_site_formulary.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_site_formulary_match.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_group_list_items.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_patient_orders.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_patients.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_user_quick_list_items.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_fdb_allergy_name.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_fdb_brand_name.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_fdb_ndc_info.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_site_code_shares.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_medication_routes.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_medication_units.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_users.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_order_instructions.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_override_reasons.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_patient_indicators.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_patient_problems.sql" />
+    <Build Include="Tables\user_patients.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_user_patients.sql" />
+    <Build Include="Tables\order_reactions.sql" />
+    <Build Include="Views\drug_interactions_view.sql" />
+    <Build Include="Programmability\Stored Procedures\pc_fdb_get_drug_interactions.sql" />
+    <None Include="Scripts\Post-Deployment\sql_agent_job_order_administrations.sql" />
+    <Build Include="Views\allergy_reactions_view.sql" />
+    <Build Include="Views\Triggers\allergy_reactions_view_iou.sql" />
+    <Build Include="Programmability\Stored Procedures\generate_order_administrations.sql" />
+    <None Include="Programmability\Functions\Table-values Functions\get_antimicrobial_required_fdb.sql" />
+    <None Include="ibex_custom_updates\Tables\emar_update_queue.sql" />
+    <None Include="ibex_custom_updates\Triggers\emar_users_d.sql" />
+    <None Include="ibex_custom_updates\Triggers\emar_users_i.sql" />
+    <None Include="ibex_custom_updates\Triggers\emar_users_u.sql" />
+    <None Include="ibex_custom_updates\Triggers\emar_sites_i.sql" />
+    <None Include="ibex_custom_updates\Triggers\emar_sites_d.sql" />
+    <None Include="ibex_custom_updates\Triggers\emar_sites_u.sql" />
+    <None Include="ibex_custom_updates\Triggers\emar_patients_d.sql" />
+    <None Include="ibex_custom_updates\Triggers\emar_patients_i.sql" />
+    <None Include="ibex_custom_updates\Triggers\emar_patients_u.sql" />
+    <None Include="ibex_custom_updates\Triggers\emar_patient_indicators_d.sql" />
+    <None Include="ibex_custom_updates\Triggers\emar_patient_indicators_i.sql" />
+    <None Include="ibex_custom_updates\Triggers\emar_patient_indicators_u.sql" />
+    <None Include="ibex_custom_updates\Triggers\emar_patient_problems_d.sql" />
+    <None Include="ibex_custom_updates\Triggers\emar_patient_problems_u.sql" />
+    <None Include="ibex_custom_updates\Triggers\emar_patient_problems_i.sql" />
+    <None Include="ibex_custom_updates\Triggers\emar_patient_allergies_d.sql" />
+    <None Include="ibex_custom_updates\Triggers\emar_patient_allergies_i.sql" />
+    <None Include="ibex_custom_updates\Triggers\emar_patient_allergies_u.sql" />
+    <None Include="ibex_custom_updates\Triggers\emar_patient_medications_d.sql" />
+    <None Include="ibex_custom_updates\Triggers\emar_patient_medications_i.sql" />
+    <None Include="ibex_custom_updates\Triggers\emar_patient_medications_u.sql" />
+    <Build Include="Tables\order_administration_available_actions.sql" />
+    <Build Include="Tables\order_available_actions.sql" />
+    <None Include="Scripts\Data-Loader\global_data\order_administration_available_actions.sql" />
+    <None Include="Scripts\Data-Loader\global_data\order_available_actions.sql" />
+    <Build Include="Tables\template_response_rules.sql" />
+    <Build Include="Tables\external_update_queue.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_user_settings.sql" />
+    <None Include="Scripts\Data-Loader\global_data\settings.sql" />
+    <None Include="Scripts\Data-Loader\global_data\actions.sql" />
+    <Build Include="Views\frequency_schedules_export_view.sql" />
+    <Build Include="Tables\duration_units.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_site_options.sql" />
+    <None Include="Scripts\Data-Loader\global_data\duration_units.sql" />
+    <Build Include="Tables\devices.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_devices.sql" />
+    <Build Include="Views\get_code_share_site_view__frequency_schedules.sql" />
+    <Build Include="Views\get_code_share_site_view__medication_routes.sql" />
+    <Build Include="Views\get_code_share_site_view__medication_units.sql" />
+    <Build Include="Views\get_code_share_site_view__order_instructions.sql" />
+    <Build Include="Tables\print_history.sql" />
+    <None Include="Scripts\Data-Loader\global_data\sites.sql" />
+    <None Include="Scripts\Data-Loader\global_data\prompt_groups.sql" />
+    <None Include="Scripts\Data-Loader\global_data\action_route_templates.sql" />
+    <None Include="Scripts\Data-Loader\global_data\prompt_choices.sql" />
+    <None Include="Scripts\Data-Loader\global_data\prompts.sql" />
+    <None Include="Scripts\Data-Loader\global_data\template_prompt_groups.sql" />
+    <None Include="Scripts\Data-Loader\global_data\templates.sql" />
+    <Build Include="Tables\global_options.sql" />
+    <None Include="Scripts\Data-Loader\global_data\global_options.sql" />
+    <Build Include="Tables\notifications.sql" />
+    <None Include="Scripts\Data-Loader\global_data\notification_categories.sql" />
+    <Build Include="Tables\notification_categories.sql" />
+    <Build Include="Programmability\Stored Procedures\generate_notifications.sql" />
+    <Build Include="Views\prompt_groups_view.sql" />
+    <Build Include="Views\templates_view.sql" />
+    <Build Include="Views\templates_prompt_groups_views.sql" />
+    <None Include="ibex_custom_updates\Views\emar_users_retrieve_view.sql" />
+    <None Include="ibex_custom_updates\Database_Configuration\enable_broker.sql" />
+    <None Include="ibex_custom_updates\Stored_Procedures\emar_patient_allergies_retrieve_sp.sql" />
+    <None Include="ibex_custom_updates\Stored_Procedures\emar_patient_medications_retrieve_sp.sql" />
+    <None Include="ibex_custom_updates\Stored_Procedures\emar_update_queue_maintenance.sql" />
+    <Build Include="Views\preferred_medication_doses_export_view.sql" />
+    <Build Include="Views\preferred_medication_routes_export_view.sql" />
+    <Build Include="Views\preferred_frequency_schedules_export_view.sql" />
+    <None Include="ibex_custom_updates\Views\emar_patients_retrieve_view.sql" />
+    <Build Include="Tables\Triggers\patients.emar_patients_deactivation_i.sql" />
+    <Build Include="Tables\Triggers\patients.emar_patients_deactivation_u.sql" />
+    <Build Include="Programmability\Stored Procedures\load_antimicrobial_indication_items.sql" />
+    <Build Include="Programmability\Stored Procedures\load_antimicrobial_indications.sql" />
+    <Build Include="Programmability\Stored Procedures\load_sites.sql" />
+    <None Include="ibex_custom_updates\Views\emar_archived_patients_retrieve_view.sql" />
+    <None Include="ibex_custom_updates\Triggers\emar_patients__hst_d.sql" />
+    <None Include="ibex_custom_updates\Triggers\emar_patients__hst_i.sql" />
+    <None Include="ibex_custom_updates\Triggers\emar_patients__hst_u.sql" />
+    <Build Include="Programmability\Stored Procedures\load_devices.sql" />
+    <Build Include="Programmability\Stored Procedures\load_medication_units.sql" />
+    <Build Include="Programmability\Stored Procedures\load_medication_routes.sql" />
+    <Build Include="Programmability\Stored Procedures\load_order_instructions.sql" />
+    <Build Include="Programmability\Stored Procedures\load_override_reasons.sql" />
+    <Build Include="Programmability\Stored Procedures\load_site_code_shares.sql" />
+    <Build Include="Programmability\Stored Procedures\load_site_formulary.sql" />
+    <Build Include="Programmability\Stored Procedures\load_site_formulary_match.sql" />
+    <Build Include="Programmability\Stored Procedures\load_site_options.sql" />
+    <Build Include="Programmability\Stored Procedures\load_user_quick_list_items.sql" />
+    <None Include="Scripts\Post-Deployment\sql_agent_job_table_updater.sql" />
+    <Build Include="Programmability\Functions\Table-values Functions\get_prompt_sequence_from_template.sql" />
+    <Build Include="Programmability\Stored Procedures\populate_match_table_by_site.sql" />
+    <Build Include="Programmability\Stored Procedures\recalculate_match_for_med_fdb.sql" />
+    <Build Include="Tables\Triggers\emar__site_formulary__d.sql" />
+    <Build Include="Tables\Triggers\emar__site_formulary__i.sql" />
+    <Build Include="Tables\Triggers\emar__site_formulary__u.sql" />
+    <None Include="ibex_custom_updates\Views\emar_patient_indicators_retrieve_view.sql" />
+    <None Include="ibex_custom_updates\Views\emar_personnel_retrieve_view.sql" />
+    <None Include="Scripts\Data-Loader\export_procedures\export_ibex_site_formulary_differences.sql" />
+    <None Include="Scripts\Post-Deployment\sql_agent_job_queue_cleanup.sql" />
+    <None Include="Scripts\Post-Deployment\sql_agent_job_clear_notifications.sql" />
+    <None Include="Scripts\Post-Deployment\sql_agent_job_delete_administrations.sql" />
+    <Build Include="Tables\pharmacy_notifications.sql" />
+    <Build Include="Tables\pharmacy_notification_orders.sql" />
+    <Build Include="Tables\pharmacy_notification_administrations.sql" />
+    <Build Include="Tables\medications_high_risk.sql" />
+    <Build Include="Programmability\Stored Procedures\populate_medications_high_risk.sql" />
+    <Build Include="Programmability\Functions\Scalar-values Functions\strip_chart_markup_from_string.sql" />
+    <Build Include="Programmability\Stored Procedures\add_missing_med_doc_to_edpc.sql" />
+    <None Include="ibex_custom_updates\Functions\Scalar-values Functions\emar_is_device_pulled_in_from_ibex.sql" />
+    <None Include="ibex_custom_updates\Views\emar_devices_to_pull_in_from_ibex.sql" />
+    <Build Include="Tables\future_administrations_reschedule.sql" />
+    <Build Include="Programmability\Stored Procedures\get_time_zone_offset.sql" />
+    <Build Include="Programmability\Functions\Table-values Functions\ids_find_patient_discrepancy_fn.sql" />
+    <Build Include="Tables\ids_discrepancy_retries.sql" />
+    <Build Include="Programmability\Stored Procedures\ids_quality_control_job.sql" />
+    <None Include="ibex_custom_updates\Functions\Scalar-values Functions\IfStringIsNullOrWhiteSpaceThen.sql" />
+    <None Include="ibex_custom_updates\Functions\Table-values Functions\emar_patient_allergies_retrieve_fn.sql" />
+    <None Include="ibex_custom_updates\Functions\Table-values Functions\emar_patient_medications_retrieve_fn.sql" />
+    <None Include="ibex_custom_updates\Tables\emar_alg_medication_id_cache.sql" />
+    <None Include="ibex_custom_updates\Tables\emar_hie_alg_medication_id_cache.sql" />
+    <None Include="ibex_custom_updates\Tables\emar_hie_meds_medication_id_cache.sql" />
+    <None Include="ibex_custom_updates\Tables\emar_update_queue_errors.sql" />
+    <None Include="ibex_custom_updates\Stored_Procedures\emar_alg_medication_id_update.sql" />
+    <None Include="ibex_custom_updates\Stored_Procedures\emar_update_queue_log_error.sql" />
+    <None Include="ibex_custom_updates\Triggers\emar_alg_u.sql" />
+    <None Include="ibex_custom_updates\Triggers\emar_hie_alg_u.sql" />
+    <None Include="ibex_custom_updates\Triggers\emar_hie_meds_u.sql" />
+    <Build Include="Programmability\Functions\Scalar-values Functions\convert_pc_routed_gen_id_to_routed_gen_id.sql" />
+    <Build Include="Programmability\Functions\Scalar-values Functions\get_medication_detail_name_for_pc_routed_gen_id.sql" />
+    <None Include="ibex_custom_updates\Tables\ids_entries_stamped_as_complete.sql" />
+    <None Include="ibex_custom_updates\Stored_Procedures\complete_hung_ids_entries.sql" />
+    <Build Include="Programmability\Functions\Scalar-values Functions\map_ibex_time_zone_name_to_emar_time_zone_name.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="localhost.publish.xml" />
+    <None Include="ROS-57C-DX01.publish.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PreDeploy Include="Scripts\Script.PreDeployment.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
+    <None Include="Scripts\Post-Deployment\sql_agent_job_complete_long_running_ids.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\130\SqlSchemas\master.dacpac">
+      <HintPath>$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\130\SqlSchemas\master.dacpac</HintPath>
+      <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
+      <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
+    </ArtifactReference>
+  </ItemGroup>
+  <ItemGroup>
+    <SqlCmdVariable Include="deploy_version">
+      <DefaultValue>1.1.1.1</DefaultValue>
+      <Value>$(SqlCmdVar__2)</Value>
+    </SqlCmdVariable>
+  </ItemGroup>
+</Project>

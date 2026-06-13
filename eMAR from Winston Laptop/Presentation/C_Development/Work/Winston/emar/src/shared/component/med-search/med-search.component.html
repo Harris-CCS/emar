@@ -1,0 +1,28 @@
+<div class="input-group mb-3">  
+  <!--<div class="input-group-prepend">-->
+  <div ngbDropdown container="body">
+    <button class="btn btn-outline-primary" ngbDropdownToggle>{{ selectedSourceDisplay() }}</button>
+    <div ngbDropdownMenu>
+      <button ngbDropdownItem *ngFor="let source of sources" (click)="changeSource(source.value)">{{source.display}}</button>
+    </div>
+  </div>
+  <input 
+    id="typeahead-http"
+    type="text" 
+    class="form-control"
+
+    [class.is-invalid]="searchFailed"
+    [(ngModel)]="model"
+    [ngbTypeahead]="search"
+    placeholder=""
+    (selectItem)="onSelect($event, input, this.selectedSource)"
+    [inputFormatter]="inputFormat" 
+    [resultFormatter]="resultFormat"
+    
+    #input />
+    <div class="search-status form-text text-muted" *ngIf="searching" >searching...</div>
+    <div class="invalid-feedback" *ngIf="searchFailed">Results not found</div>
+</div>
+
+
+  

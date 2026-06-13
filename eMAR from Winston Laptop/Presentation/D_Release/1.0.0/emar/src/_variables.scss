@@ -1,0 +1,101 @@
+@use 'sass:color';
+
+// basic color
+$e-red: #FF0000;
+$e-yellow: #FBEC5D;
+$e-blue: #64AAF5;
+$e-purple: #CC33CC;
+$e-orange: #FC9A39;
+$e-pink: #FFC6FF;
+$e-gray: #C2C7CC;
+
+$e-blood-orange: #FF3300;
+
+$e-blue-yonder: #0077ab;
+
+// bootstrap overwrite
+$font-size-root: 12px; // = 1rem for bootstrap and emar
+$theme-colors: (
+    "primary": $e-blue-yonder,
+    "warning": $e-orange,
+);
+
+// emar
+$e-body-background-color: #EDEDED;
+$e-page-gray-background: #FBFBFB;
+$e-primary-button-color: $e-red;
+$e-secondary-button-color: $e-gray;
+
+
+
+/* Customizing */
+
+/* Harris Color Palette*/
+$blue:         #009ade;
+$blueGreen:    #3eae89;
+$blueViolet:   #4672bc;
+$violet:       #8050a0;
+$red:          #cc3e3d;
+$redViolet:    #a9466a;
+$brown:        #735940;
+$orange:       #f58424;
+$yellow:       #fdcd28;
+$yellowOrange: #f9a527;
+$yellowGreen:  #bdc734;
+$green:        #71bf43;
+$gray:         #7f7f7f;
+$black:        #000000;
+$white:        #ffffff;
+
+/* tints and shades */
+$blue-L-20: lighten($blue, 20%);
+$blue-L-10: lighten($blue, 10%);
+$blue-D-10: darken($blue, 10%);
+$blue-D-20: darken($blue, 20%);
+
+$red-L-40: lighten($red, 40%);
+$red-L-30: lighten($red, 30%);
+$red-L-20: lighten($red, 20%);
+$red-L-10: lighten($red, 10%);
+$red-D-10: darken($red, 10%);
+$red-D-20: darken($red, 20%);
+$red-D-30: darken($red, 30%);
+
+$yellow-L-40: lighten($yellow, 40%);
+$yellow-L-30: lighten($yellow, 30%);
+$yellow-L-20: lighten($yellow, 20%);
+$yellow-L-10: lighten($yellow, 10%);
+$yellow-D-10: darken($yellow, 10%);
+$yellow-D-20: darken($yellow, 20%);
+$yellow-D-30: darken($yellow, 30%);
+
+$gray-L-20: lighten($gray, 20%);
+
+/* button effects */
+$primary-button: $red-D-10;
+$primary-button-hover: $red;
+
+$secondary-button: $red-L-10;
+$secondary-button-hover: $red;
+
+/* tab effects */
+$primary-tab: $blue-D-10;
+$secondary-tab: color.adjust($blue-D-10, $lightness: 8%);
+
+/* Allergy Reaction Warning */
+$allergyReaction: $yellow;
+$allergyReactionMinor: $yellow-D-10;
+
+/* Drug Interaction Warning */
+$drugInteraction: $red;
+$drugInteractionMinor: $red-D-10;
+
+/* order status, administration status */
+$e-status-pending: $e-red;
+$e-status-ongoing: $black;
+$e-status-scheduled: $black;
+$e-status-given: #009933;
+$e-status-held: $yellow;
+$e-status-due: $e-red;
+$e-status-acknowledged: $e-blue-yonder;
+$e-status-cancelled: $gray;

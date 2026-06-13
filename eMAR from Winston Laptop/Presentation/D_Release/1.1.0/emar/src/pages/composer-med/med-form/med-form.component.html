@@ -1,0 +1,215 @@
+<div [formGroup]="medForm">
+  <div>
+    <!-- Strength -->
+    <span class="subheader">
+      <span>STRENGTH & FORM</span>
+    </span>
+    <div class="item">
+      <div class="form-group">
+        <span class="table-container">
+          <div class="table-row">
+            <div class="table-cell">
+              <div ngbDropdown class="d-inline-block dropdown-select">
+                <button class="btn btn-outline-dark" id="strength" [disabled]="disableFormStrengthEdit()"
+                  ngbDropdownToggle>
+                  {{ selectedFormStrengthOptions.formStrengthName? selectedFormStrengthOptions.formStrengthName: "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;" }}
+                </button>
+                <div ngbDropdownMenu aria-labelledby="strength">
+                  <button ngbDropdownItem *ngFor="let strength of medOptions.availableFormStrength; let i = index"
+                    [value]="selectedFormStrengthName" (click)="changeSelectedStrength(i, true)">
+                    {{ strength.formStrengthName }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </span>
+      </div>
+    </div>
+  </div>
+  <!-- Dose and Unit -->
+  <div>
+    <span class="subheader">
+      <span>DOSE</span>
+    </span>
+    <div class="item">
+      <div class="form-group">
+        <span class="table-container">
+          <div class="table-row">
+            <div class="table-cell">
+              <span class="requirement" *ngIf="medForm.get('dose').invalid">*&nbsp;
+              </span>
+              <span>
+                <input type="number" [ngClass]="{'border-danger': medForm.get('dose').invalid || !selectedDose}"
+                  formControlName="dose" required id="dose" name="dose" min="1" max="9999"
+                  (change)="changeSelectedDose($event.target.value)" [value]="selectedDose" [ngbPopover]="reqDose"
+                  [openDelay]="0" placement="bottom-left" triggers="mouseenter:mouseleave"
+                  [disablePopover]="medForm.get('dose').valid">
+              </span>
+              <span class="requirement" *ngIf="medForm.get('doseUnitName').invalid">*&nbsp;
+              </span>
+              <input type="search" required class="form-control unit-lookup" [ngbTypeahead]="searchDoseUnit"
+                [ngClass]="{'border-danger': medForm.get('doseUnitName').invalid}"
+                (selectItem)="changeSelectedDoseUnitByLookup($event.item)"
+                (keyup.enter)="changeSelectedDoseUnitByLookup($event.target.value)"
+                placeholder="{{(!selectedDoseUnitData || !selectedDoseUnitData.unitName || !selectedDoseUnitName) ? '' :selectedDoseUnitName}}"
+                (focusout)="changeSelectedDoseUnitByLookup($event.target.value)" [editable]="false"
+                [ngbTooltip]="selectedDU"
+                [disableTooltip]="!selectedDoseUnitName || (selectedDoseUnitName && selectedDoseUnitName.length < 7)"
+                formControlName="doseUnitName" (focus)="focus$.next($any($event).target.value)"
+                (click)="click$.next($any($event).target.value)" #duInstance="ngbTypeahead" [ngbPopover]="reqDoseUnit"
+                [openDelay]="0" placement="bottom-left" triggers="mouseenter:mouseleave mouseenter:keydown"
+                [disablePopover]="medForm.get('doseUnitName').valid">
+            </div>
+            <div class="table-cell center">
+              <button class="btn btn-outline-warning btn-sm preferred happy-button"
+                [ngClass]="{'happy-button-selected': selectedDoseName === dose.dose + ' ' + dose.doseUnit.unitName}"
+                *ngFor="let dose of selectedFormStrengthOptions.preferredDoses"
+                (click)="changeSelectedDose(dose,'happyButton')">
+                {{ dose.dose}} {{dose.doseUnit.unitName }}
+              </button>
+            </div>
+          </div>
+        </span>
+      </div>
+    </div>
+  </div>
+  <!-- Route of Administration -->
+  <div>
+    <span class=" subheader">
+      <span>ROUTE</span>
+    </span>
+    <div class="item">
+      <div class="form-group">
+        <span class="table-container">
+          <div class="table-row">
+            <div class="table-cell">
+              <span class="requirement" *ngIf="medForm.get('routeName').invalid">*&nbsp;
+              </span>
+              <input type="search" required class="form-control route-lookup" [ngbTypeahead]="searchRouteOfAdmin"
+                [ngClass]="{'border-danger': medForm.get('routeName').invalid}"
+                (selectItem)="changeSelectedRouteByLookup($event.item)"
+                placeholder="{{(!selectedRouteOfAdministrationData || !selectedRouteOfAdministrationData.routeName || !selectedRouteName) ? '' :selectedRouteName}}"
+                (keyup.enter)="changeSelectedRouteByLookup($event.target.value)" [ngbTooltip]="selectedRoute"
+                [disableTooltip]="!selectedRouteName || (selectedRouteName && selectedRouteName.length < 14)"
+                (focusout)="changeSelectedRouteByLookup($event.target.value)" formControlName="routeName"
+                (focus)="focusRoute$.next($any($event).target.value)" [editable]="false"
+                (click)="clickRoute$.next($any($event).target.value)" #routeInstance="ngbTypeahead"
+                [ngbPopover]="reqRoute" [openDelay]="0" placement="bottom-left" triggers="mouseenter:mouseleave mouseenter:keydown"
+                [disablePopover]="medForm.get('routeName').valid">
+            </div>
+            <div class="table-cell center">
+              <button class="btn btn-outline-warning btn-sm preferred happy-button"
+                [ngClass]="{'happy-button-selected': (selectedRouteOfAdministrationData && selectedRouteOfAdministrationData.routeName === route.routeName)}"
+                *ngFor="let route of selectedFormStrengthOptions.preferredRoutes" (click)="changeSelectedRoute(route)">
+                {{ route.routeName }}
+              </button>
+            </div>
+          </div>
+        </span>
+      </div>
+    </div>
+  </div>
+  <!-- Priority -->
+  <div>
+    <span class="subheader">
+      <span>PRIORITY</span>
+    </span>
+    <div class="item">
+      <div class="form-group">
+        <span class="table-container">
+          <div class="table-row">
+            <div class="table-cell">
+              <div ngbDropdown class="d-inline-block dropdown-select">
+                <button class="btn btn-outline-dark" id="priority" ngbDropdownToggle>
+                  {{ selectedPriority? selectedPriority: "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;" }}
+                </button>
+                <div ngbDropdownMenu aria-labelledby="priority">
+                  <button ngbDropdownItem *ngFor="let priority of priorities" [value]="selectedPriority"
+                    (click)="changeSelectedPriority(priority)">
+                    {{ priority }}
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="table-cell center">
+              <button class="btn btn-outline-warning btn-sm preferred happy-button" *ngFor="let priority of priorities"
+                required [ngClass]="{'happy-button-selected': (selectedPriority && selectedPriority === priority)}"
+                (click)="changeSelectedPriority(priority)">
+                {{ priority }}
+              </button>
+            </div>
+          </div>
+        </span>
+      </div>
+    </div>
+  </div>
+  <!-- Administration Instructions -->
+  <div>
+    <span class="subheader">
+      <span>ADMINISTRATION INSTRUCTIONS</span>
+    </span>
+    <div class="item">
+      <div class="form-group">
+        <span class="table-container">
+          <div class="table-row">
+            <div class="table-cell">
+              <textarea class="form-control" formControlName="administrationInstructionsText"
+                [value]="enteredAdministrationInstructionsText"
+                (focusout)="saveAdministrationInstructionsText($event.target.value)"></textarea>
+            </div>
+          </div>
+        </span>
+        <!-- Administration Instructions Pre-set Text  -->
+        <!-- <span class='table-container' *ngIf="selectedFormStrengthOptions.administrationInstructions">
+          <div class="table-row">
+            <div class="table-cell"
+              *ngFor="let adminInstructions of selectedFormStrengthOptions.administrationInstructions">
+              <input type="checkbox" id="medComponent-{{medComponentId}}-adminInstruction-{{adminInstructions.id}}"
+                name="medComponent-{{medComponentId}}-adminInstruction-{{adminInstructions.id}}"
+                (click)="updateSelectedAdminInstructions(adminInstructions)">
+              <label for="medComponent-{{medComponentId}}-adminInstruction-{{adminInstructions.id}}"> &nbsp;
+                {{adminInstructions.description}}</label>
+            </div>
+          </div>
+        </span> -->
+        <span [ngStyle]="{'display':'table'}"
+          *ngIf="administrationInstructionsGroups && administrationInstructionsGroups.groups"
+          ngbTooltip="Click to select pre-Set administration instructions" [openDelay]="500"
+          triggers="mouseenter:mouseleave" container="body" placement="top-left" [autoClose]="'outside'">
+          <button class="btn btn-med btn-adminInstructions" [ngbPopover]="presetAdminInstructions"
+            popoverClass="my-popover" container="body" triggers="click" placement="bottom-left" [autoClose]="'outside'">
+            Preset Instructions
+          </button>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #selectedDU><span *ngIf="selectedDoseUnitName">{{selectedDoseUnitName}}</span>
+</ng-template>
+<ng-template #selectedRoute><span *ngIf="selectedRouteName">{{selectedRouteName}}</span>
+</ng-template>
+<ng-template #reqDose><span class="requirement req-popover">
+    {{medForm.getError('error','dose')}} </span>
+</ng-template>
+<ng-template #reqDoseUnit><span class="requirement req-popover">
+    {{medForm.getError('error','doseUnitName')}} </span>
+</ng-template>
+<ng-template #reqRoute><span class="requirement req-popover">
+    {{medForm.getError('error','routeName')}} </span>
+</ng-template>
+
+<ng-template #presetAdminInstructions>
+  <div [ngStyle]="{'display':'table-row'}" *ngFor="let group of administrationInstructionsGroups.groups">
+    <div [ngStyle]="{'display':'table-cell', 'padding':'5px'}" *ngFor="let adminInstructions of group.items">
+      <input type="checkbox" id="medComponent-{{medComponentId}}-adminInstruction-{{adminInstructions.id}}"
+        name="medComponent-{{medComponentId}}-adminInstruction-{{adminInstructions.id}}"
+        [checked]="adminInstructionCheckboxChecked(adminInstructions)"
+        (click)="updateSelectedAdminInstructions(adminInstructions)">
+      <label for="medComponent-{{medComponentId}}-adminInstruction-{{adminInstructions.id}}"> &nbsp;
+        {{adminInstructions.description}}</label>
+    </div>
+  </div>
+</ng-template>

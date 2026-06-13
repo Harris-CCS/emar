@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D71507E7-1AF1-4687-B281-7ACF550A68D1}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>PulseCheck.Database.Management.Console.TableSync</RootNamespace>
+    <AssemblyName>PulseCheck.Database.Management.Console.TableSync</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Autofac, Version=4.8.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.4.8.1\lib\net45\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="StructureMap, Version=4.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\StructureMap.4.7.0\lib\net45\StructureMap.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PulseCheck.Archive.Domain\PulseCheck.Archive.Domain.csproj">
+      <Project>{c3f07449-df29-4233-8b30-d6ec0b89e5f5}</Project>
+      <Name>PulseCheck.Archive.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PulseCheck.Archive.Logic\PulseCheck.Archive.Logic.csproj">
+      <Project>{fa6ae2b0-6e17-48f4-8e91-96ac59e6a524}</Project>
+      <Name>PulseCheck.Archive.Logic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PulseCheck.Common.Logging\PulseCheck.Common.Logging.csproj">
+      <Project>{adf29dd7-72fb-4141-9ed4-d7394c3e6461}</Project>
+      <Name>PulseCheck.Common.Logging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PulseCheck.Data.Common\PulseCheck.Data.Common.csproj">
+      <Project>{40d85247-8190-4bf6-82c3-f07bda55f60a}</Project>
+      <Name>PulseCheck.Data.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PulseCheck.Database.Management.Logic\PulseCheck.Database.Management.Logic.csproj">
+      <Project>{81e37ad1-a094-4e31-9337-a05b8b87bf7b}</Project>
+      <Name>PulseCheck.Database.Management.Logic</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

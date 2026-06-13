@@ -1,0 +1,49 @@
+<span [ngStyle]="{'white-space': 'nowrap'}">
+<span *ngIf="order.allergyReactions?.length"
+    class="allergy-dot"  [ngClass]="resolution"
+    [placement]="placement"
+    container="body"
+    [ngbTooltip]="allergyReactions">
+    A
+</span>
+<ng-template #allergyReactions>
+    <i>Allergy Reactions</i>
+    <ul class="interactions">
+        <li *ngFor="let allergy of order.allergyReactions">
+            {{ allergy.patientAllergyName }}
+        </li>
+    </ul>
+</ng-template>
+
+<span *ngIf="order.allergyReactions?.length === 0 || !order.allergyReactions"
+    class="placeholder-dot"
+    [placement]="placement"
+    container="body"
+    ngbTooltip="">
+    &nbsp;
+</span>
+
+<span *ngIf="order.orderInteractions?.length"
+    class="drug-dot" [ngClass]="resolution"
+    [placement]="placement"
+    container="body"
+    [ngbTooltip]="medicationInteractions">
+    M
+</span>
+<ng-template #medicationInteractions>
+    <i>Medication Interactions</i>
+    <ul class="interactions">
+        <li *ngFor="let o of order.orderInteractions">
+            {{ o.drugInteraction.interactionOrderName }} ({{ o.drugInteraction.severity}})
+        </li>
+    </ul>
+</ng-template>
+
+<span *ngIf="order.orderInteractions?.length === 0 || !order.orderInteractions"
+    class="placeholder-dot"
+    [placement]="placement"
+    container="body"
+    ngbTooltip="" >
+    &nbsp;
+</span>
+</span>

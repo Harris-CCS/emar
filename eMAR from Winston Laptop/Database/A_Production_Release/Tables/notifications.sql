@@ -1,0 +1,209 @@
+create table [dbo].[notifications]
+	(
+	  [id] [bigint] identity(1,1) not null
+	, [recipient_user_id] [int] not null
+	, [patient_order_id] [bigint] null
+	, [order_administration_id] [bigint] null
+	, [title] [nvarchar](255) not null
+	, [body] [nvarchar](1000) null
+	, [category_code] [varchar](20) null
+	, [event_datetime] [datetimeoffset](7) null
+	, [generated_datetime] [datetimeoffset](7) not null
+	, [sent_datetime] [datetimeoffset](7) null
+	, [acknowledged_datetime] [datetimeoffset](7) null
+	, constraint [pk__notifications__id] primary key clustered([id] asc)); 
+go
+
+/********
+ Defaults
+********/
+/*****************
+ Unique constraint
+*****************/
+/*******
+ Indexes
+*******/
+
+create nonclustered index [ix__notifications__recipient_user_id__covered] ON [dbo].[notifications]
+	([recipient_user_id] asc)
+      include
+	([id], [patient_order_id], [order_administration_id], [title], [body], [category_code]);
+go
+
+CREATE NONCLUSTERED INDEX [ix__notifications__sent_datetime] ON [dbo].[notifications]
+	([sent_datetime]);
+GO
+
+CREATE NONCLUSTERED INDEX [ix__notifications__recipient_user_id] ON [dbo].[notifications]
+	([recipient_user_id],[patient_order_id],[order_administration_id],[category_code]);
+GO
+
+CREATE NONCLUSTERED INDEX [ix__notifications__order_administration_id] ON [dbo].[notifications]
+	([order_administration_id])
+	INCLUDE ([id],[recipient_user_id],[patient_order_id],[title],[body],[category_code],[event_datetime],[generated_datetime],[sent_datetime],[acknowledged_datetime]);
+GO
+
+/***********
+ Foreign Key
+***********/
+
+alter table [dbo].[notifications] 
+add constraint [fk__notifications__order_administrations__order_administration_id] foreign key([order_administration_id]) references [dbo].[order_administrations] ([id])
+go
+
+alter table [dbo].[notifications]
+add constraint [fk__notifications__patient_orders__patient_order_id] foreign key([patient_order_id]) references [dbo].[patient_orders] ([id])
+go
+
+alter table [dbo].[notifications]
+add constraint [fk__notifications__users__recipient_user_id] foreign key([recipient_user_id]) references [dbo].[users] ([id])
+go
+
+/***************
+ Data Dictionary
+    Defaults
+***************/
+/***************
+ Data Dictionary
+    Indexes
+***************/
+/***************
+ Data Dictionary
+    Table
+***************/
+
+execute [sys].[sp_addextendedproperty] 
+    @name = N'MS_Description'
+  , @value = N'Notifications - 
+This table contains notifications to be shown to different users.'
+  , @level0type = N'SCHEMA'
+  , @level0name = N'dbo'
+  , @level1type = N'TABLE'
+  , @level1name = N'notifications';
+go
+
+/***************
+ Data Dictionary
+    Columns
+***************/
+
+execute [sys].[sp_addextendedproperty] 
+	@name=N'MS_Description'
+  , @value=N'Auto increment table ID'
+  , @level0type=N'SCHEMA'
+  , @level0name=N'dbo'
+  , @level1type=N'TABLE'
+  , @level1name=N'notifications'
+  , @level2type=N'COLUMN'
+  , @level2name=N'id'
+go
+
+execute [sys].[sp_addextendedproperty]
+	@name=N'MS_Description'
+  , @value=N'Recipient user ID'
+  , @level0type=N'SCHEMA'
+  , @level0name=N'dbo'
+  , @level1type=N'TABLE'
+  , @level1name=N'notifications'
+  , @level2type=N'COLUMN'
+  , @level2name=N'recipient_user_id'
+go
+
+execute [sys].[sp_addextendedproperty]
+	@name=N'MS_Description'
+  , @value=N'Patient Order ID, if applicable'
+  , @level0type=N'SCHEMA'
+  , @level0name=N'dbo'
+  , @level1type=N'TABLE'
+  , @level1name=N'notifications'
+  , @level2type=N'COLUMN'
+  , @level2name=N'patient_order_id'
+go
+
+execute [sys].[sp_addextendedproperty]
+	@name=N'MS_Description'
+  , @value=N'Order Administration ID, if applicable'
+  , @level0type=N'SCHEMA'
+  , @level0name=N'dbo'
+  , @level1type=N'TABLE'
+  , @level1name=N'notifications'
+  , @level2type=N'COLUMN'
+  , @level2name=N'order_administration_id'
+go
+
+execute [sys].[sp_addextendedproperty]
+	@name=N'MS_Description'
+  , @value=N'The title of the notification'
+  , @level0type=N'SCHEMA'
+  , @level0name=N'dbo'
+  , @level1type=N'TABLE'
+  , @level1name=N'notifications'
+  , @level2type=N'COLUMN'
+  , @level2name=N'title'
+go
+
+execute [sys].[sp_addextendedproperty]
+	@name=N'MS_Description'
+  , @value=N'The body of the notification, if applicable'
+  , @level0type=N'SCHEMA'
+  , @level0name=N'dbo'
+  , @level1type=N'TABLE'
+  , @level1name=N'notifications'
+  , @level2type=N'COLUMN'
+  , @level2name=N'body'
+go
+
+execute [sys].[sp_addextendedproperty]
+	@name=N'MS_Description'
+  , @value=N'The category ID of the notification, if applicable'
+  , @level0type=N'SCHEMA'
+  , @level0name=N'dbo'
+  , @level1type=N'TABLE'
+  , @level1name=N'notifications'
+  , @level2type=N'COLUMN'
+  , @level2name=N'category_code'
+go
+
+execute [sys].[sp_addextendedproperty]
+	@name=N'MS_Description'
+  , @value=N'Time that event occurred related to notification'
+  , @level0type=N'SCHEMA'
+  , @level0name=N'dbo'
+  , @level1type=N'TABLE'
+  , @level1name=N'notifications'
+  , @level2type=N'COLUMN'
+  , @level2name=N'event_datetime'
+go
+
+execute [sys].[sp_addextendedproperty]
+	@name=N'MS_Description'
+  , @value=N'Time when notification was first generated by the service'
+  , @level0type=N'SCHEMA'
+  , @level0name=N'dbo'
+  , @level1type=N'TABLE'
+  , @level1name=N'notifications'
+  , @level2type=N'COLUMN'
+  , @level2name=N'generated_datetime'
+go
+
+execute [sys].[sp_addextendedproperty]
+	@name=N'MS_Description'
+  , @value=N'Time when notification was sent by the service'
+  , @level0type=N'SCHEMA'
+  , @level0name=N'dbo'
+  , @level1type=N'TABLE'
+  , @level1name=N'notifications'
+  , @level2type=N'COLUMN'
+  , @level2name=N'sent_datetime'
+go
+
+execute [sys].[sp_addextendedproperty]
+	@name=N'MS_Description'
+  , @value=N'Time when user acknowledged the notification'
+  , @level0type=N'SCHEMA'
+  , @level0name=N'dbo'
+  , @level1type=N'TABLE'
+  , @level1name=N'notifications'
+  , @level2type=N'COLUMN'
+  , @level2name=N'acknowledged_datetime'
+go

@@ -1,0 +1,6 @@
+{
+    "/api": {
+        "target": "http://ross-57-sqa.picis.com:82",
+        "secure": false
+    }
+}

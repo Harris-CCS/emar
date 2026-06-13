@@ -1,0 +1,28 @@
+@import "../../../variables.scss";
+
+.pd-five-label {
+    min-width: 10rem;
+    text-align: right;
+    padding-right: 5px;
+    font-style: italic;
+}
+.pd-five-data {
+    min-width: 10rem;
+}
+.pd-table {
+    display: table;
+}
+.pd-row {
+    display: table-row;
+}
+.pd-cell {
+    display: table-cell;
+}
+.pd-top-border {
+    border-top: 1px solid $gray-L-20;
+}
+.pd-container {
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+}

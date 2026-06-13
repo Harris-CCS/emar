@@ -1,0 +1,79 @@
+<div class="d-flex flex-nowrap">
+    <div class="p-2 pd-summary-column">
+        <span class="pd-medication">{{ order.medication.displayName }} {{ order.dose }} {{ order.doseUnit?.unitName }}</span>
+
+        <div [ngStyle]="{'margin-bottom': '2.7rem'}">
+            <!--
+            <div *ngIf="order.medication?.medicationDetails?.length > 1"
+                [ngClass]="{'combo-detail': true, 'list': true}">
+                <ul class="tree">
+                    <li *ngFor="let m of order.medication.medicationDetails">
+                        {{ m.brandName }} {{ m.dose }}{{ m.doseUnit?.printName }}
+                    </li>
+                </ul>
+            </div>
+            -->
+            <div>
+                {{ order.medicationRoute?.routeName }} - {{order.frequencySchedule?.scheduleName }}
+                {{ order.duration ? ' for ' +  order.duration + ' ' + order.durationUnit?.name : '' }}
+            </div>
+
+            <div>
+                {{ order.orderNotes }}
+            </div>
+
+            <div *ngFor="let event of events">
+                {{ event | orderAdministrationEvent }}: {{ event.eventDatetime | dateTimePipe: "friendly": siteUTCOffset }} - {{ event.user?.lastName }}, {{ event.user?.firstName }}
+            </div>
+        </div>
+
+        <div class="pd-summary-bottom" [ngStyle]="{'position': 'absolute', 'left': '0.5rem', 'bottom': '0.5rem'}">
+            <!-- <div *ngFor="let coSign of coSignUsers"><b>Co-Sign</b> {{ coSign }}</div> -->
+            <span *ngIf="!admin">
+                <span class="{{ getOrderStatus(order, 'textClass') }}">
+                    <b>{{ getOrderStatus(order, 'text') }}</b>
+                </span>
+            </span>
+            <span *ngIf="admin">
+                <span *ngIf="admin.administrationStatus=='Late'" class="order-status-due">Due<br/></span>
+                <span class="{{ getAdminStatus(admin, 'textClass') }}">
+                    <b>{{ getAdminStatus(admin, 'text') }}</b>
+                </span>:
+                {{ getAdminStatus(admin, 'time') | dateTimePipe: "friendly": siteUTCOffset}} - {{ getAdminStatus(admin, 'detail') }}
+            </span>
+        </div>
+    </div>
+    <div class="p-2 pd-actions-column">
+        <!--
+        <div class="pd-actions-line">
+            <button type="button" class="btn btn-outline-danger pd-btn-admin" 
+                (click)="onAction(admin, order,'Given')">Give</button>
+            <button type="button" class="btn btn-outline-danger pd-btn-admin">Cancel</button>
+        </div>
+        <div class="pd-actions-line">
+            <button type="button" class="btn btn-outline-danger pd-btn-admin">Held</button>
+            <button type="button" class="btn btn-outline-danger pd-btn-admin">Co-sign</button>
+        </div>
+        <div class="pd-actions-line">
+            <button type="button" class="btn btn-outline-danger pd-btn-admin">Repeat</button>
+            <button type="button" class="btn btn-outline-danger pd-btn-admin">Discontinue</button>
+        </div>
+        -->
+        <span *ngFor="let action of actions; let iAction = index;">
+            <button type="button" 
+                class="btn btn-outline-danger pd-btn-admin" 
+                (click)="onClickAction(admin, order, action)"
+                [disabled]="hasMedicationServicePermissionReadOnly" 
+                [ngClass]="{'noauth': hasMedicationServicePermissionReadOnly}">
+                {{ action.buttonText }}
+            </button>
+            
+        </span>
+    </div>
+
+    <div class="p-2 p-relative">
+        <span class="btn-close" (click)="close()" [ngStyle]="{'cursor': 'pointer'}" title="Close">
+            &#9747;
+        </span>
+    </div>
+</div>

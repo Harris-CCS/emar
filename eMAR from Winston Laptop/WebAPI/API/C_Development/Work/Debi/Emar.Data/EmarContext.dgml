@@ -1,0 +1,928 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DirectedGraph GraphDirection="LeftToRight" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+  <Nodes>
+<Node Id="IModel" Label="EmarContext" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot" PropertyAccessMode="PropertyAccessMode.Default" ProductVersion="3.1.5" Annotations="Relational:MaxIdentifierLength: 128
+SqlServer:ValueGenerationStrategy: IdentityColumn" Category="Model" Group="Expanded" />
+<Node Id = "Action" Label="Action" Name="Action" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="ConstructorBinding: Microsoft.EntityFrameworkCore.Metadata.ConstructorBinding
+Relational:TableName: actions" Category="EntityType" Group="Expanded" />
+<Node Id = "CartOrderAdministration" Label="CartOrderAdministration" Name="CartOrderAdministration" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="ConstructorBinding: Microsoft.EntityFrameworkCore.Metadata.ConstructorBinding
+Relational:TableName: cart_order_administrations" Category="EntityType" Group="Expanded" />
+<Node Id = "Action.Id" Label="Id" Name="Id" Category="Property Primary" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: id
+SqlServer:ValueGenerationStrategy: IdentityColumn
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="True" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "Action.OrderEvents" Label="OrderEvents (1)" Name="OrderEvents" Category="Navigation Property" Type="Collectio"  Field="ICollection&lt;OrderEvent&gt;" Dependent="OrderEvent" Principal="" Inverse="Action" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "Action.Description" Label="Description" Name="Description" Category="Property Required" Type="string" MaxLength="100" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 100
+Relational:ColumnName: description
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "Action.IsActive" Label="IsActive" Name="IsActive" Category="Property Required" Type="bool" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: is_active
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerBoolTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Action.SiteId" Label="SiteId" Name="SiteId" Category="Property Required" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: site_id
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Action.Title" Label="Title" Name="Title" Category="Property Required" Type="string" MaxLength="20" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 20
+Relational:ColumnName: title
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "ExternalIdEntity" Label="ExternalIdEntity" Name="ExternalIdEntity" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="ConstructorBinding: Microsoft.EntityFrameworkCore.Metadata.ConstructorBinding
+Relational:TableName: external_ids" Category="EntityType" Group="Expanded" />
+<Node Id = "CartOrderAdministration.Id" Label="Id" Name="Id" Category="Property Primary" Type="long" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: id
+Relational:ColumnType: bigint
+SqlServer:ValueGenerationStrategy: IdentityColumn
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerLongTypeMapping" IsPrimaryKey="True" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "CartOrderAdministration.PatientCartOrder" Label="PatientCartOrder (1)" Name="PatientCartOrder" Category="Navigation Property" Type="ToPrincipa"  Field="PatientCartOrder" Dependent="" Principal="" Inverse="CartOrderAdministrations" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "CartOrderAdministration.AdministrationScheduledDatetime" Label="AdministrationScheduledDatetime" Name="AdministrationScheduledDatetime" Category="Property Required" Type="DateTimeOffset" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: administration_scheduled_datetime
+Relational:ColumnType: datetimeoffset
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerDateTimeOffsetTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "CartOrderAdministration.PatientCartOrderId" Label="PatientCartOrderId" Name="PatientCartOrderId" Category="Property Foreign" Type="long" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: patient_cart_order_id
+Relational:ColumnType: bigint
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerLongTypeMapping" IsPrimaryKey="False" IsForeignKey="True" IsRequired="True" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "CartOrderAdministration.PointInTime" Label="PointInTime" Name="PointInTime" Category="Property Required" Type="bool" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: point_in_time
+Relational:ColumnType: bit
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerBoolTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "CartOrderAdministration.StopScheduledDatetime" Label="StopScheduledDatetime" Name="StopScheduledDatetime" Category="Property Optional" Type="Nullable&lt;DateTimeOffset&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: stop_scheduled_datetime
+Relational:ColumnType: datetimeoffset
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerDateTimeOffsetTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "GroupListItem" Label="GroupListItem" Name="GroupListItem" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="ConstructorBinding: Microsoft.EntityFrameworkCore.Metadata.ConstructorBinding
+Relational:TableName: group_list_items" Category="EntityType" Group="Expanded" />
+<Node Id = "ExternalIdEntity.InternalId" Label="InternalId" Name="InternalId" Category="Property Primary" Type="long" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: internal_id
+Relational:ColumnType: bigint
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerLongTypeMapping" IsPrimaryKey="True" IsForeignKey="False" IsRequired="True" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "ExternalIdEntity.Vendor" Label="Vendor" Name="Vendor" Category="Property Primary" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: vendor
+Relational:ColumnType: varchar(50)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="True" IsForeignKey="False" IsRequired="True" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "ExternalIdEntity.Entity" Label="Entity" Name="Entity" Category="Property Primary" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: entity
+Relational:ColumnType: varchar(50)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="True" IsForeignKey="False" IsRequired="True" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "ExternalIdEntity.ExternalId" Label="ExternalId" Name="ExternalId" Category="Property Required" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: external_id
+Relational:ColumnType: varchar(50)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "MedicationRoute" Label="MedicationRoute" Name="MedicationRoute" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="ConstructorBinding: Microsoft.EntityFrameworkCore.Metadata.ConstructorBinding
+Relational:TableName: medication_routes" Category="EntityType" Group="Expanded" />
+<Node Id = "GroupListItem.Id" Label="Id" Name="Id" Category="Property Primary" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: id
+Relational:ColumnType: int
+SqlServer:ValueGenerationStrategy: IdentityColumn
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="True" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "GroupListItem.MedicationRoute" Label="MedicationRoute (1)" Name="MedicationRoute" Category="Navigation Property" Type="ToPrincipa"  Field="MedicationRoute" Dependent="" Principal="" Inverse="GroupListItems" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "GroupListItem.Site" Label="Site (1)" Name="Site" Category="Navigation Property" Type="ToPrincipa"  Field="Site" Dependent="" Principal="" Inverse="GroupListItems" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "GroupListItem.BrandName" Label="BrandName" Name="BrandName" Category="Property Required" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: brand_name
+Relational:ColumnType: nvarchar(255)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "GroupListItem.Dose" Label="Dose" Name="Dose" Category="Property Optional" Type="Nullable&lt;decimal&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: dose
+Relational:ColumnType: decimal(11, 2)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerDecimalTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "GroupListItem.DoseUnit" Label="DoseUnit" Name="DoseUnit" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: dose_unit
+Relational:ColumnType: varchar(20)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "GroupListItem.DrugId" Label="DrugId" Name="DrugId" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: drug_id
+Relational:ColumnType: varchar(32)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "GroupListItem.FrequencyId" Label="FrequencyId" Name="FrequencyId" Category="Property Optional" Type="Nullable&lt;int&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: frequency_id
+Relational:ColumnType: int
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "GroupListItem.GroupName" Label="GroupName" Name="GroupName" Category="Property Required" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: group_name
+Relational:ColumnType: nvarchar(255)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "GroupListItem.MedicationRouteId" Label="MedicationRouteId" Name="MedicationRouteId" Category="Property Foreign" Type="Nullable&lt;int&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: medication_route_id
+Relational:ColumnType: int
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="True" IsRequired="False" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "GroupListItem.Ndc" Label="Ndc" Name="Ndc" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: ndc
+Relational:ColumnType: varchar(32)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "GroupListItem.OrderNotes" Label="OrderNotes" Name="OrderNotes" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: order_notes
+Relational:ColumnType: nvarchar(MAX)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "GroupListItem.SiteId" Label="SiteId" Name="SiteId" Category="Property Foreign" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: site_id
+Relational:ColumnType: int
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="True" IsRequired="True" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "OrderAdministration" Label="OrderAdministration" Name="OrderAdministration" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="ConstructorBinding: Microsoft.EntityFrameworkCore.Metadata.ConstructorBinding
+Relational:TableName: order_administrations" Category="EntityType" Group="Expanded" />
+<Node Id = "MedicationRoute.Id" Label="Id" Name="Id" Category="Property Primary" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: id
+SqlServer:ValueGenerationStrategy: IdentityColumn
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="True" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "MedicationRoute.GroupListItems" Label="GroupListItems (1)" Name="GroupListItems" Category="Navigation Property" Type="Collectio"  Field="ICollection&lt;GroupListItem&gt;" Dependent="GroupListItem" Principal="" Inverse="MedicationRoute" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "MedicationRoute.PatientCartOrders" Label="PatientCartOrders (1)" Name="PatientCartOrders" Category="Navigation Property" Type="Collectio"  Field="ICollection&lt;PatientCartOrder&gt;" Dependent="PatientCartOrder" Principal="" Inverse="MedicationRoute" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "MedicationRoute.PatientOrders" Label="PatientOrders (1)" Name="PatientOrders" Category="Navigation Property" Type="Collectio"  Field="ICollection&lt;PatientOrder&gt;" Dependent="PatientOrder" Principal="" Inverse="MedicationRoute" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "MedicationRoute.UserQuickListItems" Label="UserQuickListItems (1)" Name="UserQuickListItems" Category="Navigation Property" Type="Collectio"  Field="ICollection&lt;UserQuickListItem&gt;" Dependent="UserQuickListItem" Principal="" Inverse="MedicationRoute" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "MedicationRoute.Name" Label="Name" Name="Name" Category="Property Required" Type="string" MaxLength="50" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 50
+Relational:ColumnName: name
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "MedicationRoute.SiteId" Label="SiteId" Name="SiteId" Category="Property Required" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: site_id
+Relational:ColumnType: int
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "OrderEvent" Label="OrderEvent" Name="OrderEvent" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="ConstructorBinding: Microsoft.EntityFrameworkCore.Metadata.ConstructorBinding
+Relational:TableName: order_events" Category="EntityType" Group="Expanded" />
+<Node Id = "OrderAdministration.Id" Label="Id" Name="Id" Category="Property Primary" Type="long" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: id
+Relational:ColumnType: bigint
+SqlServer:ValueGenerationStrategy: IdentityColumn
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerLongTypeMapping" IsPrimaryKey="True" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "OrderAdministration.AcknowledgeUser" Label="AcknowledgeUser (1)" Name="AcknowledgeUser" Category="Navigation Property" Type="ToPrincipa"  Field="User" Dependent="" Principal="" Inverse="OrderAdministrationsAcknowledgeUser" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "OrderAdministration.AdministeringUser" Label="AdministeringUser (1)" Name="AdministeringUser" Category="Navigation Property" Type="ToPrincipa"  Field="User" Dependent="" Principal="" Inverse="OrderAdministrationsAdministeringUser" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "OrderAdministration.OrderEvents" Label="OrderEvents (1)" Name="OrderEvents" Category="Navigation Property" Type="Collectio"  Field="ICollection&lt;OrderEvent&gt;" Dependent="OrderEvent" Principal="" Inverse="OrderAdministration" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "OrderAdministration.PatientOrder" Label="PatientOrder (1)" Name="PatientOrder" Category="Navigation Property" Type="ToPrincipa"  Field="PatientOrder" Dependent="" Principal="" Inverse="OrderAdministrations" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "OrderAdministration.AcknowledgeDatetime" Label="AcknowledgeDatetime" Name="AcknowledgeDatetime" Category="Property Optional" Type="Nullable&lt;DateTimeOffset&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: acknowledge_datetime
+Relational:ColumnType: datetimeoffset
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerDateTimeOffsetTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "OrderAdministration.AcknowledgeUserId" Label="AcknowledgeUserId" Name="AcknowledgeUserId" Category="Property Foreign" Type="Nullable&lt;int&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: acknowledge_user_id
+Relational:ColumnType: int
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="True" IsRequired="False" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "OrderAdministration.AdministeringUserId" Label="AdministeringUserId" Name="AdministeringUserId" Category="Property Foreign" Type="Nullable&lt;int&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: administering_user_id
+Relational:ColumnType: int
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="True" IsRequired="False" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "OrderAdministration.AdministrationDatetime" Label="AdministrationDatetime" Name="AdministrationDatetime" Category="Property Optional" Type="Nullable&lt;DateTimeOffset&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: administration_datetime
+Relational:ColumnType: datetimeoffset
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerDateTimeOffsetTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "OrderAdministration.AdministrationInputDatetime" Label="AdministrationInputDatetime" Name="AdministrationInputDatetime" Category="Property Optional" Type="Nullable&lt;DateTimeOffset&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: administration_input_datetime
+Relational:ColumnType: datetimeoffset
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerDateTimeOffsetTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "OrderAdministration.AdministrationScheduledDatetime" Label="AdministrationScheduledDatetime" Name="AdministrationScheduledDatetime" Category="Property Required" Type="DateTimeOffset" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: administration_scheduled_datetime
+Relational:ColumnType: datetimeoffset
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerDateTimeOffsetTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "OrderAdministration.MissedDose" Label="MissedDose" Name="MissedDose" Category="Property Required" Type="bool" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: missed_dose
+Relational:ColumnType: bit
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerBoolTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "OrderAdministration.OnHold" Label="OnHold" Name="OnHold" Category="Property Required" Type="bool" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: on_hold
+Relational:ColumnType: bit
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerBoolTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "OrderAdministration.PatientOrderId" Label="PatientOrderId" Name="PatientOrderId" Category="Property Foreign" Type="long" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: patient_order_id
+Relational:ColumnType: bigint
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerLongTypeMapping" IsPrimaryKey="False" IsForeignKey="True" IsRequired="True" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "OrderAdministration.PointInTime" Label="PointInTime" Name="PointInTime" Category="Property Required" Type="bool" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: point_in_time
+Relational:ColumnType: bit
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerBoolTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "OrderAdministration.StopDatetime" Label="StopDatetime" Name="StopDatetime" Category="Property Optional" Type="Nullable&lt;DateTimeOffset&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: stop_datetime
+Relational:ColumnType: datetimeoffset
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerDateTimeOffsetTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "OrderAdministration.StopInputDatetime" Label="StopInputDatetime" Name="StopInputDatetime" Category="Property Optional" Type="Nullable&lt;DateTimeOffset&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: stop_input_datetime
+Relational:ColumnType: datetimeoffset
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerDateTimeOffsetTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "OrderAdministration.StopScheduledDatetime" Label="StopScheduledDatetime" Name="StopScheduledDatetime" Category="Property Optional" Type="Nullable&lt;DateTimeOffset&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: stop_scheduled_datetime
+Relational:ColumnType: datetimeoffset
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerDateTimeOffsetTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "OrderAdministration.StopUserId" Label="StopUserId" Name="StopUserId" Category="Property Optional" Type="Nullable&lt;int&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: stop_user_id
+Relational:ColumnType: int
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Patient" Label="Patient" Name="Patient" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="ConstructorBinding: Microsoft.EntityFrameworkCore.Metadata.ConstructorBinding
+Relational:TableName: patients" Category="EntityType" Group="Expanded" />
+<Node Id = "OrderEvent.Id" Label="Id" Name="Id" Category="Property Primary" Type="long" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: id
+Relational:ColumnType: bigint
+SqlServer:ValueGenerationStrategy: IdentityColumn
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerLongTypeMapping" IsPrimaryKey="True" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "OrderEvent.Action" Label="Action (1)" Name="Action" Category="Navigation Property" Type="ToPrincipa"  Field="Action" Dependent="" Principal="" Inverse="OrderEvents" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "OrderEvent.OrderAdministration" Label="OrderAdministration (1)" Name="OrderAdministration" Category="Navigation Property" Type="ToPrincipa"  Field="OrderAdministration" Dependent="" Principal="" Inverse="OrderEvents" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "OrderEvent.PatientOrder" Label="PatientOrder (1)" Name="PatientOrder" Category="Navigation Property" Type="ToPrincipa"  Field="PatientOrder" Dependent="" Principal="" Inverse="OrderEvents" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "OrderEvent.ActionId" Label="ActionId" Name="ActionId" Category="Property Foreign" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: action_id
+Relational:ColumnType: int
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="True" IsRequired="True" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "OrderEvent.AddDatetime" Label="AddDatetime" Name="AddDatetime" Category="Property Required" Type="DateTimeOffset" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: add_datetime
+Relational:ColumnType: datetimeoffset
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerDateTimeOffsetTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "OrderEvent.AddUserId" Label="AddUserId" Name="AddUserId" Category="Property Required" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: add_user_id
+Relational:ColumnType: int
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "OrderEvent.EventDateTime" Label="EventDateTime" Name="EventDateTime" Category="Property Required" Type="DateTimeOffset" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: event_datetime
+Relational:ColumnType: datetimeoffset
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerDateTimeOffsetTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "OrderEvent.OrderAdministrationId" Label="OrderAdministrationId" Name="OrderAdministrationId" Category="Property Foreign" Type="Nullable&lt;long&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: order_administration_id
+Relational:ColumnType: bigint
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerLongTypeMapping" IsPrimaryKey="False" IsForeignKey="True" IsRequired="False" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "OrderEvent.PatientOrderId" Label="PatientOrderId" Name="PatientOrderId" Category="Property Foreign" Type="long" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: patient_order_id
+Relational:ColumnType: bigint
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerLongTypeMapping" IsPrimaryKey="False" IsForeignKey="True" IsRequired="True" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "PatientCartOrder" Label="PatientCartOrder" Name="PatientCartOrder" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="ConstructorBinding: Microsoft.EntityFrameworkCore.Metadata.ConstructorBinding
+Relational:TableName: patient_cart_orders" Category="EntityType" Group="Expanded" />
+<Node Id = "Patient.Id" Label="Id" Name="Id" Category="Property Primary" Type="long" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: id
+Relational:ColumnType: bigint
+SqlServer:ValueGenerationStrategy: IdentityColumn
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerLongTypeMapping" IsPrimaryKey="True" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "Patient.PatientOrders" Label="PatientOrders (1)" Name="PatientOrders" Category="Navigation Property" Type="Collectio"  Field="ICollection&lt;PatientOrder&gt;" Dependent="PatientOrder" Principal="" Inverse="Patient" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "Patient.Site" Label="Site (1)" Name="Site" Category="Navigation Property" Type="ToPrincipa"  Field="Site" Dependent="" Principal="" Inverse="Patients" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "Patient.AccountNumber" Label="AccountNumber" Name="AccountNumber" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: account_number
+Relational:ColumnType: varchar(25)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "Patient.Active" Label="Active" Name="Active" Category="Property Required" Type="bool" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: is_active
+Relational:ColumnType: bool
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerBoolTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Patient.Age" Label="Age" Name="Age" Category="Property Optional" Type="Nullable&lt;short&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: age
+Relational:ColumnType: tinyint
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerByteTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Patient.AgeUnits" Label="AgeUnits" Name="AgeUnits" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: age_units
+Relational:ColumnType: char(1)
+Relational:IsFixedLength: True
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "Patient.ChiefComplaint" Label="ChiefComplaint" Name="ChiefComplaint" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: complaint
+Relational:ColumnType: varchar(80)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "Patient.DateOfBirth" Label="DateOfBirth" Name="DateOfBirth" Category="Property Optional" Type="Nullable&lt;DateTime&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: date_of_birth
+Relational:ColumnType: date
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerDateTimeTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Patient.DepartmentCode" Label="DepartmentCode" Name="DepartmentCode" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: department_code
+Relational:ColumnType: varchar(15)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "Patient.FirstName" Label="FirstName" Name="FirstName" Category="Property Required" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: first_name
+Relational:ColumnType: nvarchar(35)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Patient.Gender" Label="Gender" Name="Gender" Category="Property Required" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: gender
+Relational:ColumnType: varchar(10)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "Patient.HeightInCm" Label="HeightInCm" Name="HeightInCm" Category="Property Optional" Type="Nullable&lt;decimal&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: height_in_cm
+Relational:ColumnType: numeric(6,2
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerDecimalTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Patient.LastName" Label="LastName" Name="LastName" Category="Property Required" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: last_name
+Relational:ColumnType: nvarchar(35)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Patient.MedicalRecordNumber" Label="MedicalRecordNumber" Name="MedicalRecordNumber" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: medical_record_number
+Relational:ColumnType: varchar(25)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "Patient.MiddleName" Label="MiddleName" Name="MiddleName" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: middle_name
+Relational:ColumnType: nvarchar(35)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Patient.NameAlert" Label="NameAlert" Name="NameAlert" Category="Property Required" Type="bool" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: name_alert
+Relational:ColumnType: bit
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerBoolTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Patient.NameSuffix" Label="NameSuffix" Name="NameSuffix" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: name_suffix
+Relational:ColumnType: nvarchar(25)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Patient.RoomBedCode" Label="RoomBedCode" Name="RoomBedCode" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: room_bed_code
+Relational:ColumnType: varchar(15)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "Patient.SiteId" Label="SiteId" Name="SiteId" Category="Property Foreign" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: site_id
+Relational:ColumnType: int
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="True" IsRequired="True" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Patient.Urgency" Label="Urgency" Name="Urgency" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: urgency
+Relational:ColumnType: varchar(50)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "Patient.UrgencyColor" Label="UrgencyColor" Name="UrgencyColor" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: urgency_color
+Relational:ColumnType: varchar(25)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "Patient.VsBloodPressureIndicator" Label="VsBloodPressureIndicator" Name="VsBloodPressureIndicator" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: vs_blood_pressure_indicator
+Relational:ColumnType: char(1)
+Relational:IsFixedLength: True
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "Patient.VsDatetime" Label="VsDatetime" Name="VsDatetime" Category="Property Optional" Type="Nullable&lt;DateTimeOffset&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: vs_datetime
+Relational:ColumnType: datetimeoffset
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerDateTimeOffsetTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Patient.VsDiastolic" Label="VsDiastolic" Name="VsDiastolic" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: vs_diastolic
+Relational:ColumnType: char(14)
+Relational:IsFixedLength: True
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "Patient.VsEndTidal" Label="VsEndTidal" Name="VsEndTidal" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: vs_end_tidal
+Relational:ColumnType: varchar(14)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "Patient.VsEndTidalLevel" Label="VsEndTidalLevel" Name="VsEndTidalLevel" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: vs_end_tidal_level
+Relational:ColumnType: char(1)
+Relational:IsFixedLength: True
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "Patient.VsMap" Label="VsMap" Name="VsMap" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: vs_map
+Relational:ColumnType: varchar(14)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "Patient.VsMapLevel" Label="VsMapLevel" Name="VsMapLevel" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: vs_map_level
+Relational:ColumnType: char(1)
+Relational:IsFixedLength: True
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "Patient.VsOxygenSaturation" Label="VsOxygenSaturation" Name="VsOxygenSaturation" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: vs_oxygen_saturation
+Relational:ColumnType: varchar(50)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "Patient.VsOxygenSaturationIndicator" Label="VsOxygenSaturationIndicator" Name="VsOxygenSaturationIndicator" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: vs_oxygen_saturation_indicator
+Relational:ColumnType: char(1)
+Relational:IsFixedLength: True
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "Patient.VsPainScale" Label="VsPainScale" Name="VsPainScale" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: vs_pain_scale
+Relational:ColumnType: char(14)
+Relational:IsFixedLength: True
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "Patient.VsPainScaleIndicator" Label="VsPainScaleIndicator" Name="VsPainScaleIndicator" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: vs_pain_scale_indicator
+Relational:ColumnType: char(1)
+Relational:IsFixedLength: True
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "Patient.VsPulse" Label="VsPulse" Name="VsPulse" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: vs_pulse
+Relational:ColumnType: char(14)
+Relational:IsFixedLength: True
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "Patient.VsPulseIndicator" Label="VsPulseIndicator" Name="VsPulseIndicator" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: vs_pulse_indicator
+Relational:ColumnType: char(1)
+Relational:IsFixedLength: True
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "Patient.VsRespiratory" Label="VsRespiratory" Name="VsRespiratory" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: vs_respiratory
+Relational:ColumnType: char(14)
+Relational:IsFixedLength: True
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "Patient.VsRespiratoryIndicator" Label="VsRespiratoryIndicator" Name="VsRespiratoryIndicator" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: vs_respiratory_indicator
+Relational:ColumnType: char(1)
+Relational:IsFixedLength: True
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "Patient.VsSystolic" Label="VsSystolic" Name="VsSystolic" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: vs_systolic
+Relational:ColumnType: char(14)
+Relational:IsFixedLength: True
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "Patient.VsTemperature" Label="VsTemperature" Name="VsTemperature" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: vs_temperature
+Relational:ColumnType: char(14)
+Relational:IsFixedLength: True
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "Patient.VsTemperatureIndicator" Label="VsTemperatureIndicator" Name="VsTemperatureIndicator" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: vs_temperature_indicator
+Relational:ColumnType: char(1)
+Relational:IsFixedLength: True
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "Patient.WardCode" Label="WardCode" Name="WardCode" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: ward_code
+Relational:ColumnType: varchar(15)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "Patient.WeightInKg" Label="WeightInKg" Name="WeightInKg" Category="Property Optional" Type="Nullable&lt;decimal&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: weight_in_kg
+Relational:ColumnType: numeric(6,2)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerDecimalTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Patient.WithdrawConsent" Label="WithdrawConsent" Name="WithdrawConsent" Category="Property Required" Type="bool" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: withdraw_consent
+Relational:ColumnType: bit
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerBoolTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "PatientOrder" Label="PatientOrder" Name="PatientOrder" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="ConstructorBinding: Microsoft.EntityFrameworkCore.Metadata.ConstructorBinding
+Relational:TableName: patient_orders" Category="EntityType" Group="Expanded" />
+<Node Id = "PatientCartOrder.Id" Label="Id" Name="Id" Category="Property Primary" Type="long" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: id
+Relational:ColumnType: bigint
+SqlServer:ValueGenerationStrategy: IdentityColumn
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerLongTypeMapping" IsPrimaryKey="True" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "PatientCartOrder.CartOrderAdministrations" Label="CartOrderAdministrations (1)" Name="CartOrderAdministrations" Category="Navigation Property" Type="Collectio"  Field="ICollection&lt;CartOrderAdministration&gt;" Dependent="CartOrderAdministration" Principal="" Inverse="PatientCartOrder" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "PatientCartOrder.MedicationRoute" Label="MedicationRoute (1)" Name="MedicationRoute" Category="Navigation Property" Type="ToPrincipa"  Field="MedicationRoute" Dependent="" Principal="" Inverse="PatientCartOrders" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "PatientCartOrder.AddDatetime" Label="AddDatetime" Name="AddDatetime" Category="Property Required" Type="DateTimeOffset" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: add_datetime
+Relational:ColumnType: datetimeoffset
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerDateTimeOffsetTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "PatientCartOrder.BeginDatetime" Label="BeginDatetime" Name="BeginDatetime" Category="Property Required" Type="DateTimeOffset" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: begin_datetime
+Relational:ColumnType: datetimeoffset
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerDateTimeOffsetTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "PatientCartOrder.BrandName" Label="BrandName" Name="BrandName" Category="Property Required" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: brand_name
+Relational:ColumnType: nvarchar(255)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "PatientCartOrder.Dose" Label="Dose" Name="Dose" Category="Property Optional" Type="Nullable&lt;decimal&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: dose
+Relational:ColumnType: decimal(11,2)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerDecimalTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "PatientCartOrder.DoseUnit" Label="DoseUnit" Name="DoseUnit" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: dose_unit
+Relational:ColumnType: varchar(20)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "PatientCartOrder.DrugId" Label="DrugId" Name="DrugId" Category="Property Required" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: drug_id
+Relational:ColumnType: varchar(32)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "PatientCartOrder.EndDatetime" Label="EndDatetime" Name="EndDatetime" Category="Property Optional" Type="Nullable&lt;DateTimeOffset&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: end_datetime
+Relational:ColumnType: datetimeoffset
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerDateTimeOffsetTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "PatientCartOrder.FrequencyId" Label="FrequencyId" Name="FrequencyId" Category="Property Optional" Type="Nullable&lt;int&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: frequency_id
+Relational:ColumnType: int
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "PatientCartOrder.MedicationRouteId" Label="MedicationRouteId" Name="MedicationRouteId" Category="Property Foreign" Type="Nullable&lt;int&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: medication_route_id
+Relational:ColumnType: int
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="True" IsRequired="False" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "PatientCartOrder.Ndc" Label="Ndc" Name="Ndc" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: ndc
+Relational:ColumnType: varchar(32)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "PatientCartOrder.OrderNotes" Label="OrderNotes" Name="OrderNotes" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: order_notes
+Relational:ColumnType: nvarchar(MAX)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "PatientCartOrder.PatientId" Label="PatientId" Name="PatientId" Category="Property Required" Type="long" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: patient_id
+Relational:ColumnType: bigint
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerLongTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "PatientCartOrder.PointInTime" Label="PointInTime" Name="PointInTime" Category="Property Required" Type="bool" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: point_in_time
+Relational:ColumnType: bit
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerBoolTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "PatientCartOrder.Priority" Label="Priority" Name="Priority" Category="Property Required" Type="byte" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: priority
+Relational:ColumnType: tinyint
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerByteTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "PatientCartOrder.Prn" Label="Prn" Name="Prn" Category="Property Required" Type="bool" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: prn
+Relational:ColumnType: bit
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerBoolTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "PatientCartOrder.UserId" Label="UserId" Name="UserId" Category="Property Required" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: user_id
+Relational:ColumnType: int
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "PatientCartOrder.UserQuickListItemId" Label="UserQuickListItemId" Name="UserQuickListItemId" Category="Property Optional" Type="Nullable&lt;long&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: user_quick_list_item_id
+Relational:ColumnType: bigint
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerLongTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Site" Label="Site" Name="Site" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="ConstructorBinding: Microsoft.EntityFrameworkCore.Metadata.ConstructorBinding
+Relational:TableName: sites" Category="EntityType" Group="Expanded" />
+<Node Id = "PatientOrder.Id" Label="Id" Name="Id" Category="Property Primary" Type="long" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: id
+Relational:ColumnType: bigint
+SqlServer:ValueGenerationStrategy: IdentityColumn
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerLongTypeMapping" IsPrimaryKey="True" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "PatientOrder.AddUser" Label="AddUser (1)" Name="AddUser" Category="Navigation Property" Type="ToPrincipa"  Field="User" Dependent="" Principal="" Inverse="PatientOrdersAddUser" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "PatientOrder.MedicationRoute" Label="MedicationRoute (1)" Name="MedicationRoute" Category="Navigation Property" Type="ToPrincipa"  Field="MedicationRoute" Dependent="" Principal="" Inverse="PatientOrders" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "PatientOrder.OrderAdministrations" Label="OrderAdministrations (1)" Name="OrderAdministrations" Category="Navigation Property" Type="Collectio"  Field="ICollection&lt;OrderAdministration&gt;" Dependent="OrderAdministration" Principal="" Inverse="PatientOrder" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "PatientOrder.OrderEvents" Label="OrderEvents (1)" Name="OrderEvents" Category="Navigation Property" Type="Collectio"  Field="ICollection&lt;OrderEvent&gt;" Dependent="OrderEvent" Principal="" Inverse="PatientOrder" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "PatientOrder.OrderPhysicianUser" Label="OrderPhysicianUser (1)" Name="OrderPhysicianUser" Category="Navigation Property" Type="ToPrincipa"  Field="User" Dependent="" Principal="" Inverse="PatientOrdersOrderPhysicianUser" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "PatientOrder.Patient" Label="Patient (1)" Name="Patient" Category="Navigation Property" Type="ToPrincipa"  Field="Patient" Dependent="" Principal="" Inverse="PatientOrders" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "PatientOrder.AddDatetime" Label="AddDatetime" Name="AddDatetime" Category="Property Required" Type="DateTimeOffset" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: add_datetime
+Relational:ColumnType: datetimeoffset
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerDateTimeOffsetTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "PatientOrder.AddUserId" Label="AddUserId" Name="AddUserId" Category="Property Foreign" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: add_user_id
+Relational:ColumnType: int
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="True" IsRequired="True" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "PatientOrder.BeginDatetime" Label="BeginDatetime" Name="BeginDatetime" Category="Property Required" Type="DateTimeOffset" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: begin_datetime
+Relational:ColumnType: datetimeoffset
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerDateTimeOffsetTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "PatientOrder.BrandName" Label="BrandName" Name="BrandName" Category="Property Required" Type="string" MaxLength="255" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 255
+Relational:ColumnName: brand_name
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "PatientOrder.Dose" Label="Dose" Name="Dose" Category="Property Optional" Type="Nullable&lt;decimal&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: dose
+Relational:ColumnType: decimal(11,2)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerDecimalTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "PatientOrder.DoseUnit" Label="DoseUnit" Name="DoseUnit" Category="Property Optional" Type="string" MaxLength="20" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 20
+Relational:ColumnName: dose_unit
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "PatientOrder.DrugId" Label="DrugId" Name="DrugId" Category="Property Required" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: drug_id
+Relational:ColumnType: varchar(32)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "PatientOrder.EndDateTime" Label="EndDateTime" Name="EndDateTime" Category="Property Optional" Type="Nullable&lt;DateTimeOffset&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: end_datetime
+Relational:ColumnType: datetimeoffset
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerDateTimeOffsetTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "PatientOrder.FrequencyId" Label="FrequencyId" Name="FrequencyId" Category="Property Optional" Type="Nullable&lt;int&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: frequency_id
+Relational:ColumnType: int
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "PatientOrder.MedicationRouteId" Label="MedicationRouteId" Name="MedicationRouteId" Category="Property Foreign" Type="Nullable&lt;int&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: medication_route_id
+Relational:ColumnType: int
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="True" IsRequired="False" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "PatientOrder.Ndc" Label="Ndc" Name="Ndc" Category="Property Optional" Type="string" MaxLength="32" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 32
+Relational:ColumnName: ndc
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "PatientOrder.OrderNotes" Label="OrderNotes" Name="OrderNotes" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: order_notes
+Relational:ColumnType: nvarchar(MAX)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "PatientOrder.OrderStatus" Label="OrderStatus" Name="OrderStatus" Category="Property Required" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: order_status
+Relational:ColumnType: varchar(10)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "PatientOrder.OrderingPhysicianId" Label="OrderingPhysicianId" Name="OrderingPhysicianId" Category="Property Foreign" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: order_physician_user_id
+Relational:ColumnType: int
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="True" IsRequired="True" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "PatientOrder.PatientId" Label="PatientId" Name="PatientId" Category="Property Foreign" Type="long" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: patient_id
+Relational:ColumnType: bigint
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerLongTypeMapping" IsPrimaryKey="False" IsForeignKey="True" IsRequired="True" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "PatientOrder.PointInTime" Label="PointInTime" Name="PointInTime" Category="Property Required" Type="bool" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: point_in_time
+Relational:ColumnType: bit
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerBoolTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "PatientOrder.Priority" Label="Priority" Name="Priority" Category="Property Required" Type="byte" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: priority
+Relational:ColumnType: tinyint
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerByteTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "PatientOrder.Prn" Label="Prn" Name="Prn" Category="Property Required" Type="bool" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: prn
+Relational:ColumnType: bit
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerBoolTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "User" Label="User" Name="User" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="ConstructorBinding: Microsoft.EntityFrameworkCore.Metadata.ConstructorBinding
+Relational:TableName: users" Category="EntityType" Group="Expanded" />
+<Node Id = "Site.Id" Label="Id" Name="Id" Category="Property Primary" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: id
+Relational:ColumnType: int
+SqlServer:ValueGenerationStrategy: IdentityColumn
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="True" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "Site.GroupListItems" Label="GroupListItems (1)" Name="GroupListItems" Category="Navigation Property" Type="Collectio"  Field="ICollection&lt;GroupListItem&gt;" Dependent="GroupListItem" Principal="" Inverse="Site" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "Site.Patients" Label="Patients (1)" Name="Patients" Category="Navigation Property" Type="Collectio"  Field="ICollection&lt;Patient&gt;" Dependent="Patient" Principal="" Inverse="Site" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "Site.UserQuickListItems" Label="UserQuickListItems (1)" Name="UserQuickListItems" Category="Navigation Property" Type="Collectio"  Field="ICollection&lt;UserQuickListItem&gt;" Dependent="UserQuickListItem" Principal="" Inverse="Site" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "Site.Users" Label="Users (1)" Name="Users" Category="Navigation Property" Type="Collectio"  Field="ICollection&lt;User&gt;" Dependent="User" Principal="" Inverse="Site" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "Site.IsActive" Label="IsActive" Name="IsActive" Category="Property Required" Type="bool" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: is_active
+Relational:ColumnType: bit
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerBoolTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Site.Name" Label="Name" Name="Name" Category="Property Required" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: name
+Relational:ColumnType: nvarchar(40)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Site.TimeZoneName" Label="TimeZoneName" Name="TimeZoneName" Category="Property Required" Type="string" MaxLength="128" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 128
+Relational:ColumnName: time_zone_name
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "UserQuickListItem" Label="UserQuickListItem" Name="UserQuickListItem" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="ConstructorBinding: Microsoft.EntityFrameworkCore.Metadata.ConstructorBinding
+Relational:TableName: user_quick_list_items" Category="EntityType" Group="Expanded" />
+<Node Id = "User.Id" Label="Id" Name="Id" Category="Property Primary" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: id
+Relational:ColumnType: int
+SqlServer:ValueGenerationStrategy: IdentityColumn
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="True" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "User.OrderAdministrationsAcknowledgeUser" Label="OrderAdministrationsAcknowledgeUser (1)" Name="OrderAdministrationsAcknowledgeUser" Category="Navigation Property" Type="Collectio"  Field="ICollection&lt;OrderAdministration&gt;" Dependent="OrderAdministration" Principal="" Inverse="AcknowledgeUser" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "User.OrderAdministrationsAdministeringUser" Label="OrderAdministrationsAdministeringUser (1)" Name="OrderAdministrationsAdministeringUser" Category="Navigation Property" Type="Collectio"  Field="ICollection&lt;OrderAdministration&gt;" Dependent="OrderAdministration" Principal="" Inverse="AdministeringUser" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "User.PatientOrdersAddUser" Label="PatientOrdersAddUser (1)" Name="PatientOrdersAddUser" Category="Navigation Property" Type="Collectio"  Field="ICollection&lt;PatientOrder&gt;" Dependent="PatientOrder" Principal="" Inverse="AddUser" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "User.PatientOrdersOrderPhysicianUser" Label="PatientOrdersOrderPhysicianUser (1)" Name="PatientOrdersOrderPhysicianUser" Category="Navigation Property" Type="Collectio"  Field="ICollection&lt;PatientOrder&gt;" Dependent="PatientOrder" Principal="" Inverse="OrderPhysicianUser" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "User.Site" Label="Site (1)" Name="Site" Category="Navigation Property" Type="ToPrincipa"  Field="Site" Dependent="" Principal="" Inverse="Users" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "User.UserQuickListItems" Label="UserQuickListItems (1)" Name="UserQuickListItems" Category="Navigation Property" Type="Collectio"  Field="ICollection&lt;UserQuickListItem&gt;" Dependent="UserQuickListItem" Principal="" Inverse="User" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "User.FailedLoginAttempts" Label="FailedLoginAttempts" Name="FailedLoginAttempts" Category="Property Required" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: failed_login_attempts
+Relational:ColumnType: int
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "User.FirstName" Label="FirstName" Name="FirstName" Category="Property Required" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: first_name
+Relational:ColumnType: nvarchar(35)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "User.InitialsDisplay" Label="InitialsDisplay" Name="InitialsDisplay" Category="Property Required" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: initials_display
+Relational:ColumnType: nvarchar(4)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "User.IsActive" Label="IsActive" Name="IsActive" Category="Property Required" Type="bool" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: is_active
+Relational:ColumnType: bit
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerBoolTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "User.LastLoginTime" Label="LastLoginTime" Name="LastLoginTime" Category="Property Optional" Type="Nullable&lt;DateTimeOffset&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: last_login_time
+Relational:ColumnType: datetimeoffset
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerDateTimeOffsetTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "User.LastName" Label="LastName" Name="LastName" Category="Property Required" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: last_name
+Relational:ColumnType: nvarchar(35)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "User.LoginName" Label="LoginName" Name="LoginName" Category="Property Required" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: login_name
+Relational:ColumnType: varchar(255)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "User.LoginPassword" Label="LoginPassword" Name="LoginPassword" Category="Property Required" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: login_password
+Relational:ColumnType: varchar(255)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "User.MiddleName" Label="MiddleName" Name="MiddleName" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: middle_name
+Relational:ColumnType: nvarchar(35)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "User.NameDisplayInitials" Label="NameDisplayInitials" Name="NameDisplayInitials" Category="Property Optional" Type="Nullable&lt;bool&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: name_display_initials
+Relational:ColumnType: bit
+Relational:DefaultValueSql: ((0))
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerBoolTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "User.NameSuffix" Label="NameSuffix" Name="NameSuffix" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: name_suffix
+Relational:ColumnType: nvarchar(25)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "User.OrderingOnlyPhysician" Label="OrderingOnlyPhysician" Name="OrderingOnlyPhysician" Category="Property Optional" Type="Nullable&lt;bool&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: ordering_only_physician
+Relational:ColumnType: bit
+Relational:DefaultValueSql: ((0))
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerBoolTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "User.Salt" Label="Salt" Name="Salt" Category="Property Required" Type="byte[]" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: salt
+Relational:ColumnType: binary(16)
+Relational:IsFixedLength: True
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerByteArrayTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "User.SiteId" Label="SiteId" Name="SiteId" Category="Property Foreign" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: site_id
+Relational:ColumnType: int
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="True" IsRequired="True" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "User.Type" Label="Type" Name="Type" Category="Property Required" Type="string" MaxLength="1" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 1
+Relational:ColumnName: type
+Relational:IsFixedLength: True
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "UserQuickListItem" Label="UserQuickListItem" Name="UserQuickListItem" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="" Category="EntityType" Group="Expanded" />
+<Node Id = "UserQuickListItem.Id" Label="Id" Name="Id" Category="Property Primary" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: id
+SqlServer:ValueGenerationStrategy: IdentityColumn
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="True" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "UserQuickListItem.MedicationRoute" Label="MedicationRoute (1)" Name="MedicationRoute" Category="Navigation Property" Type="ToPrincipa"  Field="MedicationRoute" Dependent="" Principal="" Inverse="UserQuickListItems" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "UserQuickListItem.Site" Label="Site (1)" Name="Site" Category="Navigation Property" Type="ToPrincipa"  Field="Site" Dependent="" Principal="" Inverse="UserQuickListItems" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "UserQuickListItem.User" Label="User (1)" Name="User" Category="Navigation Property" Type="ToPrincipa"  Field="User" Dependent="" Principal="" Inverse="UserQuickListItems" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "UserQuickListItem.BrandName" Label="BrandName" Name="BrandName" Category="Property Required" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: brand_name
+Relational:ColumnType: nvarchar(255)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "UserQuickListItem.Dose" Label="Dose" Name="Dose" Category="Property Optional" Type="Nullable&lt;decimal&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: dose
+Relational:ColumnType: decimal(11, 2)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerDecimalTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "UserQuickListItem.DoseUnit" Label="DoseUnit" Name="DoseUnit" Category="Property Optional" Type="string" MaxLength="20" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 20
+Relational:ColumnName: dose_unit
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "UserQuickListItem.DrugId" Label="DrugId" Name="DrugId" Category="Property Optional" Type="string" MaxLength="32" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 32
+Relational:ColumnName: drug_id
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "UserQuickListItem.FrequencyId" Label="FrequencyId" Name="FrequencyId" Category="Property Optional" Type="Nullable&lt;int&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: frequency_id
+Relational:ColumnType: int
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "UserQuickListItem.MedicationRouteId" Label="MedicationRouteId" Name="MedicationRouteId" Category="Property Foreign" Type="Nullable&lt;int&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: medication_route_id
+Relational:ColumnType: int
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="True" IsRequired="False" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "UserQuickListItem.Ndc" Label="Ndc" Name="Ndc" Category="Property Optional" Type="string" MaxLength="32" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 32
+Relational:ColumnName: ndc
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping
+Unicode: False" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="False" ValueGenerated="None" />
+<Node Id = "UserQuickListItem.OrderNotes" Label="OrderNotes" Name="OrderNotes" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: order_notes
+Relational:ColumnType: nvarchar(MAX)
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "UserQuickListItem.SiteId" Label="SiteId" Name="SiteId" Category="Property Foreign" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: site_id
+Relational:ColumnType: int
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="True" IsRequired="True" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "UserQuickListItem.UsagesThisWeek" Label="UsagesThisWeek" Name="UsagesThisWeek" Category="Property Optional" Type="Nullable&lt;int&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: usages_this_week
+Relational:ColumnType: int
+Relational:DefaultValueSql: ((0))
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "UserQuickListItem.UserId" Label="UserId" Name="UserId" Category="Property Foreign" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: user_id
+Relational:ColumnType: int
+TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="True" IsRequired="True" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "UserQuickListItem.WeeklyUsageRollingAverage" Label="WeeklyUsageRollingAverage" Name="WeeklyUsageRollingAverage" Category="Property Optional" Type="Nullable&lt;decimal&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: weekly_usage_rolling_average
+Relational:ColumnType: decimal(9, 3)
+Relational:DefaultValueSql: ((-1))
+TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerDecimalTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+  </Nodes>
+  <Links>
+<Link Source = "IModel" Target="Action" Category="Contains" />
+<Link Source = "IModel" Target="CartOrderAdministration" Category="Contains" />
+<Link Source = "Action" Target="Action.OrderEvents" Category="Contains" />
+<Link Source = "Action" Target="Action.Id" Category="Contains" />
+<Link Source = "Action" Target="Action.Description" Category="Contains" />
+<Link Source = "Action" Target="Action.IsActive" Category="Contains" />
+<Link Source = "Action" Target="Action.SiteId" Category="Contains" />
+<Link Source = "Action" Target="Action.Title" Category="Contains" />
+<Link Source = "IModel" Target="ExternalIdEntity" Category="Contains" />
+<Link Source = "CartOrderAdministration" Target="CartOrderAdministration.PatientCartOrder" Category="Contains" />
+<Link Source = "CartOrderAdministration" Target="CartOrderAdministration.Id" Category="Contains" />
+<Link Source="CartOrderAdministration" Target="PatientCartOrder" From="CartOrderAdministration.PatientCartOrderId" To="PatientCartOrder.Id" Name="CartOrderAdministration -> PatientCartOrder" Annotations="Relational:Name: fk__cart_order_administrations__patient_cart_orders" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source = "CartOrderAdministration" Target="CartOrderAdministration.AdministrationScheduledDatetime" Category="Contains" />
+<Link Source = "CartOrderAdministration" Target="CartOrderAdministration.PatientCartOrderId" Category="Contains" />
+<Link Source = "CartOrderAdministration" Target="CartOrderAdministration.PointInTime" Category="Contains" />
+<Link Source = "CartOrderAdministration" Target="CartOrderAdministration.StopScheduledDatetime" Category="Contains" />
+<Link Source = "IModel" Target="GroupListItem" Category="Contains" />
+<Link Source = "ExternalIdEntity" Target="ExternalIdEntity.InternalId" Category="Contains" />
+<Link Source = "ExternalIdEntity" Target="ExternalIdEntity.Vendor" Category="Contains" />
+<Link Source = "ExternalIdEntity" Target="ExternalIdEntity.Entity" Category="Contains" />
+<Link Source = "ExternalIdEntity" Target="ExternalIdEntity.ExternalId" Category="Contains" />
+<Link Source = "IModel" Target="MedicationRoute" Category="Contains" />
+<Link Source = "GroupListItem" Target="GroupListItem.MedicationRoute" Category="Contains" />
+<Link Source = "GroupListItem" Target="GroupListItem.Site" Category="Contains" />
+<Link Source = "GroupListItem" Target="GroupListItem.Id" Category="Contains" />
+<Link Source="GroupListItem" Target="MedicationRoute" From="GroupListItem.MedicationRouteId" To="MedicationRoute.Id" Name="GroupListItem -> MedicationRoute" Annotations="Relational:Name: fk__group_list_items__medication_routes" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source="GroupListItem" Target="Site" From="GroupListItem.SiteId" To="Site.Id" Name="GroupListItem -> Site" Annotations="Relational:Name: fk__group_list_items__sites" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source = "GroupListItem" Target="GroupListItem.BrandName" Category="Contains" />
+<Link Source = "GroupListItem" Target="GroupListItem.Dose" Category="Contains" />
+<Link Source = "GroupListItem" Target="GroupListItem.DoseUnit" Category="Contains" />
+<Link Source = "GroupListItem" Target="GroupListItem.DrugId" Category="Contains" />
+<Link Source = "GroupListItem" Target="GroupListItem.FrequencyId" Category="Contains" />
+<Link Source = "GroupListItem" Target="GroupListItem.GroupName" Category="Contains" />
+<Link Source = "GroupListItem" Target="GroupListItem.MedicationRouteId" Category="Contains" />
+<Link Source = "GroupListItem" Target="GroupListItem.Ndc" Category="Contains" />
+<Link Source = "GroupListItem" Target="GroupListItem.OrderNotes" Category="Contains" />
+<Link Source = "GroupListItem" Target="GroupListItem.SiteId" Category="Contains" />
+<Link Source = "IModel" Target="OrderAdministration" Category="Contains" />
+<Link Source = "MedicationRoute" Target="MedicationRoute.GroupListItems" Category="Contains" />
+<Link Source = "MedicationRoute" Target="MedicationRoute.PatientCartOrders" Category="Contains" />
+<Link Source = "MedicationRoute" Target="MedicationRoute.PatientOrders" Category="Contains" />
+<Link Source = "MedicationRoute" Target="MedicationRoute.UserQuickListItems" Category="Contains" />
+<Link Source = "MedicationRoute" Target="MedicationRoute.Id" Category="Contains" />
+<Link Source = "MedicationRoute" Target="MedicationRoute.Name" Category="Contains" />
+<Link Source = "MedicationRoute" Target="MedicationRoute.SiteId" Category="Contains" />
+<Link Source = "IModel" Target="OrderEvent" Category="Contains" />
+<Link Source = "OrderAdministration" Target="OrderAdministration.AcknowledgeUser" Category="Contains" />
+<Link Source = "OrderAdministration" Target="OrderAdministration.AdministeringUser" Category="Contains" />
+<Link Source = "OrderAdministration" Target="OrderAdministration.OrderEvents" Category="Contains" />
+<Link Source = "OrderAdministration" Target="OrderAdministration.PatientOrder" Category="Contains" />
+<Link Source = "OrderAdministration" Target="OrderAdministration.Id" Category="Contains" />
+<Link Source="OrderAdministration" Target="User" From="OrderAdministration.AcknowledgeUserId" To="User.Id" Name="OrderAdministration -> User" Annotations="Relational:Name: fk__order_administrations__patient_orders__acknowledge_user_id" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source="OrderAdministration" Target="User" From="OrderAdministration.AdministeringUserId" To="User.Id" Name="OrderAdministration -> User" Annotations="Relational:Name: fk__order_administrations__patient_orders__administering_user_id" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source="OrderAdministration" Target="PatientOrder" From="OrderAdministration.PatientOrderId" To="PatientOrder.Id" Name="OrderAdministration -> PatientOrder" Annotations="Relational:Name: fk__order_administrations__patient_orders" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source = "OrderAdministration" Target="OrderAdministration.AcknowledgeDatetime" Category="Contains" />
+<Link Source = "OrderAdministration" Target="OrderAdministration.AcknowledgeUserId" Category="Contains" />
+<Link Source = "OrderAdministration" Target="OrderAdministration.AdministeringUserId" Category="Contains" />
+<Link Source = "OrderAdministration" Target="OrderAdministration.AdministrationDatetime" Category="Contains" />
+<Link Source = "OrderAdministration" Target="OrderAdministration.AdministrationInputDatetime" Category="Contains" />
+<Link Source = "OrderAdministration" Target="OrderAdministration.AdministrationScheduledDatetime" Category="Contains" />
+<Link Source = "OrderAdministration" Target="OrderAdministration.MissedDose" Category="Contains" />
+<Link Source = "OrderAdministration" Target="OrderAdministration.OnHold" Category="Contains" />
+<Link Source = "OrderAdministration" Target="OrderAdministration.PatientOrderId" Category="Contains" />
+<Link Source = "OrderAdministration" Target="OrderAdministration.PointInTime" Category="Contains" />
+<Link Source = "OrderAdministration" Target="OrderAdministration.StopDatetime" Category="Contains" />
+<Link Source = "OrderAdministration" Target="OrderAdministration.StopInputDatetime" Category="Contains" />
+<Link Source = "OrderAdministration" Target="OrderAdministration.StopScheduledDatetime" Category="Contains" />
+<Link Source = "OrderAdministration" Target="OrderAdministration.StopUserId" Category="Contains" />
+<Link Source = "IModel" Target="Patient" Category="Contains" />
+<Link Source = "OrderEvent" Target="OrderEvent.Action" Category="Contains" />
+<Link Source = "OrderEvent" Target="OrderEvent.OrderAdministration" Category="Contains" />
+<Link Source = "OrderEvent" Target="OrderEvent.PatientOrder" Category="Contains" />
+<Link Source = "OrderEvent" Target="OrderEvent.Id" Category="Contains" />
+<Link Source="OrderEvent" Target="Action" From="OrderEvent.ActionId" To="Action.Id" Name="OrderEvent -> Action" Annotations="Relational:Name: fk__order_events__actions" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source="OrderEvent" Target="OrderAdministration" From="OrderEvent.OrderAdministrationId" To="OrderAdministration.Id" Name="OrderEvent -> OrderAdministration" Annotations="Relational:Name: fk__order_events__order_administrations" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source="OrderEvent" Target="PatientOrder" From="OrderEvent.PatientOrderId" To="PatientOrder.Id" Name="OrderEvent -> PatientOrder" Annotations="Relational:Name: fk__order_events__patient_orders" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source = "OrderEvent" Target="OrderEvent.ActionId" Category="Contains" />
+<Link Source = "OrderEvent" Target="OrderEvent.AddDatetime" Category="Contains" />
+<Link Source = "OrderEvent" Target="OrderEvent.AddUserId" Category="Contains" />
+<Link Source = "OrderEvent" Target="OrderEvent.EventDateTime" Category="Contains" />
+<Link Source = "OrderEvent" Target="OrderEvent.OrderAdministrationId" Category="Contains" />
+<Link Source = "OrderEvent" Target="OrderEvent.PatientOrderId" Category="Contains" />
+<Link Source = "IModel" Target="PatientCartOrder" Category="Contains" />
+<Link Source = "Patient" Target="Patient.PatientOrders" Category="Contains" />
+<Link Source = "Patient" Target="Patient.Site" Category="Contains" />
+<Link Source = "Patient" Target="Patient.Id" Category="Contains" />
+<Link Source="Patient" Target="Site" From="Patient.SiteId" To="Site.Id" Name="Patient -> Site" Annotations="Relational:Name: fk__patients__sites" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source = "Patient" Target="Patient.AccountNumber" Category="Contains" />
+<Link Source = "Patient" Target="Patient.Active" Category="Contains" />
+<Link Source = "Patient" Target="Patient.Age" Category="Contains" />
+<Link Source = "Patient" Target="Patient.AgeUnits" Category="Contains" />
+<Link Source = "Patient" Target="Patient.ChiefComplaint" Category="Contains" />
+<Link Source = "Patient" Target="Patient.DateOfBirth" Category="Contains" />
+<Link Source = "Patient" Target="Patient.DepartmentCode" Category="Contains" />
+<Link Source = "Patient" Target="Patient.FirstName" Category="Contains" />
+<Link Source = "Patient" Target="Patient.Gender" Category="Contains" />
+<Link Source = "Patient" Target="Patient.HeightInCm" Category="Contains" />
+<Link Source = "Patient" Target="Patient.LastName" Category="Contains" />
+<Link Source = "Patient" Target="Patient.MedicalRecordNumber" Category="Contains" />
+<Link Source = "Patient" Target="Patient.MiddleName" Category="Contains" />
+<Link Source = "Patient" Target="Patient.NameAlert" Category="Contains" />
+<Link Source = "Patient" Target="Patient.NameSuffix" Category="Contains" />
+<Link Source = "Patient" Target="Patient.RoomBedCode" Category="Contains" />
+<Link Source = "Patient" Target="Patient.SiteId" Category="Contains" />
+<Link Source = "Patient" Target="Patient.Urgency" Category="Contains" />
+<Link Source = "Patient" Target="Patient.UrgencyColor" Category="Contains" />
+<Link Source = "Patient" Target="Patient.VsBloodPressureIndicator" Category="Contains" />
+<Link Source = "Patient" Target="Patient.VsDatetime" Category="Contains" />
+<Link Source = "Patient" Target="Patient.VsDiastolic" Category="Contains" />
+<Link Source = "Patient" Target="Patient.VsEndTidal" Category="Contains" />
+<Link Source = "Patient" Target="Patient.VsEndTidalLevel" Category="Contains" />
+<Link Source = "Patient" Target="Patient.VsMap" Category="Contains" />
+<Link Source = "Patient" Target="Patient.VsMapLevel" Category="Contains" />
+<Link Source = "Patient" Target="Patient.VsOxygenSaturation" Category="Contains" />
+<Link Source = "Patient" Target="Patient.VsOxygenSaturationIndicator" Category="Contains" />
+<Link Source = "Patient" Target="Patient.VsPainScale" Category="Contains" />
+<Link Source = "Patient" Target="Patient.VsPainScaleIndicator" Category="Contains" />
+<Link Source = "Patient" Target="Patient.VsPulse" Category="Contains" />
+<Link Source = "Patient" Target="Patient.VsPulseIndicator" Category="Contains" />
+<Link Source = "Patient" Target="Patient.VsRespiratory" Category="Contains" />
+<Link Source = "Patient" Target="Patient.VsRespiratoryIndicator" Category="Contains" />
+<Link Source = "Patient" Target="Patient.VsSystolic" Category="Contains" />
+<Link Source = "Patient" Target="Patient.VsTemperature" Category="Contains" />
+<Link Source = "Patient" Target="Patient.VsTemperatureIndicator" Category="Contains" />
+<Link Source = "Patient" Target="Patient.WardCode" Category="Contains" />
+<Link Source = "Patient" Target="Patient.WeightInKg" Category="Contains" />
+<Link Source = "Patient" Target="Patient.WithdrawConsent" Category="Contains" />
+<Link Source = "IModel" Target="PatientOrder" Category="Contains" />
+<Link Source = "PatientCartOrder" Target="PatientCartOrder.CartOrderAdministrations" Category="Contains" />
+<Link Source = "PatientCartOrder" Target="PatientCartOrder.MedicationRoute" Category="Contains" />
+<Link Source = "PatientCartOrder" Target="PatientCartOrder.Id" Category="Contains" />
+<Link Source="PatientCartOrder" Target="MedicationRoute" From="PatientCartOrder.MedicationRouteId" To="MedicationRoute.Id" Name="PatientCartOrder -> MedicationRoute" Annotations="Relational:Name: fk__patient_cart_orders__medication_routes" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source = "PatientCartOrder" Target="PatientCartOrder.AddDatetime" Category="Contains" />
+<Link Source = "PatientCartOrder" Target="PatientCartOrder.BeginDatetime" Category="Contains" />
+<Link Source = "PatientCartOrder" Target="PatientCartOrder.BrandName" Category="Contains" />
+<Link Source = "PatientCartOrder" Target="PatientCartOrder.Dose" Category="Contains" />
+<Link Source = "PatientCartOrder" Target="PatientCartOrder.DoseUnit" Category="Contains" />
+<Link Source = "PatientCartOrder" Target="PatientCartOrder.DrugId" Category="Contains" />
+<Link Source = "PatientCartOrder" Target="PatientCartOrder.EndDatetime" Category="Contains" />
+<Link Source = "PatientCartOrder" Target="PatientCartOrder.FrequencyId" Category="Contains" />
+<Link Source = "PatientCartOrder" Target="PatientCartOrder.MedicationRouteId" Category="Contains" />
+<Link Source = "PatientCartOrder" Target="PatientCartOrder.Ndc" Category="Contains" />
+<Link Source = "PatientCartOrder" Target="PatientCartOrder.OrderNotes" Category="Contains" />
+<Link Source = "PatientCartOrder" Target="PatientCartOrder.PatientId" Category="Contains" />
+<Link Source = "PatientCartOrder" Target="PatientCartOrder.PointInTime" Category="Contains" />
+<Link Source = "PatientCartOrder" Target="PatientCartOrder.Priority" Category="Contains" />
+<Link Source = "PatientCartOrder" Target="PatientCartOrder.Prn" Category="Contains" />
+<Link Source = "PatientCartOrder" Target="PatientCartOrder.UserId" Category="Contains" />
+<Link Source = "PatientCartOrder" Target="PatientCartOrder.UserQuickListItemId" Category="Contains" />
+<Link Source = "IModel" Target="Site" Category="Contains" />
+<Link Source = "PatientOrder" Target="PatientOrder.AddUser" Category="Contains" />
+<Link Source = "PatientOrder" Target="PatientOrder.MedicationRoute" Category="Contains" />
+<Link Source = "PatientOrder" Target="PatientOrder.OrderAdministrations" Category="Contains" />
+<Link Source = "PatientOrder" Target="PatientOrder.OrderEvents" Category="Contains" />
+<Link Source = "PatientOrder" Target="PatientOrder.OrderPhysicianUser" Category="Contains" />
+<Link Source = "PatientOrder" Target="PatientOrder.Patient" Category="Contains" />
+<Link Source = "PatientOrder" Target="PatientOrder.Id" Category="Contains" />
+<Link Source="PatientOrder" Target="User" From="PatientOrder.AddUserId" To="User.Id" Name="PatientOrder -> User" Annotations="Relational:Name: fk__patient_orders__users" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source="PatientOrder" Target="MedicationRoute" From="PatientOrder.MedicationRouteId" To="MedicationRoute.Id" Name="PatientOrder -> MedicationRoute" Annotations="Relational:Name: fk__patient_orders__medication_routes" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source="PatientOrder" Target="User" From="PatientOrder.OrderingPhysicianId" To="User.Id" Name="PatientOrder -> User" Annotations="Relational:Name: fk_patient_orders__user__ordering_physician" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source="PatientOrder" Target="Patient" From="PatientOrder.PatientId" To="Patient.Id" Name="PatientOrder -> Patient" Annotations="Relational:Name: fk__patient_orders__patients" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source = "PatientOrder" Target="PatientOrder.AddDatetime" Category="Contains" />
+<Link Source = "PatientOrder" Target="PatientOrder.AddUserId" Category="Contains" />
+<Link Source = "PatientOrder" Target="PatientOrder.BeginDatetime" Category="Contains" />
+<Link Source = "PatientOrder" Target="PatientOrder.BrandName" Category="Contains" />
+<Link Source = "PatientOrder" Target="PatientOrder.Dose" Category="Contains" />
+<Link Source = "PatientOrder" Target="PatientOrder.DoseUnit" Category="Contains" />
+<Link Source = "PatientOrder" Target="PatientOrder.DrugId" Category="Contains" />
+<Link Source = "PatientOrder" Target="PatientOrder.EndDateTime" Category="Contains" />
+<Link Source = "PatientOrder" Target="PatientOrder.FrequencyId" Category="Contains" />
+<Link Source = "PatientOrder" Target="PatientOrder.MedicationRouteId" Category="Contains" />
+<Link Source = "PatientOrder" Target="PatientOrder.Ndc" Category="Contains" />
+<Link Source = "PatientOrder" Target="PatientOrder.OrderNotes" Category="Contains" />
+<Link Source = "PatientOrder" Target="PatientOrder.OrderStatus" Category="Contains" />
+<Link Source = "PatientOrder" Target="PatientOrder.OrderingPhysicianId" Category="Contains" />
+<Link Source = "PatientOrder" Target="PatientOrder.PatientId" Category="Contains" />
+<Link Source = "PatientOrder" Target="PatientOrder.PointInTime" Category="Contains" />
+<Link Source = "PatientOrder" Target="PatientOrder.Priority" Category="Contains" />
+<Link Source = "PatientOrder" Target="PatientOrder.Prn" Category="Contains" />
+<Link Source = "IModel" Target="User" Category="Contains" />
+<Link Source = "Site" Target="Site.GroupListItems" Category="Contains" />
+<Link Source = "Site" Target="Site.Patients" Category="Contains" />
+<Link Source = "Site" Target="Site.UserQuickListItems" Category="Contains" />
+<Link Source = "Site" Target="Site.Users" Category="Contains" />
+<Link Source = "Site" Target="Site.Id" Category="Contains" />
+<Link Source = "Site" Target="Site.IsActive" Category="Contains" />
+<Link Source = "Site" Target="Site.Name" Category="Contains" />
+<Link Source = "Site" Target="Site.TimeZoneName" Category="Contains" />
+<Link Source = "IModel" Target="UserQuickListItem" Category="Contains" />
+<Link Source = "User" Target="User.OrderAdministrationsAcknowledgeUser" Category="Contains" />
+<Link Source = "User" Target="User.OrderAdministrationsAdministeringUser" Category="Contains" />
+<Link Source = "User" Target="User.PatientOrdersAddUser" Category="Contains" />
+<Link Source = "User" Target="User.PatientOrdersOrderPhysicianUser" Category="Contains" />
+<Link Source = "User" Target="User.Site" Category="Contains" />
+<Link Source = "User" Target="User.UserQuickListItems" Category="Contains" />
+<Link Source = "User" Target="User.Id" Category="Contains" />
+<Link Source="User" Target="Site" From="User.SiteId" To="Site.Id" Name="User -> Site" Annotations="Relational:Name: fk__users__sites" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source = "User" Target="User.FailedLoginAttempts" Category="Contains" />
+<Link Source = "User" Target="User.FirstName" Category="Contains" />
+<Link Source = "User" Target="User.InitialsDisplay" Category="Contains" />
+<Link Source = "User" Target="User.IsActive" Category="Contains" />
+<Link Source = "User" Target="User.LastLoginTime" Category="Contains" />
+<Link Source = "User" Target="User.LastName" Category="Contains" />
+<Link Source = "User" Target="User.LoginName" Category="Contains" />
+<Link Source = "User" Target="User.LoginPassword" Category="Contains" />
+<Link Source = "User" Target="User.MiddleName" Category="Contains" />
+<Link Source = "User" Target="User.NameDisplayInitials" Category="Contains" />
+<Link Source = "User" Target="User.NameSuffix" Category="Contains" />
+<Link Source = "User" Target="User.OrderingOnlyPhysician" Category="Contains" />
+<Link Source = "User" Target="User.Salt" Category="Contains" />
+<Link Source = "User" Target="User.SiteId" Category="Contains" />
+<Link Source = "User" Target="User.Type" Category="Contains" />
+<Link Source = "IModel" Target="UserQuickListItem" Category="Contains" />
+<Link Source = "UserQuickListItem" Target="UserQuickListItem.MedicationRoute" Category="Contains" />
+<Link Source = "UserQuickListItem" Target="UserQuickListItem.Site" Category="Contains" />
+<Link Source = "UserQuickListItem" Target="UserQuickListItem.User" Category="Contains" />
+<Link Source = "UserQuickListItem" Target="UserQuickListItem.Id" Category="Contains" />
+<Link Source="UserQuickListItem" Target="MedicationRoute" From="UserQuickListItem.MedicationRouteId" To="MedicationRoute.Id" Name="UserQuickListItem -> MedicationRoute" Annotations="Relational:Name: fk__user_quick_list_items__medication_routes" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source="UserQuickListItem" Target="Site" From="UserQuickListItem.SiteId" To="Site.Id" Name="UserQuickListItem -> Site" Annotations="Relational:Name: fk__user_quick_list_items__sites" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source="UserQuickListItem" Target="User" From="UserQuickListItem.UserId" To="User.Id" Name="UserQuickListItem -> User" Annotations="Relational:Name: fk__user_quick_list_items__user" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source = "UserQuickListItem" Target="UserQuickListItem.BrandName" Category="Contains" />
+<Link Source = "UserQuickListItem" Target="UserQuickListItem.Dose" Category="Contains" />
+<Link Source = "UserQuickListItem" Target="UserQuickListItem.DoseUnit" Category="Contains" />
+<Link Source = "UserQuickListItem" Target="UserQuickListItem.DrugId" Category="Contains" />
+<Link Source = "UserQuickListItem" Target="UserQuickListItem.FrequencyId" Category="Contains" />
+<Link Source = "UserQuickListItem" Target="UserQuickListItem.MedicationRouteId" Category="Contains" />
+<Link Source = "UserQuickListItem" Target="UserQuickListItem.Ndc" Category="Contains" />
+<Link Source = "UserQuickListItem" Target="UserQuickListItem.OrderNotes" Category="Contains" />
+<Link Source = "UserQuickListItem" Target="UserQuickListItem.SiteId" Category="Contains" />
+<Link Source = "UserQuickListItem" Target="UserQuickListItem.UsagesThisWeek" Category="Contains" />
+<Link Source = "UserQuickListItem" Target="UserQuickListItem.UserId" Category="Contains" />
+<Link Source = "UserQuickListItem" Target="UserQuickListItem.WeeklyUsageRollingAverage" Category="Contains" />
+  </Links>
+  <Styles>
+    <Style TargetType="Node" GroupLabel="EntityType" ValueLabel="True">
+      <Condition Expression="HasCategory('EntityType')" />
+      <Setter Property="Background" Value="#FFC0C0C0" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Property Primary" ValueLabel="True">
+      <Condition Expression="HasCategory('Property Primary')" />
+      <Setter Property="Background" Value="#FF008000" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Property Optional" ValueLabel="True">
+      <Condition Expression="HasCategory('Property Optional')" />
+      <Setter Property="Background" Value="#FF808040" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Property Foreign" ValueLabel="True">
+      <Condition Expression="HasCategory('Property Foreign')" />
+      <Setter Property="Background" Value="#FF8080FF" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Property Required" ValueLabel="True">
+      <Condition Expression="HasCategory('Property Required')" />
+      <Setter Property="Background" Value="#FFC0A000" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Navigation Property" ValueLabel="True">
+      <Condition Expression="HasCategory('Navigation Property')" />
+      <Setter Property="Background" Value="#FF990000" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Navigation Collection" ValueLabel="True">
+      <Condition Expression="HasCategory('Navigation Collection')" />
+      <Setter Property="Background" Value="#FFFF3232" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Model" ValueLabel="True">
+      <Condition Expression="HasCategory('Model')" />
+      <Setter Property="Background" Value="#FFFFFFFF" />
+    </Style>
+  </Styles>
+  <Properties>
+    <Property Id="Name" Group="Model Properties" DataType="System.String" />
+    <Property Id="Field"  Description="Backing field" Group="Model Properties" DataType="System.String" />
+    <Property Id="Type"  Description="CLR data type" Group="Model Properties" DataType="System.String" />
+    <Property Id="To" Description="Source property" Group="Model Properties" DataType="System.String" />
+    <Property Id="From" Description="Target property" Group="Model Properties" DataType="System.String" />
+    <Property Id="Dependent" Description="Dependent entity" Group="Model Properties" DataType="System.String" />
+    <Property Id="Inverse" Description="Inverse entity" Group="Model Properties" DataType="System.String" />
+    <Property Id="Principal" Description="Principal entity" Group="Model Properties" DataType="System.String" />    
+    <Property Id="Annotations" Description="Annotations" Group="Model Properties" DataType="System.String" />
+    <Property Id="BaseClass"  Description="Base class" Group="Model Properties" DataType="System.String" />
+    <Property Id="ChangeTrackingStrategy" Description="Change tracking strategy" Group="Model Properties" DataType="System.String" />
+    <Property Id="IsUnique" Group="Model Properties" DataType="System.Boolean" />
+    <Property Id="IsAbstract" Group="Model Properties" DataType="System.Boolean" />
+    <Property Id="ProductVersion" Label="Product Version" Description="EF Core product version" Group="Model Properties" DataType="System.String" />
+    <Property Id="IsIndexed" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsRequired" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsPrimaryKey" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsForeignKey" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsShadow" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsAlternateKey" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsConcurrencyToken" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsIndexed" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsUnicode" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="ValueGenerated" Group="Property Flags" DataType="System.String" />
+    <Property Id="BeforeSaveBehavior" Group="Property Flags" DataType="System.String" />
+    <Property Id="AfterSaveBehavior" Group="Property Flags" DataType="System.String" />
+    <Property Id="PropertyAccessMode" Group="Property Flags" DataType="System.String" />
+  </Properties>
+</DirectedGraph>

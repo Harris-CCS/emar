@@ -1,0 +1,18 @@
+/*.form-inline {
+    border: none;
+}*/
+
+:host ::ng-deep .dropdown-menu {
+    max-height: 200px !important;
+    width: auto !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
+.form-control { 
+    flex: 0 0 300px;
+}
+
+.search-status {
+    margin-left: 1rem;
+}

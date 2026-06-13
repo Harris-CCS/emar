@@ -1,0 +1,9 @@
+<div *ngFor="let notification of notifications; let i = index">
+		<span class="subheader" *ngIf="i == 0 || notification.category != notifications[i-1].category"><span>{{ notification.category }}</span></span>
+    <a class="notif-link" href="{{ notification.actionUrl}}">
+        <span class="notif-patient">{{ notification.patient.firstName }} {{ notification.patient.lastName }}</span>
+         - 
+         <span class="notif-medication">{{ notification.body | truncate:50 }}</span>
+        [{{ notification.eventTime | dateTimePipe: "friendly" }}]
+    </a>
+</div>

@@ -1,0 +1,179 @@
+<div class="header-container">
+  <header *ngIf="user">
+    <div *ngIf="ie" onClick="alert('Please close eMAR browser to return to PulseCheck')" id="page-content-id-aws-logo">
+      <button type="button" class="logo"></button>
+    </div>
+    <div *ngIf="!ie">
+      <div id="page-content-id-aws-logo">
+        <a [href]="assignExternalRoute('MainTrackingBoard')">
+          <button type="button" class="logo"></button>
+        </a>
+      </div>
+    </div>
+    <h2>{{ title }}</h2>
+    <div class="header-user">
+      <div class="user-icons">
+        <a class="notification" placement="bottom" [ngbPopover]="Notifications" ngbTooltip="Notifications">
+          <span *ngIf="nbNotifications>0" class="count">{{ nbNotifications }}</span>
+        </a>
+        <ng-template #Notifications>
+          <notifications></notifications>
+        </ng-template>
+        <a class="help" placement="bottom" [ngbPopover]="Legend" ngbTooltip="Icon meaning"></a>
+        <ng-template #Legend>
+          <help-icons></help-icons>
+        </ng-template>
+      </div>
+      <div class="user-block">
+        <div><span>{{user.site.name}}</span><span>{{ currentTime }}</span></div>
+        <div class="user-data">
+          <div *ngIf="user.userInitials || (user.firstName && user.lastName)" class="user-name">
+            <span *ngIf="user.displayInitialsIndicator;else userFullName">{{ user.userInitials }}</span>
+          </div>
+          <div class="user-options" placement="bottom" ngbTooltip="User Options"></div>
+          <div ngbDropdown class='d-inline-block'>
+            <button type="button" id="user-options-dropdown" placement="bottom" ngbDropdownToggle>
+            </button>
+            <div ngbDropdownMenu aria-labelledby="user-options-dropdown">
+              <ul class="horizontal-list">
+                <!-- Non-Patient Centric Options-->
+                <li *ngIf="!ie" ngbDropdownItem>
+                  <button *ngIf="isDisabledLink('hostServerURL')" [disabled]="isDisabledLink('hostServerURL')">
+                    {{isDisabledLink('hostServerURL') ? 'Main' : ''}}
+                  </button>
+                  <a *ngIf="!isDisabledLink('hostServerURL')" [href]="assignExternalRoute('MainTrackingBoard')">Main</a>
+                  <button *ngIf="isDisabledLink('hostServerURL')" [disabled]="isDisabledLink('hostServerURL')">
+                    {{isDisabledLink('hostServerURL') ? 'Help' : ''}}
+                  </button>
+                  <a *ngIf="!isDisabledLink('hostServerURL')" [href]="assignExternalRoute('Help')">Help</a>
+                  <button *ngIf="isDisabledLink('hostServerURL')" [disabled]="isDisabledLink('hostServerURL')">
+                    {{isDisabledLink('hostServerURL') ? 'Archive' : ''}}
+                  </button>
+                  <a *ngIf="!isDisabledLink('hostServerURL')" [href]="assignExternalRoute('Archive')">Archive</a>
+
+                  <button *ngIf="isDisabledLink('hostServerURL')" [disabled]="isDisabledLink('hostServerURL')">
+                    {{isDisabledLink('hostServerURL') ? 'My Charts' : ''}}
+                  </button>
+                  <a *ngIf="!isDisabledLink('hostServerURL')" [href]="assignExternalRoute('My Charts')"> My Charts</a>
+                  <!-- Logout to be developed when authentication is added -->
+                  <!-- <button *ngIf="isDisabledLink('hostServerURL')" [disabled]="isDisabledLink('hostServerURL')"> -->
+                  <!-- <button *ngIf="true" disabled="true">
+                    Logout
+                  </button>
+                  <a *ngIf="false" href="#">Logout</a>
+                -->
+                </li>
+              </ul>
+              <!-- <hr> -->
+              <ul class="horizontal-list">
+                <!-- EMAR Options-->
+                <li ngbDropdownItem>
+                  <button *ngIf="isDisabledLink('patientId')" [disabled]="isDisabledLink('patientId')">
+                    {{isDisabledLink('patientId') ? 'Med Services' : ''}}
+                    <!-- <a *ngIf="!isDisabledLink('patientId')" [href]="assignEMARRoute('Med Services')">Med Services</a> -->
+                  </button>
+                  <a *ngIf="!isDisabledLink('patientId')" [href]="assignEMARRoute('Med Services')">Med Services</a>
+                  <button *ngIf="isDisabledLink('patientId')" [disabled]="isDisabledLink('hostServerURL')">
+                    {{isDisabledLink('hostServerURL') ? 'MAR - Dept' : ''}}
+                    <!-- <a *ngIf="!isDisabledLink('hostServerURL')" [href]="assignEMARRoute('MAR Department')">MAR
+                      Department</a> -->
+                  </button>
+                  <a *ngIf="!isDisabledLink('hostServerURL')" [href]="assignEMARRoute('MAR - Dept')">
+                    MAR - Dept
+                  </a>
+                  <button *ngIf="isDisabledLink('patientId')" [disabled]="isDisabledLink('patientId')">
+                    {{isDisabledLink('patientId') ? 'MAR - Patient' : ''}}
+                    <!-- <a *ngIf="!isDisabledLink('patientId')" [href]="assignEMARRoute('MAR Patient')"> MAR
+                      Patient</a> -->
+                  </button>
+                  <a *ngIf="!isDisabledLink('patientId')" [href]="assignEMARRoute('MAR - Patient')">
+                    MAR - Patient
+                  </a>
+                </li>
+              </ul>
+              <!-- <hr> -->
+              <ul class="vertical-list">
+                <!-- Patient Centric Options -->
+                <li *ngIf="!ie" ngbDropdownItem>
+                  <button *ngIf="isDisabledLink('externalPatientId')" [disabled]="isDisabledLink('externalPatientId')">
+                    {{isDisabledLink('externalPatientId') ? 'Allergies' : ''}}
+                  </button>
+                  <a *ngIf="!isDisabledLink('externalPatientId')" [href]="assignExternalRoute('Allergies')">Allergies</a>
+                  <button *ngIf="isDisabledLink('externalPatientId')" [disabled]="isDisabledLink('externalPatientId')">
+                    {{isDisabledLink('externalPatientId') ? 'Chart' : ''}}
+                  </button>
+                  <a *ngIf="!isDisabledLink('externalPatientId')" [href]="assignExternalRoute('Chart')">Chart</a>
+                  <button *ngIf="isDisabledLink('externalPatientId')" [disabled]="isDisabledLink('externalPatientId')">
+                    {{isDisabledLink('externalPatientId') ? 'Current Medications' : ''}}
+                  </button>
+                  <a *ngIf="!isDisabledLink('externalPatientId')"
+                    [href]="assignExternalRoute('Current Medications')">Current Medications</a>
+                  <button *ngIf="isDisabledLink('externalPatientId')" [disabled]="isDisabledLink('externalPatientId')">
+                    {{isDisabledLink('externalPatientId') ? 'DCI' : ''}}
+                  </button>
+                  <a *ngIf="!isDisabledLink('externalPatientId')" [href]="assignExternalRoute('DCI')">DCI</a>
+                  <button *ngIf="isDisabledLink('externalPatientId')" [disabled]="isDisabledLink('externalPatientId')">
+                    {{isDisabledLink('externalPatientId') ? 'Disposition' : ''}}
+                  </button>
+                  <a *ngIf="!isDisabledLink('externalPatientId')"
+                    [href]="assignExternalRoute('Disposition')">Disposition</a>
+                </li>
+                <li *ngIf="!ie" ngbDropdownItem>
+                  <button *ngIf="isDisabledLink('externalPatientId')" [disabled]="isDisabledLink('externalPatientId')">
+                    {{isDisabledLink('externalPatientId') ? 'Med Reconciliation' : ''}}
+                  </button>
+                  <a *ngIf="!isDisabledLink('externalPatientId')"
+                    [href]="assignExternalRoute('Medication Reconciliation')">Med Reconciliation</a>
+                  <button *ngIf="isDisabledLink('externalPatientId')" [disabled]="isDisabledLink('externalPatientId')">
+                    {{isDisabledLink('externalPatientId') ? 'Orders' : ''}}
+                  </button>
+                  <a *ngIf="!isDisabledLink('externalPatientId')" [href]="assignExternalRoute('Orders')">Orders</a>
+                  <button *ngIf="isDisabledLink('externalPatientId')" [disabled]="isDisabledLink('externalPatientId')">
+                    {{isDisabledLink('externalPatientId') ? 'Patient Data' : ''}}
+                  </button>
+                  <a *ngIf="!isDisabledLink('externalPatientId')" [href]="assignExternalRoute('Patient Data')">Patient
+                    Data</a>
+                  <button *ngIf="isDisabledLink('externalPatientId')" [disabled]="isDisabledLink('externalPatientId')">
+                    {{isDisabledLink('externalPatientId') ? 'Rx' : ''}}
+                  </button>
+                  <a *ngIf="!isDisabledLink('externalPatientId')" [href]="assignExternalRoute('Rx')">Rx</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+    
+  <div class="top-level-nav">
+    <div>
+      <a 
+        *ngIf="!isDisabledLink('patientId')" 
+        [href]="assignEMARRoute('Med Services')"
+        [ngClass]="{'selected': isSelected('Med Services')}"
+      >Med Services</a>
+    </div>
+    <div>
+      <a 
+        *ngIf="!isDisabledLink('hostServerURL')" 
+        [href]="assignEMARRoute('MAR - Dept')"
+        [ngClass]="{'selected': isSelected('MAR - Dept')}"
+      >MAR - Dept</a>
+    </div>
+    <div>
+      <a 
+        *ngIf="!isDisabledLink('patientId')" 
+        [href]="assignEMARRoute('MAR - Patient')"
+        [ngClass]="{'selected': isSelected('MAR - Patient')}"
+      >MAR - Patient</a>
+    </div>
+  </div>
+</div>
+
+<ng-template #userFullName>
+  <span id="user-full-name">
+    <span>{{user.firstName}} {{user.middleName}}</span>
+    <span>{{user.lastName}} {{user.nameSuffix}}</span>
+  </span>
+</ng-template>

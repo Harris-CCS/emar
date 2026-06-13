@@ -1,0 +1,140 @@
+@import "../../../variables.scss";
+
+input[type="checkbox"] {
+    margin-top: 2px;
+    margin-right: 2px;
+}
+.title {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+.gt-all-above-first-child {
+    padding-top: 2px;
+    margin-top: 2px;
+}
+.gt-all-above-child, .gt-all-above {
+    background-color: $e-body-background-color;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+.gt-all-above {
+    color: $e-blue-yonder;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+.gt-all {
+    color: $e-blue-yonder;
+    font-weight: bold;  
+}
+.gt-displayIf::after {
+    content: ">>";
+    color: $e-gray;
+    font-weight: bold;
+}
+.gt-displayCan {
+    padding-left: 5px;
+    border-left: 2px solid $e-blue-yonder;
+}
+.dropdown-toggle {
+    padding: 0.2rem;
+    margin-top: 0.2rem;
+}
+.gt-top-border {
+    border-top: 1px solid $gray-L-20;
+
+    &.gt-content {
+        overflow-x: auto;
+        overflow-y: scroll;
+        max-height: calc(100vh - 350px);
+        max-width: calc(100vw - 300px);
+    }
+}
+.dropdown button {
+    min-width: 12.5rem;
+    text-align: left;
+}
+::placeholder {
+    font-style: italic;
+    color: $gray-L-20;
+}
+.gt-notify {
+    max-width: 20em;
+    max-height: 8em;
+    overflow: auto;
+    white-space: nowrap;
+}
+.gt-calendar {
+    background-image: url('../../../assets/icon/calendar.svg');
+    background-position: 50%;
+    background-repeat: no-repeat;
+    background-color: #e9ecef;
+    border-color: #ced4da;
+}
+.gt-size {
+    max-width: 11rem;
+}
+
+.gt-information {
+    max-width: 20rem;
+    margin: 1rem 0;
+    background-color: #e9ecef;
+    border-color: #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+    div {
+        padding: 0.75rem;
+
+        span {
+            padding-left: 0.5rem;
+        }
+    }
+}
+::ng-deep .gt-pop-notify {
+    border: 3px solid $e-orange;
+}
+::ng-deep .gt-pop-notify .arrow::after {
+    border-top-color: $e-orange;
+}
+.gt-float {
+    float: left;
+}
+.gt-not-first-float {
+    padding-left: 5px;
+}
+.gt-float input, .gt-not-first-float input {
+    width: 50%; //50px;
+}
+.gt-last-float {
+    clear: both;
+}
+.gt-label {
+    padding-top: 0.5rem;
+    color: $e-blue-yonder;
+    font-weight: bold;
+}
+::ng-deep .dropdown-menu {
+    max-height: 20rem;
+    overflow: auto
+}
+input.ng-invalid {
+    border: 1px solid red;
+}
+.form-control.border-danger:focus {
+    border-color: red;
+    box-shadow: 0 0 0 0.2rem rgb(255 0 0 /25%);
+}
+
+.gt-required {
+    color: red;
+    border-color: red;
+
+    * {
+        border-color: inherit;
+    }
+}
+
+.gt-required-btn {
+    color: red;
+    border-color: red;
+}

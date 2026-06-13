@@ -1,0 +1,487 @@
+<app-modal modalId="signCartOrder" blocking="true" closebtn="true" [modalTitle]="modalTitle">
+    <div *ngIf="!isDone">
+        <div class="dialog-title"></div>
+
+        <div class="dialog-body">
+            <div [ngClass]="{'ordering-physician': true, 'divider': this.allergyReactionList.length || this.drugInteractionList.length}">
+                <div ngbDropdown>
+                    <button class="btn btn-outline-primary" ngbDropdownToggle>{{ selectedOrderingSourceDisplay() }}</button>
+                    <div ngbDropdownMenu>
+                        <button ngbDropdownItem *ngFor="let source of orderingSource" (click)="changeSource(source)">{{source}}</button>
+                    </div>
+                </div>
+                
+                <div ngbDropdown *ngIf="selectedOrderingSourceDisplay() !== 'Ordering Physician'" placement="bottom-right">
+                    <button class="btn btn-outline-primary selected-physician" ngbDropdownToggle>{{ selectedPhysicianDisplay }}</button>
+                    <div ngbDropdownMenu *ngIf="selectedOrderingSourceDisplay() === 'Attending'">
+                        <button ngbDropdownItem *ngFor="let physician of attendingPhysicianList" (click)="changePhysician(physician)">{{physician.displayName}}</button>
+                    </div>
+                    <div ngbDropdownMenu *ngIf="selectedOrderingSourceDisplay() === 'Ordering Only'">
+                        <button ngbDropdownItem *ngFor="let physician of orderingOnlyPhysicianList" (click)="changePhysician(physician)">{{physician.displayName}}</button>
+                    </div>
+                </div>
+                <div *ngIf="hasValidationErrors" class="validation-feedback">
+                    <span>*{{this.errors['physician']}}</span>
+                </div>
+            </div>
+
+            <div *ngIf="homeMedicationsFT.length > 0 || patientAllergiesFT.length > 0"
+                class="dialog-body freetext-warning">
+                <div *ngIf="patientAllergiesFT.length > 0">
+                    <span class="label">&#9888; This patient has the following free text Allergy entries:</span>
+                    <ul *ngFor="let alg of patientAllergiesFT">
+                        <li>
+                            {{alg.name}} - {{alg.comment}}
+                        </li>
+                    </ul>
+                </div>
+    
+                <div *ngIf="homeMedicationsFT.length > 0">
+                    <span class="label">&#9888; This patient has the following free text Medication entries:</span>
+                    <ul *ngFor="let med of homeMedicationsFT">
+                        <li>
+                            {{med.name}} - {{med.comment}}
+                        </li>
+                    </ul>
+                </div>
+    
+                <div>
+                    <span class="label">Please Review</span>
+                </div>
+            </div>
+            
+
+            <div class="override-rational">
+                <!-- <div *ngIf="this.allergyReactionList">
+                    <div *ngFor="let alg of this.allergyReactionList">
+                        <div class="allergy-reaction">
+                            <button id={{alg.orderReactionId}} [ngClass]="{'active': panelToggle[alg.orderReactionId], 'accordion': true, 'allergy': true}" (click)="toggle(alg.orderReactionId)">
+                                {{alg.orderReactionId}} {{alg.patientAllergyName}}
+                            </button>
+                            <div 
+                                [ngClass]="{'active': panelToggle[alg.orderReactionId], 'panel': true, 'tab-content': true}" 
+                                id={{alg.orderReactionId}}Panel
+                            >
+                                <div class="details">
+                                    <span>Cart Order</span>
+                                    <div>
+                                        <ul class="tree">
+                                            <li *ngFor="let algreaction of alg.allergyReactions">
+                                                {{algreaction.orderId}} {{algreaction.orderTable}} {{algreaction.orderBrandName}}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="override-reasons">
+                                <ul>
+                                    <li *ngFor="let reason of this.allergyReactionOverrideReasons">
+                                        <label>
+                                            <input 
+                                                type="radio" 
+                                                name="allergyOverrideList_{{alg.orderReactionId}}" 
+                                                value="{{reason.id}}"
+                                                (checked)="selectedAllergyReactionReasonMap[alg.orderReactionId] === reason.id"
+                                                (change)="onItemChangeAllergy(reason, alg.orderReactionId)" 
+                                            />
+                                            {{reason.description}}
+                                        </label>
+                                    </li>
+                                </ul>
+                            </div> 
+                        </div>
+                    </div>
+                </div> -->
+
+
+                <div *ngIf="this.allergyReactionListNew">
+                    <div *ngFor="let cartorder of this.allergyReactionListNew">
+                        <div class="allergy-reaction">
+                            <button id={{cartorder.patientCartOrderId}} 
+                                [ngClass]="{'active': panelToggleAllergy[cartorder.patientCartOrderId], 'header-overwrite': true, 'allergy': true, 'enable': cartorder.reactions.length > 1}" 
+                                (click)="toggleNew(cartorder.patientCartOrderId, 'allergy')"
+                            >
+                                <!-- {{cartorder.patientCartOrderId}}  -->
+                                {{cartorder.patientCartOrder.medication.displayName}} 
+                                has {{cartorder.reactions.length}} {{cartorder.reactions.length === 1 ? 'reaction' : 'reactions'}} 
+                            </button>
+
+                            <div *ngFor="let reaction of cartorder.reactions; let i = index">
+                                <!-- Interaction #{{interaction.medicationInteractionId}} -->
+
+                                <div 
+                                    *ngIf="reaction.hasPatientCartOrderReaction"
+                                    class="details"
+                                >
+                                    <!-- <span>Cart Order</span> -->
+                                    <div *ngFor="let allergyreaction of reaction.allergyReactions">
+                                        <!-- <ul class="tree">
+                                            <li *ngFor="let druginteraction of interaction.drugInteractions"> -->
+                                                <!-- anne<div *ngIf="allergyreaction.orderId !== reaction.patientCartOrderId"> -->
+                                                    <span class="tags">Patient Allergy</span>
+                                                    <span class="severity" class={{allergyreaction.severity}}>{{allergyreaction.severity || 'N/A'}}</span> 
+                                                    <!-- {{druginteraction.interactionOrderTable}}  -->
+                                                    <!--debug {{allergyreaction.patientAllergyId}}  -->
+                                                    <!-- {{allergyreaction.patientCartOrder?.medication?.displayName}} -->
+                                                    <!-- {{reaction.patientCartOrderOrdered?.medication?.displayName}} -->
+                                                    <!-- {{allergyreaction.orderBrandName}} -->
+                                                    <span class="description">{{allergyreaction.patientAllergyName}}</span>
+                                                <!-- anne</div> -->
+                                            <!-- </li>
+                                        </ul> -->
+                                    </div>
+                                </div>
+
+                                <!-- <div 
+                                    *ngIf="reaction.hasPatientOrderReaction" 
+                                    class="details"
+                                >
+                                    <div *ngFor="let allergyreaction of reaction.allergyReactions">
+                                            <div>
+                                                <span class="tags">Current Order</span>
+                                                <span class="severity" class={{allergyreaction.severity}}>{{allergyreaction.severity || 'N/A'}}</span> 
+                                                {{allergyreaction.patientOrder?.id}} 
+                                                {{allergyreaction.orderBrandName}}
+                                            </div>
+                                    </div>
+                                </div>
+
+                                <div 
+                                    *ngIf="reaction.hasHomeMedicationReaction"
+                                    class="details"
+                                >
+                                    <div *ngFor="let allergyreaction of reaction.allergyReactions">
+                                            <div>
+                                                <span class="tags">Home Medication</span>
+                                                <span class="severity" class={{allergyreaction.severity}}>{{allergyreaction.severity || 'N/A'}}</span>
+                                                {{allergyreaction.patientHomeMedication?.id}} 
+                                                {{allergyreaction.orderBrandName}}
+                                            </div>
+                                    </div>
+                                </div> -->
+
+                                <div *ngIf="!this.panelToggleAllergy[cartorder.patientCartOrderId] || i === cartorder.reactions.length - 1" class="override-reasons">
+                                    <ul>
+                                        <li *ngFor="let reason of this.allergyReactionOverrideReasons">
+                                            <label>
+                                                <input
+                                                    type="radio"
+                                                    name="allergyOverrideList_{{reaction.orderReactionId}}"
+                                                    value="{{reason.id}}"
+                                                    [checked]="selectedAllergyReactionReasonMap[reaction.orderReactionId] === reason.id"
+                                                    (change)="onItemChangeAllergy(reason, reaction.orderReactionId)"
+                                                />
+                                                {{reason.description}} <!-- {{reaction.orderReactionId}} -->
+                                            </label>
+                                        </li>
+                                    </ul>
+                                </div> 
+                            </div>    
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- <div *ngIf="this.drugInteractionList">
+                    <div *ngFor="let drug of this.drugInteractionList">
+                        <div class="drug-interaction">
+                            <button id={{drug.medicationInteractionId}} [ngClass]="{'active': panelToggle[drug.medicationInteractionId], 'accordion': true, 'drug': true}" (click)="toggle(drug.medicationInteractionId)">
+                                {{drug.medicationInteractionId}} 
+                                {{drug.interactionOrderName}} --
+                                {{drug.patientCartOrderId}} 
+                                {{drug.patientCartOrderOrdered?.medication.displayName}}
+                            </button>
+
+                            <div [ngClass]="{'active': panelToggle[drug.medicationInteractionId], 'panel': true, 'tab-content': true}" 
+                                id={{drug.medicationInteractionId}}Panel
+                            >
+                                <div *ngIf="drug.drugInteractions.length">
+                                    <div 
+                                        *ngIf="drug.hasPatientCartOrderInteraction"
+                                        class="details"
+                                    >
+                                        <span>Cart Order</span>
+                                        <div>
+                                            <ul class="tree">
+                                                <li *ngFor="let druginteraction of drug.drugInteractions">
+                                                    {{druginteraction.severity}} 
+                                                    {{druginteraction.interactionOrderTable}} 
+                                                    {{druginteraction.patientCartOrder?.id}} 
+                                                    {{druginteraction.patientCartOrder?.medication?.displayName}}
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div *ngIf="drug.drugInteractions.length">
+                                    <div 
+                                        *ngIf="drug.hasPatientOrderInteraction" 
+                                        class="details"
+                                    >
+                                        <span>Current Order</span>
+                                        <div>
+                                            <ul class="tree">
+                                                <li *ngFor="let druginteraction of drug.drugInteractions">
+                                                    {{druginteraction.severity}} 
+                                                    {{druginteraction.interactionOrderTable}} 
+                                                    {{druginteraction.patientOrder?.id}} 
+                                                    {{druginteraction.patientOrder?.medication?.displayName}}
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div *ngIf="drug.drugInteractions.length">
+                                    <div 
+                                        *ngIf="drug.hasHomeMedicationInteraction"
+                                        class="details"
+                                    >
+                                        <span>Home Medication</span>
+                                        <div>
+                                            <ul class="tree">
+                                                <li *ngFor="let druginteraction of drug.drugInteractions">
+                                                    {{druginteraction.severity}} 
+                                                    {{druginteraction.interactionOrderTable}} 
+                                                    {{druginteraction.patientHomeMedication?.id}} 
+                                                    {{druginteraction.patientHomeMedication?.name}}
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="override-reasons">
+                                <ul>
+                                    <li *ngFor="let reason of this.drugInteractionOverrideReasons">
+                                        <label>
+                                            <input
+                                                type="radio"
+                                                name="drugOverrideList_{{drug.medicationInteractionId}}"
+                                                value="{{reason.id}}"
+                                                [checked]="selectedDrugInteractionReasonMap[drug.medicationInteractionId] === reason.id"
+                                                (change)="onItemChangeDrug(reason, drug.medicationInteractionId)"
+                                            />
+                                            {{reason.description}}
+                                        </label>
+                                    </li>
+                                </ul>
+                            </div> 
+                        </div>
+                    </div>
+                </div> -->
+
+
+
+                <div *ngIf="this.drugInteractionListNew">
+                    <div *ngFor="let cartorder of this.drugInteractionListNew">
+                        <div class="drug-interaction">
+                            <button id={{cartorder.patientCartOrderId}} 
+                                [ngClass]="{'active': panelToggleDrug[cartorder.patientCartOrderId], 'header-overwrite': true, 'drug': true, 'enable': cartorder.interactions.length > 1}" 
+                                (click)="toggleNew(cartorder.patientCartOrderId, 'drug')"
+                            >
+                                <!-- {{cartorder.patientCartOrderId}}  -->
+                                {{cartorder.patientCartOrder.medication.displayName}} 
+                                has {{cartorder.interactions.length}} {{cartorder.interactions.length === 1 ? 'interaction' : 'interactions'}} 
+                            </button>
+
+                            <div *ngFor="let interaction of cartorder.interactions; let i = index">
+                                <!-- Interaction #{{interaction.medicationInteractionId}} -->
+
+                                <div 
+                                    *ngIf="interaction.hasPatientCartOrderInteraction"
+                                    class="details"
+                                >
+                                    <!-- <span>Cart Order</span> -->
+                                    <div *ngFor="let druginteraction of interaction.drugInteractions">
+                                        <!-- <ul class="tree">
+                                            <li *ngFor="let druginteraction of interaction.drugInteractions"> -->
+                                                <div *ngIf="druginteraction.patientCartOrder.id !== interaction.patientCartOrderId">
+                                                    <!-- <div *ngIf="druginteraction.patientCartOrder.id !== interaction.patientCartOrderId ||
+                                                    druginteraction.patientCartOrder.id === interaction.patientCartOrderId && 
+                                                    druginteraction.patientCartOrder.medication.drugId === 'COMBO'"
+                                                    > -->
+                                                    <span class="tags">Cart Order</span>
+                                                    <span class="severity" class={{druginteraction.severity}}>{{druginteraction.severity || 'N/A'}}</span> 
+                                                    <!-- {{druginteraction.interactionOrderTable}}  -->
+                                                    <!-- {{druginteraction.patientCartOrder?.id}}  -->
+                                                    <span class="description">{{druginteraction.patientCartOrder?.medication?.displayName}}</span>
+                                                </div>
+                                            <!-- </li>
+                                        </ul> -->
+                                    </div>
+                                </div>
+
+                                <div 
+                                    *ngIf="interaction.hasPatientOrderInteraction" 
+                                    class="details"
+                                >
+                                    <!-- <span>Current Order</span> -->
+                                    <div *ngFor="let druginteraction of interaction.drugInteractions">
+                                        <!-- <ul class="tree">
+                                            <li> -->
+                                            <div>
+                                                <span class="tags">Current Order</span>
+                                                <span class="severity" class={{druginteraction.severity}}>{{druginteraction.severity || 'N/A'}}</span> 
+                                                <!-- {{druginteraction.interactionOrderTable}}  -->
+                                                <!-- {{druginteraction.patientOrder?.id}}  -->
+                                                <span class="description">{{druginteraction.patientOrder?.medication?.displayName}}</span>
+                                            </div>
+                                            <!-- </li>
+                                        </ul> -->
+                                    </div>
+                                </div>
+
+                                <div 
+                                    *ngIf="interaction.hasHomeMedicationInteraction"
+                                    class="details"
+                                >
+                                    <!-- <span>Home Medication</span> -->
+                                    <div *ngFor="let druginteraction of interaction.drugInteractions">
+                                        <!-- <ul class="tree">
+                                            <li *ngFor="let druginteraction of interaction.drugInteractions"> -->
+                                            <div>
+                                                <span class="tags">Home Medication</span>
+                                                <span class="severity" class={{druginteraction.severity}}>{{druginteraction.severity || 'N/A'}}</span>
+                                                <!-- {{druginteraction.interactionOrderTable}}  -->
+                                                <!-- {{druginteraction.patientHomeMedication?.id}}  -->
+                                                <span class="description">{{druginteraction.patientHomeMedication?.name}}</span>
+                                            </div>
+                                            <!-- </li>
+                                        </ul> -->
+                                    </div>
+                                </div>
+
+                                <div *ngIf="!this.panelToggleDrug[cartorder.patientCartOrderId] || i === cartorder.interactions.length - 1" class="override-reasons">
+                                    <ul>
+                                        <li *ngFor="let reason of this.drugInteractionOverrideReasons">
+                                            <label>
+                                                <input
+                                                    type="radio"
+                                                    name="drugOverrideList_{{interaction.medicationInteractionId}}"
+                                                    value="{{reason.id}}"
+                                                    [checked]="selectedDrugInteractionReasonMap[interaction.medicationInteractionId] === reason.id"
+                                                    (change)="onItemChangeDrug(reason, interaction.medicationInteractionId)"
+                                                />
+                                                 {{reason.description}} <!-- {{interaction.medicationInteractionId}} -->
+                                            </label>
+                                        </li>
+                                    </ul>
+                                </div> 
+                            </div>    
+                            <!-- <div [ngClass]="{'active': panelToggleNew[drug.medicationInteractionId], 'panel': true, 'tab-content': true}" 
+                                id={{drug.medicationInteractionId}}Panel
+                            >
+                                <div *ngIf="drug.drugInteractions.length">
+                                    <div 
+                                        *ngIf="drug.hasPatientCartOrderInteraction"
+                                        class="details"
+                                    >
+                                        <span>Cart Order</span>
+                                        <div>
+                                            <ul class="tree">
+                                                <li *ngFor="let druginteraction of drug.drugInteractions">
+                                                    {{druginteraction.severity}} 
+                                                    {{druginteraction.interactionOrderTable}} 
+                                                    {{druginteraction.patientCartOrder?.id}} 
+                                                    {{druginteraction.patientCartOrder?.medication?.displayName}}
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div *ngIf="drug.drugInteractions.length">
+                                    <div 
+                                        *ngIf="drug.hasPatientOrderInteraction" 
+                                        class="details"
+                                    >
+                                        <span>Current Order</span>
+                                        <div>
+                                            <ul class="tree">
+                                                <li *ngFor="let druginteraction of drug.drugInteractions">
+                                                    {{druginteraction.severity}} 
+                                                    {{druginteraction.interactionOrderTable}} 
+                                                    {{druginteraction.patientOrder?.id}} 
+                                                    {{druginteraction.patientOrder?.medication?.displayName}}
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div *ngIf="drug.drugInteractions.length">
+                                    <div 
+                                        *ngIf="drug.hasHomeMedicationInteraction"
+                                        class="details"
+                                    >
+                                        <span>Home Medication</span>
+                                        <div>
+                                            <ul class="tree">
+                                                <li *ngFor="let druginteraction of drug.drugInteractions">
+                                                    {{druginteraction.severity}} 
+                                                    {{druginteraction.interactionOrderTable}} 
+                                                    {{druginteraction.patientHomeMedication?.id}} 
+                                                    {{druginteraction.patientHomeMedication?.name}}
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> -->
+                            <!--no <div [ngClass]="{'active': panelToggle[drug.medicationInteractionId], 'panel': true, 'tab-content': true}" id={{drug.medicationInteractionId}}Panel> -->
+                            <!-- <div class="override-reasons">
+                                <ul>
+                                    <li *ngFor="let reason of this.drugInteractionOverrideReasons">
+                                        <label>
+                                            <input
+                                                type="radio"
+                                                name="drugOverrideList_{{cartorder.medicationInteractionId}}"
+                                                value="{{reason.id}}"
+                                                [checked]="selectedDrugInteractionReasonMap[cartorder.medicationInteractionId] === reason.id"
+                                                (change)="onItemChangeDrug(reason, cartorder.medicationInteractionId)"
+                                            />
+                                            {{reason.description}}
+                                        </label>
+                                    </li>
+                                </ul>
+                            </div>  -->
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+        <div class="dialog-footer">
+            <button 
+                class="button-secondary button-raised"
+                (click)="cancelSign()"            
+            >Cancel</button>
+            <button 
+                [ngClass]="{'button-processing': isProcessing, 'button-disabled': hasValidationErrors}"
+                class="button-primary button-raised" 
+                (click)="confirmedSign()"
+                [disabled]="hasValidationErrors"
+            >Submit</button>
+        </div>    
+    </div>
+    <!-- <div *ngIf="isSuccess" class="dialog-result">
+        <div class="dialog-result-title">
+            SUCCESS
+        </div>
+        <div class="dialog-result-message">
+            All cart orders are signed for patient {{patientId}}
+        </div>
+    </div> -->
+    <div *ngIf="hasError" class="dialog-result">
+        <div class="dialog-result-title">
+            Oops!
+        </div>
+        <div class="dialog-result-message">
+            {{errorMessage}}
+        </div>
+    </div>
+</app-modal>

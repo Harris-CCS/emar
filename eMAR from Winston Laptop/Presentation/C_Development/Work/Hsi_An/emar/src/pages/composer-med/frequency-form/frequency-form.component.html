@@ -1,0 +1,151 @@
+<div [formGroup]="frequencyForm">
+    <span class="subheader">
+        <span>Frequency</span>
+    </span>
+    <span class="item">
+        <div class="d-flex form-group">
+            <span class="requirement" *ngIf="frequencyForm.get('frequency').invalid">* &nbsp;
+            </span>
+            <div>
+                <input type="search" required class="form-control" [ngbTypeahead]="searchFrequency"
+                    [ngClass]="{'border-danger': frequencyForm.get('frequency').invalid}"
+                    (selectItem)="changeSelectedFrequencyByLookup($event.item)"
+                    placeholder="{{(!selectedFrequencyData || !selectedFrequencyData.scheduleName || !selectedFrequencyName) ? '' :selectedFrequencyName}}"
+                    (keyup.enter)="changeSelectedFrequencyByLookup($event.target.value)"
+                    [ngbTooltip]="selectedFrequencyName"
+                    [disableTooltip]="selectedFrequencyName && selectedFrequencyName.length < 14"
+                    (focusout)="changeSelectedFrequencyByLookup($event.target.value)" formControlName="frequency"
+                    (focus)="focusFrequency$.next($any($event).target.value)" [editable]="false"
+                    (click)="clickFrequency$.next($any($event).target.value)" #frequencyInstance="ngbTypeahead"
+                    [ngbPopover]="reqFrequency" [openDelay]="0" placement="bottom-left"
+                    triggers="mouseenter:mouseleave mouseenter:keydown" [disablePopover]="frequencyForm.get('frequency').valid">
+            </div>
+            <div class="spaced">
+                <button class="btn btn-outline-warning btn-sm preferred happy-button"
+                    [ngClass]="{'happy-button-selected': (selectedFrequencyData && selectedFrequencyData.scheduleName === frequency.scheduleName)}"
+                    *ngFor="let frequency of preferredFrequencies" (click)="changeSelectedFrequency(frequency)">
+                    {{ frequency.scheduleName }}
+                </button>
+            </div>
+        </div>
+
+        <div *ngIf="!frequencyForm.get('prnIndicationDescription')?.disabled">
+            <label for id="prn-indication">PRN Indication</label>
+            <div class="d-flex form-group">
+                <span class="requirement" *ngIf="frequencyForm.get('prnIndicationDescription').invalid">* &nbsp;
+                </span>
+                <div>
+                    <input
+                        [ngStyle]="{'border-right': 'solid 10px #0077ab'}" 
+                        type="search" required class="form-control" [ngbTypeahead]="searchPRNIndication"
+                        [ngClass]="{'border-danger': frequencyForm.get('prnIndicationDescription').invalid}"
+                        (selectItem)="changeSelectedPRNIndicationByLookup($event.item)"
+                        placeholder="{{(!selectedPRNIndicationData) ? '' :selectedPRNIndicationDescription}}"
+                        (keyup.enter)="changeSelectedPRNIndicationByLookup($event.target.value)"
+                        [ngbTooltip]="selectedPRNIndicationDescription"
+                        [disableTooltip]="selectedPRNIndicationDescription && selectedPRNIndicationDescription.length < 14"
+                        (focusout)="changeSelectedPRNIndicationByLookup($event.target.value)" formControlName="prnIndicationDescription"
+                        (focus)="focusPRNIndication$.next($any($event).target.value)" [editable]="false"
+                        (click)="clickPRNIndication$.next($any($event).target.value)" #prnIndicationInstance="ngbTypeahead"
+                        [ngbPopover]="reqPRNIndication" [openDelay]="0" placement="bottom-left"
+                        triggers="mouseenter:mouseleave mouseenter:keydown" [disablePopover]="frequencyForm.get('prnIndicationDescription').valid">
+                </div>
+            </div>
+        </div>
+
+
+
+        <label for id="duration">Duration</label>
+        <div class="d-flex form-group">
+            <span class="requirement" *ngIf="frequencyForm.get('duration').invalid">* &nbsp;
+            </span>
+            <div>
+                <input type="number" class="form-control"
+                    [ngClass]="{'border-danger': frequencyForm.get('duration').invalid}" id="duration" name="duration"
+                    min="1" [value]="selectedDuration" formControlName="duration" max="9999"
+                    (input)="changeSelectedDuration($event.target.value)" [ngbPopover]="reqDuration" [openDelay]="1000"
+                    placement="bottom-left" triggers="mouseenter:mouseleave"
+                    [disablePopover]="frequencyForm.get('duration').valid"
+                    [readonly]="this.frequencyForm.controls['startTime'].value && this.frequencyForm.controls['endTime'].value">
+            </div>
+            <span class="requirement" *ngIf="frequencyForm.get('durationUnit').invalid">&nbsp; *
+            </span>
+            <div class="spaced" [ngClass]="{'danger-border-div': frequencyForm.get('durationUnit').invalid}"
+                [ngbPopover]="reqDurationUnit" [openDelay]="1000" placement="bottom-left"
+                triggers="mouseenter:mouseleave" [disablePopover]="frequencyForm.get('durationUnit').valid">
+                <button 
+                    class="btn btn-sm m-1 preferred happy-button" 
+                    [ngClass]="{'btn-outline-warning':frequencyForm.get('durationUnit').value!==unit, 
+                                'happy-button-selected': selectedDurationUnitName === unit.name}"
+                    *ngFor="let unit of preferredDurationUnits" (click)="onDurationUnit(unit)"
+                    [disabled]="this.frequencyForm.controls['startTime'].value && this.frequencyForm.controls['endTime'].value">
+                    {{ unit.name }}
+                </button>
+            </div>
+        </div>
+        <div class="d-flex form-group">
+            <div>
+                <label for="startTime">Start Time</label><br>
+                <div class="input-group flex-nowrap">
+                    <span class="requirement" *ngIf="frequencyForm.get('startTime').invalid">&nbsp; * &nbsp;
+                    </span>
+                    <input type="search" id="startTime" formControlName="startTime" aria-describedby="startTimeButton"
+                        [ngClass]="{'danger-border-div': frequencyForm.get('startTime').invalid}"
+                        [ngbPopover]="reqStartTime" [openDelay]="1000" placement="bottom-left" container="body"
+                        triggers="mouseenter:mouseleave" [disablePopover]="frequencyForm.get('startTime').valid"
+                        (keyup)="onChangeStartTime($event)"
+                        (blur)="updateAdministrations(frequencyForm.get('frequencyData').value, frequencyForm.get('startTimeUTC').value, frequencyForm.get('endTimeUTC').value, 'endTimeInput')">
+                    <div class="input-group-append">
+                        <button class="input-group-text" id="startTimeButton" (click)="onSelectTime('start')"
+                            [ngClass]="{'danger-border-div': frequencyForm.get('startTime').invalid}"
+                            [ngbPopover]="reqStartTime" [openDelay]="1000" placement="bottom-left" container="body"
+                            triggers="mouseenter:mouseleave" [disablePopover]="frequencyForm.get('startTime').valid">
+                            <img src="../../../assets/icon/alarm.svg">
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="spaced">
+                <label>End Time</label><br>
+                <div class="input-group flex-nowrap">
+                    <input type="search"
+                        [ngClass]="{'disabled-element': this.selectedDuration && this.selectedDurationUnitName, 'danger-border-div': frequencyForm.get('endTime').invalid}"
+                        id="endTime" formControlName="endTime" aria-describedby="endTimeButton"
+                        [ngbPopover]="reqEndTime" [openDelay]="1000" placement="bottom-left" container="body"
+                        triggers="mouseenter:mouseleave" [disablePopover]="frequencyForm.get('endTime').valid"
+                        [readonly]="this.selectedDuration && this.selectedDurationUnitName"
+                        (keyup)="onChangeEndTime($event)"
+                        (blur)="updateAdministrations(frequencyForm.get('frequencyData').value, frequencyForm.get('startTimeUTC').value, frequencyForm.get('endTimeUTC').value, 'endTimeInput')">
+                    <div class="input-group-append">
+                        <button class="input-group-text" id="endTimeButton" (click)="onSelectTime('end')"
+                            [disabled]="this.selectedDuration && this.selectedDurationUnitName"
+                            [ngClass]="{'danger-border-div': frequencyForm.get('endTime').invalid}"
+                            [ngbPopover]="reqEndTime" [openDelay]="1000" placement="bottom-left" container="body"
+                            triggers="mouseenter:mouseleave" [disablePopover]="frequencyForm.get('endTime').valid">
+                            <img src="../../../assets/icon/alarm.svg">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </span>
+</div>
+
+<ng-template #reqFrequency><span class="requirement req-popover">
+        {{frequencyForm.getError('error','frequency')}} </span>
+</ng-template>
+<ng-template #reqPRNIndication><span class="requirement req-popover">
+    {{frequencyForm.getError('error','prnIndicationDescription')}} </span>
+</ng-template>
+<ng-template #reqDuration><span class="requirement req-popover">
+        {{frequencyForm.getError('error','duration')}} </span>
+</ng-template>
+<ng-template #reqDurationUnit><span class="requirement req-popover">
+        {{frequencyForm.getError('error','durationUnit')}} </span>
+</ng-template>
+<ng-template #reqStartTime><span class="requirement req-popover">
+        {{frequencyForm.getError('error','startTime')}} </span>
+</ng-template>
+<ng-template #reqEndTime><span class="requirement req-popover">
+        {{frequencyForm.getError('error','endTime')}} </span>
+</ng-template>

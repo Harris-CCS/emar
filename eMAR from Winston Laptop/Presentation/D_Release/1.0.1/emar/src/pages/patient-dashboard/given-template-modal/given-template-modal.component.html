@@ -1,0 +1,177 @@
+<app-modal modalId="given-template-modal" blocking="true" closebtn="true">
+    <form [formGroup]="givenTemplateForm" class="m-2" *ngIf="template != null">
+        <div class="d-flex gt-top-border gt-content">
+            <div *ngFor="let group of template.promptGroups; let igroup = index; trackBy:trackByFn"
+                class="p-2 flex-fill">
+                <p *ngIf="group.displayTitle != ''" class="font-weight-bold">
+                    {{ group.displayTitle == " " ? "&nbsp;": group.displayTitle }}
+                </p>
+                <div *ngFor="let prompt of group.prompts; let iPrompt = index; trackBy:trackByFn"
+                [ngClass]="{'gt-float': line[prompt.id] !== 0,'gt-not-first-float': line[prompt.id] === -1 || line[prompt.id] === 2}">
+                    
+                    <div [hidden]="isHidden(group, prompt)"
+                        [ngStyle]="{'margin-left':margin[prompt.id]+'px'}"
+                        [ngClass]="{'gt-displayCan': inHidden(group, prompt) && (line[prompt.id] == 0 || line[prompt.id] == 1)}">
+
+                    <div *ngIf="prompt.isActive && prompt.type == 'CheckBox'"
+                        [ngClass]="{'gt-displayIf': prompt.displayChildPromptsValue != null && prompt.displayChildPromptsValue != '',
+                                    'gt-all-above-first-child': inAllAbove(group, prompt, '') == 1,
+                                    'gt-all-above-child': inAllAbove(group, prompt, ''),
+                                    'gt-all-above':prompt.displayChildPromptsValue == null && (prompt.promptChoices?.length || prompt.promptChildren?.length)}">
+                        <input type="checkbox"
+                            [formControlName]="prompt.id"
+                            id="{{ prompt.id }}"
+                            (click)="onClickCheckbox(group, prompt, $event)">
+                        {{ prompt.prompt }}
+                    </div>
+
+                    <div *ngIf="prompt.isActive && prompt.type == 'FreeText'">
+                        {{ prompt.prompt | trimAfter:'~~'}}<br>
+                        <input *ngIf="prompt.placeholderText?.length"
+                            type="text" [formControlName]="prompt.id" id="{{ prompt.id }}"
+                            placeholder="-- {{ prompt.placeholderText }} --">
+                        <input *ngIf="!prompt.placeholderText?.length" type="text" [formControlName]="prompt.id" id="{{ prompt.id }}">
+                    </div>
+
+                    <div *ngIf="prompt.isActive && prompt.type == 'MultiLineFreeText'">
+                        {{ prompt.prompt }}<br>
+                        <textarea [formControlName]="prompt.id" id="{{ prompt.id }}"></textarea>
+                    </div>
+
+                    <div *ngIf="prompt.isActive && prompt.type == 'DropDownListBox'">
+                        <i>{{ prompt.prompt | trimAfter:'~~' }}</i><br>
+                        <div ngbDropdown placement="bottom-right">
+                            <button class="btn btn-outline-secondary" id="{{ prompt.id }}" ngbDropdownToggle>
+                                {{ getChoice(prompt) }}
+                                <!-- {{ getChoice(prompt) !== "" ? getChoice(prompt): "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" }} -->
+                            </button>
+                            <div ngbDropdownMenu attr.aria-labelledby="{{ prompt.id }}">
+                                <button ngbDropdownItem *ngFor="let choice of prompt.promptChoices"
+                                    (click)="onSelectChoice(prompt, choice)">
+                                    {{ choice.choiceText }}
+                                </button>
+                                <div class="dropdown-divider"></div>
+                                <button ngbDropdownItem (click)="onSelectChoice(prompt,null)">
+                                    &nbsp;
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="prompt.isActive && prompt.type == 'Date'">
+                        {{ prompt.prompt | trimAfter:'~~' }}<br/>
+                        <div class="input-group">
+                            <input class="form-control gt-size"
+                                [ngClass]="{'border-danger': givenTemplateForm.get(prompt.id.toString()).invalid}"
+                                placeholder="mm/dd/yyyy"
+                                ngbDatepicker
+                                #date="ngbDatepicker"
+                                [formControlName]="prompt.id">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary gt-calendar"
+                                    (click)="date.toggle()"
+                                    ngbTooltip="Click to change the date"
+                                    type="button">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="prompt.isActive && prompt.type == 'DateTime'">
+                        {{ prompt.prompt | trimAfter:'~~' }}<br/>
+                        <div class="input-group">
+                            <input type="text"
+                                [ngClass]="{'border-danger': givenTemplateForm.get(prompt.id.toString()).invalid}"
+                                class="form-control gt-size"
+                                aria-describedby="At"
+                                placeholder="hh:mm mm/dd/yyyy"
+                                (keyup)="onChangeTime(prompt, $event)"
+                                value = "{{ givenTemplateForm.get(prompt.id.toString()).value | dateTimePipe: 'friendly' : siteUTCOffset }}">
+                            <div class="input-group-append">
+                                <span class="input-group-text" id="{{ prompt.id }}"
+                                    (click)="onPickupTime(prompt)"
+                                    [ngStyle]="{'cursor':'pointer'}"
+                                    ngbTooltip="Click to change date and time">
+                                    <img src="../../../assets/icon/alarm.svg">
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="prompt.isActive && prompt.type == 'User'">
+                        <!-- TODO --> {{ prompt.prompt }}
+                    </div>
+
+                    <div *ngIf="prompt.isActive && prompt.type == 'Notify' && orderUsers.length > 0">
+                        <div  [ngStyle]="{'padding-top': '5px', 'padding-bottom': '5px'}">
+                        <span class="gt-all-above-first-child">
+                            <button class="btn btn-outline-warning"
+                                [ngbPopover]="notifyPopover"
+                                popoverClass="gt-pop-notify"
+                                [autoClose]="'outside'"
+                                ngbTooltip="Click to choose who to notify">
+                                Notify ({{ nbNotifiedUsers(prompt) }})
+                            </button>
+                            <input type="hidden"
+                                [formControlName]="prompt.id"
+                                id="{{ prompt.id }}">
+                        </span>
+                        <ng-template #notifyPopover>
+                            <div class="gt-notify">
+                                <div *ngFor="let user of orderUsers">
+                                    <input type="checkbox" (click)="onSelectNotified(user, prompt)" [checked]="isNotifiedUser(user, prompt)">
+                                    {{ user.lastName }}, {{ user.firstName }}
+                                </div>
+                                <!-- <div class="gt-all"><input type="checkbox" onclick="onClickAllOrderUsers()">All</div> -->
+                            </div>
+                            <div [ngStyle]="{'text-align': 'right'}">
+                                <br/><i>Click outside the popup to close</i>
+                            </div>
+                            <!--
+                            <button class="btn btn-sm btn-outline-danger" type="submit" (click)="notifyPopover.toggle()">Close</button>
+                            -->
+                        </ng-template>
+                    </div>
+                    </div>
+                    
+                    <div *ngIf="prompt.isActive && prompt.type == 'Information'" [ngClass]="{'gt-information': true}">
+                        <div>
+                            <svg width="1.25em" height="1.25em" viewBox="0 0 16 16" class="bi bi-info-square-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm8.93 4.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM8 5.5a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                            </svg>
+                            <span>{{ prompt.prompt }}</span>
+                        </div>
+                    </div>
+
+                    <div *ngIf="prompt.isActive && prompt.type == 'Label'" class="gt-label">
+                        {{ prompt.prompt }}
+                    </div>
+
+                    <div *ngIf="prompt.isActive && prompt.type == 'threeStateButton'">
+                        <div>
+                            <span>{{ prompt.prompt | trimAfter:'~~' }}</span>
+                            <three-state-button [options]="prompt.promptChoices" (action)="onSelectChoice(prompt, $event)"></three-state-button>
+                        </div>
+                    </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="gt-top-border" [ngStyle]="{'textAlign':'right', 'padding-top': '5px'}">
+            <button class="btn btn-secondary" type="submit" (click)="onCancel()" ngbTooltip="Close without saving">
+                {{ template.cancelButtonText || 'Cancel'}}
+            </button>
+            &nbsp;
+            <button class="btn btn-danger"
+                type="submit"
+                (click)="onSubmit()" 
+                ngbTooltip="Save and close"
+                [disabled]="!givenTemplateForm.valid">
+                {{ template.saveButtonText || 'Save'}}<!-- Give -->
+            </button>
+        </div>
+    </form>
+</app-modal>

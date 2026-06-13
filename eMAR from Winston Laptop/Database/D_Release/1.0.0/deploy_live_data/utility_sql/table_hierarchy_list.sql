@@ -1,0 +1,337 @@
+use [$(emar_base)];
+go
+
+/******************************************
+Steps to add new table
+SEE: READ_ME.TXT
+******************************************/
+
+set nocount on;
+
+drop table if exists [#table_order];
+
+drop table if exists [#table_exclude];
+
+create table [#table_exclude]
+    (
+      [table_name] sysname
+    , [q1]         bit
+    , [q2]         bit
+    , [q3]         bit
+    , [q4]         bit
+    , [q5]         bit
+    );
+insert into [#table_exclude]
+values
+    ('__RefactorLog',1,1,1,1,1),
+    ('emar_version',1,1,1,1,1),
+    ('external_ids',1,1,1,1,1),
+    ('frequency_schedules_import_template',1,1,1,1,1),
+    ('sysdiagrams',1,1,1,1,1),
+    ('table_scope_documentation',1,1,1,1,1),
+--
+    ('action_route_templates'                 ,0,1,0,1,1),
+    ('actions'                                ,0,1,0,1,1),
+    ('department_preferred_list_items'        ,0,1,0,0,1),
+    ('duration_units'                         ,0,1,0,1,1),
+    ('frequency_calendar'                     ,0,1,0,1,1),
+    ('frequency_days'                         ,0,1,0,1,1),
+    ('frequency_interval_day_times'           ,0,1,1,1,1),
+    ('frequency_interval_units'               ,0,1,0,1,1),
+    ('frequency_minutes'                      ,0,1,0,1,1),
+    ('frequency_schedules'                    ,0,1,0,1,1),
+    ('frequency_types'                        ,0,1,0,1,1),
+    ('global_options'                         ,0,1,0,1,1),
+    ('notification_categories'                ,0,1,0,0,1),
+    ('order_administration_available_actions' ,0,1,0,1,1),
+    ('order_available_actions'                ,0,1,0,1,1),
+    ('options'                                ,0,1,0,1,1),
+    ('preferred_list_items'                   ,0,1,1,1,1),
+    ('preferred_frequency_schedules'          ,0,1,0,1,1),
+    ('preferred_medication_doses'             ,0,1,0,1,1),
+    ('preferred_medication_routes'            ,0,1,0,1,1),
+    ('prompt_choices'                         ,0,1,0,1,1),
+    ('prompt_groups'                          ,0,1,0,1,1),
+    ('prompts'                                ,0,1,0,1,1),
+    ('settings'                               ,0,1,0,1,1),
+    ('template_prompt_groups'                 ,0,1,0,1,1),
+    ('templates'                              ,0,1,0,1,1)
+    ;
+
+create table [#table_order]
+    (
+      [schema_name]     sysname
+    , [table_name]      sysname
+    , [category]        sysname
+);
+-- Input Tables That have completed export scripts here
+insert into [#table_order] values
+    --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ('dbo','action_route_templates','global_data'),
+    ('dbo','actions','global_data'),
+    ('dbo','duration_units','global_data'),
+    ('dbo','fdb_allergy_name','global_data'),
+    ('dbo','fdb_brand_name','global_data'),
+    ('dbo','fdb_ndc_info','global_data'),
+    ('dbo','frequency_calendar','global_data'),
+    ('dbo','frequency_days','global_data'),
+    ('dbo','frequency_interval_units','global_data'),
+    ('dbo','frequency_minutes','global_data'),
+    ('dbo','frequency_types','global_data'),
+    ('dbo','global_options','global_data'),
+    ('dbo','notification_categories','global_data'),
+    ('dbo','options','global_data'),
+    ('dbo','order_administration_available_actions','global_data'),
+    ('dbo','order_available_actions','global_data'),
+    ('dbo','prompt_choices','global_data'),
+    ('dbo','prompt_groups','global_data'),
+    ('dbo','prompts','global_data'),
+    ('dbo','settings','global_data'),
+    ('dbo','site_options','global_data'),
+    ('dbo','sites','global_data'),
+    ('dbo','template_prompt_groups','global_data'),
+    ('dbo','templates','global_data'),
+    ('dbo','user_settings','global_data'),
+    --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ('dbo','patient_allergies','phi_data'),
+    ('dbo','patient_home_medications','phi_data'),
+    ('dbo','patient_indicators','phi_data'),
+    ('dbo','patient_orders','phi_data'),
+    ('dbo','patient_problems','phi_data'),
+    ('dbo','patients','phi_data'),
+    ('dbo','user_patients','phi_data'),
+    --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ('dbo','antimicrobial_indication_items','site_data'),
+    ('dbo','antimicrobial_indications','site_data'),
+    ('dbo','devices','site_data'),
+    ('dbo','department_preferred_list_items','site_data'),
+    ('dbo','frequency_schedules','site_data'),
+    ('dbo','frequency_interval_day_times','site_data'),
+    ('dbo','group_list_items','site_data'),
+    ('dbo','medication_routes','site_data'),
+    ('dbo','medication_units','site_data'),
+    ('dbo','order_administration_available_actions','site_data'),
+    ('dbo','order_available_actions','site_data'),
+    ('dbo','order_instructions','site_data'),
+    ('dbo','override_reasons','site_data'),
+    ('dbo','preferred_frequency_schedules','site_data'),
+    ('dbo','preferred_medication_doses','site_data'),
+    ('dbo','preferred_medication_routes','site_data'),
+    ('dbo','site_code_shares','site_data'),
+    ('dbo','site_formulary','site_data'),
+    ('dbo','site_formulary_match','site_data'),
+    ('dbo','site_options','site_data'),
+    ('dbo','sites','site_data'),
+    --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ('dbo','user_settings','user_data'),
+    ('dbo','user_quick_list_items','user_data'),
+    ('dbo','users','user_data');
+    --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+go
+/********************************************************************************************************************************************
+-- https://blog.sqlauthority.com/2015/04/16/sql-server-walking-the-table-hierarchy-in-microsoft-sql-server-database-notes-from-the-field-076/
+-- ==========================================================================
+-- Description: Get the load levels by tracing foreign keys in the database.
+-- License: Creative Commons (Free / Public Domain)
+-- Rights: This work (Linchpin People LLC Database Load Levels Function,
+-- by W. Kevin Hazzard), identified by Linchpin People LLC, is
+-- free of known copyright restrictions.
+-- Warranties: This code comes with no implicit or explicit warranties.
+-- Linchpin People LLC and W. Kevin Hazzard are not responsible
+-- for the use of this work or its derivatives.
+-- ==========================================================================
+********************************************************************************************************************************************/
+
+create or alter function [dbo].[load_levels]() returns @results table
+    (
+      [schema_name] sysname
+    , [table_name]  sysname
+    , [load_level]  int) as begin
+                            with [key_info]
+                                 as (select [parent_object_id] as     [from_table_id]
+                                          , [referenced_object_id] as [to_table_id]
+                                     from   [sys].[foreign_keys]
+                                     where  [parent_object_id] <> [referenced_object_id]
+                                            and [is_disabled] = 0),
+                                 [level_info]
+                                 as (select -- anchor part
+                                     [st].[object_id] as [to_table_id]
+                                   , 0 as                [load_level]
+                                     from   [sys].[tables] as [st]
+                                            left outer join [key_info] as [ki] on [st].[object_id] = [ki].[from_table_id]
+                                     where [ki].[from_table_id] is null
+                                     union all
+                                     select -- recursive part
+                                     [ki].[from_table_id]
+                                   , [li].[load_level] + 1
+                                     from [key_info] as [ki]
+                                          inner join [level_info] as [li] on [ki].[to_table_id] = [li].[to_table_id])
+                                 insert into @results
+                                 select object_schema_name([to_table_id]) as [schema_name]
+                                      , object_name([to_table_id]) as        [table_name]
+                                      , max([load_level]) as                 [load_level]
+                                 from   [level_info]
+                                 group by [to_table_id];
+                                     return;
+                                 end;
+
+go
+/*
+--comments for delete order
+print '--comments for delete order'
+select 'LVL: '+right('000'+cast(load_level as varchar(3)),3)+' SEQ: '+right('000'+cast(row_number() over(partition by [load_level]
+          order by [table_name])  as varchar(3)),3)+' TBL: '+[schema_name]+'.'+[table_name]+''
+from
+(
+    select *
+    from     [dbo].[load_levels]()
+    where   [table_name] not in('__RefactorLog', 'sysdiagrams', 'external_ids')
+    union
+    select 'dbo'
+         , 'external_ids'
+         , 99
+) as [lst]
+order by [load_level] desc
+       , [schema_name]
+       , [table_name];
+
+set nocount on;
+select    '    delete [' + [schema_name] + '].[' + [table_name] + '];'
+from
+(
+    select *
+    from     [dbo].[load_levels]()
+    where   [table_name] not in('__RefactorLog', 'sysdiagrams', 'external_ids')
+    union
+    select 'dbo'
+         , 'external_ids'
+         , 99
+) as [lst]
+order by [load_level] desc
+       , [schema_name]
+       , [table_name];
+
+select    '    dbcc checkident(''[' + [schema_name] + '].[' + [table_name] + ']'',reseed,1) with no_infomsgs;'
+from
+(
+    select *
+    from     [dbo].[load_levels]()
+    where   [table_name] not in('__RefactorLog', 'sysdiagrams', 'external_ids')
+    --union
+    --select 'dbo'
+    --     , 'external_ids'
+    --     , 99
+) as [lst]
+order by [load_level] desc
+       , [schema_name]
+       , [table_name];
+*/
+
+--comments for insert order list
+select 'LVL: '+right('000'+cast(load_level as varchar(3)),3)+' SEQ: '+right('000'+cast(row_number() over(partition by [load_level]
+          order by [table_name])  as varchar(3)),3)+' TBL: '+[schema_name]+'.'+[table_name]+''
+as [comments for Script.PostDeployment.sql]
+from
+(
+    select *
+    from     [dbo].[load_levels]()
+    where   [table_name] not in(select table_name From [#table_exclude] where q1=1)
+    --union
+    --select 'dbo'
+    --     , 'external_ids'
+    --     , 99
+) as [lst]
+order by [load_level] asc
+       , [schema_name]
+       , [table_name];
+
+
+--script run order
+select '        :r ..\Scripts\Data-Loader\export_procedures\export_ibex_'+[lst].[table_name]+'.sql'
+as [commands for Script.PostDeployment.sql]
+from
+(
+    select *
+    from     [dbo].[load_levels]()
+    where   [table_name] not in(select table_name From [#table_exclude] where q2=1)
+) as [lst]
+where table_name in(select table_name from [#table_order])
+order by [schema_name]
+       , [table_name];
+
+
+--script run order
+select '        :r ..\Scripts\Data-Loader\'+[to].[category]+'\'+[lst].[table_name]+'.sql'
+as [commands for Script.PostDeployment.sql]
+from
+(
+    select *
+    from     [dbo].[load_levels]()
+    where   [table_name] not in(select table_name From [#table_exclude] where q3=1)
+--    union
+--    select 'dbo'
+--         , 'external_ids'
+--         , 99
+) as [lst]
+inner join [#table_order] [to] on [to].[schema_name]=[lst].[schema_name] and [to].table_name=[lst].table_name
+order by [lst].[load_level]
+       , [lst].[schema_name]
+       , [lst].[table_name]
+       , [to].[category]
+       ;
+-- drop procedures (needed because cannot generate bacpac where external db references exist in the project)
+select '    drop procedure if exists [dbo].[export_ibex_'+[table_name]+'];'
+as [commands for Script.PostDeployment.sql]
+from
+(
+    select *
+    from     [dbo].[load_levels]()
+    where   [table_name] not in(select table_name From [#table_exclude] where q2=1)
+) as [lst]
+where table_name in(select table_name from [#table_order])
+order by [schema_name]
+       , [table_name];
+
+-- tables inserts used for edlete data order: delete_emar_data.sql
+select 'insert into [#table_order] values('+cast(load_level as varchar(3))+','+cast(row_number() over(partition by [load_level] order by [table_name])  as varchar(3))+','''+[schema_name]+''','''+[table_name]+''',0);'
+as [commands for delete_emar_data.sql]
+from
+(
+    select *
+    from     [dbo].[load_levels]()
+    where   [table_name] not in(select table_name From [#table_exclude] where q1=1)
+    union
+    select 'dbo'
+         , 'external_ids'
+         , 99
+) as [lst]
+order by [load_level] asc
+       , [schema_name]
+       , [table_name];
+
+----- export bcp data into sample_data folder
+--select
+--case
+----"these Tables" are loaded from static scripts
+--when table_name in('site_options','options','preferred_frequency_schedules','preferred_medication_doses','preferred_medication_routes') then 'rem '
+----"these Tables" sample data needs to be manually generated
+--when table_name in('fdb_allergy_name','fdb_brand_name','fdb_ndc_info') then 'rem '
+----"these Tables" loaded from global data
+--when table_name in('frequency_calendar','frequency_days','frequency_interval_units','frequency_minutes','frequency_types') then 'rem '
+--else '    ' end +
+--'call :ek "execute emar_clean.dbo.export_ibex_'+[table_name]+'"'+space(30-len([table_name]))+';'+[table_name]+''+space(30-len([table_name]))+';"|~"'
+--as [commands for 09_bcp.cmd]
+--from
+--(
+--    select *
+--    from     [dbo].[load_levels]()
+--    where   [table_name] not in(select table_name From [#table_exclude])
+--) as [lst]
+--where table_name in(select table_name from [#table_order])
+--order by [schema_name]
+--       , [table_name];
+
+go
+drop function if exists [dbo].[load_levels]
+go

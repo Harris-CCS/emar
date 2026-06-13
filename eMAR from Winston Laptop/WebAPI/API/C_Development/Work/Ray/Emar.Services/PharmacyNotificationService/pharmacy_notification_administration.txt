@@ -1,0 +1,12 @@
+Patient name: [Patient.LastName], [Patient.Firstname]
+MRN: [Patient.MedicalRecordNumber]
+Facility: [Site.Name]
+Unit/Bed: [Patient.WardCode]/[Patient.RoomBedCode]
+
+Medication(s)/details: [Medication.DisplayName] [MedRoute.Name] [Order.Dose] [MedFrequency.Name]
+Administration date/time: [OrderAdministration.AdministrationScheduledDateTime]
+
+Action: [Order.OrderStatus]
+Admin on hold: [OrderAdministration.OnHold]
+Admin point in time: [OrderAdministration.PointInTime]
+Admin missed dose: [OrderAdministration.MissedDose]

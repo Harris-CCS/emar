@@ -1,0 +1,114 @@
+{
+	"info": {
+		"_postman_id": "48ebd837-bd67-4c54-835b-7a1d3ab78d50",
+		"name": "Medication API Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Setup Environment",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Ignore1\": \"WITH src AS (SELECT 16 as site_id, o.id as option_id, t.option_value FROM (VALUES ('MEDINPAT', 'Y') ,('MEDOUTPAT', 'Y') ,('MEDPYXIS', 'Y') ,('MEDEXACTMATCH', 'N')) t (option_name, option_value) JOIN options o ON t.option_name = o.name) UPDATE t SET t.option_value = src.option_value FROM site_options t JOIN src ON src.option_id = t.option_id and src.site_id = t.site_id;\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/testingvariables",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"testingvariables"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Medication Search by Brand Name",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-Site",
+						"value": "16",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/GetMedByBrandName/Tylenol/all",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"GetMedByBrandName",
+						"Tylenol",
+						"all"
+					]
+				},
+				"description": "Search for a brand name and/or ingredient."
+			},
+			"response": []
+		},
+		{
+			"name": "Medication Formulary Search",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-Site",
+						"value": "16",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/GetMedByBrandName/Tylenol/formulary",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"GetMedByBrandName",
+						"Tylenol",
+						"formulary"
+					]
+				},
+				"description": "Search the medication formulary."
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

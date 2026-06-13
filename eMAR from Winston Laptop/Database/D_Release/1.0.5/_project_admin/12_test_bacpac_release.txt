@@ -1,0 +1,3 @@
+\deploy_bacpac
+
+Test the public deployment of this bacpac deployment from the \deploy_bacpac release folder

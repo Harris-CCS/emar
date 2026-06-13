@@ -1,0 +1,57 @@
+@import "../../../variables";
+
+.subheader:first-child {
+    margin-top: 0;
+}
+.subheader {
+    margin-left: -0.8rem;
+    margin-right: -0.8rem;
+    display: block;
+    margin-top: 20px;
+    margin-bottom: 5px;
+    position: relative;
+}
+.subheader:before {
+    content: "";
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    right: 0;
+    height: 1px;
+    background: #c7c7c7;
+  }
+  .subheader span {
+    background: #333;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    height: 14px;
+    display: inline-block;
+    border-radius: 4px;
+    padding: 0 5px;
+    margin-left: 20px;
+    text-transform: uppercase;
+    line-height: 14px;
+    position: relative;
+  }
+::ng-deep .popover-body {
+}
+.notif-link {
+    cursor: pointer;
+    text-decoration: none;
+}
+.notif-medication {
+    font-weight: bold;
+}
+.notif-patient {
+    color: $e-blue-yonder;
+    font-weight: bold;
+}
+a {
+    color: black;
+    font-size: 1rem;
+}
+::ng-deep .popover {
+    max-width: 600rem;
+}

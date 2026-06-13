@@ -1,0 +1,59 @@
+<div class="orders-cart">
+    <ul class="list-group">
+        <!-- <li class="list-group-item" *ngFor="let item of displayCartItems"> -->
+        <li class="list-group-item" *ngFor="let item of cartStoreService.cartOrders$ | async; trackBy: cartOrdersTrackFn">
+            <span id="cart_{{item.id}}"></span>
+
+            <interactions [order]="item" resolution="unresolved" placement="right"></interactions>
+            <!--
+            <span [ngClass]="{'unresolved allergy-dot': item.allergyReactions?.length, 'placeholder-dot': item.allergyReactions?.length === 0, 'allergy-loader': !item.allergyReactions}" 
+                  placement="right" 
+                  ngbTooltip={{item.allergyReactionsText}}>
+            </span>
+            <span [ngClass]="{'unresolved drug-dot' : item.orderInteractions?.length, 'placeholder-dot': item.orderInteractions?.length === 0, 'drug-loader': !item.orderInteractions}"
+                  placement="right" 
+                  ngbTooltip={{item.drugInteractionsText}}>
+            </span>
+        -->
+            <label for="cart_{{item.id}}"
+                [ngClass]="{'disabled': item.isDisabled}" 
+                (click)="item.isDisabled || editCartItem(item)">{{item.displayName}} {{item.displayDose}} {{item.displayDoseUnit}} {{item.displayFrequency}} {{item.displayRoute}} {{item.displayDuration}}</label>
+            <!-- <button class="button delete" (click)="removeCartItem(item)"></button> -->
+                        
+            <span *ngIf="item.orderNotes?.length > 0"
+                class="instruction"
+                container="body"
+                [ngbTooltip]="instruction">
+            </span>
+            <ng-template #instruction>
+                <div style="text-align: left; white-space: pre-line;">
+                    {{ item.orderNotes }}
+                </div>
+            </ng-template>
+
+            <button 
+                class="button delete" 
+                (click)="item.isDisabled || delete(item.id)" 
+                [disabled]="item.isDisabled"    
+            ></button>
+        </li>
+    </ul>
+</div>
+<!-- <span class="no-data" *ngIf="!displayCartItems.length">No New Orders</span> -->
+<span class="no-data" *ngIf="(cartStoreService.cartOrders$ | async)?.length === 0">No New Orders</span>
+<button 
+    *ngIf="(cartStoreService.cartOrders$ | async)?.length > 0" 
+    class="button-primary button-raised"
+    (clickOLD)="postAll(patientId)"
+    (click)="signCartOrder(patientId)"
+>Sign</button>
+<button 
+    *ngIf="(cartStoreService.cartOrders$ | async)?.length > 0" 
+    class="button-secondary button-raised" 
+    title="Delete All" 
+    (click)="deleteAll(patientId)"
+>🗑</button>
+
+<!-- (click)="showDeleteAllCartOrderModal(patientId)" -->
+
+ 

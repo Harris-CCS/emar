@@ -1,0 +1,4 @@
+<div class="option_group" [attr.data-value]="value" [attr.data-prev_value]="previousValue">
+    <div  *ngFor="let option of options" class="option" (click)="onClick(option)"><label>{{option.choiceText}}</label></div>
+</div>
+        

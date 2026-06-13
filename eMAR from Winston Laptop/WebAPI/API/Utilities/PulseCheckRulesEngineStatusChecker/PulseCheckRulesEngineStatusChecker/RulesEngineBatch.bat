@@ -1,0 +1,1 @@
+perl E:\ibex\link\RulesEngine\rulesclient.ibx "QUERY CONFIG" 20100 ros-57c-dx01.picis.com

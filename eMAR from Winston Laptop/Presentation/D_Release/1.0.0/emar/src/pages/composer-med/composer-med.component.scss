@@ -1,0 +1,266 @@
+@import "../../variables.scss";
+
+.dialog-title span {
+  opacity: 0.6;
+}
+
+.subheader {
+  display: block;
+  margin-top: 20px;
+  margin-bottom: 5px;
+  position: relative;
+}
+
+.subheader:first-child {
+  margin-top: -10px;
+}
+
+.subheader.alt:first-child {
+  margin-top: 20px;
+}
+
+.subheader:before {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  right: 0;
+  height: 1px;
+  background: #c7c7c7;
+}
+
+.subheader.alt:before {
+  content: none;
+}
+
+.subheader span {
+  background: #333;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  height: 14px;
+  display: inline-block;
+  border-radius: 4px;
+  padding: 0 5px;
+  margin-left: 20px;
+  text-transform: uppercase;
+  line-height: 14px;
+  position: relative;
+}
+
+.subheader.alt {
+  margin-bottom: 0;
+  margin-top: 10px;
+}
+.subheader.alt span {
+  background: transparent;
+  color: #333;
+}
+
+.item {
+  display: block;
+  font-size: 14px;
+  // padding: 5px 20px;
+  padding: 5px 5px 5px 20px;
+}
+
+#order-med-name {
+  opacity: 1;
+  cursor: pointer;
+  color: $e-blue-yonder;
+}
+
+.happy-button {
+  border: 2px solid $e-blue-yonder;
+  color: #000;
+  margin: 2px;
+}
+
+.happy-button-selected {
+  color: #fff;
+  font-weight: bold;
+  background: #ff7f50;
+}
+
+.table-container {
+  display: table;
+  width: 100%;
+  // border: 2px solid blue;
+}
+
+.table-row {
+  display: table-row;
+  //  border: 2px solid cyan;
+}
+
+.table-cell {
+  display: table-cell;
+  padding: 2px;
+  width: 50%;
+  vertical-align: top;
+  // border: 2px solid orange;
+}
+
+.center {
+  text-align: center;
+}
+
+input[type="number"] {
+  height: 33px;
+  width: 60px;
+  font-size: 14px !important;
+  line-height: 20px;
+}
+
+.item input {
+  border: solid 1px #999;
+  padding: 5px;
+  border: solid 1px #b9b9b9;
+  padding: 3px 5px;
+  font-size: 14px;
+  border-radius: 6px;
+}
+
+.unit-lookup {
+  display: inline-block;
+  margin: 5px 0 0 0;
+  width: 75px;
+}
+
+.route-lookup {
+  display: inline-block;
+  margin: 5px 0 0 0;
+  width: 120px;
+}
+
+#partialDiv {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  margin: 0 !important;
+}
+
+#dose {
+  margin: 2px 5px 2px 0px;
+}
+
+.form-part {
+  display: flex;
+  flex-grow: 1;
+}
+
+.form-column {
+  flex-grow: 1;
+  position: relative;
+  width: 50%;
+}
+
+.form-column:first-of-type {
+  border-right: solid 1px #c7c7c7;
+  width: 300px;
+}
+
+.dialog-createOrder .form {
+  flex-grow: 1;
+  justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+  // border: 2px solid magenta;
+}
+
+.dialog-footer {
+  border-top: solid 1px rgba(53, 53, 53, 0.26);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  position: relative;
+}
+
+.dialog-footer .button {
+  margin-left: 20px;
+}
+
+.dialog-title {
+  font-size: 16px;
+  /*border-bottom: solid 1px rgba(53, 53, 53, 0.26);*/
+  padding: 20px;
+  padding-bottom: 20px;
+}
+
+// dropdown-select: drop down that behaves like a select
+.item .dropdown-select input {
+  margin-left: 1.5rem;
+}
+.dropdown-select .btn {
+  margin-right: 1.5em;
+}
+.dropdown-select .btn {
+  background: white;
+}
+.dropdown-select ::placeholder {
+  font-style: italic;
+}
+.dropdown-select .btn-outline-dark:hover,
+.dropdown-select .btn-outline-danger:hover {
+  color: #c2c7cc;
+}
+.requirement {
+  color: $e-red;
+  font-style: italic;
+  font-size: smaller;
+}
+.requirement-global {
+  position: absolute;
+  bottom: 0;
+}
+.preferred {
+  margin-left: 2px;
+  margin-right: 2px;
+}
+.spaced {
+  margin-left: 5px;
+}
+label {
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.popover .arrow {
+  display: none;
+}
+
+.req-popover {
+  font-size: 0.8rem;
+}
+
+.danger-border-div {
+  border: 1px solid #dc3545 !important;
+  border-radius: 10px;
+  padding: 0 5px;
+}
+
+.disabled-element {
+  background: whitesmoke;
+  font-style: italic;
+}
+
+button:disabled {
+  opacity: .5;
+  background-color:#DCDCDC;
+  color: #000 !important;
+ }
+ 
+ button:disabled:hover {
+   opacity: .7;
+   background-color:#D3D3D3;
+   }
+
+   .success {
+     color: $green;
+   }
+
+   .fail {
+    color: $e-red;
+   }

@@ -1,0 +1,21 @@
+PURPOSE: Production Deployment of database code.
+   Files located in folder ......\deploy_dacpac\
+
+   Before starting ensure there is a valid database backup.
+
+1. Edit file: emar_dacpac.ini  (parameters are stored here)
+2. Pre-Update Schema Snapshot (02_Schema_Snapshot.cmd)
+3. Pre-Update Special Schema Scripts
+	Located In: ..\deploy_dacpac\current_build
+4. Pre-Update Schema Snapshot (04_Schema_Snapshot.cmd)
+5. Run: publish_dacpac.cmd
+6. Post-Update Schema Snapshot (06_Schema_Snapshot.cmd)
+
+NOTE: For the process to work the full path location to executable file "sqlpackage.exe" must be set in the ".ini" file
+sqlpackage.exe by default uses windows authentication (there is no setting for this). There are settings (if needed) to define an sql authenticated user/password.
+
+sqlpackage.exe can be downloaded here if it is not installed locally.
+https://docs.microsoft.com/en-us/sql/tools/sqlpackage-download?view=sql-server-ver15
+
+sqlcmd.exe can be downloaded here if it is not installed locally.
+https://docs.microsoft.com/en-us/sql/tools/sqlcmd-utility?view=sql-server-ver15

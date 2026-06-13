@@ -1,0 +1,5 @@
+<router-outlet *ngIf="hasLoaded | async"></router-outlet>
+
+<div *ngIf="!correctSite" class="incorrect-site">
+    Please log in to {{ patientSite }} to see this patient.
+</div>

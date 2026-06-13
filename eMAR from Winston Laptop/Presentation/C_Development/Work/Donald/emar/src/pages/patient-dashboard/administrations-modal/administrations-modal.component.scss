@@ -1,0 +1,16 @@
+.administrations-table {
+  max-height: 30rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.administrations-table table td{
+    padding: 0.2rem;
+    line-height: 1rem;
+}
+.administrations-table thead {
+    position: sticky;
+    position: -webkit-sticky;
+    top: 0;
+    background-color: white;
+}

@@ -1,0 +1,230 @@
+<div class="page-content patient-details" [ngStyle]="{'overflow':'hidden', 'overflow-y':'hidden'}">
+  <div>
+    <header-patient [patient]="patientStoreService.patient$ | async"></header-patient>
+  </div>
+  <header class="composer-header">
+    <div [ngStyle]="{'width': '100%'}">
+      <div class="dialog-title" [ngStyle]="{'display': 'flex'}">
+        <span [ngStyle]="{'white-space': 'nowrap', 'margin-right': '5px'}">
+          <span [innerText]="getMedLabel()" class="dialog-title-label"></span>
+        </span>
+        <span [ngStyle]="{'display': 'flex', 'width': '100%', 'justify-content':'space-between'}">
+          <span>
+            <span [ngStyle]="{'display': 'flex'}">
+              <span ngbTooltip="Dosing Information" [ngStyle]="{'margin-right': '5px'}" triggers="mouseenter:mouseleave"
+                container="body">
+                <span id="order-med-name" container="body" placement='bottom-left' triggers="click"
+                  [ngbPopover]="dosingInfo" popoverClass="my-popover" [autoClose]="'outside'"
+                  [innerText]="getMedicationOrderTitle()">
+
+                </span>
+              </span>
+              <span *ngIf="isComboMed()" ngbTooltip="Medication Component Ingredients" triggers="mouseenter:mouseleave"
+                  container="body" class="combo-med-popover">
+                  <span container="body" placement='bottom-left' triggers="click" [ngbPopover]="comboMeds"
+                    popoverClass="my-popover title-button" [autoClose]="'outside'">
+                    &#8230;
+                  </span>
+                </span>
+              <span>
+                <button class="btn btn-med btn-validity" [ngStyle]="{'cursor': 'default'}"
+                  [ngbTooltip]="overallOrderValid ? 'Order(s) are OK' : 'Order(s) are missing required fields'"
+                  [openDelay]="500" [ngClass]="{'is-invalid': validOrder() === 'INVALID', 'is-valid': true}">
+                  {{overallOrderValid ? '\u2713' : '\u0021'}}
+                </button>
+              </span>
+            </span>
+
+            <!--  -->
+            <span class="standard-order-info">
+              
+              <span *ngIf="hasMedicationInteractions || hasAllergyInteractions" >
+                <span *ngIf="hasMedicationInteractions" ngbTooltip="Medication Interactions"
+                  triggers="mouseenter:mouseleave" container="body">
+                  <button class="btn interaction-btn unresolved drug-dot" container="body"
+                    placement='bottom-left' triggers="click" [ngbPopover]="medicationInteractions"
+                    popoverClass="my-popover" [autoClose]="'outside'">M
+                  </button>
+                </span>
+                <span *ngIf="hasAllergyInteractions" ngbTooltip="Allergy Interactions" triggers="mouseenter:mouseleave"
+                  container="body">
+                  <button class="btn interaction-btn unresolved allergy-dot" container="body"
+                    placement='bottom-left' triggers="click" [ngbPopover]="allergyInteractions"
+                    popoverClass="my-popover" [autoClose]="'outside'">A
+                  </button>
+                </span>
+              </span>
+
+              <span class="icon-group"
+                *ngIf="formularyPyxisMatchImgPath || formularyInpatientMatchImgPath || formularyOutpatientMatchImgPath">
+                
+                <img [src]="formularyPyxisMatchImgPath" *ngIf="formularyPyxisMatchImgPath" class="formulary-icon"
+                  alt="Pyxis Formulary Match" ngbTooltip="Pyxis Formulary Match">
+                <img [src]="formularyInpatientMatchImgPath" *ngIf="formularyInpatientMatchImgPath"
+                  class="formulary-icon" alt="Inpatient Formulary Match" ngbTooltip="Inpatient Formulary Match">
+                <img [src]="formularyOutpatientMatchImgPath" *ngIf="formularyOutpatientMatchImgPath"
+                  class="formulary-icon" alt="Outpatient Formulary Match" ngbTooltip="Outpatient Formulary Match">
+              </span>
+            </span>
+            <!--  -->
+          </span>
+
+          <span *ngIf="composerMedComponents[0] && composerMedComponents[0].composerMedForm">
+            <detail-form [medComponentId]="0" [antimicrobialRequiredIndicator]="antimicrobialRequiredIndicator">
+            </detail-form>
+          </span>
+        </span>
+
+        <!-- <span
+          [ngStyle]="{'display':'flex', 'text-align': 'center', 'align-items':'right', 'padding-top': '5px', 'opacity': '1'}">
+          <span [ngStyle]="{'margin-right':'5px'}">
+            <button class="button-secondary button-raised" (click)="addOrderToQuickList()"
+              ngbTooltip="Add Order To Quick List" [openDelay]="500" container="body">&#10025;</button>
+            <button class="button-secondary button-raised" [ngStyle]="{'margin-left':'5px'}" (click)="continueOrder()"
+              [disabled]="validOrder() !== 'VALID'" ngbTooltip="Create additional order component" [openDelay]="500"
+              container="body">Continue</button>&nbsp;
+          </span>
+          <span [ngStyle]="{'margin-left':'5px'}">
+            <button class="button-secondary button-raised" (click)="cancelOrder()" ngbTooltip="Cancel Order"
+              [openDelay]="500" container="body">
+              Cancel Order
+            </button>
+            <button class="button-primary button-raised" [ngStyle]="{'margin-left':'5px'}"
+              [disabled]="validOrder() !== 'VALID'" (click)="checkOrder()"
+              ngbTooltip="(initialComposerData.action === 'add') ? 'Add Order To Cart' : 'Update Order In Cart'"
+              [openDelay]="500" container="body">
+              {{(initialComposerData.action === 'add') ? 'Add Order' : 'Update Order'}}
+            </button>
+          </span>
+        </span> -->
+
+      </div>
+      <!-- <div *ngIf="composerMedComponents && composerMedComponents[0]"
+        [ngStyle]="{'display': 'flex', 'justify-content': 'space-between', 'padding-left': '10px' }">
+        <div [ngStyle]="{'font-size': '1.1rem', 'line-height': '1.2em'}">
+          <p *ngIf="composerMedComponents[0].composerMedForm.value.detail.diagnosis"
+            [ngStyle]="{'margin': '0px','padding':'0px'}">
+            Diagnosis: {{ composerMedComponents[0].composerMedForm.value.detail.diagnosis}}
+          </p>
+          <p *ngIf="composerMedComponents[0].composerMedForm.value.detail.antimicrobialIndicationDisplayName">
+            Indication: {{ composerMedComponents[0].composerMedForm.value.detail.antimicrobialIndicationDisplayName}}
+          </p>
+        </div>
+      </div> -->
+    </div>
+  </header>
+  <div class="page-content-wrapper"
+    [ngStyle]="{'display':'flex', 'position': 'relative', 'overflow':'hidden', 'overflow-y': 'auto'}">
+    <!-- <section class="page-content-wrapper" [ngStyle]="{'position': 'relative', 'overflow':'hidden', 'overflow-y': 'auto'}"> -->
+    <!-- <section [ngStyle]="{'width': '90%'}"> -->
+    <section [ngStyle]="{'width': '95%', 'flex': '1'}">
+      <ngb-accordion #acc="ngbAccordion" class="accordion" [activeIds]="activeIds" [destroyOnHide]="false"
+        closeOthers="true" [ngStyle]="{'width': '100%'}">
+        <ng-container *ngIf="gotData">
+          <ng-container *ngIf="composerMedComponents.length > 0">
+            <ngb-panel [id]="'medComponent-' + i" *ngFor="let medComponent of composerMedComponents; let i = index"
+              cardClass="hide-panel" [ngClass]="{'is-invalid': isMedComposerFormInvalid(i), 'is-valid': true}">
+              <ng-template *ngIf="composerMedComponents.length > 1" ngbPanelHeader>
+                <div class="accordion-panel-header"
+                  [ngClass]="{'active': isMedComponentPanelSelected('medComponent-' + i)}">
+                  <button class="d-flex align-items-center justify-content-between ml-2 accordion-panel-toggle"
+                    [ngClass]="{'active': isMedComponentPanelSelected('medComponent-' + i)}"
+                    id="'medComponent-' + i +'-panel'" ngbPanelToggle>
+                    <div class="order-left">
+                      <div class="panel-id">
+                        <span>Order #{{i + 1}}</span>
+                      </div>
+                      <div>
+                        <button [ngClass]="{'is-invalid': isMedComposerFormInvalid(i), 'is-valid': true}"
+                          [ngStyle]="{'cursor': 'default'}"
+                          class="btn btn-med align-items-center justify-content-between ml-2 btn-validity"
+                          [ngbTooltip]="isMedComposerFormInvalid(i) ? 'Order is missing required fields' : 'Order is OK'"
+                          container="body" [openDelay]="500">
+                          {{ isMedComposerFormInvalid(i) ? '\u0021' : '\u2713' }}
+                        </button>
+                      </div>
+                      <div class="panel-title">
+                        <span [innerHTML]="medComponent.title || setMedComponentText(i)">
+                        </span>
+                      </div>
+                    </div>
+                    <button class="btn btn-sm align-items-center justify-content-between ml-2 accordion-toggle"
+                      [ngClass]="{'active': isMedComponentPanelSelected('medComponent-' + i)}"></button>
+                  </button>
+                  <div class="panel-buttons">
+                    <button class="btn btn-sm align-items-center justify-content-between ml-2 reset"
+                      (click)="resetComposerMedComponent(i)">Reset</button>
+                    <!-- <button *ngIf="i !== 0" -->
+                    <button [disabled]="i === 0" [ngClass]="{'hide': i === 0}"
+                      class="btn btn-sm align-items-center justify-content-between ml-2"
+                      [ngStyle]="{'color':'#fff', 'font-weight': 'bold'}" ngbTooltip="Discard" container="body"
+                      (click)="removeMedComponent(i)">X</button>
+                  </div>
+                </div>
+              </ng-template>
+              <ng-template ngbPanelContent>
+                <composer-med [composerMedForm]="medComponent.composerMedForm" [composerMedFormIndex]="i">
+                </composer-med>
+              </ng-template>
+            </ngb-panel>
+          </ng-container>
+          <ng-container *ngIf="addNewMedComponent">
+            <composer-med></composer-med>
+          </ng-container>
+        </ng-container>
+      </ngb-accordion>
+    </section>
+    <section class="action-buttons buttons-panel">
+      <span class="action-buttons float">
+        <!-- <span ngbTooltip="Add Order To Quick List" [openDelay]="500" container="body">
+          <button class="button-secondary button-raised action-button" [disabled]="validOrder() !== 'VALID'"
+            (click)="addOrderToQuickList()">&#10025;</button>
+        </span> -->
+        <span ngbTooltip="Link Order" [openDelay]="500" container="body">
+          <button class="button-secondary button-raised action-button" (click)="continueOrder()"
+            [disabled]="validOrder() !== 'VALID' || initialComposerData.action !== 'add'">{{'\u002B'}}</button>&nbsp;
+        </span>
+        <button class="button-secondary button-raised action-button" (click)="cancelOrder()" ngbTooltip="Cancel Orders"
+          [openDelay]="500" container="body">
+          {{'\u20E0'}}
+        </button>
+        <span ngbTooltip="{{(initialComposerData.action === 'add') ? 'Add Orders To Cart' : 'Update Order In Cart'}}"
+          [openDelay]="500" container="body">
+          <button class="button-primary button-raised action-button" [disabled]="validOrder() !== 'VALID'"
+            (click)="submitOrder()">
+            {{'🛒'}}
+          </button>
+        </span>
+      </span>
+    </section>
+  </div>
+</div>
+
+<ng-template #dosingInfo>
+  <dosing-info [doseOptions]="doseOptions"></dosing-info>
+</ng-template>
+
+<ng-template #medicationInteractions>
+  <patient-order-interactions [patientOrderInteractions]="patientOrderInteractions" includeInteractionType="drug">
+  </patient-order-interactions>
+</ng-template>
+
+<ng-template #allergyInteractions>
+  <patient-order-interactions [patientOrderInteractions]="patientOrderInteractions" includeInteractionType="alg">
+  </patient-order-interactions>
+</ng-template>
+
+<ng-template #comboMeds>
+  <!-- <div [ngClass]="{'combo-detail': true, 'list': true, 'active': true}"> -->
+  <!-- <div [ngClass]="{'combo-detail': true, 'list': true}"> -->
+  <span [ngClass]="{'combo-detail': true, 'list': true, 'active': true}">
+    <h4 [ngStyle]="{'text-align':'center'}">Medication Component Ingredients:</h4>
+    <ul class="tree">
+      <!-- <li *ngFor="let m of initialComposerData.med.comboMedDetails">{{m.brandName}} {{m.dose}} {{m.doseUnit}}</li> -->
+      <li
+        *ngFor="let m of this.composerMedComponents[0].composerMedForm.value.med.formStrengthOptions.medicationDetails">
+        {{m.brandName}} {{m.dose}} {{m.doseUnit ? m.doseUnit.printName || m.doseUnit.unitName : ''}}</li>
+    </ul>
+    <!-- </div> -->
+  </span>
+</ng-template>

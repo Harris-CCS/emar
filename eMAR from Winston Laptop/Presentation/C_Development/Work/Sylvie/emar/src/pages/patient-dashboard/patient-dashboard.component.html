@@ -1,0 +1,475 @@
+<div class="page-content patient-details"  [ngStyle]="{'overflow':'hidden', 'overflow-y':'hidden'}"
+id="page-report-container">
+    <div>
+        <header-patient [patient]="patientStoreService.patient$ | async" class="header-patient" ></header-patient>
+    </div>
+    <div class="page-content-wrapper">
+       <div *ngIf="!fetching" class="pd-header">
+            <button class="btn btn-outline-primary" [ngClass]="{'active': filter=='all'}" (click)="onFilter('all')">All ({{ nbOrders.all }})</button>
+            <button class="btn btn-outline-primary" [ngClass]="{'active': filter=='stat'}" (click)="onFilter('stat')">STAT ({{ nbOrders.stat }})</button>
+            <button class="btn btn-outline-primary" [ngClass]="{'active': filter=='prn'}" (click)="onFilter('prn')">PRN ({{ nbOrders.prn }})</button>
+            <!-- <button class="btn btn-outline-primary" [ngClass]="{'active': filter=='scheduled'}" (click)="onFilter('scheduled')">Timed ({{ nbOrders.scheduled }})</button> -->
+            <button class="btn btn-outline-primary" [ngClass]="{'active': filter=='timed'}" (click)="onFilter('timed')">Scheduled ({{ nbOrders.timed }})</button>
+            <button class="btn btn-outline-primary" [ngClass]="{'active': filter=='continuous'}" (click)="onFilter('continuous')">Continuous ({{ nbOrders.continuous }})</button>
+            <!-- phase 2
+                <button class="btn btn-outline-primary" [ngClass]="{'active': filter=='continuous'}" (click)="onFilter('continuous')">IV ({{ nbOrders.iv }})</button>
+                <button class="btn btn-outline-primary" [ngClass]="{'active': filter=='continuous'}" (click)="onFilter('continuous')">Ancilliary ({{ nbOrders.ancilliary }})</button>
+            -->
+            <span class="pd-sort text-primary">Sort:</span>
+            <span ngbDropdown >
+                <button class="btn btn-primary" ngbDropdownToggle>
+                    {{ sort }}
+                </button>
+                <div ngbDropdownMenu>
+                    <button ngbDropdownItem *ngFor="let choice of ['Entry time', 'Administration time', 'Alphabetical']"
+                        (click)="sort = choice; updating = true; refresh();">
+                        {{ choice }}
+                    </button>
+                </div>
+            </span>
+
+            <span *ngIf="updating" [ngStyle]="{'padding-left': '2rem'}">
+                <div class="spinner-border spinner-border-sm" role="status">
+                    <span class="sr-only">Updating...</span>
+                </div>
+            </span>
+
+            <div [ngStyle]="{float: 'right','cursor': 'pointer'}" (click)="showPrinterModal()">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-printer-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5z"/>
+                    <path fill-rule="evenodd" d="M11 9H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z"/>
+                    <path fill-rule="evenodd" d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
+                </svg>
+            </div>
+
+        </div>
+        
+
+
+        <div *ngIf="!orders.length" class="text-center" [ngStyle]="{'padding-top': '2rem'}">
+            <span *ngIf="fetching">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </span>
+        </div>
+        <div *ngIf="!orders.length" class="text-center">
+            <i *ngIf="!fetching">... No medication ...</i>
+        </div>
+
+        <div *ngIf="orders.length" [ngStyle]="{'display':'flex'}"  >
+            <!-- height 100% needed for IE10 https://stackoverflow.com/questions/16811716 -->
+        <table class="table-my-striped table2" [ngStyle]="{'width':'100%'}">
+            <thead>
+                <tr id="page-content-id-ahs-01">
+                     <th rowspan="2" [ngStyle]="{'min-width':orderNameColumnWidth,'width':orderNameColumnWidth}">
+                         &nbsp;
+                    </th>
+                    <th colspan="3" class="pd-relative" [ngStyle]="{'white-space':'nowrap', 'height':'2.7em'}">
+                        <div [ngStyle]="{'position':'absolute', 'top': '.25rem', 'right': '.25rem'}">
+                            <button class="btn btn-link pd-btn"
+                                ngbTooltip="Goto to Oldest Due Administration" placement="bottom"
+                                *ngIf="hasOverDueOut()"
+                                (click)="moveTimes(0, true)">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="bi bi-bell-fill" viewBox="0 0 16 16">
+                                    <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/>
+                                </svg>
+                            </button>
+                            <button class="btn btn-link pd-btn"
+                                ngbTooltip="Zoom out - More hours" placement="bottom"
+                                [disabled]="nbHours >= 24"
+                                (click)="changeNbHours(+1)">
+                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-zoom-out" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>
+                                    <path d="M10.344 11.742c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1 6.538 6.538 0 0 1-1.398 1.4z"/>
+                                    <path fill-rule="evenodd" d="M3 6.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/>
+                                </svg>
+                            </button>
+                            <button class="btn btn-link pd-btn"
+                                ngbTooltip="Zoom in - Less hours" placement="bottom"
+                                [disabled]="nbHours <= 1"
+                                (click)="changeNbHours(-1)">
+                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-zoom-in" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>
+                                    <path d="M10.344 11.742c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1 6.538 6.538 0 0 1-1.398 1.4z"/>
+                                    <path fill-rule="evenodd" d="M6.5 3a.5.5 0 0 1 .5.5V6h2.5a.5.5 0 0 1 0 1H7v2.5a.5.5 0 0 1-1 0V7H3.5a.5.5 0 0 1 0-1H6V3.5a.5.5 0 0 1 .5-.5z"/>
+                                </svg>
+                            </button>
+                            <button type="button"
+                                class="btn btn-outline-primary pd-btn"
+                                (click)=moveTimes(0)
+                                arial-label="Now"
+                                title="Move Back to Now">
+                                Go to Now
+                            </button>
+                        </div>
+                    </th>
+                    <!-- ngIf is here to compute again the th if nbHours changed -->
+                    <th class="pd-relative" [ngStyle]="{'width':'100%','paddingLeft':'0', 'vertical-align':'middle'}" *ngIf="nbHours">
+                        <div [ngStyle]="{'position':'absolute', 'left':'0', 'top':'0.25rem'}">
+                            <button type="button"
+                                class="btn btn-link pd-btn"
+                                (click)=moveTimes(-1)
+                                arial-label="One Hour Ahead"
+                                title="One Hour Ahead">
+                                <span class="ngb-dp-navigation-chevron"></span>
+                            </button>
+                        </div>
+                        <div [ngStyle]="{'position':'absolute', 'top':'0.25rem', 'right':'0'}" class="right">
+                            <button type="button"
+                                class="btn btn-link pd-btn"
+                                (click)=moveTimes(+1)
+                                arial-label="One Hour After"
+                                title="One Hour After">
+                                <span class="ngb-dp-navigation-chevron"></span>
+                            </button>
+                        </div>
+                        <div *ngIf="activeTime(currentTime)" [ngStyle]="{'min-width':administrationsColumnWidth,'width':administrationsColumnWidth}">
+                            <!-- div is 100% minus eventual scrollbar width -->
+                            <div class="text-primary"
+                                *ngIf="activeTime(currentTime)"
+                                [ngStyle]="{marginLeft: widthFromStart(currentTime),'position':'absolute', 'top':'0.55rem', 'left':'0'}">
+                                <div class="pd-time">
+                                    {{ currentTime | date: 'HH:mm': siteUTCOffset }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-primary"
+                            [ngStyle]="{'marginLeft': '25px', 'position':'absolute', 'top':'0.55rem', 'left':'0'}"
+                            *ngIf="!activeTime(currentTime)">
+                            <div class="pd-time">
+                                {{ times[0] | date: 'MM/dd/yyyy': siteUTCOffset }}
+                            </div>
+                        </div>
+                    </th>
+                </tr>
+
+                <tr id="page-content-id-amsp-01"> 
+                    <th class="pd-line" [ngStyle]="{'min-width':'3.5rem'}"><small><b>STAT</b></small></th>
+                    <th class="pd-line" [ngStyle]="{'min-width':'3.5rem'}"><small><b>PRN</b></small></th>
+                    <th class="pd-line" [ngStyle]="{'min-width':'3.5rem'}"
+                        [ngbPopover]="popContent" 
+                        [popoverTitle]="popTitle"
+                        popoverClass="tip"
+                        triggers="mouseenter:mouseleave"
+                    ><small><b>ACT.</b></small></th>
+                    <ng-template #popTitle>💡 Tip</ng-template>
+                    <ng-template #popContent popoverClass="tip">Click the status icon to perform an action</ng-template>
+
+                    <th class="pd-relative" [ngStyle]="{'width':'100%','paddingLeft':'0'}" *ngIf="nbHours">
+                        <div [ngStyle]="{'min-width':administrationsColumnWidth,'width':administrationsColumnWidth}">
+                            <!-- div is 100% minus eventual scrollbar width -->
+                            <div class="pd-unit" [ngStyle]="{'width': hourWidth()}"
+                                *ngFor="let time of times" >
+                                <div class="pd-time">
+                                    {{ time | date: 'HH:mm': siteUTCOffset }}
+                                </div>
+                            </div>
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+    <div *ngIf="orders.length" class="pd-grid2" [ngStyle]="{'height': '100%'}" id="page-content-id-aws-05">
+        <table class="table-my-striped table table-hover" [ngStyle]="{'width': '100%'}">
+            <tbody>
+                <tr *ngFor="let order of orders; let iOrder = index; trackBy:trackByFn">
+                    <!-- relative is mandatory to have the tooltip correctly positionned when scrolling-->
+                    <td class="text-nowrap pd-relative"
+                        [ngClass]="{'pd-inactive': !IsActiveOrder(order)}"
+                        id="orderNameCol{{iOrder}}">
+                        <!-- [ngbPopover]="orderPopover"
+                        popoverClass="pd-admin-box"
+                        #orderPop="ngbPopover"
+                        placement="right top-right top-left"
+                        scope="row">
+                        <ng-template #orderPopover>
+                            <order-hover [order]="order" [admin]="null" [actions]="order.availableActions"></order-hover>
+                        </ng-template>
+                    -->
+
+                        <div class="d-flex flex-row">
+                            <div *ngIf="order.pharmacyVerificationStatus == 1" 
+                                class="rx-verification"
+                                container="body"
+                                [ngbTooltip]="rxVerificationStatus(order).tooltip">
+                                <!-- <svg width="1em" height="1em" viewBox="0 0 20.165514 24">
+                                    <path [attr.fill]="black" style="fill-opacity:1;stroke:none" d="M 7.7429518,0 C 7.5073376,9.999757e-6 7.1277368,0.00599985 6.6049995,0.02119948 5.1913939,0.07279823 4.0690511,0.09899759 3.2371013,0.0988976 2.4861196,0.0989176 1.4356351,0.06949831 0.08829785,0.01059974 L 0,0.08829785 v 0.55130661 l 0.08829785,0.0776981 c 0.78043104,0.0294993 1.27135915,0.0721983 1.47014425,0.12368699 0.1987852,0.0515988 0.3329319,0.11693716 0.4028802,0.19790525 0.069898,0.080998 0.1223571,0.2412141 0.1554963,0.4841582 0.033099,0.2429741 0.052699,0.7863309 0.060098,1.6256405 l 0.0212,2.1522077 v 5.1137058 l -0.0106,2.328913 c -0.007,0.787781 -0.036999,1.298449 -0.084798,1.526683 -0.047899,0.228245 -0.1099973,0.375341 -0.1873054,0.445289 -0.077298,0.0699 -0.2276445,0.128987 -0.455889,0.173166 -0.2282344,0.0442 -0.68647328,0.0801 -1.37118665,0.109548 l -0.08829785097,0.0671 v 0.551307 l 0.08829785097,0.0883 c 1.87743435,-0.0589 2.93115875,-0.0883 3.15939325,-0.0883 0.2945028,0 0.7035629,0.006 1.2263002,0.0212 1.2589894,0.0442 1.9068836,0.0671 1.9437028,0.0671 l 0.088298,-0.0883 v -0.551307 l -0.088298,-0.0671 c -0.7804311,-0.0294 -1.2713592,-0.072 -1.4701443,-0.127217 -0.1987952,-0.0552 -0.3329319,-0.123987 -0.4028802,-0.204975 -0.069998,-0.081 -0.1222171,-0.241195 -0.1590262,-0.484159 -0.036799,-0.242964 -0.059798,-0.783071 -0.067098,-1.61504 l -0.0106,-2.152208 V 5.3009012 c -10e-6,-2.5989469 0.055699,-3.9798633 0.166096,-4.1418494 0.6847033,-0.21349478 1.4109457,-0.31804224 2.1840169,-0.31806224 1.1043632,2e-5 1.9813819,0.24872394 2.6292961,0.74568184 0.6478843,0.496978 0.9718369,1.2298402 0.9718469,2.2016765 C 10.259231,4.8706516 9.8993495,5.718221 9.177837,6.3292962 8.4563045,6.9404014 7.4582388,7.244614 6.1845397,7.244604 c -0.2135248,1e-5 -0.5112576,-0.01 -0.8941083,-0.031799 L 5.1808841,7.5555964 c 1.3252378,1.5093233 2.6210363,3.1452736 3.8873955,4.9122706 1.0388844,1.453045 1.8045864,2.4836 2.3147734,3.113454 l 0.346332,0.579576 -3.0144968,4.237267 C 7.941817,21.473098 7.4214397,22.180041 7.1563861,22.515033 6.8913325,22.850035 6.6754678,23.05942 6.5061319,23.144088 6.336796,23.228786 6.0028341,23.274554 5.5095461,23.281914 l -0.088398,0.0883 v 0.530107 l 0.098998,0.099 c 0.4638387,-0.0294 0.8369696,-0.0424 1.1167428,-0.0424 0.2724134,0 0.6487843,0.013 1.1273426,0.0424 1.4356851,-2.407542 2.6823045,-4.341515 3.7425085,-5.799299 l 0.805761,-1.113213 3.357298,4.958209 c 0.375481,0.647905 0.784541,1.299039 1.2263,1.954303 0.758322,-0.0294 1.324358,-0.0424 1.699859,-0.0424 0.287123,0 0.781291,0.013 1.480744,0.0424 l 0.0883,-0.0883 v -0.540707 l -0.0883,-0.0883 c -0.471208,-0.007 -0.772191,-0.0402 -0.904708,-0.0954 -0.132537,-0.0552 -0.309382,-0.221905 -0.526567,-0.505368 -0.217205,-0.283453 -0.501838,-0.712093 -0.855219,-1.286369 l -4.13126,-5.961865 c -0.008,-0.0403 -0.0238,-0.0804 -0.0424,-0.123697 l 0.805751,-1.070794 2.05325,-2.784802 c 0.736242,-0.993926 1.22379,-1.6156111 1.463084,-1.865955 0.239264,-0.2503039 0.4357,-0.4074201 0.586646,-0.4700186 0.150916,-0.062598 0.458519,-0.1051174 0.922367,-0.1272269 l 0.0884,-0.088298 v -0.494758 l -0.0884,-0.1024875 c -0.625824,0.022099 -0.969506,0.035399 -1.028395,0.035299 -0.132536,2e-5 -0.508607,-0.0132 -1.134412,-0.035299 l -4.219597,6.19157 C 12.899956,14.28493 12.665411,13.944418 12.30189,13.46815 11.720244,12.706138 11.177187,11.982996 10.66919,11.298272 L 9.1000889,9.2238159 C 8.5626119,8.517023 8.189481,8.0196151 7.983346,7.7324721 9.095069,7.5189673 9.9688578,7.1981051 10.602042,6.7747554 11.235207,6.3514157 11.712885,5.844438 12.036848,5.2480625 12.36078,4.651707 12.524526,4.0429818 12.524536,3.4245168 12.524526,2.4968593 12.194094,1.6952288 11.53148,1.0178653 10.868846,0.34053173 9.6057366,7.9998056e-5 7.7430318,6.9998299e-5 Z" />
+                                </svg> -->
+                                <svg width="1.2em" height="1.2em" viewBox="0 0 20.165514 24">
+                                    <path [attr.fill]="rxVerificationStatus(order).color" style="fill-opacity:1;stroke:none" d="M 7.7429518,0 C 7.5073376,9.999757e-6 7.1277368,0.00599985 6.6049995,0.02119948 5.1913939,0.07279823 4.0690511,0.09899759 3.2371013,0.0988976 2.4861196,0.0989176 1.4356351,0.06949831 0.08829785,0.01059974 L 0,0.08829785 v 0.55130661 l 0.08829785,0.0776981 c 0.78043104,0.0294993 1.27135915,0.0721983 1.47014425,0.12368699 0.1987852,0.0515988 0.3329319,0.11693716 0.4028802,0.19790525 0.069898,0.080998 0.1223571,0.2412141 0.1554963,0.4841582 0.033099,0.2429741 0.052699,0.7863309 0.060098,1.6256405 l 0.0212,2.1522077 v 5.1137058 l -0.0106,2.328913 c -0.007,0.787781 -0.036999,1.298449 -0.084798,1.526683 -0.047899,0.228245 -0.1099973,0.375341 -0.1873054,0.445289 -0.077298,0.0699 -0.2276445,0.128987 -0.455889,0.173166 -0.2282344,0.0442 -0.68647328,0.0801 -1.37118665,0.109548 l -0.08829785097,0.0671 v 0.551307 l 0.08829785097,0.0883 c 1.87743435,-0.0589 2.93115875,-0.0883 3.15939325,-0.0883 0.2945028,0 0.7035629,0.006 1.2263002,0.0212 1.2589894,0.0442 1.9068836,0.0671 1.9437028,0.0671 l 0.088298,-0.0883 v -0.551307 l -0.088298,-0.0671 c -0.7804311,-0.0294 -1.2713592,-0.072 -1.4701443,-0.127217 -0.1987952,-0.0552 -0.3329319,-0.123987 -0.4028802,-0.204975 -0.069998,-0.081 -0.1222171,-0.241195 -0.1590262,-0.484159 -0.036799,-0.242964 -0.059798,-0.783071 -0.067098,-1.61504 l -0.0106,-2.152208 V 5.3009012 c -10e-6,-2.5989469 0.055699,-3.9798633 0.166096,-4.1418494 0.6847033,-0.21349478 1.4109457,-0.31804224 2.1840169,-0.31806224 1.1043632,2e-5 1.9813819,0.24872394 2.6292961,0.74568184 0.6478843,0.496978 0.9718369,1.2298402 0.9718469,2.2016765 C 10.259231,4.8706516 9.8993495,5.718221 9.177837,6.3292962 8.4563045,6.9404014 7.4582388,7.244614 6.1845397,7.244604 c -0.2135248,1e-5 -0.5112576,-0.01 -0.8941083,-0.031799 L 5.1808841,7.5555964 c 1.3252378,1.5093233 2.6210363,3.1452736 3.8873955,4.9122706 1.0388844,1.453045 1.8045864,2.4836 2.3147734,3.113454 l 0.346332,0.579576 -3.0144968,4.237267 C 7.941817,21.473098 7.4214397,22.180041 7.1563861,22.515033 6.8913325,22.850035 6.6754678,23.05942 6.5061319,23.144088 6.336796,23.228786 6.0028341,23.274554 5.5095461,23.281914 l -0.088398,0.0883 v 0.530107 l 0.098998,0.099 c 0.4638387,-0.0294 0.8369696,-0.0424 1.1167428,-0.0424 0.2724134,0 0.6487843,0.013 1.1273426,0.0424 1.4356851,-2.407542 2.6823045,-4.341515 3.7425085,-5.799299 l 0.805761,-1.113213 3.357298,4.958209 c 0.375481,0.647905 0.784541,1.299039 1.2263,1.954303 0.758322,-0.0294 1.324358,-0.0424 1.699859,-0.0424 0.287123,0 0.781291,0.013 1.480744,0.0424 l 0.0883,-0.0883 v -0.540707 l -0.0883,-0.0883 c -0.471208,-0.007 -0.772191,-0.0402 -0.904708,-0.0954 -0.132537,-0.0552 -0.309382,-0.221905 -0.526567,-0.505368 -0.217205,-0.283453 -0.501838,-0.712093 -0.855219,-1.286369 l -4.13126,-5.961865 c -0.008,-0.0403 -0.0238,-0.0804 -0.0424,-0.123697 l 0.805751,-1.070794 2.05325,-2.784802 c 0.736242,-0.993926 1.22379,-1.6156111 1.463084,-1.865955 0.239264,-0.2503039 0.4357,-0.4074201 0.586646,-0.4700186 0.150916,-0.062598 0.458519,-0.1051174 0.922367,-0.1272269 l 0.0884,-0.088298 v -0.494758 l -0.0884,-0.1024875 c -0.625824,0.022099 -0.969506,0.035399 -1.028395,0.035299 -0.132536,2e-5 -0.508607,-0.0132 -1.134412,-0.035299 l -4.219597,6.19157 C 12.899956,14.28493 12.665411,13.944418 12.30189,13.46815 11.720244,12.706138 11.177187,11.982996 10.66919,11.298272 L 9.1000889,9.2238159 C 8.5626119,8.517023 8.189481,8.0196151 7.983346,7.7324721 9.095069,7.5189673 9.9688578,7.1981051 10.602042,6.7747554 11.235207,6.3514157 11.712885,5.844438 12.036848,5.2480625 12.36078,4.651707 12.524526,4.0429818 12.524536,3.4245168 12.524526,2.4968593 12.194094,1.6952288 11.53148,1.0178653 10.868846,0.34053173 9.6057366,7.9998056e-5 7.7430318,6.9998299e-5 Z" />
+                                </svg>
+                            </div>
+                            <div
+                                [ngbTooltip]="order.medication.displayName.length > nbCharOrderName? order.medication.displayName: ''"
+                                container="body">
+                                <span [ngClass]="{'pd-cancelled': order.orderStatus == 'Cancelled'}">
+                                    <span  class="font-weight-bold">{{ order.medication.displayName | medStrengthSplit:'m': nbCharOrderName: '&hellip;' }}</span>
+                                    {{ order.medication.displayName | medStrengthSplit: 's': nbCharOrderName: '&hellip;'}}
+        
+                                </span>
+                                <!-- <span [hidden]="!displayStrength"> {{ order.strength }}</span> -->
+                                <!-- <span [hidden]="!displayDose"> {{ order.dose }} {{ order.doseUnit?.unitName }}</span> -->
+                                <span [ngStyle]="{display:'none'}">
+                                    {{ order.id }},{{order.beginDatetime| date: "HH:mm": siteUTCOffset }} {{ order.endDatetime | date: "HH:mm": siteUTCOffset }}
+                                </span>
+                            
+                                <span *ngIf="order.medication?.medicationDetails?.length > 1"
+                                    ngbTooltip="Medication Component Ingredients" triggers="mouseenter:mouseleave" container="body"
+                                    class="combo-med-popover">
+                                    <span container="body" placement='bottom-left' triggers="click" [ngbPopover]="comboMeds"
+                                        popoverClass="my-popover title-button" [autoClose]="'outside'">
+                                        &#8230;
+                                    </span>
+                                </span>
+                                <ng-template #comboMeds>
+                                    <span [ngClass]="{'combo-detail': true, 'list': true}">
+                                        <b>{{ order.medication.displayName }}</b>
+                                        <ul class="tree">
+                                            <li *ngFor="let m of order.medication.medicationDetails">
+                                                {{ m.brandName }} {{ m.dose }}{{ m.doseUnit?.printName }}
+                                            </li>
+                                        </ul>
+                                    </span>
+                                </ng-template>
+                            </div>
+                            
+                            <div style="margin-left: auto">
+                                <interactions [order]="order" placement="bottom bottom-left right"></interactions>
+                            </div>
+                        </div>
+
+                        
+                        <div [ngClass]="{'pd-cancelled': order.orderStatus == 'Cancelled'}"
+                            container="body"
+                            [ngbTooltip]="(order.doseUnit?.printName.length+order.medicationRoute?.routeName.length+order.frequencySchedule?.scheduleName.length+5 > nbCharOrderName) 
+                                            ? order.dose + ' ' + order.doseUnit?.printName + ', ' + order.medicationRoute?.routeName + ', ' + order.frequencySchedule?.scheduleName
+                                            : ''">
+                            <span [ngbTooltip]="Dose"
+                                placement="right bottom-right top-right"
+                                class="nextLink"
+                                tooltipClass="pd-dose-tooltip"
+                                style="font-weight: bold;font-size:1.15em"
+                                container="body">
+                                Dose:
+                            </span>
+                            <span class="font-weight-bold" style="font-size:1.15em">
+                                {{( order.dose + ' ' + order.doseUnit?.printName + ', ' +
+                                    order.medicationRoute?.routeName + ', ' + 
+                                    order.frequencySchedule?.scheduleName ) | truncate: nbCharOrderName }}
+                                </span>
+                                    
+                                <span *ngIf="order.orderNotes?.length > 0"
+                                    style="margin-left: 5px;"
+                                    container="body"
+                                    [ngbTooltip]="instruction">
+                                    <img src="../../../assets/icon/instruction.svg">
+                                </span>
+                                <ng-template #instruction>
+                                    <div style="text-align: left; white-space: pre-line;">
+                                        {{ order.orderNotes }}
+                                    </div>
+                                </ng-template>
+                        </div>
+                        <ng-template #Dose>
+                            <div class="pd-dose-line">{{ order.medication.displayName }}</div>
+                            <div class="pd-dose-line">Priority: {{ order.priority == 2? 'STAT': 'Routine' }}</div>
+                            <div class="pd-dose-line">Dose: 
+                                {{ order.dose + ' ' + order.doseUnit?.printName + ', ' +
+                                order.medicationRoute?.routeName + ', ' + 
+                                order.frequencySchedule?.scheduleName }} 
+                                <span *ngIf="order.duration">{{ ', ' + order.duration + ' ' + order.durationUnit.name}}</span>
+                            </div>
+                            <div class="pd-dose-line">Start: {{ order.beginDatetime | dateTimePipe: "dateTimeDisplay" : siteUTCOffset}}</div>
+                            <div class="pd-dose-line">End: {{ estimatedEnd(order) | dateTimePipe: "dateTimeDisplay": siteUTCOffset}}</div>
+                            <div class="pd-dose-line" *ngIf="order.antimicrobialIndicationText != null || order.antimicrobialIndication != null || order.prnIndication != ''">
+                                Indication: 
+                                {{ order.antimicrobialIndication?.description }}{{ order.antimicrobialIndicationText }}
+                                <span *ngIf="(order.antimicrobialIndicationText != null || order.antimicrobialIndication != null) && order.prnIndication != ''">, </span>
+                                {{ order.prnIndication }}
+                            </div>
+                            <div class="pd-dose-line">Instructions: {{ order.orderNotes }}</div>
+                        </ng-template>
+
+                        <div [ngClass]="{'pd-cancelled': order.orderStatus == 'Cancelled'}">
+                            <span *ngIf="order.addDatetime != null && order.orderStatus != 'Cancelled'">
+                                <small>
+                                <span ngbTooltip="List of Administrations"
+                                    [ngbPopover]="popAdministrations"
+                                    #popAdm="ngbPopover"
+                                    [autoClose]="'outside'"
+                                    popoverClass="pd-admin-box"
+                                    container="body"
+                                    class="nextLink">
+                                    Ordered:
+                                </span>
+                                </small> {{ order.addDatetime | dateTimePipe: "friendly": siteUTCOffset }}.
+                            </span>
+                            <ng-template #popAdministrations>
+                                <administrations-modal
+                                    (modalDateTimeSelected) ="getPatientAdministrationsModalDateRequests($event)"
+                                    [order]="order"
+                                    [currentTime]="currentTime"
+                                    [siteUTCOffset]="siteUTCOffset">
+                                </administrations-modal>
+                            </ng-template>
+
+                            <span *ngIf="order.orderStatus == 'Cancelled'">
+                               <small><i>Ordered:</i></small>
+                               {{ order.addDatetime | dateTimePipe: "friendly": siteUTCOffset }}.
+                            </span>
+
+                            <span *ngIf="order.orderingPhysicianUser != null">
+                                <small><i>Ordering physician:</i></small> {{ order.orderingPhysicianUser.lastName }}, {{ order.orderingPhysicianUser.firstName }}
+                            </span>
+                        </div>
+                        <div *ngIf="order.nextActionTime !== null && order.nextActionTime !== ''">
+                            <small>Next Administration:</small> 
+                            <span (click)="moveNextAdministration(order)"
+                                [ngClass]="{'nextLink': !isOverDue(order), 'dueLink': isOverDue(order)}">
+                                {{ order.nextActionTime | dateTimePipe: "friendly": siteUTCOffset }}
+                            </span>
+                        </div>
+                    </td>
+
+
+                    <td class="pd-relative pd-line pd-center" [ngStyle]="{'min-width':'3.5rem'}">
+                        <span class="pd-prn" *ngIf="order.priority == 'STAT'|| order.priority == 2">
+                            &#x2713;
+                        </span>
+                    </td>
+                    <td class="pd-relative pd-line pd-center" [ngStyle]="{'min-width':'3.5rem'}">
+                        <span class="pd-prn" *ngIf="order.prn">
+                            &#x2713;
+                        </span>
+                    </td>
+                    <td class="pd-relative pd-line pd-center" [ngStyle]="{'min-width':'3.5rem'}">
+                        <img [src]="getOrderStatus(order, 'icon')"
+                            [ngbTooltip]="getOrderStatus(order, 'text')"
+                            [ngbPopover]="orderButtonPopover"
+                            popoverClass="pd-admin-box"
+                            placement="bottom bottom-right bottom-left right-bottom left-bottom"
+                            container="body"
+                            [ngStyle]="{'cursor': 'pointer'}">
+                        <ng-template #orderButtonPopover>
+                            <order-hover [order]="order" [admin]="null" [actions]="order.availableActions"></order-hover>
+                        </ng-template>
+                    </td>
+
+                    <td class="w-100 pd-full" *ngIf="nbHours" id="administrationCol{{iOrder}}">
+                        <div class="ie-special" [ngStyle]="{
+                            'position': 'relative',
+                            'display': 'block',
+                            'top': '0px', 'bottom': '0px', 'height': '100%', 'min-height': '100%',
+                            'left': '25px', right: '0px'}">
+                            &nbsp;<br><span style="font-size:1.15em">&nbsp;</span><br>&nbsp;<br>&nbsp; <!-- try to simulate a content as height: 100% does not work-->
+                            <span *ngIf="order.nextActionTime !== null && order.nextActionTime !== ''">
+                                <br>&nbsp;
+                            </span>
+                            <div class="pd-null-column">
+                                <div *ngIf="startBefore(order)"
+                                    [ngStyle]="{
+                                    'top': 0, 'bottom': 0, 'height': '100%', 'right': '0', 'left':'30%',
+                                    'position': 'absolute',
+                                    'background': currentBackground(order)}">
+                                </div>
+                            </div>
+
+                            <div *ngFor="let interval of getIntervals(order.id); let iInterval = index; trackBy:trackByFn"
+                                [ngStyle]="{
+                                    'textAlign': 'center',
+                                    'width': intervalWidth(),
+                                    'position': 'absolute',
+                                    'top': 0, 'bottom': 0,
+                                    'left': intervalLeft(iInterval, interval),
+                                    'background': intervalBackground(interval)}"
+                                [attr.data-time]="interval.time"
+                                (mouseenter)="onMouseCell(true, interval)"
+                                (mouseleave)="onMouseCell(false, interval)">
+                            </div>
+
+                            <div *ngIf="activeOrder(order)"
+                                [ngStyle]="{
+                                    'top': 0, 'bottom': 0, 'height': '100%',
+                                    'position': 'absolute',
+                                    'background': currentBackground(order),
+                                    'left': widthFromStart(order.beginDatetime),
+                                    'right': widthFromEnd(order.endDatetime)}">
+                            </div>
+                            
+                            <span *ngFor="let admin of order.orderAdministrations;  let iAdmin = index">
+                                <div *ngIf="activeAdmin(admin, order)"
+                                    [ngStyle]="{
+                                        'display': 'flex',
+                                        'align-items': 'center',
+                                        'position': 'absolute',
+                                        'top': 0, 'bottom': 0, 'height': '100%',
+                                        'left': widthFromStart(adminTime(admin))}"
+                                        [ngClass]="{'action-processing': adminActionProcessing[admin.id]}">
+                                        <span [ngStyle]="{display:'none'}">{{ admin.id }}</span>
+                                        <div [ngStyle]="{'position': 'relative'}">
+                                            <img
+                                                [src]="getAdminStatus(admin, 'icon')"
+                                                [ngbTooltip]="getAdminStatus(admin, 'tooltipText')"
+                                                [tooltipClass]="getAdminStatus(admin, 'tooltipClass')"
+                                                [ngStyle]="{'marginLeft':'-0.7em', 'cursor': 'pointer'}"
+                                                [ngbPopover]="adminPopover"
+                                                popoverClass="pd-admin-box"
+                                                placement="bottom bottom-right bottom-left right-bottom left-bottom"
+                                                container="body"
+                                                #adminPop="ngbPopover">
+                                            <span class="pd-cosign" 
+                                                ngbTooltip="Needs Co-Sign"
+                                                *ngIf="cosignNeeded(admin, order)"
+                                                [ngbPopover]="adminPopover"
+                                                popoverClass="pd-admin-box"
+                                                placement="bottom bottom-right bottom-left right-bottom left-bottom"
+                                                container="body"
+                                                #adminPop="ngbPopover">
+                                                <img src="../../assets/icon/cosignNeeded.svg">
+                                            </span>
+                                            <span class="pd-followup" *ngIf="hasFollowUp(admin)">&#x2713;</span>
+                                        </div>
+                                    <ng-template #adminPopover>
+                                        <order-hover 
+                                            [order]="order" 
+                                            [admin]="admin" 
+                                            [actions]="admin.availableActions"
+                                            [adminActionOnFire]="boundAdminActionOnFireHandler"
+                                            [adminActionFireExtinguished]="boundAdminActionFireExtinguishedHandler">
+                                        </order-hover>
+                                    </ng-template>
+                                </div>
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+        <given-template-modal></given-template-modal>
+        <date-time-modal></date-time-modal>
+        <five-rights-modal></five-rights-modal>
+        <app-user-printer-info-modal></app-user-printer-info-modal>
+        <!--
+        <app-patient-adminstrations-info-modal 
+        [modalPatientId]="patient.id"
+        [modalPatientFirstName]="patient.firstName"
+        [modalPatientLastName]="patient.lastName"
+        [modalMedicine]="modalMedicationSelected"
+        [modalMedicineSelectedScheduled] ="modalMedicationSelectedSchedule"
+        [modalAdministeredMedicines]="this.administeredItems"
+        (modalDateTimeSelected) ="getPatientAdministrationsModalDateRequests($event)"
+        ></app-patient-adminstrations-info-modal>
+        -->
+        <div id="printer-dates"  style="display: none;"
+        *ngFor="let time of times" >
+        <div class="printer-dates-times">
+            {{ time | date: 'MM-dd-yyyy HH:mm': siteUTCOffset }}
+        </div>
+    </div>
+    </div>
+</div>

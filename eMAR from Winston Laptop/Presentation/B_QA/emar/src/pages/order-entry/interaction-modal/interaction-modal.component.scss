@@ -1,0 +1,16 @@
+label {
+    font-size: 12px;
+}
+form {
+    border-top: solid 1px #c7c7c7;
+}
+.dialog-footer {
+    position:relative;
+}
+.requirement {
+    position:absolute;
+    bottom:0;
+    color: red;
+    font-style: italic;
+    font-size: smaller;
+}

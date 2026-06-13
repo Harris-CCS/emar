@@ -1,0 +1,1031 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Emar.Api</name>
+    </assembly>
+    <members>
+        <member name="T:Emar.Api.Controllers.CartOrdersController">
+            <summary>
+            Patient Cart Orders Controller
+            </summary>
+        </member>
+        <member name="M:Emar.Api.Controllers.CartOrdersController.#ctor(Emar.Core.Carts.Service.ICartOrderService,Emar.Core.Orders.Service.IOrderService)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="cartOrderService"></param>
+        </member>
+        <member name="M:Emar.Api.Controllers.CartOrdersController.GetCartOrders(System.String,System.Nullable{System.Int32},System.Int64,Emar.Core.ResourceParameters.PageResource)">
+            <summary>
+            Get all cart orders for a patient the user entered.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="userId">
+            Unique user identifier from EMAR-User header.
+            </param>
+            <param name="patientId">
+            Unique patient identifier.
+            </param>
+            <param name="pageResource">
+            </param>
+            <returns>An ActionResult of type CartOrderDto</returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.CartOrdersController.GetCartOrder(System.String,System.Nullable{System.Int32},System.Int64)">
+            <summary>
+            Get a cart order for a patient the user entered.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="userId">
+            Unique user identifier from EMAR-User header.
+            </param>
+            <param name="cartOrderId">
+            Unique cart order identifier.
+            </param>
+            <returns>An ActionResult of type CartOrderDto</returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.CartOrdersController.AddCartOrder(System.String,System.Nullable{System.Int32},System.Int64,Emar.Core.Carts.Model.CartOrderIuDto,System.Nullable{System.Boolean},System.String)">
+            <summary>
+            Add a cart order for a patient the user entered.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="userId">
+            Unique user identifier from EMAR-User header.
+            </param>
+            <param name="patientId">
+            Unique patient identifier.
+            </param>
+            <param name="cartOrderBody">
+            Body of the order to be added in the cart.
+            </param>
+            <returns>An ActionResult of type CartOrderDto</returns>
+            <remarks>
+            The JSON in the request body can **NOT** have Order and Administrations Ids set **OR** they **MUST** be set to 0.
+            </remarks>
+        </member>
+        <member name="M:Emar.Api.Controllers.CartOrdersController.UpdateCartOrder(System.String,System.Nullable{System.Int32},System.Int64,Emar.Core.Carts.Model.CartOrderIuDto)">
+            <summary>
+            Update a cart order.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="userId">
+            Unique user identifier from EMAR-User header.
+            </param>
+            <param name="cartOrderId">
+            Unique cart order identifier.
+            </param>
+            <param name="cartOrderBody">
+            Body of the order to be added in the cart.
+            </param>
+            <returns>An ActionResult of type CartOrderDto</returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.CartOrdersController.DeleteCartOrder(System.String,System.Int64)">
+            <summary>
+            Delete a cart order.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="cartOrderId">
+            Unique cart order identifier.
+            </param>
+            <returns>An ActionResult of type CartOrderDto</returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.CartOrdersController.DeleteCart(System.String,System.Nullable{System.Int32},System.Int64)">
+            <summary>
+            Delete the cart.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="userId">
+            Unique user identifier from EMAR-User header.
+            </param>
+            <param name="patientId">
+            Unique patient identifier.
+            </param>
+            <returns>An ActionResult of type CartOrderDto</returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.CartOrdersController.GetCartPreCheckoutData(System.String,System.Nullable{System.Int32},System.Int64)">
+            <summary>
+            Get the lists of ordering physicians, cart orders with drug interactions and allergy reactions; along with the lists of override reasons for drug interactions and allergy reactions.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="userId">
+            Unique user identifier from EMAR-User header.
+            </param>
+            <param name="patientId">
+            Unique patient identifier.
+            </param>
+            <returns>An ActionResult of type OverrideCartOrdersFrameworkDto</returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.CartOrdersController.CheckoutCart(System.String,System.Nullable{System.Int32},System.Int64,Emar.Core.Carts.Model.CartPreCheckoutResponseDataDto)">
+            <summary>
+            Set the ordering physician and the drug interactions &amp; allergy reactions override rationalia.
+            Order (checkout) the cart orders.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="userId">
+            Unique user identifier from EMAR-User header.
+            </param>
+            <param name="patientId">
+            Unique patient identifier.
+            </param>
+            <param name="cartPreCheckoutResponseData">
+            Body of pre-checkout response data (Ordering Physician Id, Drug Interaction Override Rationalia, Allergy Reaction Override Rationalia).
+            </param>
+            <returns></returns>
+        </member>
+        <member name="T:Emar.Api.Controllers.DepartmentPreferredListsController">
+            <summary>
+            Controller to retrieve the Department Preferred Lists for the Landing Page
+            </summary>
+        </member>
+        <member name="M:Emar.Api.Controllers.DepartmentPreferredListsController.#ctor(Emar.Core.Orders.Service.IOrderService,Emar.Core.Sites.Service.ISiteService)">
+            <summary>
+            Controller to handle calls related to the Department Preferred List
+            </summary>
+            <param name="orderService">Order Service provided by DI</param>
+            <param name="siteService">Site Service provided by DI</param>
+        </member>
+        <member name="M:Emar.Api.Controllers.DepartmentPreferredListsController.GetDepartmentPreferredList(System.String,System.Nullable{System.Int64},System.String,System.Int32)">
+            <summary>
+            Return the Department Preferred List for the current site.
+            </summary>
+            <param name="mediaType">Media type from the "Accept" header</param>
+            <param name="siteId">The Site to retrieve the Department Preferred list for</param>
+            <param name="patientId">(Optional) If provided, then HATEOAS links will be created to allow for the adding of the order directly to the patient's/user's cart.  Also, perform drug interaction checking against current patient orders, patient cart orders and patient home medications as well as allergy reaction checking.</param>
+            <param name="departmentCode">(Optional) If provided, the list will be for a specific department (if not provided, the entire list for the Site)</param>
+            <returns></returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.DepartmentPreferredListsController.GetDepartmentPreferredListByTab(System.String,System.Nullable{System.Int64},System.String,System.Int32,System.String)">
+            <summary>
+            Return the Department Preferred List for the current site by the tab name.
+            </summary>
+            <param name="mediaType">Media type from the "Accept" header</param>
+            <param name="siteId">The Site to retrieve the Department Preferred list for</param>
+            <param name="patientId">(Optional) If provided, then HATEOAS links will be created to allow for the adding of the order directly to the patient's/user's cart.  Also, perform drug interaction checking against current patient orders, patient cart orders and patient home medications as well as allergy reaction checking.</param>
+            <param name="departmentCode">(Optional) If provided, the list will be for a specific department (if not provided, the entire list for the Site)</param>
+            <param name="tabName">Either "Initial" or a letter of the alphabet.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.DepartmentPreferredListsController.CopyDepartmentPreferredItemToCart(System.String,System.Nullable{System.Int32},System.Int64,System.Int32)">
+            <summary>
+            Create an order in the user/patient's cart as a copy of the Department Preferred List order
+            </summary>
+            <param name="mediaType">Media type from the "Accept" header</param>
+            <param name="userId">The user who is placing the order in the cart</param>
+            <param name="departmentPreferredItemId">The Department Preferred List Item to move into the patient's cart</param>
+            <param name="patientId">the patient that the cart is intended for</param>
+            <returns></returns>
+        </member>
+        <member name="T:Emar.Api.Controllers.DevicesController">
+            <summary>
+            Controller for devices.
+            </summary>
+            
+        </member>
+        <member name="M:Emar.Api.Controllers.DevicesController.#ctor(Emar.Core.Devices.Service.IDeviceService)">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:Emar.Api.Controllers.DevicesController.GetDevicesBySite(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Return the active devices for a given site id.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="siteId">
+            The id of the site that we are searching in.
+            Is pulled from the request header.
+            </param>
+            <param name="userId">
+            The id of the current user.
+            Is pulled from the request header.
+            </param>
+            
+            <returns>
+            The list of active devices for a given site id.
+            If the user has a last used device, that one is listed first.
+            Then the remaining active devices are listed sorted by description.
+            </returns>
+            <remarks>
+            </remarks>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Emar.Api.Controllers.DevicesController.SavePrintFile(System.String,System.Collections.Generic.Dictionary{System.String,System.String})" -->
+        <member name="T:Emar.Api.Controllers.GroupsRememberedOrdersController">
+            <summary>
+            Controller to retrieve the Groups Remembered Orders Lists for the Landing Page
+            </summary>
+        </member>
+        <member name="M:Emar.Api.Controllers.GroupsRememberedOrdersController.#ctor(Emar.Core.Orders.Service.IOrderService,Emar.Core.Sites.Service.ISiteService)">
+            <summary>
+            Controller to handle calls related to the Groups Remembered Orders List
+            </summary>
+            <param name="orderService">Order Service provided by DI</param>
+            <param name="siteService">Site Service provided by DI</param>
+        </member>
+        <member name="M:Emar.Api.Controllers.GroupsRememberedOrdersController.GetGroupsRememberedOrdersList(System.String,System.Nullable{System.Int32},System.Nullable{System.Int64},System.String,System.Int32)">
+            <summary>
+            Return the contents Groups Remembered Orders  List
+            </summary>
+            <param name="mediaType">Media type from the "Accept" header</param>
+            <param name="userId">The user to retrieve the Groups Remembered Orders list for (provided in the header)</param>
+            <param name="siteId">The Site to retrieve the Groups Remembered Orders List for</param>
+            <param name="patientId">(Optional) If provided, then HATEOAS links will be created to allow for the adding of the order directly to the patient's/user's cart.  Also, perform drug interaction checking against current patient orders, patient cart orders and patient home medications as well as allergy reaction checking.</param>
+            <param name="departmentCode">(Optional) If provided, the list will be for a specific department (if not provided, the entire list for the Site)</param>
+            <returns></returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.GroupsRememberedOrdersController.CopyGroupsRememberedItemToCart(System.String,System.Nullable{System.Int32},System.Int64,System.Int32)">
+            <summary>
+            Create an order in the user/patient's cart as a copy of the Groups Remembered List order
+            </summary>
+            <param name="mediaType">Media type from the "Accept" header</param>
+            <param name="userId">The user who is placing the order in the cart</param>
+            <param name="groupsRememberedItemId">The Groups Remembered List Item to move into the patient's cart</param>
+            <param name="patientId">the patient that the cart is intended for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.GroupsRememberedOrdersController.GetGroupNames(System.String,System.String,System.Int32)">
+            <summary>
+            Return the names of the Groups sorted alphabetically.
+            </summary>
+            <param name="mediaType">Media type from the "Accept" header</param>
+            <param name="siteId">The Site to retrieve the Groups Remembered Orders List for</param>
+            <param name="departmentCode">(Optional) If provided, the list will be for a specific department (if not provided, the entire list for the Site)</param>
+            <returns></returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Emar.Api.Controllers.GroupsRememberedOrdersController.GetGroupItemsByGroupName(System.String,System.Nullable{System.Int32},System.Nullable{System.Int64},System.String,System.Int32,System.String)" -->
+        <!-- Badly formed XML comment ignored for member "M:Emar.Api.Controllers.GroupsRememberedOrdersController.GetGroupItemsByGroupNameNameInHeader(System.String,System.Nullable{System.Int32},System.Nullable{System.Int64},System.String,System.Int32,System.String)" -->
+        <member name="T:Emar.Api.Controllers.HomeMedicationsController">
+            <summary>
+            Patient Home Medications Controller
+            </summary>
+        </member>
+        <member name="M:Emar.Api.Controllers.HomeMedicationsController.#ctor(Emar.Core.HomeMedications.Service.IHomeMedicationService)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="homeMedicationService"></param>
+        </member>
+        <member name="M:Emar.Api.Controllers.HomeMedicationsController.GetHomeMedication(System.String,System.Int64)">
+            <summary>
+            Get a a patient home medication.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="homeMedicationId">
+            Unique patient home medication identifier.
+            </param>
+            <returns>An ActionResult of type HomeMedicationDto</returns>
+        </member>
+        <member name="T:Emar.Api.Controllers.MedicationsController">
+            <summary>
+            Dose Range Checking Info Controller
+            </summary>
+        </member>
+        <member name="M:Emar.Api.Controllers.MedicationsController.#ctor(Emar.Core.Medications.Service.IDoseRangeCheckingInfoService,Emar.Core.Medications.Service.IMedicationService,Emar.Core.Orders.Service.IOrderService)">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:Emar.Api.Controllers.MedicationsController.GetDoseRangeCheckingInfo(System.String,System.Int32)">
+            <summary>
+            Get the dose range checking info for a medication.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="medicationId">
+            The medication/drug ID.
+            </param>
+            <returns>The dose range info for the medication that has the passed in NDC</returns>
+            <remarks>
+            </remarks>
+        </member>
+        <member name="M:Emar.Api.Controllers.MedicationsController.GetMedByBrandName(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String)">
+            <summary>
+            Medication search by brand name
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="brandName">
+            The medication brand name we are searching for.
+            </param>
+            <param name="siteId">
+            The id of the site that we are searching in.
+            Is pulled from the request header.
+            </param>
+            <param name="searchType">
+            The type of list item to search for
+            (All / UserQuickListItem / DepartmentPreferredListItem / GroupRememberedOrder / FormularyItem).</param>
+            <param name="userId">
+            The id of the current user.
+            Is pulled from the request header.
+            Used when searching in the user-specific quick list.
+            </param>
+            /// <param name="deptCode">
+            The department of the patient.
+            Is pulled from the request header.
+            Used when searching in the department preferred list.
+            </param>
+            <returns>A alphabetically sorted list of medication names that match the search criteria.</returns>
+            <remarks>
+            </remarks>
+        </member>
+        <member name="M:Emar.Api.Controllers.MedicationsController.GetMedByBrandNameValueInHeader(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String)">
+            <summary>
+            Medication search by brand name with the brand name string being in a request header.
+            This does require "?r=randomNumber" to be added to the URL so that the browser doesn't
+            cache the results for the first drug the user searched for and then use that for all
+            subsequent searches.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="brandName">
+            The medication brand name we are searching for.
+            </param>
+            <param name="siteId">
+            The id of the site that we are searching in.
+            Is pulled from the request header.
+            </param>
+            <param name="searchType">
+            The type of list item to search for
+            (All / UserQuickListItem / DepartmentPreferredListItem / GroupRememberedOrder / FormularyItem).</param>
+            <param name="userId">
+            The id of the current user.
+            Is pulled from the request header.
+            Used when searching in the user-specific quick list.
+            </param>
+            /// <param name="deptCode">
+            The department of the patient.
+            Is pulled from the request header.
+            Used when searching in the department preferred list.
+            </param>
+            <returns>A alphabetically sorted list of medication names that match the search criteria.</returns>
+            <remarks>
+            </remarks>
+        </member>
+        <member name="M:Emar.Api.Controllers.MedicationsController.GetIndicationsBySite(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Medication search by brand name
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="siteId">
+            The id of the site that we are searching in.
+            Is pulled from the request header.
+            </param>
+            <returns>A alphabetically sorted list of antimicrobial indications for the current site.</returns>
+            <remarks>
+            </remarks>
+        </member>
+        <member name="M:Emar.Api.Controllers.MedicationsController.GetSearchDropdownList(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Get whether or not each search type should be made available in the UI.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="siteId">
+            The id of the site that we are searching in.
+            Is pulled from the request header.
+            </param>
+            
+            <returns>True/False for each type of search.</returns>
+            <remarks>
+            This defaults department preferred, groups, and user quick list to true.
+            Per product, those will always be available.
+            The others (formulary and all are based on the data).
+            If any of the formulary filters are turned on, then this formulary is true while all is false.
+            If all of the formulary filters are turned off, and there is data in the formulary table, then both formulary and all will be true.
+            If all of the forumlary filters are turned off, but there is no data in the formulary table, then formulary is false and all is true.
+            </remarks>
+        </member>
+        <member name="M:Emar.Api.Controllers.MedicationsController.GetMedication(System.String,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="mediaType"></param>
+            <param name="medicationId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.MedicationsController.GetInteractionsReactions(System.String,System.Nullable{System.Int32},System.Nullable{System.Int64},System.String,System.Int32)">
+            <summary>
+            Get a list of possible drug interactions and allergy reactions an order may have.
+            </summary>
+            <param name="mediaType">Media type from the "Accept" header.</param>
+            <param name="userId">Unique user identifier.</param>
+            <param name="patientId">Unique patient identifier.</param>
+            <param name="itemType">Order type (UserQuickListItem / DepartmentPreferredListItem / GroupRememberedOrder / MedicationItem)</param>
+            <param name="itemId">Unique order identifier; unique medication identifier if itemType is MedicationItem.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.MedicationsController.RecalculateAllInteractionsReactions(System.String,System.Int64)">
+            <summary>
+            Recalculate all interactions and reactions for the passed in patient.
+            Order (checkout) the cart orders.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="patientId">
+            Unique patient identifier.
+            </param>
+            <returns></returns>
+        </member>
+        <member name="T:Emar.Api.Controllers.OptionsController">
+            <summary>
+            Controller for site options.
+            </summary>
+            
+        </member>
+        <member name="M:Emar.Api.Controllers.OptionsController.#ctor(Emar.Core.Options.Service.IOptionService)">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:Emar.Api.Controllers.OptionsController.GetSiteOptionsBySite(System.String,System.Nullable{System.Int32},System.String)">
+            <summary>
+            Return the global options and the specified site options for a given site id.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="siteId">
+            The id of the site that we are searching in.
+            Is pulled from the request header.
+            </param>
+            <param name="options">
+            A comma-delimited list of the options that are desired.
+            These must be exactly one of the values in options.name.
+            If all site options and all global options are desired then
+            pass in "all" as the value for this parameter.
+            If anything other than "all" is passed in, then we'll return the
+            specified site options and all global options.
+            </param>
+            
+            <returns>
+            The specified site-specific options and the global options.
+            The site-specific options are alphabatized and come first.
+            And then the global options are alphabatized and come second.
+            </returns>
+            <remarks>
+            </remarks>
+        </member>
+        <member name="T:Emar.Api.Controllers.OrdersController">
+            <summary>
+            Patient Orders Controller
+            </summary>
+        </member>
+        <member name="M:Emar.Api.Controllers.OrdersController.#ctor(Emar.Core.Orders.Service.IOrderService,Emar.Core.Helpers.IPropertyCheckerService,Emar.Core.Templates.Service.ITemplateService)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="orderService"></param>
+            <param name="propertyCheckerService"></param>
+            <param name="templateService"></param>
+        </member>
+        <member name="M:Emar.Api.Controllers.OrdersController.GetOrders(System.String,System.Nullable{System.Int64})">
+            <summary>
+            Get a list of orders for a patient.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="patientId">
+            eMAR unique patient identifier.  If it is passed in then this API call will return all the orders for this patient.
+            </param>
+            <returns>An ActionResult of IEnumerable collection of type OrderDto</returns>
+            <remarks>
+            </remarks>
+        </member>
+        <member name="M:Emar.Api.Controllers.OrdersController.GetOrder(System.String,System.Int64)">
+            <summary>
+            Get an order by order id.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="orderId">
+            Unique order identifier.
+            </param>
+            <param name="fields">
+            *Optional.* \
+            Comma delimited list of order elements to be returned.  If omitted, all order elements are returned.
+            </param>
+            <returns>An ActionResult of type OrderDto</returns>
+            <remarks>
+            </remarks>
+        </member>
+        <member name="M:Emar.Api.Controllers.OrdersController.GetAdministration(System.String,System.Int32,System.Int32)">
+            <summary>
+            Get an administration by administration id of an order by order id.
+            </summary>
+            <param name="orderId">
+            Unique order identifier.
+            </param>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="administrationId">
+            Unique order administration identifier.
+            </param>
+            <returns>An ActionResult of type OrderAdministrationDto</returns>
+            <remarks>
+            </remarks>
+        </member>
+        <member name="M:Emar.Api.Controllers.OrdersController.GetAdministrationEvents(System.String,System.Int32,System.Int32)">
+            <summary>
+            Get the events of an administration by administration id of an order by order id.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="orderId">
+            Unique order identifier.
+            </param>
+            <param name="administrationId">
+            Unique order administration identifier.
+            </param>
+            <returns>An ActionResult of IEnumerable collection of type OrderEventDto</returns>
+            <remarks>
+            </remarks>
+        </member>
+        <member name="M:Emar.Api.Controllers.OrdersController.GetEvents(System.String,System.Int32)">
+            <summary>
+            Get the events of an order by order id.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="orderId">
+            Unique order identifier.
+            </param>
+            <returns>An ActionResult of IEnumerable collection of type OrderEventDto</returns>
+            <remarks>
+            </remarks>
+        </member>
+        <member name="M:Emar.Api.Controllers.OrdersController.GetEvent(System.String,System.Int32)">
+            <summary>
+            Get the event by event id of an order by order id.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="eventId">
+            Unique order event identifier.
+            </param>
+            <returns>An ActionResult of type OrderEventDto</returns>
+            <remarks>
+            </remarks>
+        </member>
+        <member name="M:Emar.Api.Controllers.OrdersController.ExecuteOrderAction(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32,System.Int32)">
+            <summary>
+            Executes one of the standards actions against an Order
+            </summary>
+            <param name="mediaType">Media type from Accept header.</param>
+            <param name="siteId">Unique site identifier</param>
+            <param name="userId">User who clicked the action button</param>
+            <param name="orderId">ID of the Order to fire the action against</param>
+            <param name="actionId">ID (from actions.id) of the Action to fire</param>
+            <returns></returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.OrdersController.ExecuteAdministrationAction(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32,System.Int32)">
+            <summary>
+            Executes one of the standards actions against an Administration
+            </summary>
+            <param name="siteId">Unique site identifier</param>
+            <param name="userId">User who clicked the action button</param>
+            <param name="administrationId">ID of the Order Administration to fire the action against</param>
+            <param name="actionId">The Id (from actions.id) of the Action that is being fired</param>
+            <param name="mediaType">Media type from Accept header.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.OrdersController.FileOrderActionTemplateResult(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32,System.Int32,System.Int32,System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Executes one of the standards actions against an Order
+            </summary>
+            <param name="userId">User who clicked the action button</param>
+            <param name="siteId">Unique site identifier</param>
+            <param name="orderId">ID of the Order to the template response against</param>
+            <param name="actionId">The Id (from actions.id) of the Action that is being fired</param>
+            <param name="mediaType">Media type from Accept header.</param>
+            <param name="templateId">ID of the Template the user was filling out</param>
+            <param name="templateResponses">Data harvested from the user's input to the template</param>
+            <returns></returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.OrdersController.FileAdministrationActionTemplateResult(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32,System.Int32,System.Int32,System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Executes one of the standards actions against an Administration
+            </summary>
+            <param name="userId">User who clicked the action button</param>
+            <param name="siteId">Unique site identifier</param>
+            <param name="administrationId">ID of the Order Administration to fire the action against</param>
+            <param name="actionId">The Id (from actions.id) of the Action that is being fired</param>
+            <param name="mediaType">Media type from Accept header.</param>
+            <param name="templateId">ID of the Template the user was filling out</param>
+            <param name="templateResponses">Data harvested from the user's input to the template</param>
+            <returns></returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.PatientsController.GetPatients(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Get a list of patients in the system.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="userId">
+            Unique user identifier.
+            </param>
+            <param name="orderBy">
+            *Optional.* \
+            Comma delimited list Patient element to sort by:
+            * **Id**
+            * **FullName**
+            * **Age**
+            * **DepartmentCode**
+            * **WardCode**
+            * **RoomBedCode**
+            \
+            \
+            Optional **ASC** or **DESC** commands can be suffixed. \
+            *Default:* **Id ASC**
+            </param>
+            <param name="fields">
+            *Optional.* \
+            Comma delimited list of patient elements to be returned.  If omitted, all patient elements are returned.
+            </param>
+            <param name="siteId">
+            *Optional.* \
+            Site (facility) identifier to restrict the list of returned patients to.
+            </param>
+            <param name="accountNumber">
+            *Optional.* \
+            Patient's account number.
+            </param>
+            <param name="customNumber">
+            *Optional.* \
+            Patient's custom number.
+            </param>
+            <param name="personNumber">
+            *Optional.* \
+            Patient's person number.
+            </param>
+            <param name="departmentCode">
+            *Optional.* \
+            Department code to restrict the list of returned patients to.
+            </param>
+            <param name="wardCodes">
+            *Optional.* \
+            Comma delimited of ward (area) codes to restrict the list of returned patients to.
+            </param>
+            <param name="roomBedCode">
+            *Optional.* \
+            Room and bed code to restrict the list of returned patients to.
+            </param>
+            <param name="includeMyPatientsOnly">
+            *Optional.* \
+            Include only the current user's patients in the list of returned patients.
+            </param>
+            <param name="includeInactive">
+            *Optional.* \
+            Include the inactive patients in the list of returned patients.
+            </param>
+            <param name="includeOrders">
+            *Optional.* \
+            Include the patients orders in the list of returned patients.
+            </param>
+            <param name="extId1">
+            *Optional.* \
+            First key of the external patient Id. In PulseCheck, it is the Site id.
+            </param>
+            <param name="extId2">
+            *Optional.* \
+            Second key of the external patient Id. In PulseCheck, it is the Ibex number.
+            </param>
+            <param name="pharmacyVerificationStatus">
+            *Optional.* \
+            0, 1, 2 if we want to filter based on patients who have one, or morw,
+            orders that have the PharmVerificationStatus field set to 0, 1, or 2.
+            IF this is empty, we will not be filtering based on the PharmVerificationStatus.
+            </param>
+            <param name="upcomingOrdersOnly">
+            *Optional.* \
+            Whether we want to only include patients with "upcoming" orders or include all patients.
+            Upcoming being defined as any order with scheduled administrations in the future.
+            </param>
+            <param name="onlySaveDefaults">
+            *Optional.* \
+            If this is true, then we're only saving defaults and not actually getting the patient list.
+            Here are the querystring parameters that we look at to set the defaults.
+            "includeMyPatientsOnly=false" = A
+            "includeMyPatientsOnly=true" = M
+            "pharmacyVerificationStatus=1 = V
+            "upcomingOrdersOnly=true" = U
+            </param>
+            <param name="onlyGetDefaults">
+            *Optional.* \
+            If this is true, then we're only retrieving the user's defaults and not actually getting the patient list.
+            A = all  patients ("includeMyPatientsOnly=false")
+            M = only my patients ("includeMyPatientsOnly=true")
+            V = phamracy verification status = 1 ("pharmacyVerificationStatus=1")
+            U = upcoming orders only (don't need to pass this in as the UI is handling this filtering)
+            After calling this to get the user's defaults, call this same endpoint with these settings
+            (without specifying onlyGetDefaults or onlySaveDefaults) to actually get the list of patients.
+            </param>
+            <returns>An IActionResult of IEnumerable of type PatientDto</returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.PatientsController.GetAdminstrationsByPatientAndOrder(System.String,System.Int64,System.Int64,System.Nullable{System.Int32})">
+            <summary>
+            Return all order administrations for a given patient and order.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="patientId">
+            The patient id.
+            </param>
+            <param name="orderId">
+            The order id.  Comes
+            </param>
+            <param name="userId">
+            The id of the current user.
+            Is pulled from the request header.
+            </param>
+            
+            <returns>
+            The specified patient, then the specified order undernath the patient.
+            Then all order administrations for the specified order.
+            </returns>
+            <remarks>
+            </remarks>
+        </member>
+        <member name="M:Emar.Api.Controllers.SchedulerController.GetSchedulerOptions(System.String,System.Nullable{System.Int32},System.String)">
+            <summary>
+            Retrieve scheduler options by brand name while looking at the formulary settings to filter the list of medications.
+            </summary>
+            <param name="mediaType">Media type from Accept header.</param>
+            <param name="siteId">Unique site identifier.</param>
+            <param name="brandName">The name of a medication.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.SchedulerController.GetSchedulerOptionsSearchStringInheader(System.String,System.Nullable{System.Int32},System.String)">
+            <summary>
+            Retrieve scheduler options by brand name while looking at the formulary settings to filter the list of medications.
+            </summary>
+            <param name="mediaType">Media type from Accept header.</param>
+            <param name="siteId">Unique site identifier.</param>
+            <param name="brandName">The name of a medication.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.SchedulerController.GetSchedulerOptionsAll(System.String,System.Nullable{System.Int32},System.String)">
+            <summary>
+            Retrieve scheduler options by brand name without applying any formulary filtering logic (i.e. doing an "all" lookup).
+            </summary>
+            <param name="mediaType">Media type from Accept header.</param>
+            <param name="siteId">Unique site identifier.</param>
+            <param name="brandName">The name of a medication.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.SchedulerController.GetSchedulerOptionsAllSearchStringInheader(System.String,System.Nullable{System.Int32},System.String)">
+            <summary>
+            Retrieve scheduler options by brand name without applying any formulary filtering logic (i.e. doing an "all" lookup).
+            </summary>
+            <param name="mediaType">Media type from Accept header.</param>
+            <param name="siteId">Unique site identifier.</param>
+            <param name="brandName">The name of a medication.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.SchedulerController.GetSchedulerOptionsListItem(System.String,System.Nullable{System.Int32},System.String,System.Int32,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.DateTimeOffset})">
+            <summary>
+            Retrieve scheduler options,
+            </summary>
+            <param name="mediaType">Media type from Accept header.</param>
+            <param name="siteId">Unique site identifier.</param>
+            <param name="itemType">Order type (UserQuickListItem / DepartmentPreferredListItem / GroupRememberedOrder / PatientCartOrder / MedicationItem)</param>
+            <param name="itemId">Unique order identifier.</param>
+            <param name="duration">The duration of the future administrations.  Can be null.</param>
+            <param name="durationUnitId">The ID of the unit fpr the future administrations (days, hours, minutes, etc...).  Can be null.</param>
+            <param name="endDatetime">The end time for the future administrations.  Can be null.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.SchedulerController.GetSchedulerAdministrations(System.String,System.Nullable{System.Int32},System.Int32,System.Nullable{System.DateTimeOffset},System.Nullable{System.DateTimeOffset},System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Retrieve future administration events for a given frequency,
+            </summary>
+            <param name="mediaType">Media type from Accept header.</param>
+            <param name="siteId">Unique site identifier.</param>
+            <param name="frequencyId">The ID of the frequency</param>
+            <param name="startDatetime">The start time for the future administrations.</param>
+            <param name="endDatetime">The end time for the future administrations.  will normally be null.</param>
+            <param name="duration">The duration of the future administrations.  Can be null.</param>
+            <param name="durationUnitId">The ID of the unit fpr the future administrations (days, hours, minutes, etc...).  Can be null.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Emar.Api.Controllers.UserNotificationsController">
+            <summary>
+            User Notifications Controller
+            </summary>
+        </member>
+        <member name="M:Emar.Api.Controllers.UserNotificationsController.#ctor(Emar.Core.Notifications.Service.INotificationService)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="notificationService"></param>
+        </member>
+        <member name="M:Emar.Api.Controllers.UserNotificationsController.GetNotifications(System.String,System.Nullable{System.Int32},System.Int32)">
+            <summary>
+            Return a list of notifications for a user
+            </summary>
+            <param name="mediaType">Media type from the "Accept" header</param> 
+            <param name="siteId">(Optional) The site to retrieve the user's notifications for. If omitted, return the user's notifications for all sites</param>
+            <param name="userId">The user to retrieve the notifications for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.UserNotificationsController.GetNotificationsCount(System.String,System.Nullable{System.Int32},System.Int32)">
+            <summary>
+            Return a count of notifications for a user
+            </summary>
+            <param name="mediaType">Media type from the "Accept" header</param>
+            <param name="siteId">(Optional) The site to retrieve the user's notifications for. If omitted, return the count of user's notifications for all sites</param>
+            <param name="userId">The user to retrieve the notifications for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.UserQuickListsController.GetUserQuickListInitial(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int64})">
+            <summary>
+            Return initial information about a User's Quick List:
+            will return the name and contents of the first Quick List tab,
+            and a list of all the tabs that will return remembered orders
+            </summary>
+            <param name="mediaType">Media type from the "Accept" header</param>
+            <param name="siteId">(Optional) The Site to retrieve the user's quick list for (if omitted, return the user's quick list for all sites)</param>
+            <param name="userId">The user to retrieve the quick list for (provided in the header)</param>
+            <param name="patientId">(Optional) If provided, then HATEOAS links will be created to allow for the adding of the order directly to the patient's/user's cart.  Also, perform drug interaction checking against current patient orders, patient cart orders and patient home medications as well as allergy reaction checking.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.UserQuickListsController.GetUserQuickListTab(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int64},System.String)">
+            <summary>
+            Return the contents for one tab of a User's Quick List
+            </summary>
+            <param name="mediaType">Media type from the "Accept" header</param>
+            <param name="siteId">(Optional) The Site to retrieve the user's quick list for (if omitted, return the user's quick list for all sites)</param>
+            <param name="userId">The user to retrieve the quick list for (provided in the header)</param>
+            <param name="patientId">(Optional) If provided, then HATEOAS links will be created to allow for the adding of the order directly to the patient's/user's cart.  Also, perform drug interaction checking against current patient orders, patient cart orders and patient home medications as well as allergy reaction checking.</param>
+            <param name="tabTitle">the tab to retrieve remembered orders for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.UserQuickListsController.GetQuickListItem(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int64},System.Int32)">
+            <summary>
+            Return a User's Quick List item
+            </summary>
+            <param name="mediaType">Media type from the "Accept" header</param>
+            <param name="siteId">(Optional) The Site to retrieve the user's quick list for (if omitted, return the user's quick list for all sites)</param>
+            <param name="userId">The user to retrieve the quick list for (provided in the header)</param>
+            <param name="patientId">(Optional) If provided, then HATEOAS links will be created to allow for the adding of the order directly to the patient's/user's cart.  Also, perform drug interaction checking against current patient orders, patient cart orders and patient home medications as well as allergy reaction checking.</param>
+            <param name="quickListItemId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.UserQuickListsController.CopyQuickListItemToCart(System.String,System.Nullable{System.Int32},System.Int32,System.Int64,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Create an order in the user/patient's cart as a copy of the quicklist order
+            </summary>
+            <param name="mediaType">Media type from the "Accept" header</param>
+            <param name="userId">The user who owns the Cart</param>
+            <param name="quickListItemId">The QuickList Item to move into the cart</param>
+            <param name="patientId">the patient that the cart is intended for</param>
+            <param name="duration">The duration of the future administrations.  Can be null.</param>
+            <param name="durationUnitId">The ID of the unit fpr the future administrations (days, hours, minutes, etc...).  Can be null.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.UserQuickListsController.DeleteQuickListItem(System.String,System.Int32)">
+            <summary>
+            Delete a quick list item.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            <param name="quickListItemId">
+            Unique quick list item identifier.
+            </param>
+            <returns>Nothing</returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.UsersController.GetOrderingPhysicianList(System.String,System.Nullable{System.Int32},System.Nullable{System.Int64})">
+            <summary>
+            Retrieve a list of physicians who can be used to fill in the "Ordering Physician" field in the Cart Check-out modal
+            </summary>
+            <param name="mediaType">Acceptable Media Types</param>
+            <param name="siteId">Site to retrieve the Physicians for</param>
+            <param name="patientId">Patient we're retrieving the list for - optional, but if provided, the patient's ER Attending Doc will be provided for a default</param>
+            <returns></returns>
+        </member>
+        <member name="M:Emar.Api.Controllers.UtilitiesController.GetTemplateDefinition(System.String,System.Nullable{System.Int32},System.String)">
+            <summary>
+            This call is only for testing out the templates directly (without having to fire an action)
+            </summary>
+            <param name="mediaType"></param>
+            <param name="siteId"></param>
+            <param name="templateName">Name of the template to get the JSON for</param>
+            <returns></returns>
+        </member>
+        <member name="T:Emar.Api.Controllers.ReturnReport">
+            <summary>
+            Output for the ad hoc SQL Queries
+            </summary>
+        </member>
+        <member name="P:Emar.Api.Controllers.ReturnReport.ReturnValues">
+            <summary>
+            Response Values
+            </summary>
+        </member>
+        <member name="P:Emar.Api.Controllers.ReturnReport.PerformanceReport">
+            <summary>
+            If any SQL query takes more than the threshold amount of time, it will be reported here
+            </summary>
+        </member>
+        <member name="T:Emar.Api.Controllers.WinstonTestsController">
+            <summary>
+            Controller for WinstonTests.
+            </summary>
+            
+        </member>
+        <member name="M:Emar.Api.Controllers.WinstonTestsController.#ctor(Emar.Core.WinstonTests.Service.IWinstonTestService)">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:Emar.Api.Controllers.WinstonTestsController.GetWinstonTests(System.String)">
+            <summary>
+            Return all Winston Tests.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            
+            <returns>
+            The list of Winston Tests.
+            </returns>
+            <remarks>
+            </remarks>
+        </member>
+        <member name="M:Emar.Api.Controllers.WinstonTestsController.GetActiveWinstonTests(System.String)">
+            <summary>
+            Return all active Winston Tests.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            
+            <returns>
+            The list of Winston Tests.
+            </returns>
+            <remarks>
+            </remarks>
+        </member>
+        <member name="M:Emar.Api.Controllers.WinstonTestsController.GetAllWinstonTestsAscending(System.String)">
+            <summary>
+            Return all Winston Test sorted by name.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            
+            <returns>
+            The list of Winston Tests sorted by name.
+            </returns>
+            <remarks>
+            </remarks>
+        </member>
+        <member name="M:Emar.Api.Controllers.WinstonTestsController.GetAllWinstonTestsDescending(System.String)">
+            <summary>
+            Return all Winston Tests sorted in reverse order.
+            </summary>
+            <param name="mediaType">
+            Media type from Accept header.
+            </param>
+            
+            <returns>
+            The list of Winston Tests sorted in reverse order.
+            </returns>
+            <remarks>
+            </remarks>
+        </member>
+    </members>
+</doc>

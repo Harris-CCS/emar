@@ -1,0 +1,58 @@
+﻿/*************************************************************************************
+ Pre-Deployment Script Template							
+--------------------------------------------------------------------------------------
+ This file contains SQL statements that will be executed before the build script.	
+ Use SQLCMD syntax to include a file in the pre-deployment script.			
+ Example:      :r .\myfile.sql								
+ Use SQLCMD syntax to reference a variable in the pre-deployment script.		
+ Example:      :setvar TableName MyTable							
+               SELECT * FROM [$(TableName)]					
+--------------------------------------------------------------------------------------
+*************************************************************************************/
+declare 
+    @db_build varchar(50) = '20123017';--yymmddhh (purpose to stamp a unique numer in the emar version)
+
+set @db_build = '$(deploy_version)' + '.' + @db_build;
+
+if not exists
+(
+    select null
+    from   [sys].[tables]
+    where  [name] = 'emar_version'
+)
+    begin
+        create table [emar_version]
+            (
+              [id]              [int] identity(1, 1) not null
+            , [version_number]  [varchar](50) not null
+            , [update_type]     [varchar](10) not null
+            , [update_start]    [datetimeoffset](7) not null
+            , [update_complete] [datetimeoffset](7) null);
+    end;
+
+insert into [dbo].[emar_version]
+    ([version_number]
+   , [update_type]
+   , [update_start]
+   , [update_complete]
+    )
+values
+    (@db_build, 'SQL', sysdatetimeoffset(), null);
+
+if '$(load_data)' = 'sample'
+    begin
+        :r ..\Scripts\Pre-Deployment\restore_sample_data.sql
+    end;
+
+declare @does_ibex_exist bit = 0;
+select @does_ibex_exist = 1
+from   [master].[sys].[databases]
+where  [name] = 'ibex';
+
+if '$(load_data)' = 'sample'
+   or  ('$(load_data)' = 'live'
+         and @does_ibex_exist = 1
+       )
+    begin
+        :r ..\Scripts\Data-Loader\delete_emar_data.sql
+    end;

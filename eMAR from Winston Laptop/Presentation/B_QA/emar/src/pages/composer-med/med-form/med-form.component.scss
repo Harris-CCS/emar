@@ -1,0 +1,15 @@
+@import "../composer-med.component.scss";
+@import "../../../variables.scss";
+
+.btn-adminInstructions {
+  margin-top: 5px;
+  padding: 5px;
+  border-radius: 10px;
+  font-weight: bold;
+  background-color: $blue-D-10;
+  color: #fff;
+}
+::ng-deep .dropdown-menu {
+  max-height: 20rem;
+  overflow: auto
+}

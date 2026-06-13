@@ -1,0 +1,81 @@
+<div class="modal-container" *ngIf="isOpen">
+    <div class="modal-overlay" (click)="close(true)"></div>
+    <div class="app-modal" [ngClass]="{'med-composer-modal': modalId === 'medComposer'}">
+        <div class="title"
+            [ngStyle]="{'position':'sticky','top':'0px','left':'0px', 'backgroundColor':'#fff', 'z-index':'500'}">
+            <div *ngIf="modalTitle" [innerHTML]="modalTitle"></div>
+            <div *ngIf="modalTitle; else formatByParameter">
+            </div>
+            <button *ngIf="blocking && closebtn" class="btn-close" (click)="close()">&#9747;</button>
+        </div>
+        <div class="body">
+            <ng-content></ng-content>
+        </div>
+    </div>
+</div>
+
+<ng-template #formatByParameter>
+    <div *ngIf="modalHeaderParameters && modalId==='medComposer'"
+        [ngStyle]="{'width': '100%', 'padding-bottom': '10px'}">
+        <div [class]="getModalHeaderParameterValue('class','0')"
+            [ngStyle]="{'display': 'flex', 'justify-content':'space-between'}">
+            <span>
+                <span>{{ getModalHeaderParameterValue('label') }} </span>
+                <span [ngbTooltip]="getModalHeaderParameterValue('toolTip')" triggers="mouseenter:mouseleave"
+                    container="body">
+                    <span [id]="getModalHeaderParameterValue('class','1')" container="body"
+                        (click)="getModalHeaderParameterValue('onTitleClick')" placement='bottom-left' triggers="click"
+                        [ngbPopover]="dosingInfo" popoverClass="my-popover" [autoClose]="'outside'">
+                        {{getModalHeaderParameterValue('title')}}
+                    </span>
+                </span>
+                <button class="btn btn-med btn-validity"
+                    [ngClass]="{'is-invalid': getModalHeaderParameterValue('button', 'validOrder', 'onClick') === 'INVALID', 'is-valid': true}"
+                    [innerText]="getModalHeaderParameterValue('button', 'validOrder', 'onClick')"
+                    [ngbTooltip]="getModalHeaderParameterValue('button', 'validOrder', 'toolTip')" [openDelay]="500">
+                </button>
+            </span>
+            <span
+                [ngStyle]="{'display':'flex', 'text-align': 'center', 'align-items':'right', 'padding-top': '5px', 'opacity': '1'}">
+                <span [ngStyle]="{'margin-right':'5px'}">
+                    <button class="button-secondary button-raised"
+                        (click)="getModalHeaderParameterValue('button', 'quicklist', 'onClick')"
+                        [ngbTooltip]="getModalHeaderParameterValue('button', 'quicklist', 'toolTip')" [openDelay]="500"
+                        container="body">&#10025;</button>
+                    <button class="button-secondary button-raised" [ngStyle]="{'margin-left':'5px'}"
+                        (click)="getModalHeaderParameterValue('button', 'continue', 'onClick')"
+                        [disabled]="getModalHeaderParameterValue('button', 'validOrder', 'onClick') !== 'VALID'"
+                        [ngbTooltip]="getModalHeaderParameterValue('button', 'continue', 'toolTip')" [openDelay]="500"
+                        container="body">{{getModalHeaderParameterValue('button', 'continue', 'name')}}</button>&nbsp;
+                </span>
+                <span [ngStyle]="{'margin-left':'5px'}">
+                    <button class="button-secondary button-raised"
+                        (click)="getModalHeaderParameterValue('button', 'cancel', 'onClick')"
+                        [ngbTooltip]="getModalHeaderParameterValue('button', 'cancel', 'toolTip')" [openDelay]="500"
+                        container="body">
+                        {{getModalHeaderParameterValue('button', 'cancel', 'name')}}
+                    </button>
+                    <button class="button-primary button-raised" [ngStyle]="{'margin-left':'5px'}"
+                        [disabled]="getModalHeaderParameterValue('button', 'validOrder', 'onClick') !== 'VALID'"
+                        (click)="getModalHeaderParameterValue('button', 'checkOrder', 'onClick')"
+                        [ngbTooltip]="getModalHeaderParameterValue('button', 'checkOrder', 'toolTip')" [openDelay]="500"
+                        container="body">
+                        {{getModalHeaderParameterValue('button', 'checkOrder', 'name')}}
+                    </button>
+                </span>
+            </span>
+        </div>
+        <div [ngStyle]="{'display': 'flex', 'justify-content': 'space-between', 'padding-left': '5px' }">
+            <div [ngStyle]="{'font-size': '1.1rem', 'line-height': '1.2em'}">
+                <div *ngFor="let field of modalHeaderParameters.fields">
+                    <div><em>{{field.label}}</em>{{field.value}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #dosingInfo>
+    <dosing-info [doseOptions]="getModalHeaderParameterValue('popoverData')"></dosing-info>
+</ng-template>

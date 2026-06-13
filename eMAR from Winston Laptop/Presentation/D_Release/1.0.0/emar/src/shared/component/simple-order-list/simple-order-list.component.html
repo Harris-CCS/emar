@@ -1,0 +1,193 @@
+<div class="tab-container">
+    <div *ngIf="listName !== 'groups'">
+        <!-- <div class="tab-label">
+            <ngb-pagination 
+                [collectionSize]="totalPages"
+                [(page)]="currentPage" 
+                [directionLinks]=false
+                [maxSize]=28
+                (pageChange)="pageChange()"
+                aria-label="Custom pagination"> -->
+                <!--<ng-template ngbPaginationPrevious>Prev</ng-template>
+                <ng-template ngbPaginationNext>Next</ng-template>-->
+                <!-- <ng-template ngbPaginationNumber let-p>{{ getPageSymbol(p) }}</ng-template>
+            </ngb-pagination>
+            <hr>
+
+            <pre>Current page: {{currentPage}}</pre>
+        </div> -->
+
+        <!-- <ul class="tab-list">
+            <li class="button-tab" *ngFor="let tab of displayTabs">
+                <input type="radio" id={{tab.name}} name="button--tab" value={{tab.name}}>
+                <label for={{tab.name}}>{{tab.name}}</label>
+            </li>
+        </ul>
+        <hr> -->
+
+        <!-- <div class="tab-list-bar invisible-scrollbar"> -->
+        <div class="tab-list-bar" *ngIf="displayTabs">
+            <ul class="tab-list-wrap">
+                <li class="button-tab" *ngFor="let tab of displayTabs">
+                    <input 
+                        type="radio" id={{tab.name}} name="button--tab" 
+                        value={{tab.name}}
+                        [checked]=tab.isChecked
+                        (click)="tabOnClick(tab.name)"
+                        [attr.disabled]="!tab.isValid ? 'disabled' : null">
+                    <label [ngClass]="{'diag': !tab.isValid}" for={{tab.name}}>{{tab.name}}</label>
+                </li>
+            </ul>
+        </div>
+        <!-- <hr> -->
+        <!-- <pre>total {{selectedTab}} count: {{displayItems.length}}</pre> -->
+        <pre>total <b>{{selectedTab}}</b> count: {{displayItems.length}}</pre>
+
+        <div class="tab-content">
+            <ul class="list-group">
+            <!--<ul>-->
+                <li class="list-group-item" *ngFor="let item of displayItems">
+                <!--<li *ngFor="let item of displayItems">-->
+                    <div class="list-group-item-container">
+                        <span *ngIf="auth" 
+                            [ngClass]="{'control': true, 'enabled': item.hasBeenAdded, 'notAllow': ( item.frequencySchedule === null 
+                                || item.medicationRoute === null
+                                || item.dose === null || item.dose <= 0
+                                || item.doseUnit === null ) ? true : false}"
+                            (click)="( item.frequencySchedule === null 
+                                || item.medicationRoute === null
+                                || item.dose === null || item.dose <= 0
+                                || item.doseUnit === null ) ? null : orderOnClick1(item)">
+                        </span>
+                        <!-- <input type="checkbox" id="med_{{item.id}}" (click)="orderOnClick1(item)" [checked]="item.hasBeenAdded" /> -->
+                        <!-- <label for="med_{{item.id}}">{{item.name}} {{item.dose}} {{item.route}}</label> -->
+                        <div>
+                            <button (click)="orderOnClick2(item)" [disabled]="!auth" [ngClass]="{'noauth': !auth}">
+                                <span class="main">{{item.displayName}}</span>
+                                
+                                <!-- <span
+                                    [ngClass]="{'unresolved allergy-dot': item.allergyReactions?.length, 'placeholder-dot': item.allergyReactions?.length === 0 || !item.allergyReactions}"
+                                    placement="right" 
+                                    ngbTooltip={{item.allergyReactionsText}}>
+                                </span>
+                                <span
+                                    [ngClass]="{'unresolved drug-dot' : item.orderInteractions?.length, 'placeholder-dot': item.orderInteractions?.length === 0 || !item.orderInteractions}"
+                                    placement="right" 
+                                    ngbTooltip={{item.drugInteractionsText}}>
+                                </span> -->
+                                <div [ngClass]="{'combo-detail': true, 'list': true, 'active': !!comboDetailDisplayToggle[item.id]}">
+                                    <ul class="tree">
+                                        <li *ngFor="let m of item.comboMedDetails">{{m.brandName}}</li>
+                                    </ul>
+                                </div>
+
+                                <br>
+
+                                <span class="addition">{{item.displayFrequency}} - {{item.displayDose}} {{item.displayDoseUnit}} - {{item.displayRoute}}</span>
+                            </button>
+                        </div>
+                        
+                        <div [ngClass]="{'button-group': true}">
+                            <interactions [order]="item" resolution="unresolved" placement="bottom-right left"></interactions>
+                            <!--<span [ngClass]="{'combo-detail': true, 'icon': true}"
+                                [ngClass]="{'unresolved allergy-dot': item.allergyReactions?.length, 'placeholder-dot': item.allergyReactions?.length === 0 || !item.allergyReactions}"
+                                placement="bottom-right" 
+                                ngbTooltip={{item.allergyReactionsText}}>
+                            </span>
+                            <span
+                                [ngClass]="{'unresolved drug-dot' : item.orderInteractions?.length, 'placeholder-dot': item.orderInteractions?.length === 0 || !item.orderInteractions}"
+                                placement="bottom-right" 
+                                ngbTooltip={{item.drugInteractionsText}}>
+                            </span>
+                        -->
+                            
+                            <span [ngClass]="{'combo-detail': true, 'icon': true, 'active': !!comboDetailDisplayToggle[item.id]}" 
+                                *ngIf="item.isComboMed" 
+                                (click)="toggleComboComponents(item.id)">&#8230;
+                            </span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+    <div *ngIf="listName === 'groups'">
+        <div class="tab-content">
+            <!-- <pre>total <b>{{selectedTab}}</b>count: {{displayItems.length}}</pre> -->
+            <!-- <hr> -->
+            <div *ngFor="let group of displayItems">
+                <button id={{group.displayGroupName}} [ngClass]="{'active': panelToggle[group.displayGroupName], 'accordion': true}" (click)="toggle(group.displayGroupName)">{{group.displayGroupName}}</button>
+                <div [ngClass]="{'active': panelToggle[group.displayGroupName], 'panel': true, 'tab-content': true}" id={{group.displayGroupName}}Panel>
+                    <ul class="list-group">
+                    <!--<ul>-->
+                        <li class="list-group-item" *ngFor="let item of group.orders">
+                        <!--<li *ngFor="let item of displayItems">-->
+                            <div class="list-group-item-container">
+                                <span *ngIf="auth"
+                                    [ngClass]="{'control': true, 'enabled': item.hasBeenAdded, 'notAllow': ( item.frequencySchedule === null 
+                                        || item.medicationRoute === null
+                                        || item.dose === null || item.dose <= 0
+                                        || item.doseUnit === null ) ? true : false}" 
+                                    (click)="( item.frequencySchedule === null 
+                                        || item.medicationRoute === null
+                                        || item.dose === null || item.dose <= 0
+                                        || item.doseUnit === null ) ? null : orderOnClick1(item)">
+                                </span>
+                                <!-- <input type="checkbox" id="med_{{item.id}}" (click)="orderOnClick1(item)" [checked]="item.hasBeenAdded" /> -->
+                                <!-- <label for="med_{{item.id}}">{{item.name}} {{item.dose}} {{item.route}}</label> -->
+                                <div>
+                                    <button type="button" (click)="orderOnClick2(item)" [disabled]="!auth" [ngClass]="{'noauth': !auth}">
+                                        <span class="main">{{item.displayName}}</span>
+
+                                        <!-- <span
+                                            [ngClass]="{'unresolved allergy-dot': item.allergyReactions?.length, 'placeholder-dot': item.allergyReactions?.length === 0 || !item.allergyReactions}"
+                                            placement="right" 
+                                            ngbTooltip={{item.allergyReactionsText}}>
+                                        </span>
+                                        <span
+                                            [ngClass]="{'unresolved drug-dot' : item.orderInteractions?.length, 'placeholder-dot': item.orderInteractions?.length === 0 || !item.orderInteractions}"
+                                            placement="right" 
+                                            ngbTooltip={{item.drugInteractionsText}}>
+                                        </span> -->
+
+                                        <div [ngClass]="{'combo-detail': true, 'list': true, 'active': !!comboDetailDisplayToggle[item.id]}">
+                                            <ul class="tree">
+                                                <li *ngFor="let m of item.comboMedDetails">{{m.brandName}} {{m.dose}} {{m.doseUnit}}</li>
+                                            </ul>
+                                        </div>
+
+                                        <br>
+
+                                        <span class="addition">{{item.displayFrequency}} - {{item.displayDose}} {{item.displayDoseUnit}} - {{item.displayRoute}}</span>
+                                    </button>
+                                </div>
+
+                                <div [ngClass]="{'button-group': true}">
+                                    <interactions [order]="item" placement="bottom-right" resolution="unresolved"></interactions>
+                                    <!--
+                                    <span
+                                        [ngClass]="{'unresolved allergy-dot': item.allergyReactions?.length, 'placeholder-dot': item.allergyReactions?.length === 0 || !item.allergyReactions}"
+                                        placement="bottom-right" 
+                                        ngbTooltip={{item.allergyReactionsText}}>
+                                    </span>
+                                    <span
+                                        [ngClass]="{'unresolved drug-dot' : item.orderInteractions?.length, 'placeholder-dot': item.orderInteractions?.length === 0 || !item.orderInteractions}"
+                                        placement="bottom-right"
+                                        ngbTooltip={{item.drugInteractionsText}}>
+                                    </span>
+                                -->
+                                    <span [ngClass]="{'combo-detail': true, 'icon': true, 'active': !!comboDetailDisplayToggle[item.id]}" 
+                                        *ngIf="item.isComboMed" 
+                                        (click)="toggleComboComponents(item.id)">&#8230;
+                                    </span> 
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div> 
+</div>

@@ -1,0 +1,21 @@
+@import "../../../variables";
+
+.day {
+    width: 90px;
+    margin-right: 3px;
+    margin-bottom: 3px;
+    background-color: #e9ecef; // TODO $input-group-addon-bg;
+    border: 1px solid #ced4da; // TODO $input-group-addon-border-color;
+    padding: 3px;
+    text-align: center;
+}
+.event {
+    margin-bottom: 3px;
+    background-color: white;
+}
+.event:hover {
+    background: gray;
+}
+.hide {
+    display: none;
+}

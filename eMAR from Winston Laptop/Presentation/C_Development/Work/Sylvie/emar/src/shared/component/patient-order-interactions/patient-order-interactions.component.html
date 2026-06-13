@@ -1,0 +1,29 @@
+<h5 *ngIf="!sortedOrderInteractions || !sortedOrderInteractions.length || sortedOrderInteractions.length === 0">No
+  Interactions</h5>
+<div *ngIf="sortedOrderInteractions.length > 0" [ngStyle]="{'width': '100%'}">
+  <h3 [ngStyle]="{'text-align': 'center'}">{{includeInteractionType === 'drug' ? 'Medication' : 'Allergy'}} Interactions
+  </h3>
+  <ng-container *ngIf="sortedOrderInteractions && sortedOrderInteractions.length > 0">
+    <ngb-accordion #acc="ngbAccordion" class="accordion" [destroyOnHide]="false" closeOthers="true" class="acc-panel">
+      <ngb-panel [id]="'patient-order-interaction-' + i" *ngFor="let item of sortedOrderInteractions; let i = index"
+        [ngClass]="{'order-interactions':'true'}">
+        <ng-template ngbPanelHeader>
+          <div class="accordion-panel-header" [ngClass]="{'active': isPanelSelected('patient-order-interaction-' + i)}">
+            <button class="d-flex align-items-center justify-content-between ml-2 accordion-panel-toggle"
+              id="'patient-order-interaction-' + i +'-panel'"
+              [ngClass]="{'active': isPanelSelected('patient-order-interaction-' + i)}" ngbPanelToggle>
+              <div class="panel-id">
+                <span>{{item.severityText}}</span>
+              </div>
+              <button class="btn btn-sm align-items-center justify-content-between ml-2 accordion-toggle"
+                [ngClass]="{'active': isPanelSelected('patient-order-interaction-' + i)}"></button>
+            </button>
+          </div>
+        </ng-template>
+        <ng-template ngbPanelContent>
+          <simple-table [tableStructure]="getTableStructure(i)"></simple-table>
+        </ng-template>
+      </ngb-panel>
+    </ngb-accordion>
+  </ng-container>
+</div>

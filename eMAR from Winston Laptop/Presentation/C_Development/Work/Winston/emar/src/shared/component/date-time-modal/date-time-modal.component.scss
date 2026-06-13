@@ -1,0 +1,40 @@
+// copied from ngb timepicker
+.ngb-tp {
+    display:flex;
+    align-items: center;
+}
+.ngb-tp-hour, .ngb-tp-minute {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+.ngb-tp-input {
+    text-align: center;
+}
+.ngb-tp-input-container {
+    width: 4em;
+}
+.ngb-tp-spacer {
+    width: 1em;
+    text-align: center;
+}
+.ngb-tp-chevron:before {
+    border-style: solid;
+    border-width: .29em .29em 0 0;
+    content: "";
+    display: inline-block;
+    height: .69em;
+    left: .05em;
+    position: relative;
+    top: .15em;
+    -webkit-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    vertical-align: middle;
+    width: .69em;
+}
+.ngb-tp-chevron.bottom:before {
+    top: -.3em;
+    -webkit-transform: rotate(135deg);
+    transform: rotate(135deg);
+}

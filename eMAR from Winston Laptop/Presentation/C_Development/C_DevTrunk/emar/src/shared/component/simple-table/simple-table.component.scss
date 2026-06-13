@@ -1,0 +1,53 @@
+thead tr {
+  text-align: center;
+}
+
+th {
+  padding: 5px;
+  margin: 5px;
+  font-weight: bold;
+}
+
+td {
+  padding: 3px;
+  margin: 3px;
+}
+
+.left-align {
+  text-align: left;
+}
+
+.align-center {
+  text-align: center;
+}
+
+.italics {
+  font-style: italic;
+}
+
+.pagination-select {
+  max-width: 50px;
+  max-height: 30px;
+  margin: 0 10px;
+  border-color: lightgray;
+}
+
+.indicator-low {
+  font-weight: bold;
+  color: blue;
+}
+
+.indicator-high {
+  font-weight: bold;
+  color: red;
+}
+
+.panic,
+.abnormal {
+  color: #f31c38;
+}
+
+.panic > img {
+  height: 10px;
+  width: 10px;
+}

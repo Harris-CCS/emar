@@ -1,0 +1,149 @@
+{
+	"info": {
+		"_postman_id": "be815344-754d-47ca-81f0-9d27af3a27da",
+		"name": "Dose Range Checking Info Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Tylenol Extra Strength",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f28f2438-24df-4a7f-b9cc-758b750ef7ac",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Returns 89 records\", function() {\r",
+							"    pm.expect(jsonData.length).to.eql(89);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Record 1 has gcnSeqno of 4490\", function() {\r",
+							"    pm.expect(jsonData[0].gcnSeqno).to.eql(4490);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/GetDoseRangeCheckingInfo/50580045103",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"GetDoseRangeCheckingInfo",
+						"50580045103"
+					]
+				},
+				"description": "NDC = 50580045103\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Bad Accept Header",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d67cef53-3162-462a-bee8-6c1ae3151aa7",
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/api/GetDoseRangeCheckingInfo/50580045103",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"GetDoseRangeCheckingInfo",
+						"50580045103"
+					]
+				},
+				"description": "NDC = 50580045103\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Bad NDC",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c492aadb-2f7e-4e1c-9a21-e0d172c443c5",
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/GetDoseRangeCheckingInfo/99999999999",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"GetDoseRangeCheckingInfo",
+						"99999999999"
+					]
+				},
+				"description": "NDC = 50580045103\r\n"
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
