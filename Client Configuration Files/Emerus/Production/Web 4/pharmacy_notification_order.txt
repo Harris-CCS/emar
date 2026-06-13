@@ -1,0 +1,11 @@
+Patient name: [Patient.LastName], [Patient.FirstName]
+MRN: [Patient.MedicalRecordNumber]
+Facility:  [Site.Name]
+Unit/Bed: [Patient.WardCode] / [Patient.RoomBedCode]
+
+Medication order: [Medication.DisplayName],  [MedRoute.Name],  [Order.Dose] [MedUnit.PrintName],  [MedFrequency.Name]
+
+Order date/time:  [Order.BeginDatetime]
+
+Action: [Order.OrderStatus]
+__________________________________________________
